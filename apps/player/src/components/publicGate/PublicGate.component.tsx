@@ -9,6 +9,7 @@ export default function PublicGate({ children }: { children: ReactNode }) {
   const router = useRouter();
   const params = useSearchParams();
   const { data: user, isLoading } = useMe();
+  console.log("PublicGate user", user, "isLoading", isLoading);
 
   useEffect(() => {
     if (isLoading) return;

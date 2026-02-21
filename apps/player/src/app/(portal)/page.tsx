@@ -1,3 +1,7 @@
+export const metadata = {
+  title: "Tapestry TTRPG - Portal Home",
+};
+
 export default function PortalHome() {
   return (
     <div>

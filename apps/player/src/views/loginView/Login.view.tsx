@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import styles from "./Login.module.scss";
 import { useLogin } from "@/lib/auth-hooks";
 import { getLoginErrorMessage, isValidEmail } from "./functions";
@@ -47,9 +48,7 @@ export default function LoginView() {
               disabled={isBusy}
               placeholder="you@email.com"
             />
-            {!emailOk && email.length > 0 && (
-              <div className={styles.hint}>Enter a valid email.</div>
-            )}
+            {!emailOk && email.length > 0 && <div className={styles.hint}>Enter a valid email.</div>}
           </div>
 
           <div className={styles.field}>
@@ -90,6 +89,15 @@ export default function LoginView() {
             {isBusy ? "Signing in…" : "Sign in"}
           </button>
         </form>
+
+        <div className={styles.links}>
+          <Link href="/forgot-password" className={styles.link}>
+            Forgot password?
+          </Link>
+          <Link href="/register" className={styles.link}>
+            Create account
+          </Link>
+        </div>
       </div>
     </div>
   );

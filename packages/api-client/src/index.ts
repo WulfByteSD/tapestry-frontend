@@ -82,3 +82,19 @@ export async function me(api: AxiosInstance) {
 export function normalizeRoles(roles: string[] | string) {
   return Array.isArray(roles) ? roles : [roles];
 }
+
+export type RegisterInput = {
+  firstName: string;
+  lastName?: string;
+  email: string;
+  phoneNumber: string;
+  password: string;
+  roles?: string[];
+  displayName?: string;
+};
+
+export async function register(api: AxiosInstance, input: RegisterInput) {
+  // assumes POST /api/v1/auth/register
+  const res = await api.post<LoginResponse>("/auth/register", input);
+  return res.data;
+}
