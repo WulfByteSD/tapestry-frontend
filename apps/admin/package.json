@@ -9,9 +9,14 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.90.21",
+    "@tanstack/react-query-devtools": "^5.91.3",
+    "@tapestry/api-client": "workspace:^",
+    "axios": "^1.7.0",
     "next": "16.1.6",
     "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react-dom": "19.2.3",
+    "sass": "^1.97.3"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

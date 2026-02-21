@@ -1,0 +1,187 @@
+.wrap {
+  min-height: 70vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.card {
+  width: 100%;
+  max-width: 420px;
+
+  position: relative;
+  border-radius: var(--radius-lg);
+  padding: 20px;
+
+  /* Surface with a little depth */
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--surface) 92%, black),
+    var(--surface-2)
+  );
+
+  box-shadow: var(--shadow-1);
+  overflow: hidden;
+
+  /* Gold inlay border */
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    padding: 1px;
+    border-radius: inherit;
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--gold) 90%, white),
+      var(--gold-soft),
+      color-mix(in srgb, var(--gold) 90%, white)
+    );
+
+    /* hollow center so it looks like an inlay border */
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  /* subtle inner sheen */
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 1px;
+    border-radius: calc(var(--radius-lg) - 1px);
+    background: radial-gradient(
+      600px 240px at 20% 0%,
+      color-mix(in srgb, var(--accent-4) 22%, transparent),
+      transparent 60%
+    );
+    pointer-events: none;
+  }
+}
+
+.header {
+  margin-bottom: 16px;
+  position: relative; /* above sheen */
+  z-index: 1;
+}
+
+.title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 750;
+  letter-spacing: 0.2px;
+}
+
+.subtitle {
+  margin: 6px 0 0;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.form {
+  display: grid;
+  gap: 14px;
+  position: relative;
+  z-index: 1;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+}
+
+.label {
+  font-size: 13px;
+  font-weight: 650;
+  color: color-mix(in srgb, var(--text) 90%, transparent);
+}
+
+.input {
+  height: 40px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-strong);
+  background: color-mix(in srgb, var(--surface) 75%, black);
+  color: var(--text);
+  padding: 0 12px;
+  outline: none;
+
+  &::placeholder {
+    color: color-mix(in srgb, var(--text-muted) 70%, transparent);
+  }
+
+  &:focus {
+    border-color: color-mix(in srgb, var(--gold-soft) 60%, transparent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--gold) 18%, transparent);
+  }
+
+  &:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+  }
+}
+
+.hint {
+  font-size: 12px;
+  color: color-mix(in srgb, var(--text-muted) 75%, transparent);
+}
+
+.passwordRow {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.ghostBtn {
+  height: 40px;
+  padding: 0 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+
+  &:hover {
+    background: color-mix(in srgb, var(--gold) 10%, transparent);
+    border-color: color-mix(in srgb, var(--gold) 30%, transparent);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.errorBox {
+  border: 1px solid color-mix(in srgb, #ff6b6b 45%, transparent);
+  background: color-mix(in srgb, #ff6b6b 10%, transparent);
+  color: color-mix(in srgb, var(--contrast) 92%, #ffb3b3);
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+}
+
+.primaryBtn {
+  height: 42px;
+  border-radius: var(--radius-sm);
+  border: 1px solid color-mix(in srgb, var(--gold) 55%, transparent);
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--gold) 92%, white),
+    var(--gold-soft)
+  );
+
+  color: var(--base);
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+
+  &:hover {
+    filter: brightness(1.03);
+  }
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+}
