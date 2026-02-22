@@ -151,7 +151,7 @@ export default function RegisterView() {
               autoComplete="new-password"
               disabled={busy}
             />
-            {!matchOk && confirm.length > 0 && <div className={styles.hint}>Passwords don’t match.</div>}
+            {!matchOk && confirm.length > 0 && <div className={styles.hint}>Passwords don&apos;t match.</div>}
           </div>
 
           {reg.isError && (
