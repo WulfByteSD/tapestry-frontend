@@ -1,0 +1,10 @@
+.shell {
+  display: grid;
+  grid-template-columns: auto 1fr; /* Changed from fixed 260px to auto */
+  min-height: 100vh;
+}
+
+.main {
+  padding: 24px 32px;
+  overflow-y: auto;
+}
