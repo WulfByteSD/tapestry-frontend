@@ -30,6 +30,9 @@ importers:
       '@tapestry/api-client':
         specifier: workspace:^
         version: link:../../packages/api-client
+      '@tapestry/types':
+        specifier: workspace:^
+        version: link:../../packages/types
       '@tapestry/ui':
         specifier: workspace:^
         version: link:../../packages/ui
@@ -91,6 +94,9 @@ importers:
       '@tapestry/rules':
         specifier: workspace:^
         version: link:../../packages/rules
+      '@tapestry/types':
+        specifier: workspace:^
+        version: link:../../packages/types
       '@tapestry/ui':
         specifier: workspace:^
         version: link:../../packages/ui
@@ -147,6 +153,8 @@ importers:
   packages/auth-client: {}
 
   packages/rules: {}
+
+  packages/types: {}
 
   packages/ui:
     dependencies:
