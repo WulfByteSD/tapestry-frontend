@@ -1,26 +1,38 @@
 "use client";
 import type { CharacterSheet } from "@tapestry/types";
 
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import styles from "./Sheets.module.scss";
 import { Button, Card, CardBody, CardHeader, TextField } from "@tapestry/ui";
 import SheetCard from "@/components/sheetCard/SheetCard.component";
+import { useCharacterSheetsQuery } from "@/lib/character-hooks";
 
- 
+function useDebouncedValue<T>(value: T, delayMs: number) {
+  const [debounced, setDebounced] = useState(value);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setDebounced(value), delayMs);
+    return () => clearTimeout(timer);
+  }, [value, delayMs]);
+
+  return debounced;
+}
+
 export default function SheetsView() {
   const router = useRouter();
   const [query, setQuery] = useState("");
+  const debounced = useDebouncedValue(query.trim(), 1000);
 
-  // Later: replace mockSheets with data from API:
-  // const { data: sheets = [], isLoading } = useSheetsQuery();
-  const sheets: CharacterSheet[] = [];
+  const { data, isLoading } = useCharacterSheetsQuery({
+    keyword: debounced || undefined,
+    pageNumber: 1,
+    pageLimit: 50,
+    sortOptions: "-updatedAt",
+    // pass filterOptions/includeOptions here.
+  });
 
-  const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (!q) return sheets;
-    return sheets.filter((s) => s.name.toLowerCase().includes(q));
-  }, [query, sheets]);
+  const sheets: CharacterSheet[] = data?.payload ?? [];
 
   return (
     <div className={styles.page}>
@@ -51,7 +63,7 @@ export default function SheetsView() {
         />
       </div>
 
-      {filtered.length === 0 ? (
+      {sheets.length === 0 ? (
         <Card className={styles.emptyCard}>
           <CardHeader className={styles.emptyHeader}>
             <div className={styles.emptyTitle}>No characters found</div>
@@ -74,7 +86,7 @@ export default function SheetsView() {
         </Card>
       ) : (
         <div className={styles.grid}>
-          {filtered.map((c: CharacterSheet) => (
+          {sheets.map((c: CharacterSheet) => (
             <SheetCard key={c._id} character={c} />
           ))}
         </div>
