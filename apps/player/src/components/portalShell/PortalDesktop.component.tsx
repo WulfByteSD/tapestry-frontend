@@ -15,9 +15,7 @@ type Props = {
 const sidebarGroups: SidebarGroup[] = [
   {
     title: "Main",
-    links: [
-      { href: "/", label: "Home", icon: <BiHome /> },
-    ],
+    links: [{ href: "/", label: "Home", icon: <BiHome /> }],
   },
   {
     title: "Gameplay",
@@ -54,7 +52,16 @@ export default function PortalDesktop({ children }: Props) {
           </div>
         }
       />
-      <main className={styles.main}>{children}</main>
+      <main className={styles.main}>
+        <div className={styles.watermark}>
+          <img
+            src="https://res.cloudinary.com/dmc7wmarf/image/upload/v1771775270/ChatGPT_Image_Jan_10_2026_11_32_39_AM_-_Copy_bcpc4f.png"
+            alt=""
+            className={styles.watermarkImage}
+          />
+        </div>
+        {children}
+      </main>
     </div>
   );
 }
