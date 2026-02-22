@@ -1,0 +1,64 @@
+.card {
+  position: relative;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  box-shadow: var(--shadow-1);
+}
+
+/* Gold inlay border (matches your Login card vibe) */
+.inlay::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--accent) 90%, white),
+    var(--accent-2),
+    color-mix(in srgb, var(--accent) 90%, white)
+  );
+
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.tone_surface {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--surface) 92%, black), var(--surface-2));
+}
+
+.tone_glass {
+  background: color-mix(in srgb, var(--surface) 70%, transparent);
+  backdrop-filter: blur(12px);
+}
+
+.pad_sm {
+  padding: 12px;
+}
+.pad_md {
+  padding: 16px;
+}
+.pad_lg {
+  padding: 20px;
+}
+
+.header {
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.body {
+  padding-top: 12px;
+}
+
+.footer {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
