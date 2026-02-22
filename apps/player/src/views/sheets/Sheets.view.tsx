@@ -1,4 +1,5 @@
 "use client";
+import type { CharacterSheet } from "@tapestry/types";
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -6,70 +7,14 @@ import styles from "./Sheets.module.scss";
 import { Button, Card, CardBody, CardHeader, TextField } from "@tapestry/ui";
 import SheetCard from "@/components/sheetCard/SheetCard.component";
 
-// MVP shape (replace with API type later)
-type CharacterSheet = {
-  id: string;
-  name: string;
-  archetype?: string;
-  level?: number;
-  updatedAt?: string;
-  avatarUrl?: string | null;
-};
-
-// Temporary mock data to prove UI flow.
-// Replace with react-query call once your endpoint exists.
-const mockSheets: CharacterSheet[] = [
-  {
-    id: "char_1",
-    name: "Darrick of Everpine",
-    archetype: "Warden",
-    level: 2,
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: "char_2",
-    name: "Sera Dawnsong",
-    archetype: "Seeker",
-    level: 1,
-    updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3).toISOString(),
-  },
-  {
-    id: "char_3",
-    name: "Darrick of Everpine",
-    archetype: "Warden",
-    level: 2,
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: "char_4",
-    name: "Sera Dawnsong",
-    archetype: "Seeker",
-    level: 1,
-    updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3).toISOString(),
-  },
-  {
-    id: "char_5",
-    name: "Darrick of Everpine",
-    archetype: "Warden",
-    level: 2,
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: "char_6",
-    name: "Sera Dawnsong",
-    archetype: "Seeker",
-    level: 1,
-    updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3).toISOString(),
-  },
-];
-
+ 
 export default function SheetsView() {
   const router = useRouter();
   const [query, setQuery] = useState("");
 
   // Later: replace mockSheets with data from API:
   // const { data: sheets = [], isLoading } = useSheetsQuery();
-  const sheets = mockSheets;
+  const sheets: CharacterSheet[] = [];
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -129,8 +74,8 @@ export default function SheetsView() {
         </Card>
       ) : (
         <div className={styles.grid}>
-          {filtered.map((c) => (
-            <SheetCard key={c.id} character={c} />
+          {filtered.map((c: CharacterSheet) => (
+            <SheetCard key={c._id} character={c} />
           ))}
         </div>
       )}

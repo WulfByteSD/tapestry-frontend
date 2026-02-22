@@ -1,18 +1,12 @@
 "use client";
 
+import type { CharacterSheet } from "@tapestry/types";
+
 import { useRouter } from "next/navigation";
 import { Button, Card, CardBody, CardHeader } from "@tapestry/ui";
 import { BiCopy, BiTrash } from "react-icons/bi";
 import styles from "./SheetCard.module.scss";
 
-type CharacterSheet = {
-  id: string;
-  name: string;
-  archetype?: string;
-  level?: number;
-  updatedAt?: string;
-  avatarUrl?: string | null;
-};
 
 type Props = {
   character: CharacterSheet;
@@ -33,12 +27,12 @@ export default function SheetCard({ character: c }: Props) {
 
   const handleDuplicate = () => {
     // TODO: Implement character duplication
-    console.log("TODO: duplicate", c.id);
+    console.log("TODO: duplicate", c._id);
   };
 
   const handleDelete = () => {
     // TODO: Implement character deletion
-    console.log("TODO: delete", c.id);
+    console.log("TODO: delete", c._id);
   };
 
   return (
@@ -60,8 +54,8 @@ export default function SheetCard({ character: c }: Props) {
             <div className={styles.cardTitleRow}>
               <div className={styles.cardTitle}>{c.name}</div>
               <div className={styles.badge}>
-                {c.archetype ?? "Adventurer"}
-                {typeof c.level === "number" ? ` · L${c.level}` : ""}
+                {c.sheet.archetypeKey ?? "Adventurer"}
+                {typeof c.sheet.weaveLevel === "number" ? ` · L${c.sheet.weaveLevel}` : ""}
               </div>
             </div>
 
@@ -74,7 +68,7 @@ export default function SheetCard({ character: c }: Props) {
 
       <CardBody className={styles.cardBody}>
         <div className={styles.actionRow}>
-          <Button tone="gold" variant="solid" className={styles.openBtn} onClick={() => router.push(`/sheets/${c.id}`)}>
+          <Button tone="gold" variant="solid" className={styles.openBtn} onClick={() => router.push(`/sheets/${c._id}`)}>
             Open
           </Button>
 
