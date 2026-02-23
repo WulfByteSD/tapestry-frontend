@@ -28,6 +28,8 @@
 
 .main {
   position: relative;
+  max-height: 90svh;
+  overflow-y: auto;
   z-index: 1;
   padding: 16px 18px;
 }
