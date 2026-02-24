@@ -103,3 +103,20 @@ export function useUpdateCharacterSheetMutation<T = any>(characterId: string, op
     },
   });
 }
+export function useDeleteCharacterMutation() {
+  const qc = useQueryClient();
+
+  return useMutation({
+    mutationKey: ["character:delete"],
+    mutationFn: async (characterId: string) => {
+      const res = await api.delete(`/game/characters/${characterId}`);
+      return res.data as ApiResponse<{ _id: string }>;
+    },
+    onSuccess: (_data, characterId) => {
+      // Remove from cache
+      qc.removeQueries({ queryKey: ["character", characterId] });
+      // Invalidate character list to refresh
+      qc.invalidateQueries({ queryKey: ["characters"] });
+    },
+  });
+}
