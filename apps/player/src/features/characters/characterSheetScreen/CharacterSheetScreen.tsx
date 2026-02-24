@@ -152,6 +152,7 @@ export default function CharacterSheetScreen({ characterId, mode }: Props) {
         onChange={(key) => setActiveTab(key as TabKey)}
         className={styles.tabs}
         tabClassName={styles.tab}
+        activeTabClassName={styles.tabActive}
         contentClassName={styles.tabContent}
       />
     </div>

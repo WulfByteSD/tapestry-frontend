@@ -23,6 +23,7 @@ export function Tabs({
   className,
   tabListClassName,
   tabClassName,
+  activeTabClassName,
   contentClassName,
   ariaLabel = "Tabs",
 }: TabsProps) {
@@ -137,7 +138,13 @@ export function Tabs({
               tabIndex={isActive ? 0 : -1}
               type="button"
               disabled={t.disabled}
-              className={cx(styles.tab, isActive && styles.tabActive, t.disabled && styles.tabDisabled, tabClassName)}
+              className={cx(
+                styles.tab,
+                isActive && styles.tabActive,
+                t.disabled && styles.tabDisabled,
+                tabClassName,
+                isActive && activeTabClassName,
+              )}
               onClick={() => !t.disabled && setKey(t.key)}
             >
               {t.icon ? <span className={styles.icon}>{t.icon}</span> : null}

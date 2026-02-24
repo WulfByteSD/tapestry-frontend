@@ -23,11 +23,12 @@ export interface TabsProps {
 
   variant?: TabsVariant; // default: "pills"
   fit?: TabsFit; // default: "equal"
-  keepMounted?: boolean; // default: true 
+  keepMounted?: boolean; // default: true
 
   className?: string;
   tabListClassName?: string;
   tabClassName?: string;
+  activeTabClassName?: string;
   contentClassName?: string;
 
   ariaLabel?: string;
