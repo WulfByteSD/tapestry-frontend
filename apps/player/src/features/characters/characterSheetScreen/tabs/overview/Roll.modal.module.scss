@@ -1,52 +1,12 @@
-/* Modal */
-.modalBackdrop {
-  position: fixed;
-  inset: 0;
-  background: color-mix(in srgb, #000 70%, transparent);
-  display: grid;
-  place-items: center;
-  padding: 18px;
-  z-index: 50;
-}
-
-.modal {
-  width: 100%;
-  max-width: 520px;
-  border-radius: 16px;
-  background: var(--surface);
-  border: 1px solid color-mix(in srgb, var(--gold) 25%, transparent);
-  box-shadow: 0 20px 70px rgba(0, 0, 0, 0.45);
-  overflow: hidden;
-}
-
-.modalHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 14px;
-  border-bottom: 1px solid color-mix(in srgb, var(--contrast) 12%, transparent);
-}
-
-.modalTitle {
-  font-weight: 900;
-}
-
-.modalClose {
-  border: 0;
-  background: transparent;
-  color: var(--text-muted);
-  cursor: pointer;
-  font-size: 16px;
-}
-
+/* Body Content */
 .modalBody {
-  padding: 12px 14px;
   display: grid;
   gap: 8px;
 }
 
 .modalLabel {
   font-weight: 900;
+  font-size: 14px;
 }
 
 .modalValue {
@@ -57,12 +17,4 @@
 .muted {
   color: var(--text-muted);
   font-size: 13px;
-}
-
-.modalActions {
-  padding: 12px 14px;
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  border-top: 1px solid color-mix(in srgb, var(--contrast) 12%, transparent);
 }

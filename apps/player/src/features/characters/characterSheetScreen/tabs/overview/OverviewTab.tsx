@@ -71,7 +71,9 @@ export function OverviewTab({ sheet }: Props) {
         </Card>
       </div>
 
-      <RollModal label={rollPrompt?.label ?? ""} value={rollPrompt?.value} onClose={() => setRollPrompt(null)} />
+      {rollPrompt && (
+        <RollModal label={rollPrompt.label} value={rollPrompt.value} onClose={() => setRollPrompt(null)} />
+      )}
     </>
   );
 }
