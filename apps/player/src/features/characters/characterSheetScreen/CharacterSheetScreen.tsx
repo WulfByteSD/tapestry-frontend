@@ -1,4 +1,4 @@
-// apps/player/src/features/characters/CharacterSheetScreen/CharacterSheetScreen.tsx
+﻿// apps/player/src/features/characters/CharacterSheetScreen/CharacterSheetScreen.tsx
 "use client";
 
 import { useDebouncedCallback } from "@/lib/useDebouncedCallback";
@@ -21,7 +21,6 @@ export default function CharacterSheetScreen({ characterId, mode }: Props) {
   const updateMutation = useUpdateCharacterSheetMutation<CharacterSheet>(characterId);
 
   const [nameDraft, setNameDraft] = useState("");
-  const [notesDraft, setNotesDraft] = useState("");
   const [editingName, setEditingName] = useState(false);
 
   const [saveBadge, setSaveBadge] = useState<null | "saving" | "saved" | "error">(null);
@@ -36,8 +35,7 @@ export default function CharacterSheetScreen({ characterId, mode }: Props) {
   useEffect(() => {
     if (!sheet) return;
     if (!editingName) setNameDraft(sheet.name ?? "");
-    setNotesDraft(sheet.sheet?.notes ?? "");
-  }, [sheet?._id, sheet?.name, sheet?.sheet?.notes, editingName]);
+  }, [sheet?._id, sheet?.name, editingName]);
 
   useEffect(() => {
     if (updateMutation.isPending) setSaveBadge("saving");
@@ -53,9 +51,9 @@ export default function CharacterSheetScreen({ characterId, mode }: Props) {
     updateMutation.mutate({ name: value.trim() });
   }, 450);
 
-  const debouncedSaveNotes = useDebouncedCallback((value: string) => {
-    updateMutation.mutate({ "sheet.notes": value });
-  }, 650);
+  function handleSaveNotes(notes: string) {
+    updateMutation.mutate({ "sheet.notes": notes });
+  }
 
   function commitNameNow() {
     debouncedSaveName.flush();
@@ -71,7 +69,7 @@ export default function CharacterSheetScreen({ characterId, mode }: Props) {
 
   const displayMode = useMemo(() => mode, [mode]);
 
-  const tabs = useMemo(() => createTabs({ sheet }), [sheet]);
+  const tabs = useMemo(() => createTabs({ sheet, onSaveNotes: handleSaveNotes }), [sheet]);
 
   if (isLoading) return <LoadingState onBack={() => router.replace("/")} />;
   if (isError || !sheet) {
@@ -133,7 +131,7 @@ export default function CharacterSheetScreen({ characterId, mode }: Props) {
                 )}
 
                 <div className={styles.saveBadgeWrap}>
-                  {saveBadge === "saving" && <span className={styles.saveBadge}>Saving…</span>}
+                  {saveBadge === "saving" && <span className={styles.saveBadge}>Saving</span>}
                   {saveBadge === "saved" && <span className={styles.saveBadgeSaved}>Saved</span>}
                   {saveBadge === "error" && <span className={styles.saveBadgeError}>Error</span>}
                 </div>
@@ -159,44 +157,6 @@ export default function CharacterSheetScreen({ characterId, mode }: Props) {
     </div>
   );
 }
-// {activeTab === "notes" && (
-//   <Card inlay className={styles.card}>
-//     <CardHeader className={styles.cardHeader}>
-//       <div className={styles.cardTitle}>Notes</div>
-//       <div className={styles.cardHint}>Autosaves as you type.</div>
-//     </CardHeader>
-//     <CardBody>
-//       <textarea
-//         className={styles.notesInput}
-//         value={notesDraft}
-//         onChange={(e) => {
-//           const v = e.target.value;
-//           setNotesDraft(v);
-//           debouncedSaveNotes.call(v);
-//         }}
-//         onBlur={() => debouncedSaveNotes.flush()}
-//         rows={8}
-//         placeholder="NPC names, clues, debts, vows, loot…"
-//       />
-//     </CardBody>
-//   </Card>
-// )}
-
-// {activeTab !== "overview" && activeTab !== "notes" && (
-//   <Card inlay className={styles.card}>
-//     <CardHeader className={styles.cardHeader}>
-//       <div className={styles.cardTitle}>{tabs.find((t) => t.key === activeTab)?.label}</div>
-//       <div className={styles.cardHint}>We’ll build this section next.</div>
-//     </CardHeader>
-//     <CardBody className={styles.muted}>Placeholder for {activeTab}.</CardBody>
-//   </Card>
-// )}
-
-// {rollPrompt && (
-//   <RollModal label={rollPrompt.label} value={rollPrompt.value} onClose={() => setRollPrompt(null)} />
-// )}
-// </div>
-
 function LoadingState({ onBack }: { onBack: () => void }) {
   return (
     <div className={styles.page}>
@@ -204,7 +164,7 @@ function LoadingState({ onBack }: { onBack: () => void }) {
         <Button tone="purple" variant="outline" size="sm" onClick={onBack}>
           Back
         </Button>
-        <div className={styles.topTitle}>Loading…</div>
+        <div className={styles.topTitle}>Loadingâ€¦</div>
         <div className={styles.topSpacer} />
       </div>
 
@@ -233,7 +193,7 @@ function ErrorState({ message, onBack, onRetry }: { message: string; onBack: () 
 
       <Card inlay>
         <CardHeader>
-          <h1 className={styles.title}>Couldn’t load sheet</h1>
+          <h1 className={styles.title}>Couldnâ€™t load sheet</h1>
           <p className={styles.subTitle}>{message}</p>
         </CardHeader>
         <CardBody className={styles.row}>

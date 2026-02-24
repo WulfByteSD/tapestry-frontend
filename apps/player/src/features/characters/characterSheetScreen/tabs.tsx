@@ -1,12 +1,14 @@
 import type { TabsItem } from "@tapestry/ui";
 import { OverviewTab } from "./tabs/overview/OverviewTab";
+import { NotesTab } from "./tabs/notes/NotesTab";
+import { PlaceholderTab } from "./tabs/PlaceholderTab";
 
 type TabKey = "overview" | "skills" | "inventory" | "conditions" | "notes";
 
 export type { TabKey };
 
-export function createTabs(props: { sheet: any }): TabsItem[] {
-  const { sheet } = props;
+export function createTabs(props: { sheet: any; onSaveNotes: (notes: string) => void }): TabsItem[] {
+  const { sheet, onSaveNotes } = props;
 
   return [
     {
@@ -19,25 +21,25 @@ export function createTabs(props: { sheet: any }): TabsItem[] {
       key: "skills",
       label: "Skills",
       icon: undefined,
-      children: <div>Skills placeholder</div>,
+      children: <PlaceholderTab title="Skills" />,
     },
     {
       key: "inventory",
       label: "Inventory",
       icon: undefined,
-      children: <div>Inventory placeholder</div>,
+      children: <PlaceholderTab title="Inventory" />,
     },
     {
       key: "conditions",
       label: "Conditions",
       icon: undefined,
-      children: <div>Conditions placeholder</div>,
+      children: <PlaceholderTab title="Conditions" />,
     },
     {
       key: "notes",
       label: "Notes",
       icon: undefined,
-      children: <div>Notes placeholder</div>,
+      children: <NotesTab initialNotes={sheet?.sheet?.notes ?? ""} onSave={onSaveNotes} />,
     },
   ];
 }

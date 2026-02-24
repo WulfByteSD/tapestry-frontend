@@ -1,0 +1,36 @@
+.card {
+}
+
+.cardHeader {
+  display: grid;
+  gap: 2px;
+}
+
+.cardTitle {
+  font-weight: 900;
+  font-size: 14px;
+}
+
+.cardHint {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.notesInput {
+  width: 100%;
+  resize: vertical;
+  min-height: 180px;
+  border-radius: 14px;
+  padding: 10px 12px;
+  font-size: 13px;
+  line-height: 1.4;
+  border: 1px solid color-mix(in srgb, var(--contrast) 16%, transparent);
+  background: color-mix(in srgb, var(--base-two) 70%, transparent);
+  color: var(--text);
+
+  &:focus {
+    outline: none;
+    border-color: color-mix(in srgb, var(--gold) 45%, transparent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--gold) 16%, transparent);
+  }
+}

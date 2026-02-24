@@ -25,18 +25,21 @@
 .aspectsGrid {
   display: grid;
   gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
 }
 
 .aspectTile {
   border: 1px solid color-mix(in srgb, var(--contrast) 12%, transparent);
   border-radius: 14px;
   overflow: hidden;
+  min-width: 0; // Prevent grid blowout
 }
 
 .aspectTileTitle {
   padding: 10px 12px;
   font-weight: 900;
   font-size: 12px;
+  text-align: center;
   background: color-mix(in srgb, var(--base-two) 70%, transparent);
   border-bottom: 1px solid color-mix(in srgb, var(--contrast) 12%, transparent);
 }
