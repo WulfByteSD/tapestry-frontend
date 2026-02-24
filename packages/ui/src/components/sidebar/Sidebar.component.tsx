@@ -2,18 +2,8 @@
 
 import { useState } from "react";
 import styles from "./Sidebar.module.scss";
+import { SidebarGroup } from "./sidebar.types";
 
-export type SidebarLink = {
-  href: string;
-  label: string;
-  icon?: React.ReactNode;
-  badge?: number; // For notification counts
-};
-
-export type SidebarGroup = {
-  title: string;
-  links: SidebarLink[];
-};
 
 type Props = {
   title: string;
