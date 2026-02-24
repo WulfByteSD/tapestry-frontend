@@ -6,6 +6,20 @@ import { api } from "@/lib/api";
 type ApiResponse<T> = { success: boolean; payload: T; message?: string };
 type UpdatePayload = Record<string, any>;
 
+/**
+ * Immutably updates a single nested property in an object using dot notation.
+ * Creates new objects along the path while preserving references to unchanged branches.
+ *
+ * @param obj - The source object to update
+ * @param path - Dot-notation path to the property (e.g., "sheet.notes" or "sheet.hp.current")
+ * @param value - The new value to set at the path
+ * @returns A new object with the specified path updated, original object unchanged
+ *
+ * @example
+ * const updated = setPathImmutable(character, "sheet.notes", "New notes");
+ * // Returns new object with character.sheet.notes = "New notes"
+ * // Original character object remains unchanged
+ */
 function setPathImmutable<T extends object>(obj: T, path: string, value: any): T {
   const keys = path.split(".");
   const out: any = Array.isArray(obj) ? [...(obj as any)] : { ...(obj as any) };
@@ -31,6 +45,23 @@ function setPathImmutable<T extends object>(obj: T, path: string, value: any): T
   return out;
 }
 
+/**
+ * Applies multiple dot-notation updates to an object immutably.
+ * Sequentially applies each update using setPathImmutable to create a new object
+ * with all specified properties updated.
+ *
+ * @param obj - The source object to update
+ * @param updates - Object mapping dot-notation paths to new values
+ * @returns A new object with all updates applied, original object unchanged
+ *
+ * @example
+ * const result = applyDotUpdates(character, {
+ *   "name": "New Name",
+ *   "sheet.notes": "Updated notes",
+ *   "sheet.hp.current": 10
+ * });
+ * // Returns new object with all three properties updated
+ */
 function applyDotUpdates<T extends object>(obj: T, updates: Record<string, any>): T {
   let next = obj;
   for (const [path, value] of Object.entries(updates)) {
@@ -46,7 +77,7 @@ export function useUpdateCharacterSheetMutation<T = any>(characterId: string, op
     mutationKey: ["character:update", characterId],
     mutationFn: async (updates: UpdatePayload) => {
       // keep $set to avoid accidental doc replacement
-      const res = await api.put(`/game/characters/${characterId}`, { $set: updates });
+      const res = await api.put(`/game/characters/${characterId}`, updates);
       return res.data as ApiResponse<T>;
     },
     onMutate: async (updates) => {
@@ -58,7 +89,6 @@ export function useUpdateCharacterSheetMutation<T = any>(characterId: string, op
         const nextPayload = applyDotUpdates(prev.payload as any, updates);
         qc.setQueryData<ApiResponse<T>>(["character", characterId], { ...prev, payload: nextPayload });
       }
-
       return { prev };
     },
     onError: (_err, _updates, ctx) => {
