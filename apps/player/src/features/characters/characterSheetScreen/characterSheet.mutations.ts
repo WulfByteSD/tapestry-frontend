@@ -1,7 +1,8 @@
 "use client";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { api } from "@/lib/api";
+import { api } from "@/lib/api"; 
+import { useAlert } from "@tapestry/ui";
 
 type ApiResponse<T> = { success: boolean; payload: T; message?: string };
 type UpdatePayload = Record<string, any>;
@@ -105,6 +106,7 @@ export function useUpdateCharacterSheetMutation<T = any>(characterId: string, op
 }
 export function useDeleteCharacterMutation() {
   const qc = useQueryClient();
+  const { addAlert } = useAlert();
 
   return useMutation({
     mutationKey: ["character:delete"],
@@ -117,6 +119,12 @@ export function useDeleteCharacterMutation() {
       qc.removeQueries({ queryKey: ["character", characterId] });
       // Invalidate character list to refresh
       qc.invalidateQueries({ queryKey: ["characters"] });
+      addAlert({
+        type: "success",
+        message: "Character deleted",
+        description: "The character has been successfully deleted.",
+        persistent: true,
+      });
     },
   });
 }

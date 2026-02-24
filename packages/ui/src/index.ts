@@ -4,3 +4,4 @@ export * from "./components/input";
 export * from "./components/sidebar";
 export * from "./components/tabs";
 export * from "./components/modal";
+export * from "./components/alert";

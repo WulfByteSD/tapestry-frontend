@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { Sidebar, type SidebarGroup } from "@tapestry/ui";
+import { AlertContainer, Sidebar, type SidebarGroup } from "@tapestry/ui";
 import Image from "next/image";
 import { BiHome, BiFile, BiCog } from "react-icons/bi";
 import { GiDiceTarget } from "react-icons/gi";
@@ -53,6 +53,7 @@ export default function PortalDesktop({ children }: Props) {
         }
       />
       <main className={styles.main}>
+        <AlertContainer position="top-right" />
         <div className={styles.watermark}>
           <img
             src="https://res.cloudinary.com/dmc7wmarf/image/upload/v1771775270/ChatGPT_Image_Jan_10_2026_11_32_39_AM_-_Copy_bcpc4f.png"

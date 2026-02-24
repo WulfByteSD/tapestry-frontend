@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { QueryCache, QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { AlertProvider } from "@tapestry/ui";
 
 function QueryProvider({ children }: React.PropsWithChildren) {
   const [client] = useState(
@@ -16,7 +17,9 @@ function QueryProvider({ children }: React.PropsWithChildren) {
 
   return (
     <QueryClientProvider client={client}>
-      {children}
+      <AlertProvider defaultDuration={5000} maxAlerts={10}>
+        {children}
+      </AlertProvider>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
