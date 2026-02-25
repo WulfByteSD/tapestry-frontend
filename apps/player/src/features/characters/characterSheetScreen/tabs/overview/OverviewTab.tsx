@@ -1,45 +1,79 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Card, CardBody, CardHeader } from "@tapestry/ui";
 import styles from "./OverviewTab.module.scss";
-import { RollModal } from "./Roll.modal";
-
-const ASPECT_BLOCKS = [
-  { title: "Might", keys: ["Strength", "Presence"] },
-  { title: "Finesse", keys: ["Agility", "Charm"] },
-  { title: "Wit", keys: ["Instinct", "Knowledge"] },
-  { title: "Resolve", keys: ["Willpower", "Empathy"] },
-] as const;
+import { RollModal } from "./Roll.modal";  
+import { useUpdateCharacterSheetMutation } from "../../characterSheet.mutations";
+import { ASPECT_BLOCKS, aspectPath, clamp, getAspectValue } from "@/features/characters/aspects/aspectutils";
+import { AspectStepperRow } from "@/features/characters/aspects/AspectStepperRow";
+import { CharacterSheet } from "@tapestry/types";
 
 type Props = {
-  sheet: any;
+  sheet: CharacterSheet;
+  mode: "build" | "play";
 };
 
-export function OverviewTab({ sheet }: Props) {
+const CREATION_MIN = -2;
+const CREATION_MAX = 2;
+
+export function OverviewTab({ sheet, mode }: Props) {
+  const isBuild = mode === "build";
+  const update = useUpdateCharacterSheetMutation<CharacterSheet>(sheet._id);
+
   const [rollPrompt, setRollPrompt] = useState<null | { label: string; value?: number }>(null);
+
   return (
     <>
       <div className={styles.contentGrid}>
         <Card inlay className={styles.card}>
           <CardHeader className={styles.cardHeader}>
             <div className={styles.cardTitle}>Aspects</div>
-            <div className={styles.cardHint}>Tap to roll (still stubbed)</div>
           </CardHeader>
+
           <CardBody className={styles.aspectsGrid}>
             {ASPECT_BLOCKS.map((block) => (
               <div key={block.title} className={styles.aspectTile}>
                 <div className={styles.aspectTileTitle}>{block.title}</div>
+
                 <div className={styles.aspectRows}>
-                  {block.keys.map((k) => {
-                    const value = readAspect(sheet, block.title, k);
+                  {block.keys.map(({ label, key }) => {
+                    const value = getAspectValue(sheet, block.group, key);
+
+                    if (isBuild) {
+                      const min = CREATION_MIN;
+                      const max = CREATION_MAX;
+
+                      return (
+                        <AspectStepperRow
+                          key={key}
+                          label={label}
+                          value={value}
+                          min={min}
+                          max={max}
+                          canDec={true}
+                          canInc={true}
+                          onDec={() => {
+                            const next = clamp(value - 1, min, max);
+                            if (next === value) return;
+                            update.mutate({ [aspectPath(block.group, key)]: next });
+                          }}
+                          onInc={() => {
+                            const next = clamp(value + 1, min, max);
+                            if (next === value) return;
+                            update.mutate({ [aspectPath(block.group, key)]: next });
+                          }}
+                        />
+                      );
+                    }
+
                     return (
                       <button
-                        key={k}
+                        key={key}
                         type="button"
                         className={styles.aspectRow}
-                        onClick={() => setRollPrompt({ label: `${k} (${block.title})`, value })}
+                        onClick={() => setRollPrompt({ label: `${label} (${block.title})`, value })}
                       >
-                        <span className={styles.aspectKey}>{k}</span>
-                        <span className={styles.aspectValue}>{value ?? "—"}</span>
+                        <span className={styles.aspectKey}>{label}</span>
+                        <span className={styles.aspectValue}>{value}</span>
                       </button>
                     );
                   })}
@@ -72,12 +106,15 @@ export function OverviewTab({ sheet }: Props) {
       </div>
 
       {rollPrompt && (
-        <RollModal label={rollPrompt.label} value={rollPrompt.value} onClose={() => setRollPrompt(null)} />
+        <RollModal
+          label={rollPrompt.label}
+          value={rollPrompt.value}
+          onClose={() => setRollPrompt(null)}
+        />
       )}
     </>
   );
 }
-
 function readAspect(sheet: any, aspectGroup: string, aspectKey: string): number | undefined {
   const g = aspectGroup.toLowerCase(); // might/finesse/wit/resolve
   const k = aspectKey.toLowerCase(); // strength/presence/etc

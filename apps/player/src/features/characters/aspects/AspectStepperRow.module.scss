@@ -1,0 +1,51 @@
+.row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 12px;
+
+  &:hover {
+    background: color-mix(in srgb, var(--contrast) 6%, transparent);
+  }
+}
+
+.label {
+  font-size: 13px;
+  color: var(--text);
+}
+
+.controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stepBtn {
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  border: 1px solid color-mix(in srgb, var(--contrast) 14%, transparent);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--gold) 16%, transparent);
+    border-color: color-mix(in srgb, var(--gold) 45%, transparent);
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+}
+
+.value {
+  min-width: 28px;
+  text-align: center;
+  font-weight: 900;
+  color: var(--gold);
+}

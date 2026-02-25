@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { api } from "@/lib/api"; 
+import { api } from "@/lib/api";
 import { useAlert } from "@tapestry/ui";
 
 type ApiResponse<T> = { success: boolean; payload: T; message?: string };
@@ -77,7 +77,7 @@ export function useUpdateCharacterSheetMutation<T = any>(characterId: string, op
   return useMutation({
     mutationKey: ["character:update", characterId],
     mutationFn: async (updates: UpdatePayload) => {
-      // keep $set to avoid accidental doc replacement
+      // Send dot notation keys directly - server will wrap in $set
       const res = await api.put(`/game/characters/${characterId}`, updates);
       return res.data as ApiResponse<T>;
     },

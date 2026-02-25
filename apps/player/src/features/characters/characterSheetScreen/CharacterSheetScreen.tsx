@@ -66,10 +66,12 @@ export default function CharacterSheetScreen({ characterId, mode }: Props) {
   }
 
   const [activeTab, setActiveTab] = useState<TabKey>("overview");
+  const [currentMode, setCurrentMode] = useState<"build" | "play">(mode);
 
-  const displayMode = useMemo(() => mode, [mode]);
-
-  const tabs = useMemo(() => createTabs({ sheet, onSaveNotes: handleSaveNotes }), [sheet]);
+  const tabs = useMemo(
+    () => createTabs({ sheet, onSaveNotes: handleSaveNotes, mode: currentMode }),
+    [sheet, currentMode],
+  );
 
   if (isLoading) return <LoadingState onBack={() => router.replace("/")} />;
   if (isError || !sheet) {
@@ -139,7 +141,22 @@ export default function CharacterSheetScreen({ characterId, mode }: Props) {
 
               <div className={styles.pills}>
                 <span className={styles.pill}>{sheet.campaign ? "Campaign" : "Unassigned"}</span>
-                {displayMode === "build" && <span className={styles.pillGold}>Build</span>}
+                <div className={styles.modeToggle}>
+                  <button
+                    type="button"
+                    className={currentMode === "play" ? styles.modeButtonActive : styles.modeButton}
+                    onClick={() => setCurrentMode("play")}
+                  >
+                    Play
+                  </button>
+                  <button
+                    type="button"
+                    className={currentMode === "build" ? styles.modeButtonActive : styles.modeButton}
+                    onClick={() => setCurrentMode("build")}
+                  >
+                    Build
+                  </button>
+                </div>
               </div>
             </div>
           </div>

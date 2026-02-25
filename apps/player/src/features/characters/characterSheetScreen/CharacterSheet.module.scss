@@ -24,7 +24,8 @@
 }
 
 /* HERO */
-.hero { }
+.hero {
+}
 
 .heroBody {
   display: grid;
@@ -85,7 +86,41 @@
   background: color-mix(in srgb, var(--gold) 8%, transparent);
 }
 
-.subRow { }
+.modeToggle {
+  display: flex;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--contrast) 14%, transparent);
+  overflow: hidden;
+  background: transparent;
+}
+
+.modeButton,
+.modeButtonActive {
+  font-size: 11px;
+  padding: 4px 10px;
+  border: 0;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 120ms ease;
+  font-weight: 600;
+
+  &:hover {
+    background: color-mix(in srgb, var(--contrast) 6%, transparent);
+  }
+}
+
+.modeButtonActive {
+  background: color-mix(in srgb, var(--gold) 8%, transparent);
+  color: var(--gold);
+
+  &:hover {
+    background: color-mix(in srgb, var(--gold) 12%, transparent);
+  }
+}
+
+.subRow {
+}
 
 .subText {
   font-size: 12px;
@@ -242,9 +277,15 @@
   background: color-mix(in srgb, var(--contrast) 9%, transparent);
 }
 
-.skeletonHero { height: 92px; }
-.skeletonTabs { height: 42px; }
-.skeletonCard { height: 120px; }
+.skeletonHero {
+  height: 92px;
+}
+.skeletonTabs {
+  height: 42px;
+}
+.skeletonCard {
+  height: 120px;
+}
 .nameLine {
   display: grid;
   grid-template-columns: 1fr auto;

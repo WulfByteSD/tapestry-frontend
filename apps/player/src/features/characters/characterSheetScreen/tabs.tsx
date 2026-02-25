@@ -7,15 +7,15 @@ type TabKey = "overview" | "skills" | "inventory" | "conditions" | "notes";
 
 export type { TabKey };
 
-export function createTabs(props: { sheet: any; onSaveNotes: (notes: string) => void }): TabsItem[] {
-  const { sheet, onSaveNotes } = props;
+export function createTabs(props: { sheet: any; onSaveNotes: (notes: string) => void, mode: "build" | "play" }): TabsItem[] {
+  const { sheet, onSaveNotes, mode } = props;
 
   return [
     {
       key: "overview",
       label: "Overview",
       icon: undefined,
-      children: <OverviewTab sheet={sheet} />,
+      children: <OverviewTab sheet={sheet} mode={mode} />,
     },
     {
       key: "skills",
