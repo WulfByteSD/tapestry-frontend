@@ -1,0 +1,116 @@
+.container {
+  display: grid;
+  gap: 12px;
+}
+
+.resultCard {
+  display: grid;
+  gap: 16px;
+  padding: 20px;
+  border-radius: 12px;
+  // Use solid colors for html2canvas compatibility
+  background: #1a1a2e;
+  border: 1px solid rgba(218, 165, 32, 0.3);
+  min-width: 400px;
+}
+
+.resultContext {
+  font-size: 15px;
+  font-weight: 600;
+  color: #daa520;
+  text-align: center;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.resultBreakdown {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #e5e5e5;
+  text-align: center;
+  font-family: "Courier New", Courier, monospace;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+}
+
+.resultTotal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 8px;
+  background: rgba(218, 165, 32, 0.15);
+  border: 1px solid rgba(218, 165, 32, 0.3);
+}
+
+.resultLabel {
+  font-size: 16px;
+  font-weight: 700;
+  color: #e5e5e5;
+}
+
+.resultValue {
+  font-size: 28px;
+  font-weight: 900;
+  color: #daa520;
+}
+
+.copyButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: 1px solid color-mix(in srgb, var(--contrast) 16%, transparent);
+  background: color-mix(in srgb, var(--base-two) 70%, transparent);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  svg {
+    font-size: 16px;
+  }
+
+  &:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--contrast) 8%, transparent);
+    border-color: color-mix(in srgb, var(--contrast) 24%, transparent);
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  &.copying {
+    color: var(--text-muted);
+  }
+
+  &.success {
+    background: color-mix(in srgb, #22c55e 20%, transparent);
+    border-color: #22c55e;
+    color: #22c55e;
+
+    &:hover {
+      background: color-mix(in srgb, #22c55e 25%, transparent);
+    }
+  }
+
+  &.error {
+    background: color-mix(in srgb, #ff4444 16%, transparent);
+    border-color: #ff4444;
+    color: #ff6666;
+
+    &:hover {
+      background: color-mix(in srgb, #ff4444 20%, transparent);
+    }
+  }
+}

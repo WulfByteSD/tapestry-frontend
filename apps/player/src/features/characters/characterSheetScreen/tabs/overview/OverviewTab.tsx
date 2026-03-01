@@ -148,6 +148,7 @@ export function OverviewTab({ sheet, mode }: Props) {
               disabled={isBuild}
               onClick={() => {
                 /* later: open Approach modal */
+                openApproach();
               }}
             >
               Approach
