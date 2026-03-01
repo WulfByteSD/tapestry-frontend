@@ -8,7 +8,11 @@ type TabKey = "overview" | "rolls" | "skills" | "inventory" | "conditions" | "no
 
 export type { TabKey };
 
-export function createTabs(props: { sheet: any; onSaveNotes: (notes: string) => void, mode: "build" | "play" }): TabsItem[] {
+export function createTabs(props: {
+  sheet: any;
+  onSaveNotes: (notes: string) => void;
+  mode: "build" | "play";
+}): TabsItem[] {
   const { sheet, onSaveNotes, mode } = props;
 
   return [

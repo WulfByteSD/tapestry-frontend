@@ -31,10 +31,7 @@ export async function createRoll<T = any>(api: AxiosInstance, data: CreateRollDa
   return res.data;
 }
 
-export async function getRolls(
-  api: AxiosInstance,
-  params?: ListQueryParams
-): Promise<ApiListResponse<any>> {
+export async function getRolls(api: AxiosInstance, params?: ListQueryParams): Promise<ApiListResponse<any>> {
   const res = await api.get("/game/rolls", { params: cleanParams(params || {}) });
   return res.data;
 }

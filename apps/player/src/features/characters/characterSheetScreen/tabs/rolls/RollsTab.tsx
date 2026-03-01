@@ -49,11 +49,7 @@ export function RollsTab({ sheet }: Props) {
     return (
       <div className={styles.container}>
         <div className={styles.expandedView}>
-          <Button
-            onClick={() => setSelectedRoll(null)}
-            variant="outline"
-            className={styles.backButton}
-          >
+          <Button onClick={() => setSelectedRoll(null)} variant="outline" className={styles.backButton}>
             ← Back to List
           </Button>
           <RollResultCard result={selectedRoll} />
@@ -65,9 +61,7 @@ export function RollsTab({ sheet }: Props) {
   if (rolls.length === 0) {
     return (
       <div className={styles.container}>
-        <div className={styles.emptyState}>
-          No rolls yet. Make your first roll from the Overview tab!
-        </div>
+        <div className={styles.emptyState}>No rolls yet. Make your first roll from the Overview tab!</div>
       </div>
     );
   }
@@ -76,11 +70,7 @@ export function RollsTab({ sheet }: Props) {
     <div className={styles.container}>
       <div className={styles.rollsList}>
         {rolls.map((roll: any) => (
-          <RollListItem
-            key={roll.rollId || roll._id}
-            roll={roll}
-            onClick={() => setSelectedRoll(roll)}
-          />
+          <RollListItem key={roll.rollId || roll._id} roll={roll} onClick={() => setSelectedRoll(roll)} />
         ))}
       </div>
     </div>

@@ -11,7 +11,7 @@ interface Props {
 export function RollListItem({ roll, onClick }: Props) {
   const timestamp = useMemo(() => {
     if (!roll.createdAt) return "";
-    
+
     const date = new Date(roll.createdAt);
     const now = new Date();
     const diffMs = now.getTime() - date.getTime();
@@ -23,13 +23,13 @@ export function RollListItem({ roll, onClick }: Props) {
     if (diffMins < 60) return `${diffMins}m ago`;
     if (diffHours < 24) return `${diffHours}h ago`;
     if (diffDays < 7) return `${diffDays}d ago`;
-    
+
     return date.toLocaleDateString();
   }, [roll.createdAt]);
 
   const displayContext = roll.context || roll.rollType || "Roll";
-  const hasEdge = roll.edge || roll.allRolls?.length > roll.keptRolls?.length && roll.keepBest;
-  const hasBurden = roll.burden || roll.allRolls?.length > roll.keptRolls?.length && roll.keepWorst;
+  const hasEdge = roll.edge || (roll.allRolls?.length > roll.keptRolls?.length && roll.keepBest);
+  const hasBurden = roll.burden || (roll.allRolls?.length > roll.keptRolls?.length && roll.keepWorst);
 
   return (
     <button className={styles.rollItem} onClick={onClick}>
@@ -40,9 +40,7 @@ export function RollListItem({ roll, onClick }: Props) {
       <div className={styles.rollBody}>
         <div className={styles.rollTotal}>{roll.total}</div>
         <div className={styles.rollDetails}>
-          {roll.breakdown && (
-            <div className={styles.rollBreakdown}>{roll.breakdown}</div>
-          )}
+          {roll.breakdown && <div className={styles.rollBreakdown}>{roll.breakdown}</div>}
           <div className={styles.rollMechanics}>
             {hasEdge && <span className={styles.edgeBadge}>Edge</span>}
             {hasBurden && <span className={styles.burdenBadge}>Burden</span>}
