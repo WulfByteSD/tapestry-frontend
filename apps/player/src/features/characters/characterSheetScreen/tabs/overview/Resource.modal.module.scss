@@ -93,6 +93,7 @@
 }
 
 .quickBtn {
+  flex: 1;
   border: 1px solid color-mix(in srgb, var(--contrast) 14%, transparent);
   background: transparent;
   color: var(--text);

@@ -1,6 +1,6 @@
 .wrap {
   display: grid;
-  grid-template-columns: 1fr auto  auto;
+  grid-template-columns: 1fr auto auto;
   align-items: center;
   width: 100%;
 
@@ -34,6 +34,19 @@
     -webkit-text-fill-color: var(--text) !important;
     box-shadow: 0 0 0 1000px color-mix(in srgb, var(--surface) 75%, black) inset !important;
     transition: background-color 5000s ease-in-out 0s;
+  }
+
+  /* Remove number input spinners */
+  &[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      appearance: none;
+      margin: 0;
+    }
   }
 }
 
