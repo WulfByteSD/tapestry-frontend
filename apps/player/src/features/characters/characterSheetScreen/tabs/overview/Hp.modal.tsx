@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Button, Modal } from "@tapestry/ui";
+import { Button, Modal, Input, SelectField } from "@tapestry/ui";
 import { useUpdateCharacterSheetMutation } from "../../../characterSheetScreen/characterSheet.mutations";
 import styles from "./Resource.modal.module.scss";
 
@@ -110,46 +110,20 @@ export function HpModal({ sheet, onClose }: Props) {
 
         <div className={styles.twoCol}>
           <div className={styles.field}>
-            <label className={styles.label}>Max HP</label>
-            <input
-              className={styles.control}
-              type="number"
-              min={0}
-              value={maxDraft}
-              onChange={(e) => setMaxDraft(Number(e.target.value))}
-            />
-          </div>
-
-          <div className={styles.field}>
             <label className={styles.label}>Temp HP</label>
-            <input
-              className={styles.control}
-              type="number"
-              min={0}
-              value={tempDraft}
-              onChange={(e) => setTempDraft(Number(e.target.value))}
-            />
+            <Input type="number" min={0} value={tempDraft} onChange={(e) => setTempDraft(Number(e.target.value))} />
           </div>
         </div>
 
-        <div className={styles.field}>
-          <label className={styles.label}>Action</label>
-          <select className={styles.control} value={mode} onChange={(e) => setMode(e.target.value as Mode)}>
-            <option value="damage">Take Damage</option>
-            <option value="heal">Heal</option>
-            <option value="set">Set Current</option>
-          </select>
-        </div>
+        <SelectField label="Action" value={mode} onChange={(e) => setMode(e.target.value as Mode)} size={"lg" as any}>
+          <option value="damage">Take Damage</option>
+          <option value="heal">Heal</option>
+          <option value="set">Set Current</option>
+        </SelectField>
 
         <div className={styles.field}>
           <label className={styles.label}>Amount</label>
-          <input
-            className={styles.control}
-            type="number"
-            min={0}
-            value={amount}
-            onChange={(e) => setAmount(Number(e.target.value))}
-          />
+          <Input type="number" min={0} value={amount} onChange={(e) => setAmount(Number(e.target.value))} />
         </div>
 
         {mode === "damage" && (

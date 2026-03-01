@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Button, Modal } from "@tapestry/ui";
+import { Button, Modal, Input, SelectField } from "@tapestry/ui";
 import { useUpdateCharacterSheetMutation } from "../../../characterSheetScreen/characterSheet.mutations";
 import styles from "./Resource.modal.module.scss";
 
@@ -71,24 +71,15 @@ export function ThreadsModal({ sheet, onClose }: Props) {
           </div>
         </div>
 
-        <div className={styles.field}>
-          <label className={styles.label}>Action</label>
-          <select className={styles.control} value={mode} onChange={(e) => setMode(e.target.value as Mode)}>
-            <option value="spend">Spend</option>
-            <option value="gain">Gain</option>
-            <option value="set">Set Current</option>
-          </select>
-        </div>
+        <SelectField label="Action" value={mode} onChange={(e) => setMode(e.target.value as Mode)}>
+          <option value="spend">Spend</option>
+          <option value="gain">Gain</option>
+          <option value="set">Set Current</option>
+        </SelectField>
 
         <div className={styles.field}>
           <label className={styles.label}>Amount</label>
-          <input
-            className={styles.control}
-            type="number"
-            min={0}
-            value={amount}
-            onChange={(e) => setAmount(Number(e.target.value))}
-          />
+          <Input type="number" min={0} value={amount} onChange={(e) => setAmount(Number(e.target.value))} />
         </div>
 
         <div className={styles.quickRow}>

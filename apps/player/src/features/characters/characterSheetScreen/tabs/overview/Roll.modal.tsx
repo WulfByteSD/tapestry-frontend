@@ -1,12 +1,7 @@
 import { useMemo, useState } from "react";
-import { Button, Modal } from "@tapestry/ui";
+import { Button, Modal, Input, SelectField } from "@tapestry/ui";
 import styles from "./Roll.modal.module.scss";
-import {
-  ASPECT_BLOCKS,
-  getAspectValue,
-  type AspectGroup,
-  type AspectKey,
-} from "../../../aspects/aspectutils";
+import { ASPECT_BLOCKS, getAspectValue, type AspectGroup, type AspectKey } from "../../../aspects/aspectutils";
 
 type Props = {
   sheet: any;
@@ -81,7 +76,8 @@ export function RollModal({ sheet, initialAspect, onClose }: Props) {
   const labelParts: string[] = [];
   if (selectedAspect) labelParts.push(selectedAspect.label);
   if (skill1) labelParts.push(`${titleCaseFromId(skill1)} (${skill1Rank >= 0 ? "+" : ""}${skill1Rank})`);
-  if (useSecondSkill && skill2) labelParts.push(`${titleCaseFromId(skill2)} (${skill2Rank >= 0 ? "+" : ""}${skill2Rank})`);
+  if (useSecondSkill && skill2)
+    labelParts.push(`${titleCaseFromId(skill2)} (${skill2Rank >= 0 ? "+" : ""}${skill2Rank})`);
   if (modifier) labelParts.push(`Mod (${modifier >= 0 ? "+" : ""}${modifier})`);
 
   const footer = (
@@ -99,31 +95,32 @@ export function RollModal({ sheet, initialAspect, onClose }: Props) {
     <Modal open={true} title="Approach" onCancel={onClose} footer={footer} width={460} centered>
       <div className={styles.modalBody}>
         <div className={styles.formGrid}>
-          <div className={styles.field}>
-            <label className={styles.fieldLabel}>Aspect</label>
-            <select className={styles.select} value={aspectValueKey} onChange={(e) => setAspectValueKey(e.target.value)}>
-              {aspectOptions.map((o) => (
-                <option key={o.value} value={o.value}>
-                  {o.label}
-                </option>
-              ))}
-            </select>
-            <div className={styles.fieldHint}>
-              Value: <b>{aspectVal >= 0 ? `+${aspectVal}` : aspectVal}</b>
-            </div>
-          </div>
+          <SelectField
+            label="Aspect"
+            hint={`Value: ${aspectVal >= 0 ? `+${aspectVal}` : aspectVal}`}
+            value={aspectValueKey}
+            onChange={(e) => setAspectValueKey(e.target.value)}
+          >
+            {aspectOptions.map((o) => (
+              <option key={o.value} value={o.value}>
+                {o.label}
+              </option>
+            ))}
+          </SelectField>
 
-          <div className={styles.field}>
-            <label className={styles.fieldLabel}>Skill</label>
-            <select className={styles.select} value={skill1} onChange={(e) => setSkill1(e.target.value)} disabled={!skillOptions.length}>
-              <option value="">{skillOptions.length ? "None" : "No skills yet"}</option>
-              {skillOptions.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.label} ({s.rank >= 0 ? "+" : ""}{s.rank})
-                </option>
-              ))}
-            </select>
-          </div>
+          <SelectField
+            label="Skill"
+            value={skill1}
+            onChange={(e) => setSkill1(e.target.value)}
+            disabled={!skillOptions.length}
+          >
+            <option value="">{skillOptions.length ? "None" : "No skills yet"}</option>
+            {skillOptions.map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.label} ({s.rank >= 0 ? "+" : ""}={s.rank})
+              </option>
+            ))}
+          </SelectField>
 
           <div className={styles.fieldInline}>
             <label className={styles.checkbox}>
@@ -141,20 +138,21 @@ export function RollModal({ sheet, initialAspect, onClose }: Props) {
             </label>
 
             {useSecondSkill && (
-              <select className={styles.select} value={skill2} onChange={(e) => setSkill2(e.target.value)}>
+              <SelectField value={skill2} onChange={(e) => setSkill2(e.target.value)}>
                 <option value="">None</option>
                 {skillOptions.map((s) => (
                   <option key={s.id} value={s.id}>
-                    {s.label} ({s.rank >= 0 ? "+" : ""}{s.rank})
+                    {s.label} ({s.rank >= 0 ? "+" : ""}
+                    {s.rank})
                   </option>
                 ))}
-              </select>
+              </SelectField>
             )}
           </div>
 
           <div className={styles.field}>
             <label className={styles.fieldLabel}>Modifier</label>
-            <input className={styles.number} type="number" value={modifier} onChange={(e) => setModifier(Number(e.target.value))} />
+            <Input type="number" value={modifier} onChange={(e) => setModifier(Number(e.target.value))} />
             <div className={styles.fieldHint}>Situational +/−</div>
           </div>
         </div>
@@ -165,9 +163,7 @@ export function RollModal({ sheet, initialAspect, onClose }: Props) {
           <div className={styles.previewValue}>{total >= 0 ? `+${total}` : total}</div>
         </div>
 
-        <div className={styles.muted}>
-          Next: this modal will actually roll dice + handle Thread/Resolve spends.
-        </div>
+        <div className={styles.muted}>Next: this modal will actually roll dice + handle Thread/Resolve spends.</div>
       </div>
     </Modal>
   );

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRegister } from "@/lib/auth-hooks";
 import styles from "./Register.module.scss";
 import { getRegisterErrorMessage, isValidEmail, isValidPhone } from "./functions";
-import { Button } from "@tapestry/ui";
+import { Button, TextField } from "@tapestry/ui";
 
 export default function RegisterView() {
   const reg = useRegister();
@@ -16,7 +16,6 @@ export default function RegisterView() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
-  const [showPass, setShowPass] = useState(false);
 
   const busy = reg.isPending;
 
@@ -52,107 +51,69 @@ export default function RegisterView() {
           }}
         >
           <div className={styles.row}>
-            <div className={styles.field}>
-              <label className={styles.label} htmlFor="firstName">
-                First name
-              </label>
-              <input
-                id="firstName"
-                className={styles.input}
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                disabled={busy}
-              />
-            </div>
-
-            <div className={styles.field}>
-              <label className={styles.label} htmlFor="lastName">
-                Last name
-              </label>
-              <input
-                id="lastName"
-                className={styles.input}
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-                disabled={busy}
-              />
-            </div>
-          </div>
-
-          <div className={styles.field}>
-            <label className={styles.label} htmlFor="email">
-              Email
-            </label>
-            <input
-              id="email"
-              className={styles.input}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              inputMode="email"
-              autoComplete="email"
+            <TextField
+              id="firstName"
+              label="First name"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
               disabled={busy}
             />
-            {!emailOk && email.length > 0 && <div className={styles.hint}>Enter a valid email.</div>}
-          </div>
 
-          <div className={styles.field}>
-            <label className={styles.label} htmlFor="phone">
-              Phone number
-            </label>
-            <input
-              id="phone"
-              className={styles.input}
-              value={phoneNumber}
-              onChange={(e) => setPhoneNumber(e.target.value)}
-              inputMode="tel"
-              autoComplete="tel"
-              disabled={busy}
-              placeholder="(555) 555-5555"
-            />
-            {!phoneOk && phoneNumber.length > 0 && <div className={styles.hint}>Enter a valid phone number.</div>}
-          </div>
-
-          <div className={styles.field}>
-            <label className={styles.label} htmlFor="password">
-              Password
-            </label>
-
-            <div className={styles.passwordRow}>
-              <input
-                id="password"
-                className={styles.input}
-                type={showPass ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                autoComplete="new-password"
-                disabled={busy}
-              />
-
-              <Button type="button" className={styles.ghostBtn} onClick={() => setShowPass((v) => !v)} disabled={busy}>
-                {showPass ? "Hide" : "Show"}
-              </Button>
-            </div>
-
-            {!passOk && password.length > 0 && (
-              <div className={styles.hint}>Password must be at least 10 characters.</div>
-            )}
-          </div>
-
-          <div className={styles.field}>
-            <label className={styles.label} htmlFor="confirm">
-              Confirm password
-            </label>
-            <input
-              id="confirm"
-              className={styles.input}
-              type={showPass ? "text" : "password"}
-              value={confirm}
-              onChange={(e) => setConfirm(e.target.value)}
-              autoComplete="new-password"
+            <TextField
+              id="lastName"
+              label="Last name"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
               disabled={busy}
             />
-            {!matchOk && confirm.length > 0 && <div className={styles.hint}>Passwords don&apos;t match.</div>}
           </div>
+
+          <TextField
+            id="email"
+            label="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            inputMode="email"
+            autoComplete="email"
+            disabled={busy}
+            error={!emailOk && email.length > 0 ? "Enter a valid email." : undefined}
+          />
+
+          <TextField
+            id="phone"
+            label="Phone number"
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
+            inputMode="tel"
+            autoComplete="tel"
+            disabled={busy}
+            placeholder="(555) 555-5555"
+            error={!phoneOk && phoneNumber.length > 0 ? "Enter a valid phone number." : undefined}
+          />
+
+          <TextField
+            id="password"
+            label="Password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            autoComplete="new-password"
+            disabled={busy}
+            showPasswordToggle
+            error={!passOk && password.length > 0 ? "Password must be at least 10 characters." : undefined}
+          />
+
+          <TextField
+            id="confirm"
+            label="Confirm password"
+            type="password"
+            value={confirm}
+            onChange={(e) => setConfirm(e.target.value)}
+            autoComplete="new-password"
+            disabled={busy}
+            showPasswordToggle
+            error={!matchOk && confirm.length > 0 ? "Passwords don't match." : undefined}
+          />
 
           {reg.isError && (
             <div className={styles.errorBox} role="alert">
