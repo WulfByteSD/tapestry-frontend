@@ -1,123 +1,214 @@
 import { useMemo, useState } from "react";
-import { Card, CardBody, CardHeader } from "@tapestry/ui";
+import { Button, Card, CardBody, CardHeader } from "@tapestry/ui";
 import styles from "./OverviewTab.module.scss";
-import { RollModal } from "./Roll.modal";  
-import { useUpdateCharacterSheetMutation } from "../../characterSheet.mutations";
-import { ASPECT_BLOCKS, aspectPath, clamp, getAspectValue } from "@/features/characters/aspects/aspectutils";
-import { AspectStepperRow } from "@/features/characters/aspects/AspectStepperRow";
-import { CharacterSheet } from "@tapestry/types";
+import { RollModal } from "./Roll.modal";
+import { AspectStepperRow } from "../../../aspects/AspectStepperRow";
+import {
+  ASPECT_BLOCKS,
+  aspectPath,
+  getAspectValue,
+  type AspectGroup,
+  type AspectKey,
+} from "../../../aspects/aspectutils";
+import { useUpdateCharacterSheetMutation } from "../../../characterSheetScreen/characterSheet.mutations";
+import { HpModal } from "./Hp.modal";
+import { ThreadsModal } from "./Threads.modal";
+
+// Aspect value rules:
+// - Game-wide range: -2 to +4 (enforced by game rules across all levels)
+// - Creation rules: -2 to +2 with pool of 2 (only at weave level 0)
+// TODO: Enforce aspect min/max based on weave level when we implement weave tracking
+// Until then, no programmatic enforcement - players manage their own aspect values.
+
+// const ENFORCE_CREATION_RULES = false; // later (campaign-driven)
+// const CREATION_MIN = -2;
+// const CREATION_MAX = 2;
+// const CREATION_POOL = 2;
 
 type Props = {
-  sheet: CharacterSheet;
+  sheet: any;
   mode: "build" | "play";
 };
 
-const CREATION_MIN = -2;
-const CREATION_MAX = 2;
+type AspectSelection = {
+  group: AspectGroup;
+  key: AspectKey;
+  label: string;
+  blockTitle: string;
+};
+
+function getOtherNumber(sheet: any, key: string): number | null {
+  const v = sheet?.sheet?.resources?.other?.[key];
+  return typeof v === "number" ? v : null;
+}
 
 export function OverviewTab({ sheet, mode }: Props) {
+  const update = useUpdateCharacterSheetMutation(sheet._id);
   const isBuild = mode === "build";
-  const update = useUpdateCharacterSheetMutation<CharacterSheet>(sheet._id);
 
-  const [rollPrompt, setRollPrompt] = useState<null | { label: string; value?: number }>(null);
+  const [rollOpen, setRollOpen] = useState(false);
+  const [initialAspect, setInitialAspect] = useState<AspectSelection | null>(null);
+  const [hpOpen, setHpOpen] = useState(false);
+  const [threadsOpen, setThreadsOpen] = useState(false);
+
+  const hp = sheet?.sheet?.resources?.hp;
+  const threads = sheet?.sheet?.resources?.threads;
+  const armor = getOtherNumber(sheet, "armor") ?? getOtherNumber(sheet, "ac");
+
+  const defaultAspect = useMemo<AspectSelection>(() => {
+    // default to Might/Strength
+    return {
+      group: "might",
+      key: "strength",
+      label: "Strength (Might)",
+      blockTitle: "Might",
+    };
+  }, []);
+
+  function openApproach(aspect?: AspectSelection) {
+    setInitialAspect(aspect ?? initialAspect ?? defaultAspect);
+    setRollOpen(true);
+  }
 
   return (
-    <>
-      <div className={styles.contentGrid}>
-        <Card inlay className={styles.card}>
-          <CardHeader className={styles.cardHeader}>
-            <div className={styles.cardTitle}>Aspects</div>
-          </CardHeader>
+    <div className={styles.contentGrid}>
+      {/* ASPECTS */}
+      <Card inlay className={styles.card}>
+        <CardHeader className={styles.cardHeader}>
+          <div className={styles.cardTitle}>Aspects</div>
+          <div className={styles.cardHint}>
+            {isBuild ? "Build mode: set starting values." : "Play mode: tap an aspect to roll an Approach."}
+          </div>
+        </CardHeader>
 
-          <CardBody className={styles.aspectsGrid}>
-            {ASPECT_BLOCKS.map((block) => (
-              <div key={block.title} className={styles.aspectTile}>
-                <div className={styles.aspectTileTitle}>{block.title}</div>
+        <CardBody className={styles.aspectsGrid}>
+          {ASPECT_BLOCKS.map((block) => (
+            <div key={block.title} className={styles.aspectTile}>
+              <div className={styles.aspectTileTitle}>{block.title}</div>
 
-                <div className={styles.aspectRows}>
-                  {block.keys.map(({ label, key }) => {
-                    const value = getAspectValue(sheet, block.group, key);
+              <div className={styles.aspectRows}>
+                {block.keys.map(({ label, key }) => {
+                  const value = getAspectValue(sheet, block.group, key);
 
-                    if (isBuild) {
-                      const min = CREATION_MIN;
-                      const max = CREATION_MAX;
-
-                      return (
-                        <AspectStepperRow
-                          key={key}
-                          label={label}
-                          value={value}
-                          min={min}
-                          max={max}
-                          canDec={true}
-                          canInc={true}
-                          onDec={() => {
-                            const next = clamp(value - 1, min, max);
-                            if (next === value) return;
-                            update.mutate({ [aspectPath(block.group, key)]: next });
-                          }}
-                          onInc={() => {
-                            const next = clamp(value + 1, min, max);
-                            if (next === value) return;
-                            update.mutate({ [aspectPath(block.group, key)]: next });
-                          }}
-                        />
-                      );
-                    }
-
+                  if (isBuild) {
+                    // No min/max enforcement until we track weave levels
                     return (
-                      <button
+                      <AspectStepperRow
                         key={key}
-                        type="button"
-                        className={styles.aspectRow}
-                        onClick={() => setRollPrompt({ label: `${label} (${block.title})`, value })}
-                      >
-                        <span className={styles.aspectKey}>{label}</span>
-                        <span className={styles.aspectValue}>{value}</span>
-                      </button>
+                        label={label}
+                        value={value}
+                        onInc={() => {
+                          update.mutate({ [aspectPath(block.group, key)]: value + 1 });
+                        }}
+                        onDec={() => {
+                          update.mutate({ [aspectPath(block.group, key)]: value - 1 });
+                        }}
+                      />
                     );
-                  })}
-                </div>
+                  }
+
+                  // PLAY MODE: click -> open RollModal with this aspect preselected
+                  return (
+                    <button
+                      key={key}
+                      type="button"
+                      className={styles.aspectRow}
+                      onClick={() =>
+                        openApproach({
+                          group: block.group,
+                          key,
+                          label: `${label} (${block.title})`,
+                          blockTitle: block.title,
+                        })
+                      }
+                    >
+                      <span className={styles.aspectKey}>{label}</span>
+                      <span className={styles.aspectValue}>{value}</span>
+                    </button>
+                  );
+                })}
               </div>
-            ))}
-          </CardBody>
-        </Card>
+            </div>
+          ))}
+        </CardBody>
+      </Card>
 
-        <Card inlay className={styles.card}>
-          <CardHeader className={styles.cardHeader}>
-            <div className={styles.cardTitle}>At a glance</div>
-            <div className={styles.cardHint}>We'll make this the "play surface" next</div>
-          </CardHeader>
-          <CardBody className={styles.glance}>
-            <div className={styles.glanceRow}>
-              <span className={styles.glanceLabel}>Skills</span>
-              <span className={styles.glanceValue}>{sheet.sheet.skills ? "Loaded" : "—"}</span>
-            </div>
-            <div className={styles.glanceRow}>
-              <span className={styles.glanceLabel}>Conditions</span>
-              <span className={styles.glanceValue}>{sheet.sheet.conditions?.length ?? 0}</span>
-            </div>
-            <div className={styles.glanceRow}>
-              <span className={styles.glanceLabel}>Inventory</span>
-              <span className={styles.glanceValue}>{sheet.sheet.inventory?.length ?? 0}</span>
-            </div>
-          </CardBody>
-        </Card>
-      </div>
+      {/* PLAY SURFACE */}
+      <Card inlay className={styles.card}>
+        <CardHeader className={styles.cardHeader}>
+          <div className={styles.cardTitle}>Play Surface</div>
+          <div className={styles.cardHint}>Quick actions + live state.</div>
+        </CardHeader>
 
-      {rollPrompt && (
+        <CardBody className={styles.playSurfaceBody}>
+          <div className={styles.actionsCol}>
+            <Button
+              tone="gold"
+              fullWidth
+              disabled={isBuild}
+              onClick={() => {
+                /* later: open Approach modal */
+              }}
+            >
+              Approach
+            </Button>
+            <Button tone="purple" variant="outline" fullWidth onClick={() => setHpOpen(true)}>
+              HP
+            </Button>
+            <Button tone="purple" variant="outline" fullWidth onClick={() => setThreadsOpen(true)}>
+              Threads
+            </Button>
+          </div>
+
+          <div className={styles.statsGrid}>
+            <div className={styles.statCard}>
+              <div className={styles.statLabel}>Threads</div>
+              <div className={styles.statValue}>
+                {sheet?.sheet?.resources?.threads
+                  ? `${sheet.sheet.resources.threads.current}/${sheet.sheet.resources.threads.max}`
+                  : "—"}
+              </div>
+            </div>
+
+            <div className={styles.statCard}>
+              <div className={styles.statLabel}>HP</div>
+              <div className={styles.statValue}>
+                {sheet?.sheet?.resources?.hp
+                  ? `${sheet.sheet.resources.hp.current}/${sheet.sheet.resources.hp.max}`
+                  : "—"}
+              </div>
+            </div>
+
+            <div className={styles.statCard}>
+              <div className={styles.statLabel}>Armor</div>
+              <div className={styles.statValue}>
+                {sheet?.sheet?.resources?.other?.armor ?? sheet?.sheet?.resources?.other?.ac ?? "—"}
+              </div>
+            </div>
+
+            <div className={styles.statCard}>
+              <div className={styles.statLabel}>Conditions</div>
+              <div className={styles.statValue}>{sheet?.sheet?.conditions?.length ?? 0}</div>
+            </div>
+          </div>
+        </CardBody>
+      </Card>
+
+      {hpOpen && <HpModal sheet={sheet} onClose={() => setHpOpen(false)} />}
+      {threadsOpen && <ThreadsModal sheet={sheet} onClose={() => setThreadsOpen(false)} />}
+      {rollOpen && (
         <RollModal
-          label={rollPrompt.label}
-          value={rollPrompt.value}
-          onClose={() => setRollPrompt(null)}
+          key={`${initialAspect?.group ?? "might"}.${initialAspect?.key ?? "strength"}`}
+          sheet={sheet}
+          initialAspect={
+            initialAspect ?? {
+              group: "might",
+              key: "strength",
+            }
+          }
+          onClose={() => setRollOpen(false)}
         />
       )}
-    </>
+    </div>
   );
-}
-function readAspect(sheet: any, aspectGroup: string, aspectKey: string): number | undefined {
-  const g = aspectGroup.toLowerCase(); // might/finesse/wit/resolve
-  const k = aspectKey.toLowerCase(); // strength/presence/etc
-  const v = sheet?.sheet?.aspects?.[g]?.[k];
-  return typeof v === "number" ? v : undefined;
 }

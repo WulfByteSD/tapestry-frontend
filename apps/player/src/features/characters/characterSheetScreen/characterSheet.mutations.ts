@@ -78,6 +78,7 @@ export function useUpdateCharacterSheetMutation<T = any>(characterId: string, op
     mutationKey: ["character:update", characterId],
     mutationFn: async (updates: UpdatePayload) => {
       // Send dot notation keys directly - server will wrap in $set
+      console.log("Updating character", characterId, "with", updates);
       const res = await api.put(`/game/characters/${characterId}`, updates);
       return res.data as ApiResponse<T>;
     },

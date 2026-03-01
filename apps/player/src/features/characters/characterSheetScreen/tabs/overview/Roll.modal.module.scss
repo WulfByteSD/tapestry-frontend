@@ -1,20 +1,99 @@
-/* Body Content */
 .modalBody {
+  display: grid;
+  gap: 12px;
+}
+
+.formGrid {
+  display: grid;
+  gap: 10px;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+}
+
+.fieldInline {
   display: grid;
   gap: 8px;
 }
 
-.modalLabel {
-  font-weight: 900;
-  font-size: 14px;
+.fieldLabel {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--text);
 }
 
-.modalValue {
+.fieldHint {
+  font-size: 12px;
   color: var(--text-muted);
+
+  b {
+    color: var(--gold);
+  }
+}
+
+.select,
+.number {
+  width: 100%;
+  border-radius: 12px;
+  padding: 10px 10px;
+  border: 1px solid color-mix(in srgb, var(--contrast) 16%, transparent);
+  background: color-mix(in srgb, var(--base-two) 70%, transparent);
+  color: var(--text);
   font-size: 13px;
+
+  &:focus {
+    outline: none;
+    border-color: color-mix(in srgb, var(--gold) 45%, transparent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--gold) 16%, transparent);
+  }
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+}
+
+.checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-muted);
+  font-size: 12px;
+
+  input {
+    transform: translateY(1px);
+  }
+}
+
+.preview {
+  border: 1px solid color-mix(in srgb, var(--contrast) 12%, transparent);
+  border-radius: 12px;
+  padding: 10px 10px;
+  display: grid;
+  gap: 4px;
+  background: color-mix(in srgb, var(--base-two) 72%, transparent);
+}
+
+.previewLabel {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.previewText {
+  font-size: 12px;
+  color: var(--text);
+  line-height: 1.35;
+}
+
+.previewValue {
+  font-size: 14px;
+  font-weight: 900;
+  color: var(--gold);
 }
 
 .muted {
   color: var(--text-muted);
-  font-size: 13px;
+  font-size: 12px;
 }

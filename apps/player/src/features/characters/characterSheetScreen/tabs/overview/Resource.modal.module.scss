@@ -1,0 +1,113 @@
+.body {
+  display: grid;
+  gap: 12px;
+}
+
+.summaryRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.summary {
+  border: 1px solid color-mix(in srgb, var(--contrast) 12%, transparent);
+  border-radius: 12px;
+  padding: 10px;
+  background: color-mix(in srgb, var(--base-two) 72%, transparent);
+  display: grid;
+  gap: 2px;
+}
+
+.k {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.v {
+  font-size: 13px;
+  font-weight: 900;
+  color: var(--text);
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.control,
+.textarea {
+  width: 100%;
+  border-radius: 12px;
+  padding: 10px 10px;
+  border: 1px solid color-mix(in srgb, var(--contrast) 16%, transparent);
+  background: color-mix(in srgb, var(--base-two) 70%, transparent);
+  color: var(--text);
+  font-size: 13px;
+
+  &:focus {
+    outline: none;
+    border-color: color-mix(in srgb, var(--gold) 45%, transparent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--gold) 16%, transparent);
+  }
+}
+
+.textarea {
+  resize: vertical;
+}
+
+.checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-muted);
+
+  input {
+    transform: translateY(1px);
+  }
+}
+
+.preview {
+  border: 1px solid color-mix(in srgb, var(--contrast) 12%, transparent);
+  border-radius: 12px;
+  padding: 10px;
+  display: grid;
+  gap: 2px;
+}
+
+.hint {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.quickRow {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.quickBtn {
+  border: 1px solid color-mix(in srgb, var(--contrast) 14%, transparent);
+  background: transparent;
+  color: var(--text);
+  border-radius: 12px;
+  padding: 8px 10px;
+  font-size: 12px;
+  cursor: pointer;
+
+  &:hover {
+    background: color-mix(in srgb, var(--contrast) 6%, transparent);
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--gold) 16%, transparent);
+    border-color: color-mix(in srgb, var(--gold) 45%, transparent);
+  }
+}
