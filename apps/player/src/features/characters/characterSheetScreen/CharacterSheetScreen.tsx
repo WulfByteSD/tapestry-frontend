@@ -171,6 +171,7 @@ export default function CharacterSheetScreen({ characterId, mode }: Props) {
         tabClassName={styles.tab}
         activeTabClassName={styles.tabActive}
         contentClassName={styles.tabContent}
+        fit="content"
       />
     </div>
   );

@@ -1,0 +1,99 @@
+.rollItem {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(218, 165, 32, 0.2);
+  border-radius: 8px;
+  padding: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+  width: 100%;
+  color: inherit;
+  font: inherit;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(218, 165, 32, 0.4);
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.rollHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  gap: 1rem;
+}
+
+.rollContext {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #daa520;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rollTimestamp {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.5);
+  white-space: nowrap;
+}
+
+.rollBody {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.rollTotal {
+  font-size: 2rem;
+  font-weight: 900;
+  color: #daa520;
+  min-width: 60px;
+  text-align: center;
+}
+
+.rollDetails {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.rollBreakdown {
+  font-family: "Courier New", monospace;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.rollMechanics {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.edgeBadge,
+.burdenBadge {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.edgeBadge {
+  background: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.burdenBadge {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}

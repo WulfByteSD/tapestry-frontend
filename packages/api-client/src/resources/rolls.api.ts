@@ -1,4 +1,6 @@
 import type { AxiosInstance } from "axios";
+import type { ListQueryParams, ApiListResponse } from "../list/list.types";
+import { cleanParams } from "../list/list.utils";
 
 export interface CreateRollData {
   characterId?: string | null;
@@ -26,5 +28,13 @@ export interface CreateRollData {
 
 export async function createRoll<T = any>(api: AxiosInstance, data: CreateRollData): Promise<T> {
   const res = await api.post<T>("/game/rolls", data);
+  return res.data;
+}
+
+export async function getRolls(
+  api: AxiosInstance,
+  params?: ListQueryParams
+): Promise<ApiListResponse<any>> {
+  const res = await api.get("/game/rolls", { params: cleanParams(params || {}) });
   return res.data;
 }
