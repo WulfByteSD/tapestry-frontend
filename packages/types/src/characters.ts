@@ -17,26 +17,69 @@ export type ConditionInstance = {
   source?: string;
   notes?: string;
 };
+export type InventoryCategory = "weapon" | "armor" | "gear" | "consumable" | "tool" | "currency" | "quest" | "other";
 
-export type InventoryItem = {
-  itemKey?: string;
-  sourceId?: string;
-  name?: string;
-  qty: number;
+export type AttackKind = "melee" | "ranged" | "spell" | "special";
+
+export type AttackProfile = {
+  key: string;
+  name: string;
+  attackKind?: AttackKind;
+  defaultAspect?: string;
+  allowedSkillKeys?: string[];
+  modifier?: number;
+  harm?: number | string;
+  rangeLabel?: string;
   tags?: string[];
   notes?: string;
 };
 
+export type ItemDefinitionRef = {
+  itemKey: string;
+  sourceId?: string;
+  settingKey?: string;
+  version?: number;
+};
+
+export type InventoryItem = {
+  instanceId?: string;
+  definition?: ItemDefinitionRef;
+  itemKey?: string;
+  sourceId?: string;
+  name?: string;
+
+  qty: number;
+  stackable?: boolean;
+
+  tags?: string[];
+  notes?: string;
+
+  category?: InventoryCategory;
+  equipped?: boolean;
+  slot?: string;
+
+  attackProfiles?: AttackProfile[];
+  selectedAttackProfileKey?: string;
+
+  overrides?: {
+    displayName?: string;
+    modifier?: number;
+    harm?: number | string;
+    tags?: string[];
+  };
+};
 export type CharacterSheet = {
   _id: string;
-  player: string; // playerId
-  campaign?: string | null; // campaignId or null
-
+  player: string;
+  campaign?: string | null;
   name: string;
   avatarUrl?: string | null;
-
   status: SheetStatus;
   tags: string[];
+
+  settingKey?: string;
+  toneModules?: string[];
+  rulesetVersion?: number;
 
   sheet: {
     archetypeKey?: string;
@@ -56,7 +99,6 @@ export type CharacterSheet = {
   };
 
   forkedFrom?: string | null;
-
-  createdAt: string; // ISO
-  updatedAt: string; // ISO
+  createdAt: string;
+  updatedAt: string;
 };

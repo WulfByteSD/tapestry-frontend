@@ -1,0 +1,121 @@
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.subtle {
+  margin: 0.25rem 0 0;
+  font-size: 0.9rem;
+  opacity: 0.75;
+}
+
+.stats {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+.empty {
+  padding: 1rem;
+  border: 1px dashed rgba(255, 255, 255, 0.14);
+  border-radius: 10px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 0.85rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.meta {
+  flex: 1;
+  min-width: 0;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.badge,
+.badgeActive {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.18rem 0.45rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+}
+
+.badge {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.badgeActive {
+  background: rgba(91, 180, 91, 0.16);
+}
+
+.actions {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.qtyField {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.8rem;
+}
+
+.qtyField input {
+  width: 70px;
+  padding: 0.45rem 0.55rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: transparent;
+  color: inherit;
+}
+
+@media (max-width: 900px) {
+  .headerRow,
+  .row {
+    flex-direction: column;
+  }
+
+  .actions {
+    align-items: stretch;
+  }
+
+  .headerActions {
+    width: 100%;
+    justify-content: space-between;
+  }
+}

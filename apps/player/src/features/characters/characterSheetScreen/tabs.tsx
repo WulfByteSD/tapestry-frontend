@@ -3,6 +3,7 @@ import { OverviewTab } from "./tabs/overview/OverviewTab";
 import { NotesTab } from "./tabs/notes/NotesTab";
 import { RollsTab } from "./tabs/rolls/RollsTab";
 import { PlaceholderTab } from "./tabs/PlaceholderTab";
+import { InventoryTab } from "./tabs/inventory/Inventory.tab";
 
 type TabKey = "overview" | "rolls" | "skills" | "inventory" | "conditions" | "notes";
 
@@ -38,7 +39,7 @@ export function createTabs(props: {
       key: "inventory",
       label: "Inventory",
       icon: undefined,
-      children: <PlaceholderTab title="Inventory" />,
+      children: <InventoryTab sheet={sheet} mode={mode} />,
     },
     {
       key: "conditions",
