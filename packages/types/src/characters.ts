@@ -68,6 +68,26 @@ export type InventoryItem = {
     tags?: string[];
   };
 };
+
+export type CharacterProfile = {
+  title?: string;
+  bio?: string;
+
+  race?: string;
+  nationality?: string;
+  religion?: string;
+  sex?: string;
+
+  height?: string;
+  weight?: string;
+  eyes?: string;
+  hair?: string;
+  ethnicity?: string;
+  age?: number | string;
+
+  extra?: Record<string, string>;
+};
+
 export type CharacterSheet = {
   _id: string;
   player: string;
@@ -84,6 +104,7 @@ export type CharacterSheet = {
   sheet: {
     archetypeKey?: string;
     weaveLevel: number;
+    profile?: CharacterProfile;
     aspects: AspectScores;
     skills: Record<string, number>;
     features: string[];

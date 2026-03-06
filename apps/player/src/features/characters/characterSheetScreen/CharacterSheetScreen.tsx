@@ -10,6 +10,8 @@ import { Button, Card, CardBody, CardHeader, Tabs } from "@tapestry/ui";
 import { useCharacterSheetQuery } from "./characterSheet.queries";
 import { CharacterSheet } from "@tapestry/types";
 import { createTabs, type TabKey } from "./tabs";
+import { CharacterDetailsModal } from "./CharacterDetails.modal";
+import Image from "next/image";
 
 type Props = { characterId: string; mode: "build" | "play" };
 
@@ -26,6 +28,12 @@ export default function CharacterSheetScreen({ characterId, mode }: Props) {
   const [saveBadge, setSaveBadge] = useState<null | "saving" | "saved" | "error">(null);
   const savedTimerRef = useRef<number | null>(null);
 
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  function handleSaveDetails(payload: Record<string, unknown>) {
+    updateMutation.mutate(payload, {
+      onSuccess: () => setDetailsOpen(false),
+    });
+  }
   useEffect(() => {
     return () => {
       if (savedTimerRef.current) window.clearTimeout(savedTimerRef.current);
@@ -92,7 +100,23 @@ export default function CharacterSheetScreen({ characterId, mode }: Props) {
       <Card inlay className={styles.hero}>
         <CardBody className={styles.heroBody}>
           <div className={styles.avatar} aria-hidden="true">
-            <span className={styles.avatarGlyph}>{sheet.name?.[0]?.toUpperCase() ?? "?"}</span>
+            {sheet.avatarUrl ? (
+              <Image
+                src={sheet.avatarUrl}
+                alt={sheet.name}
+                width={200}
+                height={200}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  borderRadius: "inherit",
+                  display: "block",
+                }}
+              />
+            ) : (
+              <span className={styles.avatarGlyph}>{sheet.name?.[0]?.toUpperCase() ?? "?"}</span>
+            )}
           </div>
 
           <div className={styles.heroMain}>
@@ -140,7 +164,16 @@ export default function CharacterSheetScreen({ characterId, mode }: Props) {
               </div>
 
               <div className={styles.pills}>
+                <span className={styles.pill}>Weave {sheet.sheet?.weaveLevel ?? 1}</span>
+
+                {sheet.sheet?.archetypeKey ? <span className={styles.pill}>{sheet.sheet.archetypeKey}</span> : null}
+
                 <span className={styles.pill}>{sheet.campaign ? "Campaign" : "Unassigned"}</span>
+
+                <Button tone="purple" variant="outline" size="sm" onClick={() => setDetailsOpen(true)}>
+                  Details
+                </Button>
+
                 <div className={styles.modeToggle}>
                   <button
                     type="button"
@@ -162,7 +195,13 @@ export default function CharacterSheetScreen({ characterId, mode }: Props) {
           </div>
         </CardBody>
       </Card>
-
+      <CharacterDetailsModal
+        open={detailsOpen}
+        sheet={sheet}
+        onClose={() => setDetailsOpen(false)}
+        onSave={handleSaveDetails}
+        isSaving={updateMutation.isPending}
+      />
       <Tabs
         items={tabs}
         activeKey={activeTab}
