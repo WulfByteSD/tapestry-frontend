@@ -11,6 +11,7 @@ type Props = {
 type Mode = "spend" | "gain" | "set";
 
 function clamp(n: number, min: number, max: number) {
+  console.log({ n, min, max });
   return Math.max(min, Math.min(max, n));
 }
 
@@ -19,7 +20,7 @@ export function ThreadsModal({ sheet, onClose }: Props) {
 
   const threads = sheet?.sheet?.resources?.threads ?? { current: 0, max: 0 };
   const current = Number(threads.current ?? 0);
-  const max = Number(threads.max ?? 0);
+  const max = Number(threads.max ?? 5);
 
   const [mode, setMode] = useState<Mode>("spend");
   const [amount, setAmount] = useState<number>(1);
@@ -27,6 +28,7 @@ export function ThreadsModal({ sheet, onClose }: Props) {
 
   const nextCurrent = useMemo(() => {
     const amt = Math.max(0, Number(amount) || 0);
+    console.log({ mode, amt, current, max });
 
     if (mode === "spend") return clamp(current - amt, 0, max);
     if (mode === "gain") return clamp(current + amt, 0, max);
