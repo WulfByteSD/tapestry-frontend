@@ -13,8 +13,15 @@ export interface RollResultData {
   keptRolls: number[];
   expression: string;
   context?: string;
+  attack?: {
+    targetNumber: number;
+    margin: number;
+    outcome: "miss" | "weak_hit" | "hit" | "strong_hit";
+    targetLabel?: string;
+    weaponNameSnapshot?: string;
+    attackNameSnapshot?: string | null;
+  };
 }
-
 interface Props {
   result: RollResultData;
 }
@@ -125,6 +132,45 @@ export function RollResultCard({ result }: Props) {
           <span className={styles.resultLabel}>Total:</span>
           <span className={styles.resultValue}>{result.total}</span>
         </div>
+
+        {result.attack && (
+          <>
+            <div className={`${styles.attackOutcome} ${styles[`outcome_${result.attack.outcome}`]}`}>
+              <div className={styles.outcomeLabel}>{result.attack.outcome.replace("_", " ").toUpperCase()}</div>
+            </div>
+
+            <div className={styles.attackDetails}>
+              <div className={styles.detailRow}>
+                <span className={styles.detailLabel}>Target Number:</span>
+                <span className={styles.detailValue}>{result.attack.targetNumber}</span>
+              </div>
+              <div className={styles.detailRow}>
+                <span className={styles.detailLabel}>Margin:</span>
+                <span className={styles.detailValue}>
+                  {result.attack.margin >= 0 ? `+${result.attack.margin}` : result.attack.margin}
+                </span>
+              </div>
+              {result.attack.targetLabel && (
+                <div className={styles.detailRow}>
+                  <span className={styles.detailLabel}>Target:</span>
+                  <span className={styles.detailValue}>{result.attack.targetLabel}</span>
+                </div>
+              )}
+              {result.attack.weaponNameSnapshot && (
+                <div className={styles.detailRow}>
+                  <span className={styles.detailLabel}>Weapon:</span>
+                  <span className={styles.detailValue}>{result.attack.weaponNameSnapshot}</span>
+                </div>
+              )}
+              {result.attack.attackNameSnapshot && (
+                <div className={styles.detailRow}>
+                  <span className={styles.detailLabel}>Attack:</span>
+                  <span className={styles.detailValue}>{result.attack.attackNameSnapshot}</span>
+                </div>
+              )}
+            </div>
+          </>
+        )}
       </div>
 
       <button

@@ -13,6 +13,7 @@ import {
 import { useUpdateCharacterSheetMutation } from "../../../characterSheetScreen/characterSheet.mutations";
 import { HpModal } from "./Hp.modal";
 import { ThreadsModal } from "./Threads.modal";
+import { AttackModal } from "./Attack.modal";
 
 // Aspect value rules:
 // - Game-wide range: -2 to +4 (enforced by game rules across all levels)
@@ -50,6 +51,7 @@ export function OverviewTab({ sheet, mode }: Props) {
   const [initialAspect, setInitialAspect] = useState<AspectSelection | null>(null);
   const [hpOpen, setHpOpen] = useState(false);
   const [threadsOpen, setThreadsOpen] = useState(false);
+  const [attackOpen, setAttackOpen] = useState(false);
 
   const hp = sheet?.sheet?.resources?.hp;
   const threads = sheet?.sheet?.resources?.threads;
@@ -153,6 +155,10 @@ export function OverviewTab({ sheet, mode }: Props) {
             >
               Approach
             </Button>
+            <Button tone="danger" fullWidth disabled={isBuild} onClick={() => setAttackOpen(true)}>
+              Attack
+            </Button>
+
             <Button tone="purple" variant="outline" fullWidth onClick={() => setHpOpen(true)}>
               HP
             </Button>
@@ -210,6 +216,7 @@ export function OverviewTab({ sheet, mode }: Props) {
           onClose={() => setRollOpen(false)}
         />
       )}
+      {attackOpen && <AttackModal sheet={sheet} onClose={() => setAttackOpen(false)} />}
     </div>
   );
 }

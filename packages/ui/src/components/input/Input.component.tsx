@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useId } from "react";
 import clsx from "clsx";
 import styles from "./Input.module.scss";
+import fieldStyles from "./TextField.module.scss";
 
 export type InputSize = "sm" | "md" | "lg";
 
@@ -12,6 +13,9 @@ export type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   leftSlot?: React.ReactNode;
   rightSlot?: React.ReactNode;
   showPasswordToggle?: boolean;
+  label?: string;
+  hint?: string;
+  error?: string;
 };
 
 const EyeIcon = ({ visible }: { visible: boolean }) => (
@@ -40,26 +44,42 @@ const EyeIcon = ({ visible }: { visible: boolean }) => (
 );
 
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(function Input(
-  { size = "md", hasError = false, leftSlot, rightSlot, showPasswordToggle = false, className, type, ...rest },
+  {
+    size = "md",
+    hasError = false,
+    leftSlot,
+    rightSlot,
+    showPasswordToggle = false,
+    className,
+    type,
+    label,
+    hint,
+    error,
+    id,
+    ...rest
+  },
   ref,
 ) {
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const generatedId = useId();
+  const inputId = id || generatedId;
+  const hasErrorState = Boolean(error) || hasError;
 
   // Override type if password toggle is enabled
   const inputType = showPasswordToggle ? (passwordVisible ? "text" : "password") : type;
 
-  return (
+  const inputElement = (
     <div
       className={clsx(
         styles.wrap,
         styles[`size_${size}`],
-        hasError && styles.error,
+        hasErrorState && styles.error,
         showPasswordToggle && styles.hasPasswordToggle,
-        className,
+        !label && className,
       )}
     >
       {leftSlot && <span className={styles.slotLeft}>{leftSlot}</span>}
-      <input ref={ref} className={styles.input} type={inputType} {...rest} />
+      <input ref={ref} id={inputId} className={styles.input} type={inputType} {...rest} />
       {showPasswordToggle && (
         <button
           type="button"
@@ -74,4 +94,24 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(function Inp
       {rightSlot && <span className={styles.slotRight}>{rightSlot}</span>}
     </div>
   );
+
+  if (label) {
+    return (
+      <div className={clsx(fieldStyles.field, className)}>
+        <label className={fieldStyles.label} htmlFor={inputId}>
+          {label}
+        </label>
+        {inputElement}
+        {error ? (
+          <div className={fieldStyles.error} role="alert">
+            {error}
+          </div>
+        ) : hint ? (
+          <div className={fieldStyles.hint}>{hint}</div>
+        ) : null}
+      </div>
+    );
+  }
+
+  return inputElement;
 });
