@@ -49,7 +49,7 @@ export function ContentLibraryModal({ open, onClose, sheet, onAddItem }: Props) 
     queryFn: () =>
       getItems(api, {
         filterOptions: buildFilterString({
-          settingKey: effectiveSettingKey,
+          settingKeys: [effectiveSettingKey],
           status: "published",
         }),
         sortOptions: "category;name",
@@ -113,7 +113,7 @@ export function ContentLibraryModal({ open, onClose, sheet, onAddItem }: Props) 
                     <span className={styles.badge}>{item.category}</span>
                   </div>
 
-                  <div className={styles.subtle}>{item.key}</div>
+                  {/* <div className={styles.subtle}>{item.key}</div> */}
 
                   {!!item.tags?.length && (
                     <div className={styles.tags}>

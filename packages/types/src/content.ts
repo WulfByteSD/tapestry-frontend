@@ -38,3 +38,16 @@ export type ItemDefinition = {
   createdAt: string;
   updatedAt: string;
 };
+
+export type SkillCategory = "social" | "combat" | "technical" | "knowledge" | "survival" | "magic" | "other";
+
+export type SkillDefinition = {
+  key: string;
+  name: string;
+  status: "draft" | "published" | "archived";
+  settingKeys: string[];
+  category?: SkillCategory;
+  defaultAspect?: string;
+  tags: string[];
+  notes?: string;
+};
