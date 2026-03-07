@@ -5,3 +5,4 @@ export * from "./components/sidebar";
 export * from "./components/tabs";
 export * from "./components/modal";
 export * from "./components/alert";
+export * from "./components/tooltip";

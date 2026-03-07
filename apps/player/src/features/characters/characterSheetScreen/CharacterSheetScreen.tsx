@@ -6,7 +6,7 @@ import { useUpdateCharacterSheetMutation } from "./characterSheet.mutations";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import styles from "./CharacterSheet.module.scss";
-import { Button, Card, CardBody, CardHeader, Tabs } from "@tapestry/ui";
+import { Button, Card, CardBody, CardHeader, Tabs, Tooltip } from "@tapestry/ui";
 import { useCharacterSheetQuery } from "./characterSheet.queries";
 import { CharacterSheet } from "@tapestry/types";
 import { createTabs, type TabKey } from "./tabs";
@@ -164,11 +164,26 @@ export default function CharacterSheetScreen({ characterId, mode }: Props) {
               </div>
 
               <div className={styles.pills}>
-                <span className={styles.pill}>Weave {sheet.sheet?.weaveLevel ?? 1}</span>
+                <Tooltip title="Your character's power level" placement="left">
+                  <span className={styles.pill}>Weave {sheet.sheet?.weaveLevel ?? 1}</span>
+                </Tooltip>
 
-                {sheet.sheet?.archetypeKey ? <span className={styles.pill}>{sheet.sheet.archetypeKey}</span> : null}
+                {sheet.sheet?.archetypeKey ? (
+                  <Tooltip title="Character archetype and class" placement="bottom">
+                    <span className={styles.pill}>{sheet.sheet.archetypeKey}</span>
+                  </Tooltip>
+                ) : null}
 
-                <span className={styles.pill}>{sheet.campaign ? "Campaign" : "Unassigned"}</span>
+                <Tooltip
+                  title={
+                    sheet.campaign
+                      ? "This character is assigned to a campaign"
+                      : "This character is not yet assigned to a campaign"
+                  }
+                  placement="bottom"
+                >
+                  <span className={styles.pill}>{sheet.campaign ? "Campaign" : "Unassigned"}</span>
+                </Tooltip>
 
                 <Button tone="purple" variant="outline" size="sm" onClick={() => setDetailsOpen(true)}>
                   Details

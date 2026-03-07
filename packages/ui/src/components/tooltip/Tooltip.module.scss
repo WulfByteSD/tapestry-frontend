@@ -1,0 +1,99 @@
+.tooltipTrigger {
+  display: inline-block;
+  max-width: 100%;
+}
+
+.tooltip {
+  position: fixed;
+  padding: 0;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  max-width: 250px;
+  word-wrap: break-word;
+  pointer-events: auto;
+  animation: tooltipFadeIn 0.15s ease-in-out;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.15));
+}
+
+.tooltipContent {
+  background-color: rgba(0, 0, 0, 0.85);
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 6px;
+  position: relative;
+}
+
+.tooltipArrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-style: solid;
+}
+
+// Arrow positioning for each placement
+.tooltip.top .tooltipArrow {
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px 5px 0 5px;
+  border-color: rgba(0, 0, 0, 0.85) transparent transparent transparent;
+}
+
+.tooltip.bottom .tooltipArrow {
+  top: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 0 5px 5px 5px;
+  border-color: transparent transparent rgba(0, 0, 0, 0.85) transparent;
+}
+
+.tooltip.left .tooltipArrow {
+  right: -5px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-width: 5px 0 5px 5px;
+  border-color: transparent transparent transparent rgba(0, 0, 0, 0.85);
+}
+
+.tooltip.right .tooltipArrow {
+  left: -5px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-width: 5px 5px 5px 0;
+  border-color: transparent rgba(0, 0, 0, 0.85) transparent transparent;
+}
+
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+// Optional: Dark mode support
+@media (prefers-color-scheme: dark) {
+  .tooltipContent {
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #000;
+  }
+
+  .tooltip.top .tooltipArrow {
+    border-color: rgba(255, 255, 255, 0.9) transparent transparent transparent;
+  }
+
+  .tooltip.bottom .tooltipArrow {
+    border-color: transparent transparent rgba(255, 255, 255, 0.9) transparent;
+  }
+
+  .tooltip.left .tooltipArrow {
+    border-color: transparent transparent transparent rgba(255, 255, 255, 0.9);
+  }
+
+  .tooltip.right .tooltipArrow {
+    border-color: transparent rgba(255, 255, 255, 0.9) transparent transparent;
+  }
+}
