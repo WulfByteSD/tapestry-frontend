@@ -23,6 +23,7 @@ export type SettingDefinition = {
 export type ItemDefinition = {
   _id: string;
   settingKey: string;
+  activeSettingKey?: string;
   key: string;
   name: string;
   protection?: number;

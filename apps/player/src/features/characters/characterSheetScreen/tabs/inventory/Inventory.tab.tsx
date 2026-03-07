@@ -48,7 +48,7 @@ export function InventoryTab({ sheet }: Props) {
   }
 
   function handleAddItem(item: ItemDefinition, settingKey: string) {
-    const nextInventory = addInventoryItemFromDefinition(inventory, item);
+    const nextInventory = addInventoryItemFromDefinition(inventory, {...item, activeSettingKey: settingKey});
     persistInventory(nextInventory, settingKey);
   }
 

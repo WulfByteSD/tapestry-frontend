@@ -48,6 +48,7 @@ export type InventoryItem = {
   sourceId?: string;
   name?: string;
   protection?: number;
+  addedFromSettingKey?: string;
   qty: number;
   stackable?: boolean;
   tags?: string[];
