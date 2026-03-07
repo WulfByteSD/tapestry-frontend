@@ -14,6 +14,7 @@ import {
 } from "./skills.functions";
 import { SkillLibraryModal } from "./SkillLibrary.modal";
 import styles from "./SkillsTab.module.scss";
+import { FaTrash } from "react-icons/fa";
 
 type Props = {
   sheet: CharacterSheet;
@@ -83,24 +84,22 @@ export function SkillsTab({ sheet }: Props) {
                 <div key={skill.key} className={styles.skillCard}>
                   <div className={styles.skillInfo}>
                     <div className={styles.skillName}>{skill.label}</div>
-                    <div className={styles.skillKey}>{skill.key}</div>
+                    <div className={styles.deleteIcon} onClick={() => handleRemove(skill.key)}>
+                      <FaTrash />
+                    </div>
                   </div>
 
                   <div className={styles.rankControls}>
-                    <Button size="sm" variant="ghost" onClick={() => handleRankChange(skill.key, skill.rank - 1)}>
+                    <Button size="sm" variant="outline" onClick={() => handleRankChange(skill.key, skill.rank - 1)}>
                       −
                     </Button>
 
                     <span className={styles.rankValue}>Rank {skill.rank}</span>
 
-                    <Button size="sm" variant="ghost" onClick={() => handleRankChange(skill.key, skill.rank + 1)}>
+                    <Button size="sm" variant="outline" onClick={() => handleRankChange(skill.key, skill.rank + 1)}>
                       +
                     </Button>
-                  </div>
-
-                  <Button size="sm" variant="ghost" onClick={() => handleRemove(skill.key)}>
-                    Remove
-                  </Button>
+                  </div> 
                 </div>
               ))}
             </div>

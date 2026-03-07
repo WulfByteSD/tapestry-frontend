@@ -21,7 +21,8 @@
 
   --text: var(--contrast);
   --text-muted: var(--contrast-2);
-
+  --danger: #FF4D4F;
+  --success: #52C41A;
   --border: color-mix(in srgb, var(--contrast-2) 18%, transparent);
   --border-strong: color-mix(in srgb, var(--contrast-2) 30%, transparent);
 

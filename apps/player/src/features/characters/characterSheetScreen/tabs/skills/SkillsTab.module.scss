@@ -54,7 +54,20 @@
 
 .skillInfo {
   display: grid;
+  grid-template-columns: 1fr auto;
   gap: 4px;
+}
+
+.deleteIcon {
+  color: var(--danger);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+
+  &:hover {
+    background: color-mix(in srgb, var(--contrast) 12%, transparent);
+    color: var(--text);
+  }
 }
 
 .skillName {
