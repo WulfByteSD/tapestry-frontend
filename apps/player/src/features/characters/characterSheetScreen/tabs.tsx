@@ -51,7 +51,7 @@ export function createTabs(props: {
       key: "notes",
       label: "Notes",
       icon: undefined,
-      children: <NotesTab initialNoteCards={sheet.sheet.noteCards ?? []} onSave={onSaveNotes} />,
+      children: <NotesTab initialNoteCards={sheet?.sheet?.noteCards ?? []} onSave={onSaveNotes} />,
     },
   ];
 }

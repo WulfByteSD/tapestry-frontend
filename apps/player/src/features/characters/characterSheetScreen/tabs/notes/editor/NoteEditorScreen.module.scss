@@ -1,0 +1,92 @@
+.screenCard {
+  min-height: 420px;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.headerRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.headerMeta {
+  display: grid;
+  gap: 4px;
+}
+
+.headerTitle {
+  font-weight: 900;
+  font-size: 14px;
+}
+
+.headerSubtitle {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.headerActions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.emptyBody {
+  display: grid;
+  gap: 12px;
+}
+
+.emptyTitle {
+  font-weight: 900;
+  font-size: 14px;
+}
+
+.emptyCopy {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.body {
+  display: grid;
+  gap: 12px;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+  width: 100%;
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.textInput,
+.selectInput,
+.textarea {
+  width: 100%;
+  border-radius: 14px;
+  padding: 10px 12px;
+  font-size: 13px;
+  border: 1px solid color-mix(in srgb, var(--contrast) 16%, transparent);
+  background: color-mix(in srgb, var(--base-two) 70%, transparent);
+  color: var(--text);
+
+  &:focus {
+    outline: none;
+    border-color: color-mix(in srgb, var(--gold) 45%, transparent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--gold) 16%, transparent);
+  }
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 280px;
+}
