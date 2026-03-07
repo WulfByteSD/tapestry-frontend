@@ -3,6 +3,7 @@
 import { useDebouncedCallback } from "@/lib/useDebouncedCallback";
 import type { NoteCard, NoteCardKind } from "@tapestry/types";
 import { useEffect, useMemo, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { createBlankNote } from "./functions";
 import { NoteEditorScreen } from "./editor/NoteEditorScreen";
 import { NoteListScreen } from "./list/NoteListScreen";
@@ -74,28 +75,44 @@ export function NotesTab({ initialNoteCards, onSave }: Props) {
     setView("list");
   }
 
-  if (view === "editor") {
-    return (
-      <NoteEditorScreen
-        card={activeCard}
-        cards={cards}
-        persist={persist}
-        onBack={handleBackToList}
-        onDeleteComplete={(nextSelectedId) => {
-          setSelectedId(nextSelectedId);
-          setView("list");
-        }}
-      />
-    );
-  }
-
   return (
-    <NoteListScreen
-      cards={cards}
-      selectedId={selectedId}
-      onCreate={handleCreate}
-      onOpen={handleOpen}
-      state={listState}
-    />
+    <AnimatePresence mode="wait">
+      {view === "editor" ? (
+        <motion.div
+          key="editor"
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -20 }}
+          transition={{ duration: 0.3, ease: "easeInOut" }}
+        >
+          <NoteEditorScreen
+            card={activeCard}
+            cards={cards}
+            persist={persist}
+            onBack={handleBackToList}
+            onDeleteComplete={(nextSelectedId) => {
+              setSelectedId(nextSelectedId);
+              setView("list");
+            }}
+          />
+        </motion.div>
+      ) : (
+        <motion.div
+          key="list"
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: 20 }}
+          transition={{ duration: 0.3, ease: "easeInOut" }}
+        >
+          <NoteListScreen
+            cards={cards}
+            selectedId={selectedId}
+            onCreate={handleCreate}
+            onOpen={handleOpen}
+            state={listState}
+          />
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }

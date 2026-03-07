@@ -2,6 +2,7 @@
 "use client";
 
 import { useDeferredValue, useMemo } from "react";
+import { motion } from "framer-motion";
 import { Button, Card, CardBody, CardHeader, Select } from "@tapestry/ui";
 import type { NoteCard, NoteCardKind } from "@tapestry/types";
 import { ALL_KIND, DEFAULT_PAGE_SIZE, KIND_OPTIONS } from "../functions";
@@ -113,12 +114,19 @@ export function NoteListScreen({ cards, selectedId, state, onCreate, onOpen }: P
         ) : (
           <>
             <div className={styles.noteList}>
-              {visibleCards.map((card) => (
-                <button
+              {visibleCards.map((card, index) => (
+                <motion.button
                   key={card.id}
                   type="button"
                   className={`${styles.noteCard} ${card.id === selectedId ? styles.noteCardActive : ""}`}
                   onClick={() => onOpen(card.id)}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: 0.4,
+                    delay: index * 0.05,
+                    ease: "easeOut",
+                  }}
                 >
                   <div className={styles.noteCardTop}>
                     <span className={styles.kindChip}>{card.kind}</span>
@@ -130,7 +138,7 @@ export function NoteListScreen({ cards, selectedId, state, onCreate, onOpen }: P
                   <div className={styles.notePreview}>{card.body?.trim() || "No details yet."}</div>
 
                   <div className={styles.noteMeta}>Updated {formatUpdatedAt(card.updatedAt)}</div>
-                </button>
+                </motion.button>
               ))}
             </div>
 

@@ -5,6 +5,7 @@ import { useDebouncedCallback } from "@/lib/useDebouncedCallback";
 import { useUpdateCharacterSheetMutation } from "./characterSheet.mutations";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 import styles from "./CharacterSheet.module.scss";
 import { Button, Card, CardBody, CardHeader, Tabs, Tooltip } from "@tapestry/ui";
 import { useCharacterSheetQuery } from "./characterSheet.queries";
@@ -76,9 +77,28 @@ export default function CharacterSheetScreen({ characterId, mode }: Props) {
   const [activeTab, setActiveTab] = useState<TabKey>("overview");
   const [currentMode, setCurrentMode] = useState<"build" | "play">(mode);
 
-  const tabs = useMemo(
+  const baseTabs = useMemo(
     () => createTabs({ sheet, onSaveNotes: handleSaveNotes, mode: currentMode }),
     [sheet, currentMode],
+  );
+
+  // Wrap each tab's content with motion.div for smooth transitions
+  const tabs = useMemo(
+    () =>
+      baseTabs.map((tab) => ({
+        ...tab,
+        children: (
+          <motion.div
+            key={tab.key}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.25, ease: "easeInOut" }}
+          >
+            {tab.children}
+          </motion.div>
+        ),
+      })),
+    [baseTabs],
   );
 
   if (isLoading) return <LoadingState onBack={() => router.replace("/")} />;
@@ -226,6 +246,7 @@ export default function CharacterSheetScreen({ characterId, mode }: Props) {
         activeTabClassName={styles.tabActive}
         contentClassName={styles.tabContent}
         fit="content"
+        keepMounted={false}
       />
     </div>
   );
