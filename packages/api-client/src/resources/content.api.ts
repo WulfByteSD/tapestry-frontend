@@ -1,7 +1,7 @@
 import type { AxiosInstance } from "axios";
 import type { ApiListResponse, ListQueryParams } from "../list/list.types";
 import { cleanParams } from "../list/list.utils";
-import { ItemDefinition, SettingDefinition } from "../../../types/src/content";
+import { ItemDefinition, SettingDefinition, SkillDefinition } from "../../../types/src/content";
 type ApiResponse<T> = {
   success: boolean;
   payload: T;
@@ -31,5 +31,13 @@ export async function getItems(api: AxiosInstance, params?: ListQueryParams): Pr
 
 export async function getItemByKey(api: AxiosInstance, key: string): Promise<ApiResponse<ItemDefinition>> {
   const res = await api.get(`/game/content/items/by-key/${encodeURIComponent(key)}`);
+  return res.data;
+}
+
+export async function getSkillsForSetting(
+  api: AxiosInstance,
+  settingKey: string,
+): Promise<ApiListResponse<SkillDefinition>> {
+  const res = await api.get(`/game/content/skills/setting/${encodeURIComponent(settingKey)}`);
   return res.data;
 }

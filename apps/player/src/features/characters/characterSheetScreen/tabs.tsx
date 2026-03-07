@@ -4,6 +4,7 @@ import { NotesTab } from "./tabs/notes/NotesTab";
 import { RollsTab } from "./tabs/rolls/RollsTab";
 import { PlaceholderTab } from "./tabs/PlaceholderTab";
 import { InventoryTab } from "./tabs/inventory/Inventory.tab";
+import { SkillsTab } from "./tabs/skills/Skills.tab";
 
 type TabKey = "overview" | "rolls" | "skills" | "inventory" | "conditions" | "notes";
 
@@ -33,7 +34,7 @@ export function createTabs(props: {
       key: "skills",
       label: "Skills",
       icon: undefined,
-      children: <PlaceholderTab title="Skills" />,
+      children: <SkillsTab sheet={sheet} mode={mode} />,
     },
     {
       key: "inventory",

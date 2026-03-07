@@ -42,12 +42,15 @@ export type ItemDefinition = {
 export type SkillCategory = "social" | "combat" | "technical" | "knowledge" | "survival" | "magic" | "other";
 
 export type SkillDefinition = {
+  _id: string;
   key: string;
   name: string;
-  status: "draft" | "published" | "archived";
+  status: ContentStatus;
   settingKeys: string[];
   category?: SkillCategory;
   defaultAspect?: string;
-  tags: string[];
+  tags?: string[];
   notes?: string;
+  createdAt: string;
+  updatedAt: string;
 };
