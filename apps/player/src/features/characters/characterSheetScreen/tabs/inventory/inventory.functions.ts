@@ -12,6 +12,36 @@ export function getInventoryDisplayName(item: InventoryItem) {
   return item.overrides?.displayName || item.name || item.definition?.itemKey || "Unnamed Item";
 }
 
+export function getInventoryProtection(item: InventoryItem): number | null {
+  // Check overrides first
+  if (item.overrides?.protection !== undefined && item.overrides.protection !== null) {
+    return item.overrides.protection;
+  }
+  // Return protection only if it's a valid number (not null or undefined)
+  if (typeof item.protection === "number") {
+    return item.protection;
+  }
+  return null;
+}
+
+export function getInventoryHarm(item: InventoryItem): number | string | null {
+  // Check overrides first
+  if (item.overrides?.harm !== undefined && item.overrides.harm !== null) {
+    return item.overrides.harm;
+  }
+
+  // Check attack profiles
+  if (item.attackProfiles && item.attackProfiles.length > 0) {
+    // Use selected profile if available, otherwise use first profile
+    const profile = item.attackProfiles.find((p) => p.key === item.selectedAttackProfileKey) ?? item.attackProfiles[0];
+    if (profile?.harm !== undefined && profile.harm !== null) {
+      return profile.harm;
+    }
+  }
+
+  return null;
+}
+
 export function mapItemDefinitionToInventoryItem(item: ItemDefinition): InventoryItem {
   return {
     instanceId: makeInventoryInstanceId(),
@@ -20,6 +50,7 @@ export function mapItemDefinitionToInventoryItem(item: ItemDefinition): Inventor
       sourceId: item._id,
       settingKey: item.settingKey,
     },
+    protection: item.protection,
     itemKey: item.key,
     sourceId: item._id,
     name: item.name,

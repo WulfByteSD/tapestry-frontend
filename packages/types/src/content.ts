@@ -25,6 +25,7 @@ export type ItemDefinition = {
   settingKey: string;
   key: string;
   name: string;
+  protection?: number;
   category: InventoryCategory;
   status: ContentStatus;
   tags?: string[];

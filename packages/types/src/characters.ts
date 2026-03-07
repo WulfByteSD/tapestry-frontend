@@ -47,23 +47,20 @@ export type InventoryItem = {
   itemKey?: string;
   sourceId?: string;
   name?: string;
-
+  protection?: number;
   qty: number;
   stackable?: boolean;
-
   tags?: string[];
   notes?: string;
-
   category?: InventoryCategory;
   equipped?: boolean;
   slot?: string;
-
   attackProfiles?: AttackProfile[];
   selectedAttackProfileKey?: string;
-
   overrides?: {
     displayName?: string;
     modifier?: number;
+    protection?: number;
     harm?: number | string;
     tags?: string[];
   };

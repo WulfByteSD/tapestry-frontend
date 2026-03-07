@@ -112,3 +112,43 @@
     border-color: color-mix(in srgb, var(--gold) 45%, transparent);
   }
 }
+.stack {
+  display: grid;
+  gap: 1rem;
+}
+
+.statsRow {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.statCard {
+  border: 1px solid color-mix(in srgb, var(--contrast) 14%, transparent);
+  border-radius: 12px;
+  padding: 0.8rem 0.9rem;
+  background: color-mix(in srgb, var(--base-two) 70%, transparent);
+}
+
+.statLabel {
+  font-size: 0.8rem;
+  opacity: 0.72;
+  margin-bottom: 0.25rem;
+}
+
+.statValue {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.checkboxRow {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+@media (max-width: 760px) {
+  .statsRow {
+    grid-template-columns: 1fr;
+  }
+}

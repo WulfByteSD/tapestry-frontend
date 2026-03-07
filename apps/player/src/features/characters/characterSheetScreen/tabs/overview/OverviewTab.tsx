@@ -14,6 +14,7 @@ import { useUpdateCharacterSheetMutation } from "../../../characterSheetScreen/c
 import { HpModal } from "./Hp.modal";
 import { ThreadsModal } from "./Threads.modal";
 import { AttackModal } from "./Attack.modal";
+import { HarmModal } from "./Harm.modal";
 
 // Aspect value rules:
 // - Game-wide range: -2 to +4 (enforced by game rules across all levels)
@@ -42,7 +43,21 @@ function getOtherNumber(sheet: any, key: string): number | null {
   const v = sheet?.sheet?.resources?.other?.[key];
   return typeof v === "number" ? v : null;
 }
+function getEquippedProtection(sheet: any): number {
+  const inventory = sheet?.sheet?.inventory ?? [];
+  return inventory.reduce((sum: number, item: any) => {
+    if (!item?.equipped) return sum;
 
+    const protection = item?.overrides?.protection ?? item?.protection ?? 0;
+
+    return sum + (typeof protection === "number" ? protection : 0);
+  }, 0);
+}
+
+function getDerivedProtection(sheet: any): number {
+  const manual = getOtherNumber(sheet, "armor") ?? getOtherNumber(sheet, "ac") ?? 0;
+  return manual + getEquippedProtection(sheet);
+}
 export function OverviewTab({ sheet, mode }: Props) {
   const update = useUpdateCharacterSheetMutation(sheet._id);
   const isBuild = mode === "build";
@@ -52,10 +67,10 @@ export function OverviewTab({ sheet, mode }: Props) {
   const [hpOpen, setHpOpen] = useState(false);
   const [threadsOpen, setThreadsOpen] = useState(false);
   const [attackOpen, setAttackOpen] = useState(false);
-
+  const [harmOpen, setHarmOpen] = useState(false);
   const hp = sheet?.sheet?.resources?.hp;
   const threads = sheet?.sheet?.resources?.threads;
-  const armor = getOtherNumber(sheet, "armor") ?? getOtherNumber(sheet, "ac");
+  const armor = getDerivedProtection(sheet);
 
   const defaultAspect = useMemo<AspectSelection>(() => {
     // default to Might/Strength
@@ -165,6 +180,9 @@ export function OverviewTab({ sheet, mode }: Props) {
             <Button tone="purple" variant="outline" fullWidth onClick={() => setThreadsOpen(true)}>
               Threads
             </Button>
+            <Button tone="neutral" fullWidth disabled={isBuild} onClick={() => setHarmOpen(true)}>
+              Take Damage
+            </Button>
           </div>
 
           <div className={styles.statsGrid}>
@@ -217,6 +235,7 @@ export function OverviewTab({ sheet, mode }: Props) {
         />
       )}
       {attackOpen && <AttackModal sheet={sheet} onClose={() => setAttackOpen(false)} />}
+      {harmOpen && <HarmModal sheet={sheet} onClose={() => setHarmOpen(false)} />}
     </div>
   );
 }

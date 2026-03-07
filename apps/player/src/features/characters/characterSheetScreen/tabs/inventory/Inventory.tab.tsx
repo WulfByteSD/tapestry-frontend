@@ -7,6 +7,8 @@ import { useUpdateCharacterSheetMutation } from "../../characterSheet.mutations"
 import {
   addInventoryItemFromDefinition,
   getInventoryDisplayName,
+  getInventoryProtection,
+  getInventoryHarm,
   removeInventoryItem,
   toggleInventoryEquipped,
   updateInventoryQuantity,
@@ -92,42 +94,74 @@ export function InventoryTab({ sheet }: Props) {
           ) : (
             <div className={styles.list}>
               {inventory.map((item) => {
+                const protection = getInventoryProtection(item);
+                const harm = getInventoryHarm(item);
+                const hasSpecialProps = protection !== null || harm !== null;
+
                 return (
-                  <div key={item.instanceId} className={styles.row}>
-                    <div className={styles.meta}>
-                      <div className={styles.titleRow}>
-                        <strong>{getInventoryDisplayName(item)}</strong>
-
-                        {item.category ? <span className={styles.badge}>{item.category}</span> : null}
-
-                        {item.equipped ? <span className={styles.badgeActive}>Equipped</span> : null}
+                  <div key={item.instanceId} className={styles.itemCard}>
+                    <div className={styles.itemImageArea}>
+                      {/* Future: item.imageUrl will go here */}
+                      <div className={styles.imagePlaceholder}>
+                        <span className={styles.placeholderIcon}>
+                          {item.category === "weapon" ? "⚔️" : item.category === "armor" ? "🛡️" : "📦"}
+                        </span>
                       </div>
-
-                      <div className={styles.subtle}>{item.itemKey || item.definition?.itemKey || "custom-item"}</div>
                     </div>
 
-                    <div className={styles.actions}>
-                      {item.stackable && (
-                        <label className={styles.qtyField}>
-                          <span>Qty</span>
-                          <input
-                            type="number"
-                            min={1}
-                            value={item.qty}
-                            onChange={(e) => handleQuantityChange(item.instanceId, Number(e.target.value))}
-                          />
-                        </label>
+                    <div className={styles.cardContent}>
+                      <div className={styles.cardHeader}>
+                        <div className={styles.itemTitle}>{getInventoryDisplayName(item)}</div>
+                        <div className={styles.badges}>
+                          {item.category ? <span className={styles.badge}>{item.category}</span> : null}
+                          {item.equipped ? <span className={styles.badgeActive}>Equipped</span> : null}
+                        </div>
+                      </div>
+
+                      {hasSpecialProps ? (
+                        <div className={styles.itemStats}>
+                          {protection !== null && (
+                            <div className={styles.statBox}>
+                              <div className={styles.statLabel}>Protection</div>
+                              <div className={styles.statValue}>+{protection}</div>
+                            </div>
+                          )}
+                          {harm !== null && (
+                            <div className={styles.statBox}>
+                              <div className={styles.statLabel}>Harm</div>
+                              <div className={styles.statValue}>{harm}</div>
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <div className={styles.divider} />
                       )}
 
-                      {(item.category === "weapon" || item.slot) && (
-                        <Button variant="outline" onClick={() => handleToggleEquipped(item.instanceId)}>
-                          {item.equipped ? "Unequip" : "Equip"}
+                      {/* <div className={styles.itemKey}>{item.itemKey || item.definition?.itemKey || "custom-item"}</div> */}
+
+                      <div className={styles.actions}>
+                        {item.stackable && (
+                          <label className={styles.qtyField}>
+                            <span>Qty</span>
+                            <input
+                              type="number"
+                              min={1}
+                              value={item.qty}
+                              onChange={(e) => handleQuantityChange(item.instanceId, Number(e.target.value))}
+                            />
+                          </label>
+                        )}
+
+                        {(item.category === "weapon" || item.slot) && (
+                          <Button variant={item.equipped ? "outline" : "solid"} onClick={() => handleToggleEquipped(item.instanceId)}>
+                            {item.equipped ? "Unequip" : "Equip"}
+                          </Button>
+                        )}
+
+                        <Button variant="outline" onClick={() => handleRemove(item.instanceId)}>
+                          Remove
                         </Button>
-                      )}
-
-                      <Button variant="outline" onClick={() => handleRemove(item.instanceId)}>
-                        Remove
-                      </Button>
+                      </div>
                     </div>
                   </div>
                 );
