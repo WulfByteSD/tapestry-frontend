@@ -85,7 +85,18 @@ export type CharacterProfile = {
 
   extra?: Record<string, string>;
 };
+export type NoteCardKind = "general" | "npc" | "quest" | "location" | "faction" | "clue";
 
+export type NoteCard = {
+  id: string;
+  title: string;
+  body: string;
+  kind: NoteCardKind;
+  pinned?: boolean;
+  tags?: string[];
+  createdAt: string;
+  updatedAt: string;
+};
 export type CharacterSheet = {
   _id: string;
   player: string;
@@ -114,7 +125,7 @@ export type CharacterSheet = {
     };
     conditions: ConditionInstance[];
     inventory: InventoryItem[];
-    notes?: string;
+    noteCards: NoteCard[];
   };
 
   forkedFrom?: string | null;

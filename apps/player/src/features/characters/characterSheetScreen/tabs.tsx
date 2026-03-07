@@ -11,7 +11,7 @@ export type { TabKey };
 
 export function createTabs(props: {
   sheet: any;
-  onSaveNotes: (notes: string) => void;
+  onSaveNotes: (noteCards: any[]) => void;
   mode: "build" | "play";
 }): TabsItem[] {
   const { sheet, onSaveNotes, mode } = props;
@@ -51,7 +51,7 @@ export function createTabs(props: {
       key: "notes",
       label: "Notes",
       icon: undefined,
-      children: <NotesTab initialNotes={sheet?.sheet?.notes ?? ""} onSave={onSaveNotes} />,
+      children: <NotesTab initialNoteCards={sheet.sheet.noteCards ?? []} onSave={onSaveNotes} />,
     },
   ];
 }

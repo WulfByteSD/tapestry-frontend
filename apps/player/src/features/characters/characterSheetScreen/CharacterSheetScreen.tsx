@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import styles from "./CharacterSheet.module.scss";
 import { Button, Card, CardBody, CardHeader, Tabs, Tooltip } from "@tapestry/ui";
 import { useCharacterSheetQuery } from "./characterSheet.queries";
-import { CharacterSheet } from "@tapestry/types";
+import { CharacterSheet, NoteCard } from "@tapestry/types";
 import { createTabs, type TabKey } from "./tabs";
 import { CharacterDetailsModal } from "./CharacterDetails.modal";
 import Image from "next/image";
@@ -59,8 +59,8 @@ export default function CharacterSheetScreen({ characterId, mode }: Props) {
     updateMutation.mutate({ name: value.trim() });
   }, 450);
 
-  function handleSaveNotes(notes: string) {
-    updateMutation.mutate({ "sheet.notes": notes });
+  function handleSaveNotes(noteCards: NoteCard[]) {
+    updateMutation.mutate({ "sheet.noteCards": noteCards });
   }
 
   function commitNameNow() {
