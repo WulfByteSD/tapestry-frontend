@@ -1,4 +1,3 @@
-// tabs/notes/editor/NoteEditorScreen.tsx
 "use client";
 
 import { Button, Card, CardBody, CardHeader, Select } from "@tapestry/ui";
@@ -57,6 +56,13 @@ export function NoteEditorScreen({ card, cards, persist, onBack, onDeleteComplet
     persist(nextCards, true);
   }
 
+  function handleBack() {
+    if (card) {
+      commitActiveCard();
+    }
+    onBack();
+  }
+
   function handleDelete() {
     if (!card) return;
 
@@ -88,7 +94,7 @@ export function NoteEditorScreen({ card, cards, persist, onBack, onDeleteComplet
     <Card className={styles.screenCard}>
       <CardHeader className={styles.header}>
         <div className={styles.headerRow}>
-          <Button size="sm" variant="ghost" onClick={onBack}>
+          <Button size="sm" variant="ghost" onClick={handleBack}>
             Back
           </Button>
 
