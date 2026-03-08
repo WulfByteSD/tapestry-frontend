@@ -8,7 +8,7 @@ type Props = {
   onClose: () => void;
 };
 
-type Mode = "damage" | "heal" | "set";
+type Mode = "heal" | "set";
 
 function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
@@ -26,9 +26,8 @@ export function HpModal({ sheet, onClose }: Props) {
   const [maxDraft, setMaxDraft] = useState<number>(max > 0 ? max : Math.max(10, current));
   const [tempDraft, setTempDraft] = useState<number>(temp);
 
-  const [mode, setMode] = useState<Mode>("damage");
+  const [mode, setMode] = useState<Mode>("heal");
   const [amount, setAmount] = useState<number>(1);
-  const [useTempFirst, setUseTempFirst] = useState(true);
 
   const preview = useMemo(() => {
     const effectiveMax = Math.max(0, Number(maxDraft) || 0);
@@ -44,17 +43,6 @@ export function HpModal({ sheet, onClose }: Props) {
       return { nextCurrent: current, nextTemp };
     }
 
-    if (mode === "damage") {
-      if (useTempFirst && nextTemp > 0) {
-        const used = Math.min(nextTemp, amt);
-        nextTemp -= used;
-        const remaining = amt - used;
-        nextCurrent = clamp(nextCurrent - remaining, 0, effectiveMax);
-      } else {
-        nextCurrent = clamp(nextCurrent - amt, 0, effectiveMax);
-      }
-    }
-
     if (mode === "heal") {
       nextCurrent = clamp(nextCurrent + amt, 0, effectiveMax);
     }
@@ -64,7 +52,7 @@ export function HpModal({ sheet, onClose }: Props) {
     }
 
     return { nextCurrent, nextTemp };
-  }, [mode, amount, useTempFirst, current, maxDraft, tempDraft]);
+  }, [mode, amount, current, maxDraft, tempDraft]);
 
   const footer = (
     <>
@@ -116,7 +104,6 @@ export function HpModal({ sheet, onClose }: Props) {
         </div>
 
         <SelectField label="Action" value={mode} onChange={(e) => setMode(e.target.value as Mode)} size={"lg" as any}>
-          <option value="damage">Take Damage</option>
           <option value="heal">Heal</option>
           <option value="set">Set Current</option>
         </SelectField>
@@ -125,13 +112,6 @@ export function HpModal({ sheet, onClose }: Props) {
           <label className={styles.label}>Amount</label>
           <Input type="number" min={0} value={amount} onChange={(e) => setAmount(Number(e.target.value))} />
         </div>
-
-        {mode === "damage" && (
-          <label className={styles.checkbox}>
-            <input type="checkbox" checked={useTempFirst} onChange={(e) => setUseTempFirst(e.target.checked)} />
-            Use Temp HP first
-          </label>
-        )}
 
         <div className={styles.preview}>
           <div className={styles.k}>After</div>

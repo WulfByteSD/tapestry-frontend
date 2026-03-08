@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button, Modal, Input } from "@tapestry/ui";
 import { applyHarm } from "@tapestry/api-client";
 import { api } from "@/lib/api";
@@ -30,6 +30,7 @@ function getEquippedProtection(sheet: any): number {
 }
 
 export function HarmModal({ sheet, onClose }: Props) {
+  const queryClient = useQueryClient();
   const hp = sheet?.sheet?.resources?.hp ?? { current: 0, max: 0, temp: 0 };
   const [incomingHarm, setIncomingHarm] = useState<number>(1);
   const [useTempFirst, setUseTempFirst] = useState(true);
@@ -48,6 +49,7 @@ export function HarmModal({ sheet, onClose }: Props) {
     },
     onSuccess: (res) => {
       setResult(res.payload);
+      queryClient.invalidateQueries({ queryKey: ["character", sheet._id] });
     },
     onError: (err) => {
       console.error("Apply harm failed:", err);
@@ -84,14 +86,25 @@ export function HarmModal({ sheet, onClose }: Props) {
         <div className={styles.stack}>
           <div className={styles.previewBox}>
             <div className={styles.previewTitle}>Damage Applied</div>
-            <div>Incoming Harm: {result.incomingHarm}</div>
-            <div>Protection: {result.protection}</div>
-            <div>Applied Harm: {result.appliedHarm}</div>
-            <div>
-              HP: {result.hpBefore} → {result.hpAfter}
+            <div className={styles.previewRow}>
+              <span className={styles.previewLabel}>Incoming Harm:</span>
+              <span className={styles.previewValue}>{result.incomingHarm}</span>
             </div>
-            <div>
-              Temp: {result.tempBefore} → {result.tempAfter}
+            <div className={styles.previewRow}>
+              <span className={styles.previewLabel}>Protection:</span>
+              <span className={styles.previewValue}>{result.protection}</span>
+            </div>
+            <div className={styles.previewRow}>
+              <span className={styles.previewLabel}>Applied Harm:</span>
+              <span className={styles.previewValue}>{result.appliedHarm}</span>
+            </div>
+            <div className={styles.previewRow}>
+              <span className={styles.previewLabel}>HP:</span>
+              <span className={styles.previewValue}>{result.hpBefore} → {result.hpAfter}</span>
+            </div>
+            <div className={styles.previewRow}>
+              <span className={styles.previewLabel}>Temp HP:</span>
+              <span className={styles.previewValue}>{result.tempBefore} → {result.tempAfter}</span>
             </div>
           </div>
 
@@ -143,9 +156,18 @@ export function HarmModal({ sheet, onClose }: Props) {
 
           <div className={styles.previewBox}>
             <div className={styles.previewTitle}>Preview</div>
-            <div>Incoming Harm: {Math.max(0, Number(incomingHarm) || 0)}</div>
-            <div>Protection: {totalProtection}</div>
-            <div>Estimated Applied Harm: {Math.max(0, (Number(incomingHarm) || 0) - totalProtection)}</div>
+            <div className={styles.previewRow}>
+              <span className={styles.previewLabel}>Incoming Harm:</span>
+              <span className={styles.previewValue}>{Math.max(0, Number(incomingHarm) || 0)}</span>
+            </div>
+            <div className={styles.previewRow}>
+              <span className={styles.previewLabel}>Protection:</span>
+              <span className={styles.previewValue}>{totalProtection}</span>
+            </div>
+            <div className={styles.previewRow}>
+              <span className={styles.previewLabel}>Estimated Applied Harm:</span>
+              <span className={styles.previewValue}>{Math.max(0, (Number(incomingHarm) || 0) - totalProtection)}</span>
+            </div>
           </div>
 
           {mutation.isError ? (
