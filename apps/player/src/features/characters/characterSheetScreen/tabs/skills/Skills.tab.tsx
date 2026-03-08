@@ -1,17 +1,15 @@
-// tabs/skills/Skills.tab.tsx
+// apps/player/src/features/characters/characterSheetScreen/tabs/skills/Skills.tab.tsx
 "use client";
 
 import { useMemo, useState } from "react";
-import { Button, Card, CardBody, CardHeader } from "@tapestry/ui";
+import { useQuery } from "@tanstack/react-query";
+import { Button, Card, CardBody, CardHeader, Tooltip } from "@tapestry/ui";
+import { getSkillsForSetting } from "@tapestry/api-client";
 import type { CharacterSheet, SkillDefinition } from "@tapestry/types";
+import { api } from "@/lib/api";
 import { useUpdateCharacterSheetMutation } from "../../characterSheet.mutations";
-import {
-  addSkillToMap,
-  normalizeSkillsMap,
-  removeSkillFromMap,
-  titleCaseFallback,
-  updateSkillRank,
-} from "./skills.functions";
+import { addSkillToMap, normalizeSkillsMap, removeSkillFromMap, updateSkillRank } from "./skills.functions";
+import { enrichLearnedSkills } from "./skillDisplay.helpers";
 import { SkillLibraryModal } from "./SkillLibrary.modal";
 import styles from "./SkillsTab.module.scss";
 import { FaTrash } from "react-icons/fa";
@@ -27,15 +25,17 @@ export function SkillsTab({ sheet }: Props) {
 
   const skillsMap = useMemo(() => normalizeSkillsMap(sheet?.sheet?.skills), [sheet?._id, sheet?.sheet?.skills]);
 
+  const skillsQuery = useQuery({
+    queryKey: ["content:skills", sheet.settingKey],
+    enabled: !!sheet.settingKey,
+    queryFn: () => getSkillsForSetting(api, sheet.settingKey!),
+  });
+
+  const skillDefinitions = skillsQuery.data?.payload ?? [];
+
   const learnedSkills = useMemo(() => {
-    return Object.entries(skillsMap)
-      .map(([key, rank]) => ({
-        key,
-        rank,
-        label: titleCaseFallback(key),
-      }))
-      .sort((a, b) => a.label.localeCompare(b.label));
-  }, [skillsMap]);
+    return enrichLearnedSkills(skillsMap, skillDefinitions);
+  }, [skillsMap, skillDefinitions]);
 
   function persistSkills(nextSkills: Record<string, number>, settingKey?: string) {
     const payload: Record<string, unknown> = {
@@ -83,23 +83,40 @@ export function SkillsTab({ sheet }: Props) {
               {learnedSkills.map((skill) => (
                 <div key={skill.key} className={styles.skillCard}>
                   <div className={styles.skillInfo}>
-                    <div className={styles.skillName}>{skill.label}</div>
-                    <div className={styles.deleteIcon} onClick={() => handleRemove(skill.key)}>
-                      <FaTrash />
+                    <div className={styles.skillName}>{skill.name}</div>
+
+                    <div className={styles.skillMeta}>
+                      {skill.category ?? "other"}
+                      {skill.defaultAspect ? ` • ${skill.defaultAspect}` : ""}
                     </div>
+
+                    {skill.notes ? <div className={styles.skillNotes}>{skill.notes}</div> : null}
+                    <Tooltip placement="top" title={`Remove ${skill.name}`}>
+                      <Button
+                        className={styles.deleteIcon}
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => handleRemove(skill.key)}
+                        aria-label={`Remove ${skill.name}`}
+                      >
+                        <FaTrash />
+                      </Button>
+                    </Tooltip>
                   </div>
 
-                  <div className={styles.rankControls}>
-                    <Button size="sm" variant="outline" onClick={() => handleRankChange(skill.key, skill.rank - 1)}>
-                      −
-                    </Button>
+                  <div className={styles.skillActions}>
+                    <div className={styles.rankControls}>
+                      <Button size="sm" variant="ghost" onClick={() => handleRankChange(skill.key, skill.rank - 1)}>
+                        −
+                      </Button>
 
-                    <span className={styles.rankValue}>Rank {skill.rank}</span>
+                      <span className={styles.rankValue}>Rank {skill.rank}</span>
 
-                    <Button size="sm" variant="outline" onClick={() => handleRankChange(skill.key, skill.rank + 1)}>
-                      +
-                    </Button>
-                  </div> 
+                      <Button size="sm" variant="ghost" onClick={() => handleRankChange(skill.key, skill.rank + 1)}>
+                        +
+                      </Button>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>

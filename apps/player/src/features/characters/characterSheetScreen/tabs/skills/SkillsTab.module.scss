@@ -63,10 +63,12 @@
   cursor: pointer;
   padding: 4px;
   border-radius: 6px;
+  width: 100%;
 
   &:hover {
     background: color-mix(in srgb, var(--contrast) 12%, transparent);
-    color: var(--text);
+    // use the same color mix as the skill card but with a lower opacity to create a subtle hover effect
+    color: color-mix(in srgb, var(--danger) 80%, var(--text) 20%);
   }
 }
 
@@ -97,7 +99,28 @@
   font-weight: 700;
   color: var(--text);
 }
+/* SkillsTab.module.scss */
 
+.skillMeta {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: capitalize;
+}
+
+.skillNotes {
+  margin-top: 4px;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+
+.skillActions {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
 @media (min-width: 720px) {
   .skillGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
