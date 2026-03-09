@@ -1,0 +1,175 @@
+.screenCard {
+  min-height: 420px;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.title {
+  font-size: 14px;
+  font-weight: 900;
+  color: var(--text);
+}
+
+.subtitle {
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.body {
+  display: grid;
+  gap: 12px;
+}
+
+.conditionGrid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1fr;
+  align-items: stretch;
+}
+
+.conditionCard {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border: 1px solid color-mix(in srgb, var(--contrast) 14%, transparent);
+  background: color-mix(in srgb, var(--base-two) 72%, transparent);
+  border-radius: 16px;
+  padding: 12px;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+  height: 100%;
+}
+
+.conditionCardActive {
+  border-color: color-mix(in srgb, var(--gold) 36%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--gold) 14%, transparent);
+}
+
+.conditionToggle {
+  all: unset;
+  display: block;
+  cursor: pointer;
+}
+
+.conditionToggle:disabled {
+  cursor: default;
+}
+
+.conditionTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.conditionName {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.conditionSummary {
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
+.conditionState {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.tagRow,
+.effectList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tag,
+.effectChip {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  background: color-mix(in srgb, var(--gold) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--gold) 20%, transparent);
+}
+
+.activePanel {
+  display: grid;
+  gap: 12px;
+  padding-top: 4px;
+  border-top: 1px solid color-mix(in srgb, var(--contrast) 10%, transparent);
+}
+
+.fieldGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.textarea {
+  width: 100%;
+  border-radius: 14px;
+  padding: 10px 12px;
+  font-size: 13px;
+  border: 1px solid color-mix(in srgb, var(--contrast) 16%, transparent);
+  background: color-mix(in srgb, var(--base-two) 70%, transparent);
+  color: var(--text);
+  resize: vertical;
+  min-height: 84px;
+
+  &:focus {
+    outline: none;
+    border-color: color-mix(in srgb, var(--gold) 45%, transparent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--gold) 16%, transparent);
+  }
+}
+
+.actionsRow {
+  display: flex;
+  justify-content: flex-end;
+}
+
+@media (min-width: 720px) {
+  .conditionGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .fieldGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1100px) {
+  .conditionGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
