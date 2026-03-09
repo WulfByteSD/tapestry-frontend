@@ -54,7 +54,7 @@ export type AbilityDefinition = {
 export type CharacterLearnedAbility = {
   abilityId: string;
   abilityKey: string;
-  sourceType: "learned";
+  sourceType: "learned" | "innate"; // can be learned through progression or innate to the character (e.g. racial trait)
   notes?: string;
   prepared?: boolean;
 };
@@ -64,7 +64,7 @@ export type EffectiveAbility = {
   abilityKey: string;
   name: string;
   category?: AbilityCategory;
-  sourceType: "learned" | "item";
+  sourceType: "learned" | "innate" | "item";
   sourceLabel?: string;
   sourceInstanceId?: string;
   activation?: AbilityActivation;

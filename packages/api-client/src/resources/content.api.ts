@@ -2,7 +2,7 @@ import type { AxiosInstance } from "axios";
 import type { ApiListResponse, ListQueryParams } from "../list/list.types";
 import { cleanParams } from "../list/list.utils";
 import { ItemDefinition, SettingDefinition, SkillDefinition } from "../../../types/src/content";
-import { GrantedAbilityRef } from "../../../types/src";
+import { AbilityDefinition, GrantedAbilityRef } from "../../../types/src";
 type ApiResponse<T> = {
   success: boolean;
   payload: T;
@@ -46,12 +46,16 @@ export async function getSkillsForSetting(
 export async function getAbilitiesForSetting(
   api: AxiosInstance,
   settingKey: string,
-): Promise<ApiListResponse<GrantedAbilityRef>> {
-  const res = await api.get(`/game/content/abilities/setting/${encodeURIComponent(settingKey)}`);
+): Promise<ApiListResponse<AbilityDefinition>> {
+  const res = await api.get(`/game/content/abilities/setting/${encodeURIComponent(settingKey)}`, {
+    params: {
+      sourceType: "learned,innate",
+    },
+  });
   return res.data;
 }
 
-export async function getAbilityByKey(api: AxiosInstance, key: string): Promise<ApiResponse<GrantedAbilityRef>> {
+export async function getAbilityByKey(api: AxiosInstance, key: string): Promise<ApiResponse<AbilityDefinition>> {
   const res = await api.get(`/game/content/abilities/by-key/${encodeURIComponent(key)}`);
   return res.data;
 }

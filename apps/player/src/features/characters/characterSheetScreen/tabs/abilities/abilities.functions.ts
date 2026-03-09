@@ -30,7 +30,7 @@ export function addLearnedAbility(
     {
       abilityId: ability._id,
       abilityKey: ability.key,
-      sourceType: "learned",
+      sourceType: ability.sourceType === "innate" ? "learned" : ability.sourceType as any,
     },
   ];
 }
