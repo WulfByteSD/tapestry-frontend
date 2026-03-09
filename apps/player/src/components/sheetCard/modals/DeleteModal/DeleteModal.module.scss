@@ -1,0 +1,15 @@
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.warning {
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+.confirmInstruction {
+  margin: 0;
+  color: var(--text-secondary);
+}

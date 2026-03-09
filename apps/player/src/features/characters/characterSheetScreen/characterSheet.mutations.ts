@@ -127,3 +127,30 @@ export function useDeleteCharacterMutation() {
     },
   });
 }
+
+export function useDuplicateCharacterMutation() {
+  const qc = useQueryClient();
+  const { addAlert } = useAlert();
+
+  return useMutation({
+    mutationKey: ["character:duplicate"],
+    mutationFn: async ({ characterId, copyAllData }: { characterId: string; copyAllData: boolean }) => {
+      const res = await api.post(`/game/characters/${characterId}/fork`, { copyAllData });
+      return res.data as ApiResponse<{ _id: string; name: string }>;
+    },
+    onSuccess: (data) => {
+      // Invalidate character list to show the new duplicate
+      qc.invalidateQueries({ queryKey: ["characters"] });
+      addAlert({
+        type: "success",
+        message: `Character duplicated: ${data.payload?.name || "Copy created"}`,
+      });
+    },
+    onError: (error: any) => {
+      addAlert({
+        type: "error",
+        message: error?.response?.data?.message || "Failed to duplicate character",
+      });
+    },
+  });
+}
