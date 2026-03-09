@@ -1,0 +1,108 @@
+/* apps/player/src/features/characters/characterSheetScreen/tabs/abilities/AbilityLibraryModal.module.scss */
+
+.content {
+  display: grid;
+  gap: 14px;
+  min-height: 280px;
+}
+
+.controls {
+  display: grid;
+  gap: 10px;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.emptyState {
+  border: 1px dashed color-mix(in srgb, var(--contrast) 18%, transparent);
+  background: color-mix(in srgb, var(--base-two) 60%, transparent);
+  color: var(--text-muted);
+  border-radius: 16px;
+  padding: 18px 16px;
+  text-align: center;
+  font-size: 13px;
+}
+
+.abilityList {
+  display: grid;
+  gap: 10px;
+  max-height: min(60vh, 520px);
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.abilityCard {
+  display: grid;
+  gap: 10px;
+  border: 1px solid color-mix(in srgb, var(--contrast) 14%, transparent);
+  background: color-mix(in srgb, var(--base-two) 72%, transparent);
+  border-radius: 16px;
+  padding: 12px;
+}
+
+.abilityTopRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.abilityName {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.abilityMeta {
+  margin-top: 4px;
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: capitalize;
+}
+
+.tagRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  background: color-mix(in srgb, var(--gold) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--gold) 20%, transparent);
+}
+
+.abilitySummary {
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+
+.abilityEffect {
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--text);
+}
+
+@media (min-width: 720px) {
+  .controls {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: end;
+  }
+}

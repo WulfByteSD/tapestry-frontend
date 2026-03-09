@@ -1,0 +1,174 @@
+/* apps/player/src/features/characters/characterSheetScreen/tabs/abilities/AbilitiesTab.module.scss */
+
+.screenCard {
+  min-height: 420px;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.title {
+  font-size: 14px;
+  font-weight: 900;
+  color: var(--text);
+}
+
+.subtitle {
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.body {
+  display: grid;
+  gap: 16px;
+}
+
+.emptyState {
+  border: 1px dashed color-mix(in srgb, var(--contrast) 18%, transparent);
+  background: color-mix(in srgb, var(--base-two) 60%, transparent);
+  color: var(--text-muted);
+  border-radius: 16px;
+  padding: 18px 16px;
+  text-align: center;
+  font-size: 13px;
+}
+
+.section {
+  display: grid;
+  gap: 10px;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.sectionTitle {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.sectionHint {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.abilityGrid {
+  display: grid;
+  gap: 10px;
+}
+
+.abilityCard {
+  display: grid;
+  gap: 10px;
+  border: 1px solid color-mix(in srgb, var(--contrast) 14%, transparent);
+  background: color-mix(in srgb, var(--base-two) 72%, transparent);
+  border-radius: 16px;
+  padding: 12px;
+}
+
+.abilityCardUnavailable {
+  opacity: 0.7;
+  border-style: dashed;
+}
+
+.abilityTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.abilityInfo {
+  display: grid;
+  gap: 4px;
+}
+
+.abilityName {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.abilityMeta {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: capitalize;
+}
+
+.abilitySummary {
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+
+.abilityEffect {
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--text);
+}
+
+.tagRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  background: color-mix(in srgb, var(--gold) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--gold) 20%, transparent);
+}
+
+.sourceRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.sourceChip {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  background: color-mix(in srgb, var(--contrast) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--contrast) 16%, transparent);
+}
+
+.actionsRow {
+  display: flex;
+  justify-content: flex-end;
+}
+
+@media (min-width: 720px) {
+  .abilityGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1100px) {
+  .abilityGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

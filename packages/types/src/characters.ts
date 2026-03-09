@@ -1,4 +1,4 @@
-import { EffectiveAbility, GrantedAbilityRef } from "./abilities";
+import { CharacterLearnedAbility, EffectiveAbility, GrantedAbilityRef } from "./abilities";
 
 export type SheetStatus = "active" | "archived";
 
@@ -126,6 +126,7 @@ export type CharacterSheet = {
       resolve?: ResourceTrack;
       other: Record<string, number>;
     };
+    learnedAbilities: CharacterLearnedAbility[];
     conditions: ConditionInstance[];
     inventory: InventoryItem[];
     noteCards: NoteCard[];
