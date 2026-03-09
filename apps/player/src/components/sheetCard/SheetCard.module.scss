@@ -1,100 +1,218 @@
 .sheetCard {
-  flex-shrink: 0; /* Prevent card from being squished by parent flex container */
+  width: 100%;
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.02)), rgba(255, 255, 255, 0.02);
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+
+  &:hover {
+    transform: translateY(-3px);
+    border-color: color-mix(in srgb, var(--accent) 42%, rgba(255, 255, 255, 0.1));
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.025)), rgba(255, 255, 255, 0.025);
+  }
 }
 
 .cardHeader {
-  display: grid;
-  gap: 8px;
+  padding: 0;
 }
 
-.headerRow {
+.heroArea {
+  position: relative;
   display: grid;
-  grid-template-columns: 44px 1fr;
-  gap: 12px;
-  align-items: center;
-}
-
-.avatar {
-  width: 44px;
-  height: 44px;
-  border-radius: 999px;
-  border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent);
-  background: color-mix(in srgb, var(--surface) 75%, black);
+  grid-template-columns: 96px minmax(0, 1fr);
+  gap: 0.95rem;
+  padding: 1rem;
   overflow: hidden;
-  display: grid;
-  place-items: center;
+}
+
+.heroBackdrop {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at top left, color-mix(in srgb, var(--accent) 18%, transparent), transparent 48%),
+    linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(168, 85, 247, 0.12));
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  pointer-events: none;
+}
+
+.avatarPanel,
+.avatarFallback {
+  position: relative;
+  border-radius: 14px;
+  min-height: 128px;
+  overflow: hidden;
+}
+
+.avatarPanel {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.18);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 .avatarImg {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
 }
 
 .avatarFallback {
-  width: 100%;
-  height: 100%;
   display: grid;
   place-items: center;
+  font-size: 1.6rem;
   font-weight: 900;
+  letter-spacing: 0.08em;
   color: var(--accent-5);
-  background: radial-gradient(
-    70% 70% at 30% 20%,
-    color-mix(in srgb, var(--accent-4) 35%, transparent),
-    transparent 60%
-  );
+  background:
+    radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.08), transparent 35%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.15));
 }
 
-.headerMain {
-  display: grid;
-  gap: 6px;
-}
-
-.cardTitleRow {
+.heroContent {
+  position: relative;
   display: flex;
-  align-items: baseline;
+  flex-direction: column;
   justify-content: space-between;
-  gap: 10px;
+  gap: 0.85rem;
+  min-width: 0;
 }
 
-.cardTitle {
-  font-size: 16px;
-  font-weight: 900;
-  letter-spacing: 0.1px;
+.titleBlock {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 0;
 }
 
-.badge {
-  font-size: 12px;
-  padding: 4px 10px;
-  border-radius: 999px;
-  border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
-  background: color-mix(in srgb, var(--accent) 10%, transparent);
-  color: var(--accent-5);
-  white-space: nowrap;
-}
-
-.meta {
-  font-size: 12px;
+.eyebrow {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
   color: var(--text-muted);
 }
 
-.metaValue {
-  color: var(--text);
+.cardTitle {
+  margin: 0;
+  font-size: 1.25rem;
+  line-height: 1.1;
+  font-weight: 900;
+  overflow-wrap: anywhere;
+}
+
+.cardSubTitle {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  overflow-wrap: anywhere;
+}
+
+.heroBadges,
+.tagRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.badge,
+.levelBadge,
+.tagChip {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  max-width: 100%;
+  padding: 0.32rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.74rem;
+  line-height: 1;
+}
+
+.badge,
+.tagChip {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.levelBadge {
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  color: var(--accent-5);
   font-weight: 700;
 }
 
 .cardBody {
-  padding-top: 12px;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 0.9rem;
+  padding-top: 1rem;
+}
+
+.statGrid,
+.detailGrid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.statGrid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.detailGrid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.statTile,
+.detailTile {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 0;
+  padding: 0.8rem 0.9rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.statLabel,
+.detailLabel,
+.tagLabel {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+.statValue,
+.detailValue {
+  font-size: 0.92rem;
+  font-weight: 700;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.tagSection {
+  display: grid;
+  gap: 0.5rem;
 }
 
 .actionRow {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 0.65rem;
+  margin-top: auto;
 }
 
 .openBtn {
-  flex: 1;
+  flex: 1 1 auto;
 }
 
 .iconBtn {
@@ -104,4 +222,43 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  font-size: 1.05rem;
+}
+
+@media (max-width: 720px) {
+  .heroArea {
+    grid-template-columns: 84px minmax(0, 1fr);
+  }
+
+  .avatarPanel,
+  .avatarFallback {
+    min-height: 112px;
+  }
+
+  .statGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .statGrid,
+  .detailGrid,
+  .tagSection {
+    display: none;
+  }
+}
+
+@media (max-width: 460px) {
+  .sheetCard {
+    max-width: none;
+  }
+
+  .heroArea {
+    grid-template-columns: 1fr;
+  }
+
+  .avatarPanel,
+  .avatarFallback {
+    min-height: 148px;
+  }
 }

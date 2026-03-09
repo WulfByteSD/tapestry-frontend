@@ -43,13 +43,17 @@
 }
 
 .grid {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  // ensure atleast 3 cards on larger screens, but allow to shrink down to 1 card on smaller screens
+  // constrain max column width to 360px to prevent cards from growing too large
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 360px));
   gap: 14px;
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding-right: 4px; /* Prevent scrollbar from cutting off content */
+  padding-right: 4px;
+  align-content: start;
+  justify-content: space-evenly;
 }
 
 .emptyCard {
@@ -74,6 +78,7 @@
 .emptyBody {
   padding-top: 12px;
 }
+
 @media (max-width: 420px) {
   .topRow {
     flex-direction: column;
@@ -82,5 +87,9 @@
 
   .actions {
     justify-content: stretch;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
   }
 }
