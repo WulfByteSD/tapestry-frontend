@@ -13,16 +13,38 @@ import { CharacterSheet, NoteCard } from "@tapestry/types";
 import { createTabs, type TabKey } from "./tabs";
 import { CharacterDetailsModal } from "./CharacterDetails.modal";
 import Image from "next/image";
+import { FaCog } from "react-icons/fa";
 
 type Props = { characterId: string; mode: "build" | "play" };
+function titleCaseFromKey(value?: string | null) {
+  if (!value) return "";
 
+  return value
+    .replace(/[_-]+/g, " ")
+    .replace(/\b\w/g, (m) => m.toUpperCase())
+    .trim();
+}
+
+function truncateText(value?: string | null, max = 140) {
+  if (!value) return "";
+  if (value.length <= max) return value;
+  return `${value.slice(0, max).trim()}…`;
+}
 export default function CharacterSheetScreen({ characterId, mode }: Props) {
   const router = useRouter();
   const { data, isLoading, isError, error } = useCharacterSheetQuery<CharacterSheet>(characterId);
 
   const sheet = data?.payload;
   const updateMutation = useUpdateCharacterSheetMutation<CharacterSheet>(characterId);
+  const profile = sheet?.sheet?.profile ?? {};
+  const heroTitle = profile.title?.trim() || "";
+  const heroBio = truncateText(profile.bio?.trim(), 120);
 
+  const settingBadgeLabel = sheet?.settingKey ? titleCaseFromKey(sheet.settingKey) : "No Setting";
+
+  const campaignBadgeLabel = sheet?.campaign ? "Campaign Linked" : "No Campaign";
+
+  const statusBadgeLabel = titleCaseFromKey(sheet?.status);
   const [nameDraft, setNameDraft] = useState("");
   const [editingName, setEditingName] = useState(false);
 
@@ -117,119 +139,88 @@ export default function CharacterSheetScreen({ characterId, mode }: Props) {
         <div className={styles.topSpacer} />
       </div>
 
-      <Card inlay className={styles.hero}>
-        <CardBody className={styles.heroBody}>
-          <div className={styles.avatar} aria-hidden="true">
-            {sheet.avatarUrl ? (
-              <Image
-                src={sheet.avatarUrl}
-                alt={sheet.name}
-                width={200}
-                height={200}
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                  borderRadius: "inherit",
-                  display: "block",
-                }}
-              />
-            ) : (
-              <span className={styles.avatarGlyph}>{sheet.name?.[0]?.toUpperCase() ?? "?"}</span>
-            )}
-          </div>
+      {/* <Card inlay className={styles.hero}>
+        <CardBody className={styles.heroBody}> */}
+      <div className={styles.heroContent}>
+        <div className={styles.heroHeaderRow}>
+          {sheet.avatarUrl ? (
+            <Image src={sheet.avatarUrl} alt={sheet.name} width={72} height={72} className={styles.avatar} />
+          ) : (
+            <div className={styles.avatarFallback}>{sheet.name?.[0]?.toUpperCase() ?? "?"}</div>
+          )}
 
           <div className={styles.heroMain}>
-            <div className={styles.nameRow}>
-              <div className={styles.nameLine}>
-                {editingName ? (
-                  <input
-                    className={styles.nameInput}
-                    value={nameDraft}
-                    onChange={(e) => {
-                      const v = e.target.value;
-                      setNameDraft(v);
-                      debouncedSaveName.call(v);
-                    }}
-                    onBlur={() => {
-                      commitNameNow();
-                      setEditingName(false);
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") (e.target as HTMLInputElement).blur();
-                      if (e.key === "Escape") cancelNameEdit();
-                    }}
-                    autoFocus
-                    maxLength={60}
-                  />
-                ) : (
-                  <button
-                    type="button"
-                    className={styles.nameButton}
-                    onClick={() => setEditingName(true)}
-                    title="Edit name"
-                  >
-                    <span className={styles.nameText}>{sheet.name}</span>
-                    <span className={styles.namePencil} aria-hidden="true">
-                      ✎
-                    </span>
-                  </button>
-                )}
+            {editingName ? (
+              <input
+                className={styles.nameInput}
+                value={nameDraft}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  setNameDraft(v);
+                  debouncedSaveName.call(v);
+                }}
+                onBlur={() => {
+                  commitNameNow();
+                  setEditingName(false);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") (e.target as HTMLInputElement).blur();
+                  if (e.key === "Escape") cancelNameEdit();
+                }}
+                autoFocus
+                maxLength={60}
+              />
+            ) : (
+              <button
+                type="button"
+                className={styles.nameButton}
+                onClick={() => setEditingName(true)}
+                title="Edit name"
+              >
+                {sheet.name} <span className={styles.editGlyph}>✎</span>
+              </button>
+            )}
 
-                <div className={styles.saveBadgeWrap}>
-                  {saveBadge === "saving" && <span className={styles.saveBadge}>Saving</span>}
-                  {saveBadge === "saved" && <span className={styles.saveBadgeSaved}>Saved</span>}
-                  {saveBadge === "error" && <span className={styles.saveBadgeError}>Error</span>}
-                </div>
-              </div>
+            {heroTitle ? <div className={styles.heroTitle}>{heroTitle}</div> : null}
+            {heroBio ? <div className={styles.heroBio}>{heroBio}</div> : null}
 
-              <div className={styles.pills}>
-                <Tooltip title="Your character's power level" placement="left">
-                  <span className={styles.pill}>Weave {sheet.sheet?.weaveLevel ?? 1}</span>
-                </Tooltip>
+            <div className={styles.heroStatsRow}>
+              <span className={styles.heroStat}>Weave {sheet.sheet?.weaveLevel ?? 1}</span>
+              {sheet.sheet?.archetypeKey ? <span className={styles.heroStat}>{sheet.sheet.archetypeKey}</span> : null}
+            </div>
 
-                {sheet.sheet?.archetypeKey ? (
-                  <Tooltip title="Character archetype and class" placement="bottom">
-                    <span className={styles.pill}>{sheet.sheet.archetypeKey}</span>
-                  </Tooltip>
-                ) : null}
-
-                <Tooltip
-                  title={
-                    sheet.campaign
-                      ? "This character is assigned to a campaign"
-                      : "This character is not yet assigned to a campaign"
-                  }
-                  placement="bottom"
-                >
-                  <span className={styles.pill}>{sheet.campaign ? "Campaign" : "Unassigned"}</span>
-                </Tooltip>
-
-                <Button tone="purple" variant="outline" size="sm" onClick={() => setDetailsOpen(true)}>
-                  Details
-                </Button>
-
-                <div className={styles.modeToggle}>
-                  <button
-                    type="button"
-                    className={currentMode === "play" ? styles.modeButtonActive : styles.modeButton}
-                    onClick={() => setCurrentMode("play")}
-                  >
-                    Play
-                  </button>
-                  <button
-                    type="button"
-                    className={currentMode === "build" ? styles.modeButtonActive : styles.modeButton}
-                    onClick={() => setCurrentMode("build")}
-                  >
-                    Build
-                  </button>
-                </div>
-              </div>
+            <div className={styles.badgeRow}>
+              <span className={styles.badge}>{settingBadgeLabel}</span>
+              <span className={styles.badge}>{campaignBadgeLabel}</span>
+              <span className={styles.badge}>{statusBadgeLabel}</span>
             </div>
           </div>
-        </CardBody>
-      </Card>
+
+          <div className={styles.heroActions}>
+            <div className={styles.modeToggle}>
+              <button
+                type="button"
+                className={currentMode === "play" ? styles.modeButtonActive : styles.modeButton}
+                onClick={() => setCurrentMode("play")}
+              >
+                Play
+              </button>
+              <button
+                type="button"
+                className={currentMode === "build" ? styles.modeButtonActive : styles.modeButton}
+                onClick={() => setCurrentMode("build")}
+              >
+                Build
+              </button>
+            </div>
+            <Button size="sm" variant="ghost" onClick={() => setDetailsOpen(true)}>
+              <FaCog />
+            </Button>
+          </div>
+        </div>
+      </div>
+      {/* </CardBody>
+      </Card> */}
       <CharacterDetailsModal
         open={detailsOpen}
         sheet={sheet}

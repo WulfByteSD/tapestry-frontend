@@ -1,9 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Button, Input, Modal } from "@tapestry/ui";
+import { Button, Input, Modal, Select } from "@tapestry/ui";
 import type { CharacterSheet } from "@tapestry/types";
 import styles from "./CharacterDetails.module.scss";
+import { useQuery } from "@tanstack/react-query";
+import { api } from "@/lib/api";
+import { getSettings } from "@tapestry/api-client";
+import type { SettingDefinition } from "@tapestry/types";
 
 type Props = {
   open: boolean;
@@ -15,17 +19,15 @@ type Props = {
 
 type DraftState = {
   avatarUrl: string;
+  settingKey: string;
   archetypeKey: string;
   weaveLevel: number | string;
-
   title: string;
   bio: string;
-
   race: string;
   nationality: string;
   religion: string;
   sex: string;
-
   height: string;
   weight: string;
   eyes: string;
@@ -39,17 +41,15 @@ function makeDraft(sheet: CharacterSheet): DraftState {
 
   return {
     avatarUrl: sheet.avatarUrl ?? "",
+    settingKey: sheet.settingKey ?? "",
     archetypeKey: sheet.sheet.archetypeKey ?? "",
     weaveLevel: sheet.sheet.weaveLevel ?? 1,
-
     title: profile.title ?? "",
     bio: profile.bio ?? "",
-
     race: profile.race ?? "",
     nationality: profile.nationality ?? "",
     religion: profile.religion ?? "",
     sex: profile.sex ?? "",
-
     height: profile.height ?? "",
     weight: profile.weight ?? "",
     eyes: profile.eyes ?? "",
@@ -58,10 +58,18 @@ function makeDraft(sheet: CharacterSheet): DraftState {
     age: profile.age != null ? String(profile.age) : "",
   };
 }
-
 export function CharacterDetailsModal({ open, sheet, onClose, onSave, isSaving = false }: Props) {
   const [draft, setDraft] = useState<DraftState>(() => makeDraft(sheet));
+  const settingsQuery = useQuery({
+    queryKey: ["content:settings"],
+    queryFn: () =>
+      getSettings(api, {
+        pageLimit: 50,
+        sortOptions: "name",
+      }),
+  });
 
+  const settings = settingsQuery.data?.payload ?? [];
   useEffect(() => {
     if (open) {
       setDraft(makeDraft(sheet));
@@ -77,6 +85,7 @@ export function CharacterDetailsModal({ open, sheet, onClose, onSave, isSaving =
 
     onSave({
       avatarUrl: draft.avatarUrl.trim() || null,
+      settingKey: draft.settingKey.trim() || null,
       "sheet.archetypeKey": draft.archetypeKey.trim() || null,
       "sheet.weaveLevel": normalizedWeaveLevel,
       "sheet.profile": {
@@ -115,6 +124,18 @@ export function CharacterDetailsModal({ open, sheet, onClose, onSave, isSaving =
       destroyOnClose
     >
       <div className={styles.root}>
+        <Select value={draft.settingKey} onChange={(e) => setField("settingKey", e.target.value)}>
+          <option value="">No Setting</option>
+          {settings.map((setting: SettingDefinition) => (
+            <option key={setting.key} value={setting.key}>
+              {setting.name}
+            </option>
+          ))}
+        </Select>
+        <p className={styles.settingHint}>
+          Changing a setting does not automatically remove old items, skills, or notes. Forking is usually the cleaner
+          option when porting a character into another world.
+        </p>
         <div className={styles.grid}>
           <Input
             label="Avatar URL"
