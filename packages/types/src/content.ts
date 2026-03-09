@@ -1,3 +1,4 @@
+import { GrantedAbilityRef } from "./abilities";
 import type { AttackProfile, InventoryCategory } from "./characters";
 
 export type ContentStatus = "draft" | "published" | "archived";
@@ -35,6 +36,7 @@ export type ItemDefinition = {
   stackable?: boolean;
   notes?: string;
   attackProfiles?: AttackProfile[];
+  grantedAbilities?: GrantedAbilityRef[];
   createdAt: string;
   updatedAt: string;
 };

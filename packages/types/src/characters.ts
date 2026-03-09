@@ -1,3 +1,5 @@
+import { EffectiveAbility, GrantedAbilityRef } from "./abilities";
+
 export type SheetStatus = "active" | "archived";
 
 export type AspectScores = {
@@ -58,6 +60,7 @@ export type InventoryItem = {
   slot?: string;
   attackProfiles?: AttackProfile[];
   selectedAttackProfileKey?: string;
+  grantedAbilities?: GrantedAbilityRef[];
   overrides?: {
     displayName?: string;
     modifier?: number;
@@ -127,7 +130,9 @@ export type CharacterSheet = {
     inventory: InventoryItem[];
     noteCards: NoteCard[];
   };
-
+  derived?: {
+    effectiveAbilities?: EffectiveAbility[];
+  };
   forkedFrom?: string | null;
   createdAt: string;
   updatedAt: string;

@@ -53,7 +53,7 @@ export function mapItemDefinitionToInventoryItem(item: ItemDefinition): Inventor
     protection: item.protection,
     itemKey: item.key,
     sourceId: item._id,
-    name: item.name, 
+    name: item.name,
     qty: 1,
     tags: item.tags ?? [],
     notes: item.notes ?? "",
@@ -63,6 +63,7 @@ export function mapItemDefinitionToInventoryItem(item: ItemDefinition): Inventor
     slot: item.slot ?? undefined,
     attackProfiles: item.attackProfiles ?? [],
     selectedAttackProfileKey: item.attackProfiles?.[0]?.key,
+    grantedAbilities: item.grantedAbilities ?? [],
   };
 }
 
