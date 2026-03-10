@@ -9,3 +9,6 @@ export * from "./list";
 
 // resources
 export * from "./resources";
+
+// account management
+export * from "./account";

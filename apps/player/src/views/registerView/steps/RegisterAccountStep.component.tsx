@@ -2,7 +2,7 @@
 
 import { Button, Form, FormField, TextField, useForm } from "@tapestry/ui";
 import { useRegisterContext } from "../Register.context";
-import { isValidEmail } from "../functions";
+import { isValidEmail } from "@/utils/validation";
 import styles from "../Register.module.scss";
 
 interface Props {
@@ -20,14 +20,9 @@ export default function RegisterAccountStep({ busy = false, onComplete }: Props)
       confirmPassword: values.auth.confirmPassword,
     },
     validators: {
-      email: (value) =>
-        isValidEmail(String(value)) ? undefined : "Please use a valid email",
-      password: (value) =>
-        String(value).length >= 10
-          ? undefined
-          : "Password must be at least 10 characters",
-      confirmPassword: (value, nextValues) =>
-        value === nextValues.password ? undefined : "Passwords do not match",
+      email: (value) => (isValidEmail(String(value)) ? undefined : "Please use a valid email"),
+      password: (value) => (String(value).length >= 10 ? undefined : "Password must be at least 10 characters"),
+      confirmPassword: (value, nextValues) => (value === nextValues.password ? undefined : "Passwords do not match"),
     },
     onSubmit: async (nextValues) => {
       setValues((prev) => ({

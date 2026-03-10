@@ -9,7 +9,6 @@ export type MeResponse = {
   payload: {
     _id: string;
     email: string;
-    fullName?: string;
     roles: string[] | string;
     acceptedPolicies?: Record<string, any>;
     notificationSettings?: Record<string, any>;
@@ -23,6 +22,10 @@ export type RegisterInput = {
     password: string;
   };
   player: {
+    firstName: string;
+    lastName?: string;
+    country?: string;
+    region?: string;
     displayName: string;
     bio?: string;
     timezone?: string;

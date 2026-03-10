@@ -1,8 +1,10 @@
+import Settings from "@/views/settings/Settings.view";
+
+export const metadata = {
+  title: "Tapestry TTRPG - Settings",
+  description: "Manage your account settings and preferences",
+};
+
 export default function SettingsPage() {
-  return (
-    <div className="space-y-2">
-      <h1 className="text-xl font-semibold">Settings</h1>
-      <p className="text-sm text-muted-foreground">Theme, Discord, account, etc.</p>
-    </div>
-  );
+  return <Settings />;
 }

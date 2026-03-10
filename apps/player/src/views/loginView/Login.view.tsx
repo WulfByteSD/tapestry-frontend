@@ -5,7 +5,8 @@ import Link from "next/link";
 import Image from "next/image";
 import styles from "./Login.module.scss";
 import { useLogin } from "@/lib/auth-hooks";
-import { getLoginErrorMessage, isValidEmail } from "./functions";
+import { getLoginErrorMessage } from "./functions";
+import { isValidEmail } from "@/utils/validation";
 import { Button, Card, CardBody, CardHeader, Form, FormField, TextField, useForm } from "@tapestry/ui";
 
 export default function LoginView() {
@@ -35,7 +36,6 @@ export default function LoginView() {
 
   const emailOk = isValidEmail(form.values.email);
   const canSubmit = emailOk && form.values.password.length >= 1 && !isBusy;
- 
 
   return (
     <div className={styles.wrap}>

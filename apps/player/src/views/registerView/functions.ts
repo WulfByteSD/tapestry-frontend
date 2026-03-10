@@ -1,9 +1,5 @@
 import type { AxiosError } from "axios";
 
-export function isValidEmail(email: string) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
-}
-
 export function isValidPhone(phone: string) {
   // MVP: accept digits, spaces, (), -, +. Require at least 10 digits.
   const digits = phone.replace(/[^\d]/g, "");

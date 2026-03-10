@@ -1,11 +1,8 @@
 export interface AuthType {
-  _id: string;
-  firstName: string;
-  lastName: string;
+  _id: string; 
   customerId: string;
   email: string;
-  role: string[];
-  fullName: string;
+  role: string[]; 
   isActive: boolean;
   notificationSettings: Record<string, boolean>;
   createdAt: Date;
