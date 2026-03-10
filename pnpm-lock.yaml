@@ -30,6 +30,9 @@ importers:
       '@tapestry/api-client':
         specifier: workspace:^
         version: link:../../packages/api-client
+      '@tapestry/hooks':
+        specifier: workspace:^
+        version: link:../../packages/hooks
       '@tapestry/types':
         specifier: workspace:^
         version: link:../../packages/types
@@ -91,6 +94,9 @@ importers:
       '@tapestry/api-client':
         specifier: workspace:^
         version: link:../../packages/api-client
+      '@tapestry/hooks':
+        specifier: workspace:^
+        version: link:../../packages/hooks
       '@tapestry/rules':
         specifier: workspace:^
         version: link:../../packages/rules
@@ -158,6 +164,24 @@ importers:
       axios:
         specifier: ^1.7.0
         version: 1.13.5
+
+  packages/hooks:
+    dependencies:
+      '@tanstack/react-query':
+        specifier: ^5.90.21
+        version: 5.90.21(react@19.2.3)
+      '@tapestry/api-client':
+        specifier: workspace:^
+        version: link:../api-client
+      '@tapestry/types':
+        specifier: workspace:^
+        version: link:../types
+      axios:
+        specifier: ^1.7.0
+        version: 1.13.5
+      react:
+        specifier: '>=18'
+        version: 19.2.3
 
   packages/rules: {}
 

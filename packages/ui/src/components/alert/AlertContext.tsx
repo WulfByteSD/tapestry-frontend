@@ -1,7 +1,8 @@
 "use client";
 
-import React, { createContext, useContext, useState, useCallback, useRef } from "react";
+import React, { createContext, useContext, useState, useCallback, useRef, useEffect } from "react";
 import type { AlertType, AlertConfig, AlertInput, AlertContextValue, AlertProviderProps } from "./alert.types";
+import { alertManager } from "./AlertManager";
 
 const AlertContext = createContext<AlertContextValue | undefined>(undefined);
 
@@ -80,6 +81,14 @@ export function AlertProvider({ children, defaultDuration = 4500, maxAlerts = 5 
     timersRef.current.clear();
     setAlerts([]);
   }, []);
+
+  // Register alert manager callback for imperative access
+  useEffect(() => {
+    alertManager.register(addAlert);
+    return () => {
+      alertManager.unregister();
+    };
+  }, [addAlert]);
 
   // Cleanup timers on unmount
   React.useEffect(() => {

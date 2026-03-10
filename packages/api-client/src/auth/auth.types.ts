@@ -13,6 +13,7 @@ export type MeResponse = {
     roles: string[] | string;
     acceptedPolicies?: Record<string, any>;
     notificationSettings?: Record<string, any>;
+    profileRefs?: Record<string, string | null>;
   };
 };
 
