@@ -18,13 +18,16 @@ export type MeResponse = {
 };
 
 export type RegisterInput = {
-  firstName: string;
-  lastName?: string;
-  email: string;
-  phoneNumber: string;
-  password: string;
-  roles?: string[];
-  displayName?: string;
+  auth: {
+    email: string;
+    password: string;
+  };
+  player: {
+    displayName: string;
+    bio?: string;
+    timezone?: string;
+    roles: string[];
+  };
 };
 
 export function normalizeRoles(roles: string[] | string) {

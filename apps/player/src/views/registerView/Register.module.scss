@@ -187,8 +187,23 @@
   gap: 12px;
 }
 
+.buttonRow {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px;
+  align-items: center;
+}
+
+.backBtn {
+  min-width: 80px;
+}
+
 @media (max-width: 520px) {
   .row {
+    grid-template-columns: 1fr;
+  }
+
+  .buttonRow {
     grid-template-columns: 1fr;
   }
 }

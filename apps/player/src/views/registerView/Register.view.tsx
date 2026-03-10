@@ -1,167 +1,66 @@
 "use client";
 
 import Link from "next/link";
+import { useMemo } from "react";
 import { useRegister } from "@/lib/auth-hooks";
 import styles from "./Register.module.scss";
-import { isValidEmail, isValidPhone } from "./functions";
-import { Button, Form, FormField, TextField, useForm } from "@tapestry/ui";
+import ProgressIndicator from "./ProgressIndicator.component";
+import { RegisterProvider, useRegisterContext } from "./Register.context";
+import { getRegisterStep, REGISTER_STEPS } from "./register.config";
 
-export default function RegisterView() {
+function RegisterInner() {
   const reg = useRegister();
-  const form = useForm({
-    initialValues: {
-      firstName: "",
-      lastName: "",
-      email: "",
-      phoneNumber: "",
-      password: "",
-      confirm: "",
-    },
-    validators: {
-      firstName: (value) => {
-        return String(value).length > 0 ? undefined : "First name is required";
+  const { step, values } = useRegisterContext();
+
+  const current = getRegisterStep(step);
+  const StepComponent = current.component;
+
+  const labels = useMemo(() => REGISTER_STEPS.map((item) => item.title), []);
+  const currentStepIndex = REGISTER_STEPS.findIndex((item) => item.key === step) + 1;
+
+  const handleComplete = async () => {
+    await reg.mutateAsync({
+      auth: {
+        email: values.auth.email.trim().toLowerCase(),
+        password: values.auth.password,
       },
-      email: (value) => {
-        if (!isValidEmail(value)) return "Please use a valid email";
-        return undefined;
-      },
-      password: (value) => {
-        if (!value) return "Password is required";
-        return undefined;
-      },
-      confirm: (value, values) => {
-        // Validator receives: (fieldValue, allFormValues)
-        if (!value) return "Please confirm your password";
-        if (value !== values.password) return "Passwords do not match";
-        return undefined;
-      },
-    },
-    onSubmit: (values) => {
-      reg.mutate({
-        firstName: values.firstName.trim(),
-        lastName: values.lastName.trim() || undefined,
-        email: values.email.trim().toLowerCase(),
-        phoneNumber: values.phoneNumber.trim(),
-        password: values.password,
+      player: {
+        firstName: values.player.firstName.trim(),
+        lastName: values.player.lastName.trim(),
+        displayName: values.player.displayName.trim(),
+        bio: values.player.bio.trim() || undefined,
+        country: values.player.country.trim() || undefined,
+        region: values.player.region.trim() || undefined,
+        timezone: values.player.timezone.trim() || undefined,
         roles: ["player"],
-      });
-    },
-  });
-
-  const busy = reg.isPending;
-
-  const emailOk = isValidEmail(form.values.email);
-  const phoneOk = isValidPhone(form.values.phoneNumber);
-
-  const canSubmit =
-    form.values.firstName.trim().length > 0 &&
-    emailOk &&
-    phoneOk &&
-    form.values.password.length > 0 &&
-    form.values.confirm.length > 0 &&
-    form.values.password === form.values.confirm &&
-    !busy;
+      },
+    });
+  };
 
   return (
     <div className={styles.wrap}>
       <div className={styles.card}>
         <header className={styles.header}>
           <h1 className={styles.title}>Create account</h1>
-          <p className={styles.subtitle}>Join the weave. Build your first character.</p>
+          <p className={styles.subtitle}>{current.subtitle}</p>
         </header>
 
-        <Form form={form} className={styles.form}>
-          <div className={styles.row}>
-            <FormField name="firstName">
-              {(field) => (
-                <TextField
-                  id="firstName"
-                  label="First name"
-                  value={field.value as string}
-                  onChange={field.onChange}
-                  disabled={busy}
-                />
-              )}
-            </FormField>
-            <FormField name="lastName">
-              {(field) => (
-                <TextField
-                  id="lastName"
-                  label="Last name"
-                  value={field.value as string}
-                  onChange={field.onChange}
-                  disabled={busy}
-                />
-              )}
-            </FormField>
-          </div>
+        <ProgressIndicator currentStep={currentStepIndex} totalSteps={REGISTER_STEPS.length} labels={labels} />
 
-          <FormField name="email">
-            {(field) => (
-              <TextField
-                id="email"
-                label="Email"
-                value={field.value as string}
-                onChange={field.onChange}
-                inputMode="email"
-                autoComplete="email"
-                disabled={busy}
-              />
-            )}
-          </FormField>
+        <StepComponent busy={reg.isPending} onComplete={handleComplete} />
 
-          <FormField name="phoneNumber">
-            {(field) => (
-              <TextField
-                id="phone"
-                label="Phone number"
-                value={field.value as string}
-                onChange={field.onChange}
-                inputMode="tel"
-                autoComplete="tel"
-                disabled={busy}
-                placeholder="(555) 555-5555"
-              />
-            )}
-          </FormField>
-
-          <FormField name="password">
-            {(field) => (
-              <TextField
-                id="password"
-                label="Password"
-                type="password"
-                value={field.value as string}
-                onChange={field.onChange}
-                autoComplete="new-password"
-                disabled={busy}
-                showPasswordToggle
-              />
-            )}
-          </FormField>
-          <FormField name="confirm">
-            {(field) => (
-              <TextField
-                id="confirm"
-                label="Confirm password"
-                type="password"
-                value={field.value as string}
-                onChange={field.onChange}
-                autoComplete="new-password"
-                disabled={busy}
-              />
-            )}
-          </FormField>
-
-          <Button className={styles.primaryBtn} type="submit" disabled={!canSubmit}>
-            {busy ? "Creating…" : "Create account"}
-          </Button>
-
-          <div className={styles.footerText}>
-            Already have an account? <Link href="/login">Sign in</Link>
-          </div>
-        </Form>
+        <div className={styles.footerText}>
+          Already have an account? <Link href="/login">Sign in</Link>
+        </div>
       </div>
     </div>
+  );
+}
+
+export default function RegisterView() {
+  return (
+    <RegisterProvider>
+      <RegisterInner />
+    </RegisterProvider>
   );
 }

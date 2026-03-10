@@ -1,0 +1,57 @@
+.progress {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+  position: relative;
+  z-index: 1;
+}
+
+.lineContainer {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.line {
+  flex: 1;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--border-strong);
+  transition: all 0.3s ease;
+
+  &.active {
+    background: linear-gradient(90deg, color-mix(in srgb, var(--gold) 92%, white), var(--gold-soft));
+    box-shadow: 0 0 8px color-mix(in srgb, var(--gold) 35%, transparent);
+    height: 4px;
+  }
+
+  &.completed {
+    background: color-mix(in srgb, var(--gold) 50%, transparent);
+  }
+}
+
+.labelContainer {
+  display: flex;
+  justify-content: space-around;
+  gap: 8px;
+}
+
+.label {
+  flex: 1;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  transition: color 0.2s ease;
+
+  &.activeLabel {
+    color: var(--gold);
+  }
+}
+
+@media (max-width: 520px) {
+  .label {
+    font-size: 11px;
+  }
+}

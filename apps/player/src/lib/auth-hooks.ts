@@ -57,12 +57,20 @@ export function useRegister() {
   const { addAlert } = useAlert();
   return useMutation({
     mutationFn: async (input: {
-      firstName: string;
-      lastName?: string;
-      email: string;
-      phoneNumber: string;
-      password: string;
-      roles?: string[];
+      auth: {
+        email: string;
+        password: string;
+      };
+      player: {
+        firstName: string;
+        lastName: string;
+        country: string;
+        region: string;
+        displayName: string;
+        bio?: string;
+        timezone?: string;
+        roles: string[];
+      };
     }) => {
       const res = await register(api, input);
 
