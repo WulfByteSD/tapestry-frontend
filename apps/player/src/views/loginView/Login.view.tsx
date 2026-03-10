@@ -30,19 +30,17 @@ export default function LoginView() {
       login.mutate(values);
     },
   });
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
 
   const isBusy = login.isPending;
 
-  const emailOk = isValidEmail(email);
-  const canSubmit = emailOk && password.length >= 1 && !isBusy;
+  const emailOk = isValidEmail(form.values.email);
+  const canSubmit = emailOk && form.values.password.length >= 1 && !isBusy;
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!canSubmit) return;
 
-    login.mutate({ email, password });
+    login.mutate({ email: form.values.email, password: form.values.password });
   };
 
   return (
