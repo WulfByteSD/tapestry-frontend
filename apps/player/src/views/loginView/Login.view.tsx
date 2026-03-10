@@ -35,13 +35,7 @@ export default function LoginView() {
 
   const emailOk = isValidEmail(form.values.email);
   const canSubmit = emailOk && form.values.password.length >= 1 && !isBusy;
-
-  const onSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!canSubmit) return;
-
-    login.mutate({ email: form.values.email, password: form.values.password });
-  };
+ 
 
   return (
     <div className={styles.wrap}>
