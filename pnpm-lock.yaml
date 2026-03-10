@@ -11,6 +11,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      react-icons:
+        specifier: ^5.5.0
+        version: 5.5.0(react@19.2.3)
     devDependencies:
       '@types/react':
         specifier: ^19

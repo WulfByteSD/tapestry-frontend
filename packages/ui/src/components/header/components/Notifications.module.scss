@@ -1,0 +1,61 @@
+@use "@/styles/globals.scss" as *;
+.container {
+  position: relative;
+  transition: $animation;
+  .button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    padding: 0;
+    font-size: 1.2rem;
+    color: var(--primary-dark);
+  }
+  .notifications {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    opacity: 0;
+    transition: $animation;
+    pointer-events: none;
+    width: 350px;
+    background: #fff;
+    border-radius: 5px;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    &.open {
+      top: 100%;
+      opacity: 1;
+      pointer-events: all;
+      z-index: 1000;
+    }
+    @include mobile {
+      width: 80vw;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 5px;
+      font-size: 15px;
+      font-weight: 600;
+      background-color: var(--primary);
+      width: 100%;
+      color: #fff;
+      padding: 10px;
+      border-bottom: rgba(149, 157, 165, 0.2) 1px solid;
+    }
+    .viewAllButton {
+      padding: 10px;
+      font-size: 14px;
+      &:hover {
+        background-color: var(--primary-light);
+      }
+    }
+  }
+}

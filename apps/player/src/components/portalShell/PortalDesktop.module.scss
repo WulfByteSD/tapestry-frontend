@@ -1,7 +1,24 @@
 .shell {
   display: grid;
-  grid-template-columns: auto 1fr; /* Changed from fixed 260px to auto */
+  grid-template-columns: auto 1fr;
+  grid-template-areas: "sidebar content";
   min-height: 100vh;
+}
+
+.contentArea {
+  grid-area: content;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.header {
+  background: color-mix(in srgb, var(--base-2) 85%, black);
+  border-bottom: 1px solid color-mix(in srgb, var(--accent-4) 25%, transparent);
+  backdrop-filter: blur(8px);
+
+  // Override the CSS variable if needed
+  --header-height: 64px;
 }
 
 .watermark {
@@ -19,8 +36,8 @@
   z-index: 0;
 }
 .main {
+  flex: 1;
   padding: 24px 32px;
-  max-height: 100svh;
   overflow-y: auto;
   position: relative;
 }
