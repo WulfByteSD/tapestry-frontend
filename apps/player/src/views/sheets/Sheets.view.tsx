@@ -7,6 +7,9 @@ import styles from "./Sheets.module.scss";
 import { Button, Card, CardBody, CardHeader, TextField } from "@tapestry/ui";
 import SheetCard from "@/components/sheetCard/SheetCard.component";
 import { useCharacterSheetsQuery } from "@/lib/character-hooks";
+import { useProfile } from "@tapestry/hooks";
+import { api } from "@/lib/api";
+import { useMe } from "@/lib/auth-hooks";
 
 function useDebouncedValue<T>(value: T, delayMs: number) {
   const [debounced, setDebounced] = useState(value);
@@ -23,13 +26,15 @@ export default function SheetsView() {
   const router = useRouter();
   const [query, setQuery] = useState("");
   const debounced = useDebouncedValue(query.trim(), 1000);
+  const { data: me } = useMe();
+  const { data: profile } = useProfile(api, me, "player");
 
   const { data, isLoading } = useCharacterSheetsQuery({
     keyword: debounced || undefined,
     pageNumber: 1,
     pageLimit: 50,
     sortOptions: "-updatedAt",
-    // pass filterOptions/includeOptions here.
+    filterOptions: `player;${profile?.payload?._id}`,
   });
 
   const sheets: CharacterSheet[] = data?.payload ?? [];

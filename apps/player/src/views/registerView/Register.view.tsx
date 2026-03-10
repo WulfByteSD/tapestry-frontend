@@ -33,7 +33,7 @@ function RegisterInner() {
         region: values.player.region.trim() || undefined,
         timezone: values.player.timezone.trim() || undefined,
         roles: ["player"],
-      },
+      } as any,
     });
   };
 
