@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api, tokenStore } from "@/lib/api";
 import { login, me, setAuthToken, normalizeRoles, register } from "@tapestry/api-client";
+import { useAlert } from "@tapestry/ui";
 
 export function useLogout() {
   const qc = useQueryClient();
@@ -26,7 +27,7 @@ export function useMe() {
 }
 export function useLogin() {
   const qc = useQueryClient();
-
+  const { addAlert } = useAlert();
   return useMutation({
     mutationFn: async (input: { email: string; password: string }) => {
       const res = await login(api, input.email, input.password);
@@ -40,6 +41,10 @@ export function useLogin() {
       await qc.invalidateQueries({ queryKey: ["me"] });
       qc.setQueryData(["me"], profile); // <- THIS is the important line
     },
+    onError: (error) => {
+      console.error("Login error:", error);
+      addAlert({ type: "error", message: "Login failed. Please check your credentials and try again." });
+    },
   });
 }
 
@@ -49,7 +54,7 @@ export function logout() {
 }
 export function useRegister() {
   const qc = useQueryClient();
-
+  const { addAlert } = useAlert();
   return useMutation({
     mutationFn: async (input: {
       firstName: string;
@@ -70,6 +75,10 @@ export function useRegister() {
     },
     onSuccess: ({ profile }) => {
       qc.setQueryData(["me"], profile);
+    },
+    onError: (error) => {
+      console.error("Registration error:", error);
+      addAlert({ type: "error", message: `Registration failed. Please try again. Error: ${error.message}` });
     },
   });
 }

@@ -4,6 +4,7 @@ import { ReactNode, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useMe } from "@/lib/auth-hooks";
 import styles from "./PublicGate.module.scss";
+import { Alert, AlertContainer } from "@tapestry/ui";
 
 export default function PublicGate({ children }: { children: ReactNode }) {
   const router = useRouter();
@@ -22,5 +23,9 @@ export default function PublicGate({ children }: { children: ReactNode }) {
   if (isLoading) return <div className={styles.state}>Loading…</div>;
   if (user) return <div className={styles.state}>Redirecting…</div>;
 
-  return <>{children}</>;
+  return (
+    <>
+      <AlertContainer />{children}
+    </>
+  );
 }
