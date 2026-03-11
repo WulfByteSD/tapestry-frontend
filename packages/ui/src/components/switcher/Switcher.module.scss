@@ -1,0 +1,127 @@
+.switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+}
+
+.input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.track {
+  position: relative;
+  display: inline-block;
+  border-radius: 100px;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+  border: 2px solid color-mix(in srgb, var(--contrast) 20%, transparent);
+  background: color-mix(in srgb, var(--base-2) 80%, transparent);
+  flex-shrink: 0;
+}
+
+.thumb {
+  position: absolute;
+  top: 2px;
+  border-radius: 50%;
+  background: var(--text);
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Sizes */
+.size_sm .track {
+  width: 32px;
+  height: 18px;
+}
+
+.size_sm .thumb {
+  width: 12px;
+  height: 12px;
+  left: 2px;
+}
+
+.size_md .track {
+  width: 44px;
+  height: 24px;
+}
+
+.size_md .thumb {
+  width: 18px;
+  height: 18px;
+  left: 2px;
+}
+
+.size_lg .track {
+  width: 56px;
+  height: 30px;
+}
+
+.size_lg .thumb {
+  width: 24px;
+  height: 24px;
+  left: 2px;
+}
+
+/* Checked state */
+.checked .track {
+  background: var(--gold);
+  border-color: var(--gold);
+}
+
+.checked .thumb {
+  background: white;
+}
+
+.checked.size_sm .thumb {
+  transform: translateX(14px);
+}
+
+.checked.size_md .thumb {
+  transform: translateX(20px);
+}
+
+.checked.size_lg .thumb {
+  transform: translateX(26px);
+}
+
+/* Hover state */
+.switcher:hover:not(.disabled) .track {
+  border-color: color-mix(in srgb, var(--contrast) 30%, transparent);
+}
+
+.checked:hover:not(.disabled) .track {
+  background: color-mix(in srgb, var(--gold) 90%, white);
+  border-color: color-mix(in srgb, var(--gold) 90%, white);
+}
+
+/* Focus state */
+.input:focus-visible + .track {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+/* Disabled state */
+.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.label {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+.disabled .label {
+  color: var(--text-muted);
+}

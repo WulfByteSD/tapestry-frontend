@@ -9,3 +9,4 @@ export * from "./components/modal";
 export * from "./components/alert";
 export * from "./components/tooltip";
 export * from "./components/form";
+export * from "./components/switcher";

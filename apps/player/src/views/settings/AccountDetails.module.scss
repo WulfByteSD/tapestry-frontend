@@ -46,3 +46,42 @@
 .muted {
   opacity: 0.72;
 }
+.preferenceList {
+  display: grid;
+  gap: 1rem;
+}
+
+.preferenceRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.875rem 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+
+  &:first-child {
+    border-top: 0;
+    padding-top: 0;
+  }
+}
+
+.preferenceCopy {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.preferenceLabel {
+  font-weight: 600;
+}
+
+.preferenceText {
+  opacity: 0.72;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.preferenceNote {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  opacity: 0.72;
+}
