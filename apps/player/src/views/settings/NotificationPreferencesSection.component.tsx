@@ -3,8 +3,13 @@
 import { useEffect, useMemo, useState } from "react";
 import { Button, Switcher } from "@tapestry/ui";
 import { useAlert } from "@tapestry/ui";
-import { useUpdateUserAccount } from "@/lib/settings-hooks";
-import { getPushAvailability, registerPushSubscription, unregisterPushSubscription } from "@/lib/push-notifications";
+import {
+  useDeletePushSubscription,
+  useSavePushSubscription,
+  useSendTestPush,
+  useUpdateUserAccount,
+} from "@/lib/settings-hooks";
+import { getCurrentPushSubscription, getPushAvailability, registerPushSubscription, unregisterPushSubscription } from "@/lib/push-notifications";
 import SmsOptInModal from "./SmsOptInModal.component";
 import styles from "./AccountDetails.module.scss";
 
@@ -88,6 +93,10 @@ export default function NotificationPreferencesSection({ userId, notificationSet
   function handleCancelSms() {
     setShowSmsModal(false);
   }
+  // inside component
+  const savePushSubscription = useSavePushSubscription();
+  const deletePushSubscription = useDeletePushSubscription();
+  const sendTestPush = useSendTestPush();
 
   async function handlePushToggle(checked: boolean) {
     if (!pushAvailability.supported) {
@@ -109,13 +118,20 @@ export default function NotificationPreferencesSection({ userId, notificationSet
         }
 
         const subscription = await registerPushSubscription(vapidPublicKey);
+        const json = subscription.toJSON();
 
-        // TODO:
-        // Send subscription.toJSON() to your backend and store it against the user/device.
-        // Example:
-        // await savePushSubscription.mutateAsync({
-        //   subscription: subscription.toJSON(),
-        // });
+        await savePushSubscription.mutateAsync({
+          subscription: {
+            endpoint: json.endpoint!,
+            expirationTime: json.expirationTime ?? null,
+            keys: {
+              p256dh: json.keys!.p256dh,
+              auth: json.keys!.auth,
+            },
+          },
+          userAgent: navigator.userAgent,
+          deviceName: "Current device",
+        });
 
         await persistSettings({
           ...prefs,
@@ -126,13 +142,21 @@ export default function NotificationPreferencesSection({ userId, notificationSet
           type: "success",
           message: "Push notifications enabled for this device.",
         });
-
-        console.log("Push subscription created:", subscription.toJSON());
       } else {
-        await unregisterPushSubscription();
+        const vapidPublicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+        const subscription = vapidPublicKey ? await registerPushSubscription(vapidPublicKey).catch(() => null) : null;
 
-        // TODO:
-        // Tell backend this device subscription should be removed/disabled.
+        const endpoint = subscription?.endpoint;
+
+        if (endpoint) {
+          await deletePushSubscription.mutateAsync({ endpoint });
+        }
+        const current = await getCurrentPushSubscription();
+        if (current?.endpoint) {
+          await deletePushSubscription.mutateAsync({ endpoint: current.endpoint });
+        }
+        await unregisterPushSubscription();
+        await unregisterPushSubscription();
 
         await persistSettings({
           ...prefs,
@@ -169,7 +193,8 @@ export default function NotificationPreferencesSection({ userId, notificationSet
             <div className={styles.preferenceCopy}>
               <div className={styles.preferenceLabel}>Email notifications</div>
               <div className={styles.preferenceText}>
-                Campaign invites, important account updates, and other email alerts. Important transactional emails (e.g. password reset) will still be sent even if this is turned off.
+                Campaign invites, important account updates, and other email alerts. Important transactional emails
+                (e.g. password reset) will still be sent even if this is turned off.
               </div>
             </div>
 
@@ -183,9 +208,7 @@ export default function NotificationPreferencesSection({ userId, notificationSet
           <div className={styles.preferenceRow}>
             <div className={styles.preferenceCopy}>
               <div className={styles.preferenceLabel}>SMS notifications</div>
-              <div className={styles.preferenceText}>
-                Receive text alerts. Enabling this requires explicit opt-in.
-              </div>
+              <div className={styles.preferenceText}>Receive text alerts. Enabling this requires explicit opt-in.</div>
             </div>
 
             <Switcher

@@ -12,3 +12,6 @@ export * from "./resources";
 
 // account management
 export * from "./account";
+
+// push notifications
+export * from "./push";

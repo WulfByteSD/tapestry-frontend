@@ -1,7 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import {
+  deletePushSubscription,
   getPlayerProfile,
+  PushSubscriptionJson,
+  savePushSubscription,
+  sendTestPush,
   updatePlayerProfile,
   updateUserAccount,
   type UpdatePlayerProfileInput,
@@ -115,6 +119,54 @@ export function useChangePassword(userId?: string | null) {
       addAlert({
         type: "error",
         message: error?.response?.data?.message || "Failed to update password.",
+      });
+    },
+  });
+}
+export function useSavePushSubscription() {
+  const { addAlert } = useAlert();
+
+  return useMutation({
+    mutationFn: async (input: { subscription: PushSubscriptionJson; deviceName?: string; userAgent?: string }) =>
+      savePushSubscription(api, input),
+    onError: (error: any) => {
+      addAlert({
+        type: "error",
+        message: error?.response?.data?.message || "Failed to save push subscription.",
+      });
+    },
+  });
+}
+
+export function useDeletePushSubscription() {
+  const { addAlert } = useAlert();
+
+  return useMutation({
+    mutationFn: async (input: { endpoint: string }) => deletePushSubscription(api, input),
+    onError: (error: any) => {
+      addAlert({
+        type: "error",
+        message: error?.response?.data?.message || "Failed to remove push subscription.",
+      });
+    },
+  });
+}
+
+export function useSendTestPush() {
+  const { addAlert } = useAlert();
+
+  return useMutation({
+    mutationFn: async () => sendTestPush(api),
+    onSuccess: () => {
+      addAlert({
+        type: "success",
+        message: "Test push sent.",
+      });
+    },
+    onError: (error: any) => {
+      addAlert({
+        type: "error",
+        message: error?.response?.data?.message || "Failed to send test push.",
       });
     },
   });

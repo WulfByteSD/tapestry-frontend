@@ -3,7 +3,10 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   /* config options here */
   transpilePackages: ["@tapestry/api-client", "@tapestry/rules", "@tapestry/ui"],
-
+  env: {
+    NEXT_PUBLIC_VAPID_PUBLIC_KEY:
+      "BHzWdQAaEufFGtn0zj0hNc_BXDwN98t6NO8-2Hk77y3hFTGZdpxX406RIgg85p9Pc5pwLQDNG2MCknrwb0oP4s8",
+  },
   images: {
     remotePatterns: [
       {

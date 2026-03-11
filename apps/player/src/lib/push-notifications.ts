@@ -81,3 +81,11 @@ export async function unregisterPushSubscription() {
 
   return subscription.unsubscribe();
 }
+export async function getCurrentPushSubscription() {
+  if (!isWebPushSupported()) {
+    return null;
+  }
+
+  const registration = await navigator.serviceWorker.ready;
+  return registration.pushManager.getSubscription();
+}
