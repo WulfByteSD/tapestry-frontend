@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import CampaignsView from "@/views/storyweaver/campaigns/Campaigns.view";
 
 export const metadata: Metadata = {
   title: "Campaigns | Storyweaver",
@@ -6,11 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function CampaignsPage() {
-  return (
-    <div>
-      <h1>My Campaigns</h1>
-      <p>Manage and create campaigns as a Storyweaver.</p>
-      {/* TODO: Implement campaign list and management */}
-    </div>
-  );
+  return <CampaignsView />;
 }
