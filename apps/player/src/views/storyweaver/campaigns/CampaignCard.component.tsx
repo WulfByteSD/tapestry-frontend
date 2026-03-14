@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import styles from "./Campaigns.module.scss";
+import styles from "./CampaignCard.module.scss";
 
 type Campaign = {
   _id: string;
