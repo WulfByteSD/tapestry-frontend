@@ -1,16 +1,12 @@
 import { AxiosInstance } from "axios";
-
-export type LegalDoc = {
-  _id: string;
-  type: string;
-  title: string;
-  version: number;
-  effective_date?: string;
-  slug?: string;
-  summary?: string;
-};
+import { LegalType } from "../../../types/src";
 
 export async function getLegalPolicies(api: AxiosInstance) {
   const res = await api.get("/auth/legal");
-  return res.data.payload as LegalDoc[];
+  return res.data.payload as LegalType[];
+}
+
+export async function getLegalPolicyByType(api: AxiosInstance, type: string) {
+  const res = await api.get(`/auth/legal/${type}`);
+  return res.data.payload as LegalType;
 }
