@@ -2,6 +2,7 @@ import NextTopLoader from "nextjs-toploader";
 import AuthGate from "@/components/authGate/AuthGate.component";
 import ProfileGate from "@/components/profileGate/ProfileGate.component";
 import PortalShell from "@/components/portalShell/PortalShell.component";
+import PolicyGate from "@/components/policy/PolicyGate.component";
 
 export default function PortalLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -16,7 +17,9 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
       />
 
       <PortalShell>
-        <ProfileGate>{children}</ProfileGate>
+        <ProfileGate>
+          <PolicyGate requiredPolicies={["privacy", "terms"]}>{children}</PolicyGate>
+        </ProfileGate>
       </PortalShell>
     </AuthGate>
   );
