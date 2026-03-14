@@ -89,7 +89,14 @@ export default function BecomeStoryweaverView() {
               checked={officialLoreOptIn}
               onChange={(e) => setOfficialLoreOptIn(e.target.checked)}
             />
-            <span>I’m open to Tapestry contacting me about official lore consideration for standout content.</span>
+            <span>
+              I grant Tapestry permission to incorporate my custom content into official lore, canon, or published
+              materials without requiring further approval. According to the{" "}
+              <Link href="/legal/storyweaver-license" target="_blank">
+                Storyweaver License
+              </Link>
+              , (If unchecked, Tapestry will contact me first for permission.)
+            </span>
           </label>
         </div>
 
