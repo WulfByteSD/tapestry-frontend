@@ -2,34 +2,18 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
-import { AlertContainer, Header, Sidebar, type SidebarGroup } from "@tapestry/ui";
+import { AlertContainer, Header, Sidebar } from "@tapestry/ui";
 import { useProfile } from "@tapestry/hooks";
 import type { PlayerType } from "@tapestry/types";
 import Image from "next/image";
-import { BiHome, BiFile, BiCog } from "react-icons/bi";
-import { GiDiceTarget } from "react-icons/gi";
 import styles from "./PortalDesktop.module.scss";
 import { api } from "@/lib/api";
 import { useMe, useLogout } from "@/lib/auth-hooks";
+import { getSidebarLinks } from "@/data/sidebarLinks";
 
 type Props = {
   children: React.ReactNode;
 };
-
-const sidebarGroups: SidebarGroup[] = [
-  {
-    title: "Main",
-    links: [{ href: "/", label: "Home", icon: <BiHome /> }],
-  },
-  {
-    title: "Gameplay",
-    links: [{ href: "/rolls", label: "Rolls", icon: <GiDiceTarget /> }],
-  },
-  {
-    title: "Account",
-    links: [{ href: "/settings", label: "Settings", icon: <BiCog /> }],
-  },
-];
 
 export default function PortalDesktop({ children }: Props) {
   const pathname = usePathname();
@@ -37,6 +21,8 @@ export default function PortalDesktop({ children }: Props) {
   const { data: me } = useMe();
   const { selectedProfile: profile } = useProfile<PlayerType>(api, me, "player");
   const logout = useLogout();
+
+  const sidebarGroups = getSidebarLinks({ profile });
 
   const handleLogout = () => {
     logout();

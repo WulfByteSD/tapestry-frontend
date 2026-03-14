@@ -22,8 +22,8 @@
 }
 
 .watermark {
-  position: absolute;
-  top: 0;
+  position: fixed;
+  top: var(--header-height, 64px);
   left: 0;
   right: 0;
   bottom: 0;
@@ -31,13 +31,14 @@
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
-  opacity: 0.1;
+  opacity: 0.05;
   pointer-events: none;
   z-index: 0;
 }
 .main {
+  position: relative;
   flex: 1;
   padding: 24px 32px;
+  height: 100%;
   overflow-y: auto;
-  position: relative;
 }
