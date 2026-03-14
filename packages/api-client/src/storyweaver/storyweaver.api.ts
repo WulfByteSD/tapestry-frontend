@@ -5,6 +5,6 @@ export type BecomeStoryweaverInput = {
 };
 
 export async function becomeStoryweaver(api: AxiosInstance, input: BecomeStoryweaverInput) {
-  const res = await api.post("/storyweaver/become", input);
+  const res = await api.post("/game/storyweaver/become", input);
   return res.data.payload;
 }
