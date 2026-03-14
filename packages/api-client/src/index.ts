@@ -15,3 +15,6 @@ export * from "./account";
 
 // push notifications
 export * from "./push";
+
+// storyweaver
+export * from "./storyweaver";
