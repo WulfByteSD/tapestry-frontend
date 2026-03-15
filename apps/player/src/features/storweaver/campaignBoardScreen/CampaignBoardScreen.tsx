@@ -3,8 +3,8 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button, Card, CardBody, TextAreaField, TextField } from "@tapestry/ui";
-import { useCampaignQuery } from "./campaignBoard.queries";
+import { Button, Card, CardBody, SelectField, TextAreaField, TextField } from "@tapestry/ui";
+import { useCampaignQuery, useSettingsQuery } from "./campaignBoard.queries";
 import { useUpdateCampaignMutation } from "./campaignBoard.mutations";
 import { useDebouncedCallback } from "@/lib/useDebouncedCallback";
 import styles from "./CampaignBoardScreen.module.scss";
@@ -24,6 +24,7 @@ export default function CampaignBoardScreen({ campaignId }: Props) {
   const router = useRouter();
   const { data, isLoading, isError, error } = useCampaignQuery(campaignId);
   const updateMutation = useUpdateCampaignMutation(campaignId);
+  const settingsQuery = useSettingsQuery();
 
   const campaign = data?.payload;
 
@@ -136,6 +137,26 @@ export default function CampaignBoardScreen({ campaignId }: Props) {
             </section>
 
             <aside className={styles.sidePanel}>
+              <section className={styles.editBlock}>
+                <SelectField
+                  value={campaign.settingKey || ""}
+                  onChange={(e) => updateMutation.mutate({ settingKey: e.target.value || null })}
+                  disabled={settingsQuery.isLoading}
+                >
+                  <option value="">No setting</option>
+                  {settingsQuery.data?.payload?.map((setting) => (
+                    <option key={setting._id} value={setting.key}>
+                      {setting.name}
+                    </option>
+                  ))}
+                  {!settingsQuery.isLoading && !settingsQuery.data?.payload?.length && (
+                    <option value="" disabled>
+                      No settings available
+                    </option>
+                  )}
+                </SelectField>
+              </section>
+
               <section className={styles.editBlock}>
                 <TextField
                   // className={styles.textInput}
