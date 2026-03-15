@@ -55,6 +55,7 @@ export interface CampaignDisplayConfig {
 }
 
 export type CampaignType = {
+  _id: string;
   name: string;
   status: CampaignStatus;
 
@@ -84,4 +85,4 @@ export type CampaignType = {
 
   createdAt: Date;
   updatedAt: Date;
-}
+};

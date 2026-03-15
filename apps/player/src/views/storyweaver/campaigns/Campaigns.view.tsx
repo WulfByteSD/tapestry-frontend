@@ -3,39 +3,11 @@
 import Link from "next/link";
 import styles from "./Campaigns.module.scss";
 import CampaignCard from "./CampaignCard.component";
-// import { useStoryweaverCampaigns } from "@/lib/storyweaver-hooks";
-
-const mockCampaigns = [
-  {
-    _id: "wr-01",
-    name: "Ashes of Everpine",
-    status: "active" as const,
-    members: [{}, {}, {}],
-    invites: [{}, {}],
-    settingKey: "woven-realms",
-    toneModules: ["grim", "heroic"],
-    sources: ["core", "woven-realms"],
-    notes: "A frontier campaign set near the smoke-blighted woods.",
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    _id: "wr-02",
-    name: "The Hollow Crown",
-    status: "archived" as const,
-    members: [{}, {}, {}, {}],
-    invites: [],
-    settingKey: "woven-realms",
-    toneModules: ["courtly-intrigue"],
-    sources: ["core"],
-    notes: "Political rot, old vows, and one very bad decision.",
-    updatedAt: new Date().toISOString(),
-  },
-];
+import { useStoryweaverCampaigns } from "@/lib/storyweaver-hooks";
 
 export default function CampaignsView() {
-  // const { data: campaigns = [], isLoading } = useStoryweaverCampaigns();
-  const campaigns = mockCampaigns;
-  const isLoading = false;
+  const { data, isLoading } = useStoryweaverCampaigns();
+  const campaigns = data?.payload || [];
 
   return (
     <div className={styles.page}>
@@ -65,14 +37,14 @@ export default function CampaignsView() {
         <div className={styles.metaPill}>
           <span className={styles.metaLabel}>Active</span>
           <span className={styles.metaValue}>
-            {campaigns.filter((campaign) => campaign.status === "active").length}
+            {campaigns.filter((campaign: any) => campaign.status === "active").length}
           </span>
         </div>
 
         <div className={styles.metaPill}>
           <span className={styles.metaLabel}>Archived</span>
           <span className={styles.metaValue}>
-            {campaigns.filter((campaign) => campaign.status === "archived").length}
+            {campaigns.filter((campaign: any) => campaign.status === "archived").length}
           </span>
         </div>
       </section>
@@ -105,7 +77,7 @@ export default function CampaignsView() {
             <span className={styles.createText}>Start a fresh thread, set the tone, and gather your table.</span>
           </Link>
 
-          {campaigns.map((campaign) => (
+          {campaigns.map((campaign: any) => (
             <CampaignCard key={campaign._id} campaign={campaign} />
           ))}
         </section>

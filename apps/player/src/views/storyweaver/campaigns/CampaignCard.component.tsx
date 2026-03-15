@@ -2,22 +2,10 @@
 
 import Link from "next/link";
 import styles from "./CampaignCard.module.scss";
-
-type Campaign = {
-  _id: string;
-  name: string;
-  status: "active" | "archived";
-  members: unknown[];
-  invites: unknown[];
-  settingKey?: string;
-  toneModules: string[];
-  sources: string[];
-  notes?: string;
-  updatedAt: string;
-};
+import { CampaignType } from "@tapestry/types";
 
 type CampaignCardProps = {
-  campaign: Campaign;
+  campaign: CampaignType;
 };
 
 function formatRelativeDate(value: string) {
@@ -38,7 +26,7 @@ export default function CampaignCard({ campaign }: CampaignCardProps) {
           {status}
         </span>
 
-        <span className={styles.updatedAt}>Updated {formatRelativeDate(updatedAt)}</span>
+        <span className={styles.updatedAt}>Updated {formatRelativeDate(updatedAt as any)}</span>
       </div>
 
       <div className={styles.cardBody}>
