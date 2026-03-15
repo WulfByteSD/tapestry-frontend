@@ -107,3 +107,31 @@
   height: 48px;
   font-size: 15px;
 }
+
+/* TextArea Specific Styles */
+.textarea {
+  min-height: 80px;
+  height: auto !important;
+  padding: 10px 12px !important;
+  line-height: 1.5;
+  font-family: inherit;
+
+  &::placeholder {
+    color: color-mix(in srgb, var(--text-muted) 70%, transparent);
+  }
+}
+
+.size_sm .textarea {
+  min-height: 70px;
+  font-size: 13px;
+  padding: 8px 12px !important;
+}
+.size_md .textarea {
+  min-height: 80px;
+  font-size: 14px;
+}
+.size_lg .textarea {
+  min-height: 100px;
+  font-size: 15px;
+  padding: 12px 14px !important;
+}

@@ -1,0 +1,175 @@
+/* apps/player/src/views/storyweaver/campaignCreate/CampaignCreate.module.scss */
+.page {
+  display: grid;
+  gap: 1.5rem;
+  padding: 1rem 0 2rem;
+}
+
+.hero {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.eyebrow {
+  margin: 0;
+  font-size: 0.8rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1;
+}
+
+.subtitle {
+  margin: 0;
+  max-width: 60ch;
+  opacity: 0.82;
+}
+
+.grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(0, 1.5fr) minmax(320px, 0.9fr);
+  align-items: start;
+}
+
+.formCard,
+.previewCard {
+  overflow: hidden;
+}
+
+.form {
+  display: grid;
+  gap: 1rem;
+}
+
+.twoCol {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.textareaField {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.fieldLabel {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.fieldHint {
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
+.textarea {
+  width: 100%;
+  resize: vertical;
+  min-height: 8rem;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(10, 12, 20, 0.8);
+  color: inherit;
+  padding: 0.9rem 1rem;
+  font: inherit;
+}
+
+.actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.errorBanner {
+  margin: 0;
+  padding: 0.85rem 1rem;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 80, 80, 0.35);
+  background: rgba(110, 18, 18, 0.25);
+  color: #ffb3b3;
+}
+
+.previewBanner {
+  display: grid;
+  gap: 0.35rem;
+  padding: 1rem;
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at top left, rgba(151, 111, 255, 0.35), transparent 45%),
+    radial-gradient(circle at bottom right, rgba(255, 207, 102, 0.2), transparent 40%), rgba(18, 18, 28, 0.95);
+}
+
+.previewEyebrow {
+  margin: 0;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  opacity: 0.75;
+}
+
+.previewTitle {
+  margin: 0;
+  font-size: 1.5rem;
+  line-height: 1.1;
+}
+
+.previewMeta {
+  margin: 0;
+  opacity: 0.8;
+}
+
+.previewSection {
+  display: grid;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+.previewSection h3 {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.tokenRow {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.token {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2rem;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 0.85rem;
+}
+
+.placeholder {
+  opacity: 0.6;
+  font-size: 0.9rem;
+}
+
+.notesPreview {
+  margin: 0;
+  line-height: 1.6;
+  opacity: 0.9;
+  white-space: pre-wrap;
+}
+
+@media (max-width: 960px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .twoCol {
+    grid-template-columns: 1fr;
+  }
+}

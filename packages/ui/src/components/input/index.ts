@@ -9,3 +9,9 @@ export type { SelectProps, SelectSize } from "./Select.component";
 
 export { SelectField } from "./SelectField.component";
 export type { SelectFieldProps } from "./SelectField.component";
+
+export { TextArea } from "./TextArea.component";
+export type { TextAreaProps, TextAreaSize } from "./TextArea.component";
+
+export { TextAreaField } from "./TextAreaField.component";
+export type { TextAreaFieldProps } from "./TextAreaField.component";
