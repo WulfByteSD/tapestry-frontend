@@ -1,10 +1,12 @@
+import { PlayerType } from "./players";
+
 export type CampaignStatus = "active" | "archived";
 export type CampaignRole = "sw" | "co-sw" | "player" | "observer";
 
 export type DiscordMode = "none" | "webhook" | "bot";
 
 export interface CampaignMember {
-  player: string; // ref Player
+  player: PlayerType; // ref Player
   role: CampaignRole;
   joinedAt?: Date;
   nickname?: string; // campaign-specific display name (optional)

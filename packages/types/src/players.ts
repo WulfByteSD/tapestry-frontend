@@ -1,4 +1,5 @@
 export interface PlayerType {
+  _id: string;
   user: string;
   roles: ('player' | 'storyweaver')[];
   permissions: string[]; // for fine-grained ACL

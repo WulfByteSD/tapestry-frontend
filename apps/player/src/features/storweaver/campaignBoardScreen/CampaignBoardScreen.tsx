@@ -21,7 +21,7 @@ function getUserRole(
 ): "owner" | "sw" | "co-sw" | "player" | "observer" | null {
   if (!userId) return null;
   if (campaign.owner === userId) return "owner";
-  const member = campaign.members?.find((m) => m.player === userId);
+  const member = campaign.members?.find((m) => m.player._id === userId);
   return member?.role || null;
 }
 

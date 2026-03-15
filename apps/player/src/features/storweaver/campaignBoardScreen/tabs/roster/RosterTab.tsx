@@ -72,9 +72,9 @@ export function RosterTab({ campaign, isArchived }: Props) {
             {storyweavers.map((member, idx) => (
               <div key={`${member.player}-${idx}`} className={styles.memberCard}>
                 <div className={styles.memberInfo}>
-                  <div className={styles.memberAvatar}>{String(member.player || "?")[0].toUpperCase()}</div>
+                  <div className={styles.memberAvatar}>{String(member.player?.avatar || "?")[0].toUpperCase()}</div>
                   <div className={styles.memberDetails}>
-                    <div className={styles.memberName}>{member.nickname || member.player || "Unknown"}</div>
+                    <div className={styles.memberName}>{member.nickname || member.player?.displayName || "Unknown"}</div>
                     <div className={styles.memberMeta}>
                       <span className={getRoleBadgeClass(member.role)}>{getRoleLabel(member.role)}</span>
                       <span className={styles.joinDate}>Joined {formatDate(member.joinedAt)}</span>
@@ -99,9 +99,9 @@ export function RosterTab({ campaign, isArchived }: Props) {
             {players.map((member, idx) => (
               <div key={`${member.player}-${idx}`} className={styles.memberCard}>
                 <div className={styles.memberInfo}>
-                  <div className={styles.memberAvatar}>{String(member.player || "?")[0].toUpperCase()}</div>
+                  <div className={styles.memberAvatar}>{String(member.player?.avatar || "?")[0].toUpperCase()}</div>
                   <div className={styles.memberDetails}>
-                    <div className={styles.memberName}>{member.nickname || member.player || "Unknown"}</div>
+                    <div className={styles.memberName}>{member.nickname || member.player?.displayName || "Unknown"}</div>
                     <div className={styles.memberMeta}>
                       <span className={getRoleBadgeClass(member.role)}>{getRoleLabel(member.role)}</span>
                       <span className={styles.joinDate}>Joined {formatDate(member.joinedAt)}</span>
@@ -126,9 +126,9 @@ export function RosterTab({ campaign, isArchived }: Props) {
             {observers.map((member, idx) => (
               <div key={`${member.player}-${idx}`} className={styles.memberCard}>
                 <div className={styles.memberInfo}>
-                  <div className={styles.memberAvatar}>{String(member.player || "?")[0].toUpperCase()}</div>
+                  <div className={styles.memberAvatar}>{String(member.player?.avatar || "?")[0].toUpperCase()}</div>
                   <div className={styles.memberDetails}>
-                    <div className={styles.memberName}>{member.nickname || member.player || "Unknown"}</div>
+                    <div className={styles.memberName}>{member.nickname || member.player?.displayName || "Unknown"}</div>
                     <div className={styles.memberMeta}>
                       <span className={getRoleBadgeClass(member.role)}>{getRoleLabel(member.role)}</span>
                       <span className={styles.joinDate}>Joined {formatDate(member.joinedAt)}</span>

@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect } from "react";
-import { Button, Form, FormField, TextField, useForm } from "@tapestry/ui";
+import { Button, Form, FormField, Select, TextField, useForm } from "@tapestry/ui";
 import { usePlayerProfile, useUpdatePlayerProfile } from "@/lib/settings-hooks";
+import { TIMEZONES } from "../registerView/data/timezones";
 import styles from "./AccountDetails.module.scss";
 
 type Props = {
@@ -10,6 +11,7 @@ type Props = {
 };
 
 type ProfileFormValues = {
+  avatar: string;
   displayName: string;
   bio: string;
   timezone: string;
@@ -21,16 +23,27 @@ export default function ProfileDetailsSection({ profileId }: Props) {
 
   const form = useForm<ProfileFormValues>({
     initialValues: {
+      avatar: "",
       displayName: "",
       bio: "",
       timezone: "",
     },
     validators: {
+      avatar: (value) => {
+        if (!value) return undefined; // Avatar is optional
+        try {
+          new URL(value);
+          return undefined;
+        } catch {
+          return "Avatar must be a valid URL.";
+        }
+      },
       displayName: (value) => (String(value).trim() ? undefined : "Display name is required."),
       bio: (value) => (String(value).length <= 500 ? undefined : "Bio must be 500 characters or less."),
     },
     onSubmit: async (values) => {
       await updateProfile.mutateAsync({
+        avatar: values.avatar.trim() || undefined,
         displayName: values.displayName.trim(),
         bio: values.bio.trim() || undefined,
         timezone: values.timezone.trim() || undefined,
@@ -42,6 +55,7 @@ export default function ProfileDetailsSection({ profileId }: Props) {
     if (!profile) return;
 
     form.replaceValues({
+      avatar: profile.avatar ?? "",
       displayName: profile.displayName ?? "",
       bio: profile.bio ?? "",
       timezone: profile.timezone ?? "",
@@ -65,11 +79,28 @@ export default function ProfileDetailsSection({ profileId }: Props) {
         <p className={styles.muted}>Loading profile…</p>
       ) : (
         <Form form={form} className={styles.formStack}>
+          <FormField name="avatar">
+            {(field) => (
+              <TextField
+                id={field.id}
+                label="Avatar URL"
+                floatingLabel
+                placeholder="https://example.com/avatar.png"
+                value={String(field.value ?? "")}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                error={field.shouldShowError ? field.error : undefined}
+                disabled={updateProfile.isPending}
+              />
+            )}
+          </FormField>
+
           <FormField name="displayName">
             {(field) => (
               <TextField
                 id={field.id}
                 label="Display name"
+                floatingLabel
                 value={String(field.value ?? "")}
                 onChange={field.onChange}
                 onBlur={field.onBlur}
@@ -84,6 +115,8 @@ export default function ProfileDetailsSection({ profileId }: Props) {
               <TextField
                 id={field.id}
                 label="Bio"
+                floatingLabel
+                placeholder="A short bio to introduce yourself to other Tapestry users."
                 value={String(field.value ?? "")}
                 onChange={field.onChange}
                 onBlur={field.onBlur}
@@ -95,16 +128,21 @@ export default function ProfileDetailsSection({ profileId }: Props) {
 
           <FormField name="timezone">
             {(field) => (
-              <TextField
+              <Select
                 id={field.id}
-                label="Timezone"
-                placeholder="America/New_York"
                 value={String(field.value ?? "")}
-                onChange={field.onChange}
+                onChange={(e) => field.onChange(e.target.value)}
                 onBlur={field.onBlur}
-                error={field.shouldShowError ? field.error : undefined}
                 disabled={updateProfile.isPending}
-              />
+                style={{ padding: "0.75rem", fontSize: "1rem" }}
+              >
+                <option value="">Select timezone...</option>
+                {TIMEZONES.map((tz) => (
+                  <option key={tz.value} value={tz.value}>
+                    {tz.label}
+                  </option>
+                ))}
+              </Select>
             )}
           </FormField>
 

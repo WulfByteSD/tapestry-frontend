@@ -40,6 +40,8 @@ export function useUpdatePlayerProfile(profileId?: string | null) {
     onSuccess: async (updated) => {
       qc.setQueryData(["player-profile", profileId], updated);
       await qc.invalidateQueries({ queryKey: ["me"] });
+      // invalidate player profile query to update cache with new profile data
+      await qc.invalidateQueries({ queryKey: ["profile", "player", profileId] });
       addAlert({
         type: "success",
         message: "Profile updated successfully.",
