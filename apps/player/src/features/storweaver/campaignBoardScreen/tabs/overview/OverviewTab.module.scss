@@ -6,11 +6,22 @@
   margin-top: 1rem;
 }
 
-.mainPanel,
+// .mainPanel,
 .sidePanel,
 .editBlock {
   display: grid;
   gap: 0.75rem;
+}
+
+.mainPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  flex: 1;
+
+  .textarea{
+    
+  }
 }
 
 .tokenRow {

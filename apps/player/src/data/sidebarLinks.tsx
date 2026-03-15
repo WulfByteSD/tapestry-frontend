@@ -20,7 +20,7 @@ export function getSidebarLinks({ profile }: SidebarLinksProps): SidebarGroup[] 
     {
       title: "Gameplay",
       links: [
-        { href: "/rolls", label: "Rolls", icon: <GiDiceTarget /> },
+        { href: "/games", label: "Games", icon: <GiDiceTarget /> },
         { href: storyweaverHref, label: "Storyweaver", icon: <BiFile /> },
       ],
     },

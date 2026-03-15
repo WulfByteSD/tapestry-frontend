@@ -64,6 +64,7 @@ export type CampaignType = {
   owner: string; // ref Player (Storyweaver)
   members: CampaignMember[];
   avatar: string | null;
+  discoverable: boolean; // Whether this campaign appears in public listings
   // Optional setting context
   settingKey?: string; // e.g. "woven-realms"
   toneModules: string[]; // e.g. ["dragon-dial", "love-romance-dial"]

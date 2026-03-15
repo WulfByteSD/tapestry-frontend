@@ -1,0 +1,208 @@
+.page {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem 0 2rem;
+}
+
+.backLink {
+  color: inherit;
+  text-decoration: none;
+  opacity: 0.82;
+  width: fit-content;
+}
+
+.backLink:hover {
+  opacity: 1;
+}
+
+.notice,
+.stateCard,
+.hero,
+.panel,
+.joinCard {
+  border-radius: 26px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(15, 18, 28, 0.95);
+}
+
+.notice {
+  padding: 0.9rem 1rem;
+  background: radial-gradient(circle at top left, rgba(255, 192, 110, 0.12), transparent 50%), rgba(15, 18, 28, 0.95);
+}
+
+.stateCard {
+  display: grid;
+  gap: 0.45rem;
+  padding: 1.25rem;
+}
+
+.stateCard h1,
+.stateCard p {
+  margin: 0;
+}
+
+.hero {
+  overflow: hidden;
+  background:
+    radial-gradient(circle at top left, rgba(142, 111, 255, 0.26), transparent 40%),
+    radial-gradient(circle at bottom right, rgba(255, 208, 117, 0.15), transparent 40%), rgba(15, 18, 28, 0.98);
+}
+
+.heroContent {
+  display: grid;
+  gap: 0.8rem;
+  padding: 1.25rem;
+}
+
+.eyebrow {
+  margin: 0;
+  font-size: 0.8rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.74;
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  line-height: 1;
+}
+
+.subtitle {
+  margin: 0;
+  max-width: 66ch;
+  line-height: 1.6;
+  opacity: 0.88;
+}
+
+.metaRow,
+.chipRow {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.pill,
+.chip,
+.empty {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 0.85rem;
+}
+
+.empty {
+  opacity: 0.64;
+}
+
+.grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(0, 1.4fr) minmax(320px, 0.9fr);
+  align-items: start;
+}
+
+.mainColumn,
+.sideColumn {
+  display: grid;
+  gap: 1rem;
+}
+
+.panel,
+.joinCard {
+  display: grid;
+  gap: 0.85rem;
+  padding: 1rem;
+}
+
+.panel h2,
+.joinCard h2 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.panel p,
+.joinCard p {
+  margin: 0;
+  line-height: 1.6;
+  opacity: 0.9;
+}
+
+.joinCardTop {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.messageField {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.messageField span {
+  font-size: 0.88rem;
+  opacity: 0.8;
+}
+
+.messageField textarea {
+  width: 100%;
+  resize: vertical;
+  min-height: 7rem;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(10, 12, 20, 0.9);
+  color: inherit;
+  padding: 0.9rem 1rem;
+  font: inherit;
+}
+
+.joinButton {
+  min-height: 3rem;
+  border: 0;
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(111, 89, 255, 0.96), rgba(148, 118, 255, 0.96));
+  color: white;
+  font: inherit;
+  font-weight: 600;
+  padding: 0.8rem 1rem;
+  cursor: pointer;
+  transition:
+    transform 140ms ease,
+    opacity 140ms ease;
+}
+
+.joinButton:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.joinButton:disabled {
+  opacity: 0.62;
+  cursor: not-allowed;
+}
+
+.helperText {
+  color: rgba(199, 231, 188, 0.95);
+}
+
+.errorText {
+  color: rgba(255, 168, 168, 0.96);
+}
+
+.factList {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding-left: 1rem;
+}
+
+.factList li {
+  line-height: 1.45;
+}
+
+@media (max-width: 960px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
