@@ -51,8 +51,17 @@ export function OverviewTab({ campaign, updateMutation, settingsQuery, isArchive
           }}
           onBlur={() => debouncedSaveNotes.flush()}
           placeholder="What is this campaign about?"
-          rows={7}
+          rows={10}
           disabled={isArchived}
+        />
+        <TextField
+          label="Campaign Avatar URL"
+          floatingLabel
+          value={campaign.avatar || ""}
+          onChange={(e) => updateMutation.mutate({ avatar: e.target.value || null })}
+          placeholder="https://example.com/avatar.png"
+          disabled={isArchived}
+          helpText="Displayed on the campaign card and roster. Should be a square image for best results."
         />
       </section>
 
