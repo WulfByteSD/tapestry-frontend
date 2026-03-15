@@ -8,11 +8,22 @@ import styles from "./TextField.module.scss";
 export type TextFieldProps = InputProps & {
   label?: string;
   hint?: string;
+  helpText?: string;
   error?: string;
   floatingLabel?: boolean;
 };
 
-export function TextField({ id, label, hint, error, className, floatingLabel = false, ...inputProps }: TextFieldProps) {
+export function TextField({
+  id,
+  label,
+  hint,
+  helpText,
+  error,
+  className,
+  floatingLabel = false,
+  ...inputProps
+}: TextFieldProps) {
+  const displayHint = helpText ?? hint;
   const inputRef = useRef<HTMLInputElement>(null);
   const [isFocused, setIsFocused] = useState(false);
   const [hasValue, setHasValue] = useState(Boolean(inputProps.value || inputProps.defaultValue));
@@ -78,8 +89,8 @@ export function TextField({ id, label, hint, error, className, floatingLabel = f
           <div className={styles.error} role="alert">
             {error}
           </div>
-        ) : hint ? (
-          <div className={styles.hint}>{hint}</div>
+        ) : displayHint ? (
+          <div className={styles.hint}>{displayHint}</div>
         ) : null}
       </div>
     );
@@ -99,8 +110,8 @@ export function TextField({ id, label, hint, error, className, floatingLabel = f
         <div className={styles.error} role="alert">
           {error}
         </div>
-      ) : hint ? (
-        <div className={styles.hint}>{hint}</div>
+      ) : displayHint ? (
+        <div className={styles.hint}>{displayHint}</div>
       ) : null}
     </div>
   );

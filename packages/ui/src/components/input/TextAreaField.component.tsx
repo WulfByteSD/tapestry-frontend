@@ -8,6 +8,7 @@ import styles from "./TextAreaField.module.scss";
 export type TextAreaFieldProps = TextAreaProps & {
   label?: string;
   hint?: string;
+  helpText?: string;
   error?: string;
   floatingLabel?: boolean;
 };
@@ -16,11 +17,13 @@ export function TextAreaField({
   id,
   label,
   hint,
+  helpText,
   error,
   className,
   floatingLabel = false,
   ...textAreaProps
 }: TextAreaFieldProps) {
+  const displayHint = helpText ?? hint;
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const [isFocused, setIsFocused] = useState(false);
   const [hasValue, setHasValue] = useState(Boolean(textAreaProps.value || textAreaProps.defaultValue));
@@ -74,8 +77,8 @@ export function TextAreaField({
           <div className={styles.error} role="alert">
             {error}
           </div>
-        ) : hint ? (
-          <div className={styles.hint}>{hint}</div>
+        ) : displayHint ? (
+          <div className={styles.hint}>{displayHint}</div>
         ) : null}
       </div>
     );
@@ -95,8 +98,8 @@ export function TextAreaField({
         <div className={styles.error} role="alert">
           {error}
         </div>
-      ) : hint ? (
-        <div className={styles.hint}>{hint}</div>
+      ) : displayHint ? (
+        <div className={styles.hint}>{displayHint}</div>
       ) : null}
     </div>
   );

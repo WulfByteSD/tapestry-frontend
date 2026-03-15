@@ -8,10 +8,21 @@ import styles from "./TextField.module.scss";
 export type SelectFieldProps = SelectProps & {
   label?: string;
   hint?: string;
+  helpText?: string;
   error?: string;
 };
 
-export function SelectField({ id, label, hint, error, className, children, ...selectProps }: SelectFieldProps) {
+export function SelectField({
+  id,
+  label,
+  hint,
+  helpText,
+  error,
+  className,
+  children,
+  ...selectProps
+}: SelectFieldProps) {
+  const displayHint = helpText ?? hint;
   const hasError = Boolean(error) || Boolean(selectProps.hasError);
 
   return (
@@ -30,8 +41,8 @@ export function SelectField({ id, label, hint, error, className, children, ...se
         <div className={styles.error} role="alert">
           {error}
         </div>
-      ) : hint ? (
-        <div className={styles.hint}>{hint}</div>
+      ) : displayHint ? (
+        <div className={styles.hint}>{displayHint}</div>
       ) : null}
     </div>
   );
