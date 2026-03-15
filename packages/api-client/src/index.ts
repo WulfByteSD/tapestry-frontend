@@ -7,6 +7,12 @@ export * from "./auth";
 // List utilities
 export * from "./list";
 
+// Update utilities
+export * from "./update";
+
+// Fetch utilities
+export * from "./fetch";
+
 // resources
 export * from "./resources";
 

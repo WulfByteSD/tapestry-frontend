@@ -70,13 +70,7 @@ export default function CampaignsView() {
           </div>
         </section>
       ) : (
-        <section className={styles.grid}>
-          <Link href="/storyweaver/campaigns/new" className={styles.createTile}>
-            <span className={styles.createGlyph}>+</span>
-            <span className={styles.createTitle}>New Campaign</span>
-            <span className={styles.createText}>Start a fresh thread, set the tone, and gather your table.</span>
-          </Link>
-
+        <section className={styles.grid}> 
           {campaigns.map((campaign: any) => (
             <CampaignCard key={campaign._id} campaign={campaign} />
           ))}
