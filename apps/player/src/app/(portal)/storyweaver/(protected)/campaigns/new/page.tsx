@@ -73,7 +73,7 @@ export default function NewCampaignPage() {
           {error ? <p className={styles.error}>{error}</p> : null}
 
           <div className={styles.actions}>
-            <Button onClick={() => router.replace("/storyweaver")}>Back to Storyweaver</Button>
+            <Button onClick={() => router.replace("/storyweaver/campaigns")}>Back to Storyweaver</Button>
 
             {error ? (
               <Button
