@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import styles from "./Campaigns.module.scss";
-import CampaignCard from "./CampaignCard.component";
+import CampaignCard from "@/components/campaignCard";
 import { useStoryweaverCampaigns } from "@/lib/storyweaver-hooks";
 
 export default function CampaignsView() {
@@ -70,7 +70,7 @@ export default function CampaignsView() {
           </div>
         </section>
       ) : (
-        <section className={styles.grid}> 
+        <section className={styles.grid}>
           {campaigns.map((campaign: any) => (
             <CampaignCard key={campaign._id} campaign={campaign} />
           ))}

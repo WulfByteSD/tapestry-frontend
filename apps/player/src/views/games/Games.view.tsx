@@ -1,9 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
+import CampaignCard from "@/components/campaignCard";
 import styles from "./Games.module.scss";
 
 type DiscoverableGame = {
@@ -88,6 +89,26 @@ function normalizeGame(raw: any): DiscoverableGame {
   };
 }
 
+/**
+ * Converts a DiscoverableGame to a shape compatible with CampaignCard.
+ * Maps the public game fields to the campaign structure expected by the card component.
+ */
+function gameToCardData(game: DiscoverableGame) {
+  return {
+    _id: game.id,
+    name: game.name,
+    status: game.status,
+    settingKey: game.settingKey,
+    toneModules: game.toneModules,
+    notes: game.pitch,
+    sources: [],
+    invites: [],
+    members: Array(game.playerCount).fill({ role: "player" }),
+    updatedAt: new Date().toISOString(),
+    avatar: game.coverImageUrl ? { url: game.coverImageUrl } : undefined,
+  } as any;
+}
+
 async function fetchDiscoverableGames(): Promise<DiscoverableGame[]> {
   try {
     const response = await api.get("/game/campaigns/public");
@@ -108,6 +129,7 @@ async function fetchDiscoverableGames(): Promise<DiscoverableGame[]> {
 }
 
 export default function GamesView() {
+  const router = useRouter();
   const [search, setSearch] = useState("");
   const [settingFilter, setSettingFilter] = useState("all");
 
@@ -211,49 +233,26 @@ export default function GamesView() {
 
       {!isLoading && filteredGames.length > 0 ? (
         <section className={styles.grid}>
-          {filteredGames.map((game) => (
-            <Link key={game.id} href={`/games/${game.id}`} className={styles.card}>
-              <div className={styles.cardBackdrop}>
-                {game.coverImageUrl ? <img className={styles.coverImage} src={game.coverImageUrl} alt="" /> : null}
-              </div>
+          {filteredGames.map((game) => {
+            // Map joinPolicy format (invite_only -> invite-only)
+            const joinPolicy =
+              game.joinPolicy === "invite_only"
+                ? ("invite-only" as const)
+                : (game.joinPolicy as "open" | "approval" | "invite-only" | undefined);
 
-              <div className={styles.cardContent}>
-                <div className={styles.cardTop}>
-                  <p className={styles.storyweaver}>Storyweaver · {game.storyweaverName}</p>
-                  <span className={styles.joinPill}>
-                    {game.joinPolicy === "open" ? "Open Join" : "Request Required"}
-                  </span>
-                </div>
-
-                <div className={styles.titleBlock}>
-                  <h2 className={styles.cardTitle}>{game.name}</h2>
-                  <p className={styles.setting}>{game.settingKey ?? "No setting assigned"}</p>
-                </div>
-
-                <p className={styles.pitch}>{game.pitch || "No campaign pitch yet."}</p>
-
-                <div className={styles.chipRow}>
-                  {game.toneModules.length > 0 ? (
-                    game.toneModules.slice(0, 4).map((tone) => (
-                      <span key={tone} className={styles.chip}>
-                        {tone}
-                      </span>
-                    ))
-                  ) : (
-                    <span className={styles.chipMuted}>No tone modules yet</span>
-                  )}
-                </div>
-
-                <div className={styles.cardFooter}>
-                  <span className={styles.playerMeta}>
-                    {game.playerCount}
-                    {game.maxPlayers ? ` / ${game.maxPlayers}` : ""} players
-                  </span>
-                  <span className={styles.enterCta}>View game</span>
-                </div>
-              </div>
-            </Link>
-          ))}
+            return (
+              <CampaignCard
+                key={game.id}
+                campaign={gameToCardData(game)}
+                storyweaverName={game.storyweaverName}
+                joinPolicy={joinPolicy}
+                maxPlayers={game.maxPlayers}
+                eyebrow="Public Game"
+                actionLabel="View Game"
+                onClick={() => router.push(`/games/${game.id}`)}
+              />
+            );
+          })}
         </section>
       ) : null}
     </div>

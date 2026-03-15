@@ -4,9 +4,22 @@ import { useRouter } from "next/navigation";
 import { Button, Card, CardBody, CardHeader } from "@tapestry/ui";
 import styles from "./CampaignCard.module.scss";
 import { CampaignType } from "@tapestry/types";
+import Image from "next/image";
 
 type CampaignCardProps = {
   campaign: CampaignType;
+  /** Optional storyweaver name for public discovery views */
+  storyweaverName?: string;
+  /** Optional join policy for public discovery views */
+  joinPolicy?: "open" | "approval" | "invite-only";
+  /** Optional max players for public discovery views */
+  maxPlayers?: number | null;
+  /** Context label (e.g., "Campaign", "Public Game") */
+  eyebrow?: string;
+  /** Action button text */
+  actionLabel?: string;
+  /** Click handler override (if not provided, navigates to /storyweaver/campaigns/{id}) */
+  onClick?: () => void;
 };
 
 function formatRelativeDate(value: string) {
@@ -45,7 +58,21 @@ function humanizeKey(value?: string | null) {
     .join(" ");
 }
 
-export default function CampaignCard({ campaign }: CampaignCardProps) {
+function getJoinPolicyLabel(policy?: string) {
+  if (policy === "open") return "Open Join";
+  if (policy === "approval") return "Request Required";
+  return "Invite Only";
+}
+
+export default function CampaignCard({
+  campaign,
+  storyweaverName,
+  joinPolicy,
+  maxPlayers,
+  eyebrow = "Campaign",
+  actionLabel = "Open Campaign",
+  onClick,
+}: CampaignCardProps) {
   const router = useRouter();
   const {
     _id: id,
@@ -63,6 +90,15 @@ export default function CampaignCard({ campaign }: CampaignCardProps) {
 
   const settingLabel = humanizeKey(settingKey) || "No Setting";
   const truncatedNotes = notes?.trim() ? notes.trim().slice(0, 100) + "..." : "No campaign pitch yet";
+  const playerCount = members?.length ?? 0;
+
+  const handleClick = () => {
+    if (onClick) {
+      onClick();
+    } else {
+      router.push(`/storyweaver/campaigns/${id}`);
+    }
+  };
 
   return (
     <Card className={styles.campaignCard}>
@@ -72,8 +108,7 @@ export default function CampaignCard({ campaign }: CampaignCardProps) {
 
           <div className={styles.avatarPanel}>
             {avatar ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img className={styles.avatarImg} src={avatar} alt={`${name} avatar`} />
+              <Image className={styles.avatarImg} src={avatar} alt={`${name} avatar`} width={300} height={300} />
             ) : (
               <div className={styles.avatarFallback} aria-hidden="true">
                 {getInitials(name)}
@@ -83,7 +118,10 @@ export default function CampaignCard({ campaign }: CampaignCardProps) {
 
           <div className={styles.heroContent}>
             <div className={styles.titleBlock}>
-              <span className={styles.eyebrow}>Campaign</span>
+              <div className={styles.eyebrowRow}>
+                <span className={styles.eyebrow}>{eyebrow}</span>
+                {storyweaverName && <span className={styles.eyebrowSecondary}>· {storyweaverName}</span>}
+              </div>
               <h3 className={styles.cardTitle}>{name}</h3>
               <p className={styles.cardSubTitle}>{truncatedNotes}</p>
             </div>
@@ -92,6 +130,7 @@ export default function CampaignCard({ campaign }: CampaignCardProps) {
               <span className={styles.statusBadge} data-status={status}>
                 {status}
               </span>
+              {joinPolicy && <span className={styles.joinBadge}>{getJoinPolicyLabel(joinPolicy)}</span>}
               <span className={styles.badge}>{settingLabel}</span>
               {toneModules.slice(0, 1).map((tone) => (
                 <span key={tone} className={styles.badge}>
@@ -107,18 +146,21 @@ export default function CampaignCard({ campaign }: CampaignCardProps) {
       <CardBody className={styles.cardBody}>
         <div className={styles.statGrid}>
           <div className={styles.statTile}>
-            <span className={styles.statLabel}>Members</span>
-            <span className={styles.statValue}>{members.length}</span>
+            <span className={styles.statLabel}>{maxPlayers !== undefined ? "Players" : "Members"}</span>
+            <span className={styles.statValue}>
+              {playerCount}
+              {maxPlayers ? ` / ${maxPlayers}` : ""}
+            </span>
           </div>
 
           <div className={styles.statTile}>
             <span className={styles.statLabel}>Invites</span>
-            <span className={styles.statValue}>{invites.length}</span>
+            <span className={styles.statValue}>{invites?.length ?? 0}</span>
           </div>
 
           <div className={styles.statTile}>
             <span className={styles.statLabel}>Sources</span>
-            <span className={styles.statValue}>{sources.length}</span>
+            <span className={styles.statValue}>{sources?.length ?? 0}</span>
           </div>
         </div>
 
@@ -135,13 +177,8 @@ export default function CampaignCard({ campaign }: CampaignCardProps) {
         </div>
 
         <div className={styles.actionRow}>
-          <Button
-            tone="gold"
-            variant="solid"
-            className={styles.openBtn}
-            onClick={() => router.push(`/storyweaver/campaigns/${id}`)}
-          >
-            Open Campaign
+          <Button tone="gold" variant="solid" className={styles.openBtn} onClick={handleClick}>
+            {actionLabel}
           </Button>
         </div>
       </CardBody>
