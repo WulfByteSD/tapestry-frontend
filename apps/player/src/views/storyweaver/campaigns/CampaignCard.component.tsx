@@ -19,6 +19,9 @@ function formatRelativeDate(value: string) {
 
 export default function CampaignCard({ campaign }: CampaignCardProps) {
   const { _id: id, name, status, members, invites, settingKey, toneModules, sources, notes, updatedAt } = campaign;
+
+  const truncatedNotes = notes && notes?.trim().slice(0, 150) + "...";
+
   return (
     <Link href={`/storyweaver/campaigns/${id}`} className={styles.card}>
       <div className={styles.cardTop}>
@@ -32,7 +35,7 @@ export default function CampaignCard({ campaign }: CampaignCardProps) {
       <div className={styles.cardBody}>
         <h3 className={styles.cardTitle}>{name}</h3>
 
-        <p className={styles.cardText}>{notes?.trim() || "A new thread awaits its first complications."}</p>
+        <p className={styles.cardText}>{truncatedNotes}</p>
 
         <div className={styles.cardStats}>
           <div className={styles.stat}>
