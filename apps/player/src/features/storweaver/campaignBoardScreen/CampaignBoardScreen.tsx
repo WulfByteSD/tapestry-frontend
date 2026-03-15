@@ -107,13 +107,17 @@ export default function CampaignBoardScreen({ campaignId }: Props) {
       <Card className={styles.boardCard}>
         <CardBody>
           {/* Hero Section */}
-          <div className={styles.heroContent}>
+          <div
+            className={styles.heroContent}
+            style={{
+              backgroundImage: campaign.avatar
+                ? `linear-gradient(rgba(15, 18, 28, 0.85), rgba(15, 18, 28, 0.85)), url(${campaign.avatar})`
+                : undefined,
+            }}
+            data-has-image={campaign.avatar ? "true" : "false"}
+          >
             <div className={styles.heroHeaderRow}>
               <div className={styles.heroMain}>
-                <div className={styles.avatar}>
-                  {/* TODO: Add avatar upload functionality */}
-                  <div className={styles.avatarFallback}>{campaign.name?.[0]?.toUpperCase() || "C"}</div>
-                </div>
                 <div className={styles.heroInfo}>
                   <input
                     className={styles.titleInput}
@@ -137,7 +141,9 @@ export default function CampaignBoardScreen({ campaignId }: Props) {
                 </div>
               </div>
               <div className={styles.heroActions}>
-                <div className={styles.metaBadge}>{campaign.status}</div>
+                <div className={styles.metaBadge} data-status={campaign.status}>
+                  {campaign.status}
+                </div>
                 {campaign.settingKey && <div className={styles.metaBadge}>{campaign.settingKey}</div>}
                 <div className={styles.metaBadge}>{campaign.members?.length ?? 0} members</div>
               </div>

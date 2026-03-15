@@ -6,6 +6,9 @@ import { api } from "@/lib/api";
 import { ApiResponse, UpdatePayload } from "@tapestry/api-client";
 import applyDotUpdates from "@/utils/applyDotUpdates";
 
+// Timer map to debounce refetches after mutations settle
+const refetchTimers = new Map<string, number>();
+
 export function useUpdateCampaignMutation(campaignId: string) {
   const qc = useQueryClient();
 
@@ -36,7 +39,21 @@ export function useUpdateCampaignMutation(campaignId: string) {
     },
     onSuccess: (data) => {
       qc.setQueryData(["campaign", campaignId], data);
-      qc.invalidateQueries({ queryKey: ["storyweaver-campaigns"] });
+
+      // Clear any existing refetch timer
+      const existingTimer = refetchTimers.get(campaignId);
+      if (existingTimer) {
+        window.clearTimeout(existingTimer);
+      }
+
+      // Set a new timer to refetch after updates have settled (800ms)
+      const timer = window.setTimeout(() => {
+        qc.invalidateQueries({ queryKey: ["campaign", campaignId] });
+        qc.invalidateQueries({ queryKey: ["storyweaver-campaigns"] });
+        refetchTimers.delete(campaignId);
+      }, 2000);
+
+      refetchTimers.set(campaignId, timer);
     },
   });
 }

@@ -68,6 +68,18 @@ export function OverviewTab({ campaign, updateMutation, settingsQuery, isArchive
       <aside className={styles.sidePanel}>
         <section className={styles.editBlock}>
           <SelectField
+            label="Campaign Status"
+            value={campaign.status || "draft"}
+            onChange={(e) => updateMutation.mutate({ status: e.target.value as "draft" | "active" | "archived" })}
+          >
+            <option value="draft">Draft</option>
+            <option value="active">Active</option>
+            <option value="archived">Archived</option>
+          </SelectField>
+        </section>
+
+        <section className={styles.editBlock}>
+          <SelectField
             label="Setting"
             value={campaign.settingKey || ""}
             onChange={(e) => updateMutation.mutate({ settingKey: e.target.value || null })}

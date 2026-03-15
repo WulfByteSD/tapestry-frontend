@@ -25,11 +25,34 @@
 
 /* Hero Section */
 .heroContent {
+  position: relative;
   padding: 1.5rem;
   border-radius: 22px;
   background:
     radial-gradient(circle at top left, rgba(142, 111, 255, 0.25), transparent 40%),
     radial-gradient(circle at bottom right, rgba(255, 196, 92, 0.18), transparent 35%), rgba(15, 18, 28, 0.96);
+  overflow: hidden;
+
+  &[data-has-image="true"] {
+    &::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: var(--hero-bg-image);
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      filter: blur(12px);
+      opacity: 0.5;
+      z-index: 0;
+      transform: scale(1.1); // Prevents blur edge artifacts
+    }
+
+    > * {
+      position: relative;
+      z-index: 1;
+    }
+  }
 }
 
 .heroHeaderRow {
@@ -135,6 +158,24 @@
   background: rgba(255, 255, 255, 0.08);
   font-size: 0.85rem;
   text-transform: capitalize;
+
+  &[data-status="draft"] {
+    background: rgba(156, 163, 175, 0.15);
+    color: #d1d5db;
+    border: 1px solid rgba(156, 163, 175, 0.3);
+  }
+
+  &[data-status="active"] {
+    background: rgba(74, 222, 128, 0.15);
+    color: #4ade80;
+    border: 1px solid rgba(74, 222, 128, 0.3);
+  }
+
+  &[data-status="archived"] {
+    background: rgba(255, 196, 92, 0.15);
+    color: var(--gold);
+    border: 1px solid rgba(255, 196, 92, 0.3);
+  }
 }
 
 /* Archived Banner */
