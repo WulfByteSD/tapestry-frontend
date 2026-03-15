@@ -67,6 +67,7 @@ export function TextField({ id, label, hint, error, className, floatingLabel = f
             onBlur={handleBlur}
             onChange={handleChange}
             className={styles.floatingInput}
+            placeholder={isFloating ? inputProps.placeholder : undefined}
           />
           <label className={styles.floatingLabel} htmlFor={id}>
             {label}

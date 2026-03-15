@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import clsx from "clsx";
 import { TextArea, TextAreaProps } from "./TextArea.component";
-import styles from "./TextField.module.scss";
+import styles from "./TextAreaField.module.scss";
 
 export type TextAreaFieldProps = TextAreaProps & {
   label?: string;
@@ -63,6 +63,7 @@ export function TextAreaField({
             onBlur={handleBlur}
             onChange={handleChange}
             className={styles.floatingInput}
+            placeholder={isFloating ? textAreaProps.placeholder : undefined}
           />
           <label className={styles.floatingLabel} htmlFor={id}>
             {label}

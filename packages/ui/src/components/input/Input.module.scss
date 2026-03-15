@@ -11,6 +11,12 @@
   &.hasPasswordToggle {
     grid-template-columns: 1fr auto auto auto;
   }
+
+  &:has(.textarea) {
+    align-items: stretch;
+    display: block;
+    overflow: hidden;
+  }
 }
 
 .input {
@@ -111,10 +117,10 @@
 /* TextArea Specific Styles */
 .textarea {
   min-height: 80px;
-  height: auto !important;
   padding: 10px 12px !important;
   line-height: 1.5;
   font-family: inherit;
+  width: 100%;
 
   &::placeholder {
     color: color-mix(in srgb, var(--text-muted) 70%, transparent);

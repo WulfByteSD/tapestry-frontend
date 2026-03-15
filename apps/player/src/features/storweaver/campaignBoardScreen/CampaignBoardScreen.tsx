@@ -3,7 +3,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button, Card, CardBody } from "@tapestry/ui";
+import { Button, Card, CardBody, TextAreaField, TextField } from "@tapestry/ui";
 import { useCampaignQuery } from "./campaignBoard.queries";
 import { useUpdateCampaignMutation } from "./campaignBoard.mutations";
 import { useDebouncedCallback } from "@/lib/useDebouncedCallback";
@@ -54,7 +54,9 @@ export default function CampaignBoardScreen({ campaignId }: Props) {
   }, [updateMutation.isPending, updateMutation.isError, updateMutation.isSuccess]);
 
   const debouncedSaveName = useDebouncedCallback((value: string) => {
-    updateMutation.mutate({ name: value.trim() || "New Campaign" });
+    const trimmed = value.trim();
+    if (!trimmed) return; // Don't save empty names
+    updateMutation.mutate({ name: trimmed });
   }, 400);
 
   const debouncedSaveNotes = useDebouncedCallback((value: string) => {
@@ -118,9 +120,10 @@ export default function CampaignBoardScreen({ campaignId }: Props) {
 
           <div className={styles.grid}>
             <section className={styles.mainPanel}>
-              <h3>Campaign Pitch</h3>
-              <textarea
-                className={styles.notesArea}
+              <TextAreaField
+                // className={styles.notesArea}
+                label="Campaign Pitch"
+                floatingLabel
                 value={notesDraft}
                 onChange={(e) => {
                   setNotesDraft(e.target.value);
@@ -134,9 +137,10 @@ export default function CampaignBoardScreen({ campaignId }: Props) {
 
             <aside className={styles.sidePanel}>
               <section className={styles.editBlock}>
-                <h3>Tone Modules</h3>
-                <input
-                  className={styles.textInput}
+                <TextField
+                  // className={styles.textInput}
+                  label="Tone Modules"
+                  floatingLabel
                   value={tonesDraft}
                   onChange={(e) => setTonesDraft(e.target.value)}
                   onBlur={() => updateMutation.mutate({ toneModules: parseList(tonesDraft) })}
@@ -156,9 +160,8 @@ export default function CampaignBoardScreen({ campaignId }: Props) {
               </section>
 
               <section className={styles.editBlock}>
-                <h3>Sources</h3>
-                <input
-                  className={styles.textInput}
+                <TextField
+                  // className={styles.textInput}
                   value={sourcesDraft}
                   onChange={(e) => setSourcesDraft(e.target.value)}
                   onBlur={() =>
@@ -166,6 +169,8 @@ export default function CampaignBoardScreen({ campaignId }: Props) {
                       sources: parseList(sourcesDraft).length ? parseList(sourcesDraft) : ["core"],
                     })
                   }
+                  floatingLabel
+                  label="Sources"
                   placeholder="core, woven-realms"
                 />
                 <div className={styles.tokenRow}>
