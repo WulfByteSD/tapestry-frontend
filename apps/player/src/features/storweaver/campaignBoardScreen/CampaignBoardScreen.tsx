@@ -3,21 +3,26 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button, Card, CardBody, SelectField, TextAreaField, TextField } from "@tapestry/ui";
+import { Button, Card, CardBody, Tabs } from "@tapestry/ui";
 import { useCampaignQuery, useSettingsQuery } from "./campaignBoard.queries";
 import { useUpdateCampaignMutation } from "./campaignBoard.mutations";
 import { useDebouncedCallback } from "@/lib/useDebouncedCallback";
+import { createTabs, TabKey } from "./tabs";
+import type { CampaignType } from "@tapestry/types";
 import styles from "./CampaignBoardScreen.module.scss";
 
 type Props = {
   campaignId: string;
 };
 
-function parseList(input: string): string[] {
-  return input
-    .split(/[\n,]/g)
-    .map((v) => v.trim())
-    .filter(Boolean);
+function getUserRole(
+  campaign: CampaignType & { _id: string },
+  userId?: string,
+): "owner" | "sw" | "co-sw" | "player" | "observer" | null {
+  if (!userId) return null;
+  if (campaign.owner === userId) return "owner";
+  const member = campaign.members?.find((m) => m.player === userId);
+  return member?.role || null;
 }
 
 export default function CampaignBoardScreen({ campaignId }: Props) {
@@ -28,10 +33,8 @@ export default function CampaignBoardScreen({ campaignId }: Props) {
 
   const campaign = data?.payload;
 
+  const [activeTab, setActiveTab] = useState<TabKey>("overview");
   const [nameDraft, setNameDraft] = useState("");
-  const [notesDraft, setNotesDraft] = useState("");
-  const [sourcesDraft, setSourcesDraft] = useState("");
-  const [tonesDraft, setTonesDraft] = useState("");
 
   const [saveBadge, setSaveBadge] = useState<"saving" | "saved" | "error" | null>(null);
   const timerRef = useRef<number | null>(null);
@@ -39,10 +42,7 @@ export default function CampaignBoardScreen({ campaignId }: Props) {
   useEffect(() => {
     if (!campaign) return;
     setNameDraft(campaign.name ?? "");
-    setNotesDraft(campaign.notes ?? "");
-    setSourcesDraft((campaign.sources ?? []).join(", "));
-    setTonesDraft((campaign.toneModules ?? []).join(", "));
-  }, [campaign?._id, campaign?.name, campaign?.notes, campaign?.sources, campaign?.toneModules]);
+  }, [campaign?._id, campaign?.name]);
 
   useEffect(() => {
     if (updateMutation.isPending) setSaveBadge("saving");
@@ -60,12 +60,19 @@ export default function CampaignBoardScreen({ campaignId }: Props) {
     updateMutation.mutate({ name: trimmed });
   }, 400);
 
-  const debouncedSaveNotes = useDebouncedCallback((value: string) => {
-    updateMutation.mutate({ notes: value });
-  }, 600);
+  // TODO: Replace with actual user ID from auth context
+  const userId = campaign?.owner; // For now, assume current user is owner
+  const userRole = useMemo(() => (campaign ? getUserRole(campaign, userId) : null), [campaign, userId]);
 
-  const sources = useMemo(() => parseList(sourcesDraft), [sourcesDraft]);
-  const tones = useMemo(() => parseList(tonesDraft), [tonesDraft]);
+  const tabs = useMemo(() => {
+    if (!campaign) return [];
+    return createTabs({
+      campaign,
+      updateMutation,
+      settingsQuery,
+      userRole,
+    });
+  }, [campaign, updateMutation, settingsQuery, userRole]);
 
   if (isLoading) {
     return <div className={styles.state}>Loading campaign board...</div>;
@@ -99,124 +106,52 @@ export default function CampaignBoardScreen({ campaignId }: Props) {
 
       <Card className={styles.boardCard}>
         <CardBody>
-          <div className={styles.boardHero}>
-            <input
-              className={styles.titleInput}
-              value={nameDraft}
-              onChange={(e) => {
-                setNameDraft(e.target.value);
-                debouncedSaveName.call(e.target.value);
-              }}
-              onBlur={() => debouncedSaveName.flush()}
-              placeholder="New Campaign"
-              maxLength={80}
-            />
-
-            <div className={styles.metaRow}>
-              <span className={styles.metaChip}>{campaign.status}</span>
-              <span className={styles.metaChip}>{campaign.settingKey || "No setting"}</span>
-              <span className={styles.metaChip}>{campaign.members?.length ?? 0} members</span>
+          {/* Hero Section */}
+          <div className={styles.heroContent}>
+            <div className={styles.heroHeaderRow}>
+              <div className={styles.heroMain}>
+                <div className={styles.avatar}>
+                  {/* TODO: Add avatar upload functionality */}
+                  <div className={styles.avatarFallback}>{campaign.name?.[0]?.toUpperCase() || "C"}</div>
+                </div>
+                <div className={styles.heroInfo}>
+                  <input
+                    className={styles.titleInput}
+                    value={nameDraft}
+                    onChange={(e) => {
+                      setNameDraft(e.target.value);
+                      debouncedSaveName.call(e.target.value);
+                    }}
+                    onBlur={() => debouncedSaveName.flush()}
+                    placeholder="New Campaign"
+                    maxLength={80}
+                    disabled={campaign.status === "archived"}
+                  />
+                  <div className={styles.heroPitch}>
+                    {campaign.notes ? (
+                      <p className={styles.pitchPreview}>{campaign.notes}</p>
+                    ) : (
+                      <p className={styles.pitchEmpty}>No pitch yet...</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div className={styles.heroActions}>
+                <div className={styles.metaBadge}>{campaign.status}</div>
+                {campaign.settingKey && <div className={styles.metaBadge}>{campaign.settingKey}</div>}
+                <div className={styles.metaBadge}>{campaign.members?.length ?? 0} members</div>
+              </div>
             </div>
           </div>
 
-          <div className={styles.grid}>
-            <section className={styles.mainPanel}>
-              <TextAreaField
-                // className={styles.notesArea}
-                label="Campaign Pitch"
-                floatingLabel
-                value={notesDraft}
-                onChange={(e) => {
-                  setNotesDraft(e.target.value);
-                  debouncedSaveNotes.call(e.target.value);
-                }}
-                onBlur={() => debouncedSaveNotes.flush()}
-                placeholder="What is this campaign about?"
-                rows={7}
-              />
-            </section>
+          {/* Archived Banner */}
+          {campaign.status === "archived" && (
+            <div className={styles.archivedBanner}>This campaign is archived and read-only.</div>
+          )}
 
-            <aside className={styles.sidePanel}>
-              <section className={styles.editBlock}>
-                <SelectField
-                  value={campaign.settingKey || ""}
-                  onChange={(e) => updateMutation.mutate({ settingKey: e.target.value || null })}
-                  disabled={settingsQuery.isLoading}
-                >
-                  <option value="">No setting</option>
-                  {settingsQuery.data?.payload?.map((setting) => (
-                    <option key={setting._id} value={setting.key}>
-                      {setting.name}
-                    </option>
-                  ))}
-                  {!settingsQuery.isLoading && !settingsQuery.data?.payload?.length && (
-                    <option value="" disabled>
-                      No settings available
-                    </option>
-                  )}
-                </SelectField>
-              </section>
-
-              <section className={styles.editBlock}>
-                <TextField
-                  // className={styles.textInput}
-                  label="Tone Modules"
-                  floatingLabel
-                  value={tonesDraft}
-                  onChange={(e) => setTonesDraft(e.target.value)}
-                  onBlur={() => updateMutation.mutate({ toneModules: parseList(tonesDraft) })}
-                  placeholder="dragon-dial, romance-dial"
-                />
-                <div className={styles.tokenRow}>
-                  {tones.length ? (
-                    tones.map((tone) => (
-                      <span key={tone} className={styles.token}>
-                        {tone}
-                      </span>
-                    ))
-                  ) : (
-                    <span className={styles.empty}>No tone modules yet</span>
-                  )}
-                </div>
-              </section>
-
-              <section className={styles.editBlock}>
-                <TextField
-                  // className={styles.textInput}
-                  value={sourcesDraft}
-                  onChange={(e) => setSourcesDraft(e.target.value)}
-                  onBlur={() =>
-                    updateMutation.mutate({
-                      sources: parseList(sourcesDraft).length ? parseList(sourcesDraft) : ["core"],
-                    })
-                  }
-                  floatingLabel
-                  label="Sources"
-                  placeholder="core, woven-realms"
-                />
-                <div className={styles.tokenRow}>
-                  {sources.length ? (
-                    sources.map((source) => (
-                      <span key={source} className={styles.token}>
-                        {source}
-                      </span>
-                    ))
-                  ) : (
-                    <span className={styles.empty}>No sources yet</span>
-                  )}
-                </div>
-              </section>
-
-              <section className={styles.editBlock}>
-                <h3>Coming Next</h3>
-                <div className={styles.stubList}>
-                  <div className={styles.stub}>Invites</div>
-                  <div className={styles.stub}>Join Requests</div>
-                  <div className={styles.stub}>Roster</div>
-                  <div className={styles.stub}>Encounter Tracker</div>
-                </div>
-              </section>
-            </aside>
+          {/* Tabs */}
+          <div className={styles.tabsContainer}>
+            <Tabs items={tabs} activeKey={activeTab} onChange={(key: string) => setActiveTab(key as TabKey)} />
           </div>
         </CardBody>
       </Card>

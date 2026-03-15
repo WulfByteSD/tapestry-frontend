@@ -1,0 +1,143 @@
+/* CharactersTab.module.scss */
+.container {
+  display: grid;
+  gap: 1.5rem;
+  padding: 1rem 0;
+}
+
+.summary {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.empty {
+  display: grid;
+  gap: 0.5rem;
+  place-items: center;
+  text-align: center;
+  padding: 3rem 1rem;
+  opacity: 0.7;
+
+  h3 {
+    margin: 0;
+    font-size: 1.1rem;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.9rem;
+  }
+
+  .hint {
+    font-size: 0.85rem;
+    opacity: 0.6;
+    margin-top: 0.5rem;
+  }
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.characterCard {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.cardHeader {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 10px;
+  overflow: hidden;
+  flex-shrink: 0;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.avatarFallback {
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 196, 92, 0.15);
+  border: 1px solid rgba(255, 196, 92, 0.3);
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: var(--gold);
+}
+
+.headerInfo {
+  display: grid;
+  gap: 0.25rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.characterName {
+  font-weight: 600;
+  font-size: 1rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.playerName {
+  font-size: 0.85rem;
+  opacity: 0.7;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cardBody {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.stat {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.statLabel {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  opacity: 0.6;
+  font-weight: 600;
+}
+
+.statValue {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
