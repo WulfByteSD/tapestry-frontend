@@ -33,8 +33,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
-          # cache: "pnpm"
-          
+          cache: "pnpm"
+
       - name: Configure pnpm to avoid symlinked node_modules (CI only)
         run: |
           echo "node-linker=hoisted" >> .npmrc
@@ -53,6 +53,7 @@ jobs:
 
       - name: Build player
         run: pnpm -C apps/player build
+
       - name: Fail if standalone has broken symlinks
         run: |
           BROKEN=$(find apps/player/.next/standalone -type l -xtype l | wc -l)
