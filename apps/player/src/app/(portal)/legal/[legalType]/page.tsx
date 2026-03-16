@@ -5,10 +5,19 @@ import { getLegalPolicies, getLegalPolicyByType } from "@tapestry/api-client";
 
 // Force the page to revalidate on every request
 export const revalidate = 0;
+export const dynamic = 'force-dynamic';
 
 // Generate dynamic metadata based on the legal type
 export async function generateMetadata({ params }: { params: Promise<{ legalType: string }> }): Promise<Metadata> {
   const { legalType } = await params;
+
+  // Guard against undefined legalType
+  if (!legalType) {
+    return {
+      title: "Legal Document — Tapestry",
+      description: "View legal documents for the Tapestry TTRPG system.",
+    };
+  }
 
   // Capitalize and format the legal type for display
   const formattedType = legalType
@@ -85,8 +94,18 @@ interface PageProps {
 export default async function Page({ params }: PageProps) {
   const { legalType } = await params;
 
-  // Fetch dynamic legal document based on the legalType parameter
-  const content = await getLegalPolicyByType(api, legalType);
+  // Guard against undefined legalType
+  if (!legalType) {
+    return <div>Legal document not found.</div>;
+  }
 
-  return <Legal content={content} />;
+  try {
+    // Fetch dynamic legal document based on the legalType parameter
+    const content = await getLegalPolicyByType(api, legalType);
+
+    return <Legal content={content} />;
+  } catch (error) {
+    console.error("Error fetching legal content:", error);
+    return <div>Error loading legal document. Please try again later.</div>;
+  }
 }
