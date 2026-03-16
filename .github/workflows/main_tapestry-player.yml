@@ -52,18 +52,15 @@ jobs:
           rm -rf deploy-player
           mkdir -p deploy-player
 
-          # Copy Next standalone output
-          cp -R apps/player/.next/standalone/* deploy-player/
+          # Copy standalone output and DEREFERENCE symlinks
+          rsync -aL apps/player/.next/standalone/ deploy-player/
 
-          # Copy static + public (required for standalone)
-          mkdir -p deploy-player/.next
-          cp -R apps/player/.next/static deploy-player/.next/static
-          cp -R apps/player/public deploy-player/public
+          # Put static + public next to the app root inside the standalone tree
+          mkdir -p deploy-player/apps/player/.next
+          rsync -a apps/player/.next/static/ deploy-player/apps/player/.next/static/
+          rsync -a apps/player/public/ deploy-player/apps/player/public/
 
-          # Zip for deployment
-          cd deploy-player
-          zip -r ../deploy-player.zip .
-          cd ..
+          cd deploy-player && zip -r ../deploy-player.zip . && cd ..
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
