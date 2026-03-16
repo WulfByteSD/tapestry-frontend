@@ -52,7 +52,7 @@ jobs:
         run: pnpm install --frozen-lockfile --prod=false
 
       - name: Build player
-        run: pnpm -C apps/player build
+        run: pnpm -w --filter @tapestry/player... build
 
       - name: Fail if standalone has broken symlinks
         run: |
