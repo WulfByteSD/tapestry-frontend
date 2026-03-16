@@ -46,7 +46,14 @@ jobs:
 
       - name: Build player
         run: pnpm -C apps/player build
-
+      - name: Fail if standalone has broken symlinks
+        run: |
+          BROKEN=$(find apps/player/.next/standalone -type l -xtype l | wc -l)
+          if [ "$BROKEN" -ne 0 ]; then
+            echo "Broken symlinks found in standalone output:"
+            find apps/player/.next/standalone -type l -xtype l
+            exit 1
+          fi
       - name: Create standalone deploy artifact (player)
         run: |
           rm -rf deploy-player
