@@ -5,7 +5,7 @@ import { getLegalPolicies, getLegalPolicyByType } from "@tapestry/api-client";
 
 // Force the page to revalidate on every request
 export const revalidate = 0;
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 // Generate dynamic metadata based on the legal type
 export async function generateMetadata({ params }: { params: Promise<{ legalType: string }> }): Promise<Metadata> {
@@ -43,12 +43,7 @@ export async function generateMetadata({ params }: { params: Promise<{ legalType
       title: "Terms of Service — Tapestry",
       description:
         "Review Tapestry terms of service. Understand your rights and responsibilities when using our tabletop roleplaying system and platform.",
-      keywords: [
-        "Tapestry terms of service",
-        "TTRPG terms",
-        "tabletop gaming agreement",
-        "Tapestry legal terms",
-      ],
+      keywords: ["Tapestry terms of service", "TTRPG terms", "tabletop gaming agreement", "Tapestry legal terms"],
     },
     "content-license": {
       title: "Content License — Tapestry",
