@@ -34,6 +34,13 @@ jobs:
         with:
           node-version: "22"
           # cache: "pnpm"
+          
+      - name: Configure pnpm to avoid symlinked node_modules (CI only)
+        run: |
+          echo "node-linker=hoisted" >> .npmrc
+          echo "public-hoist-pattern[]=*" >> .npmrc
+          echo "shamefully-hoist=true" >> .npmrc
+          cat .npmrc
 
       - name: Enable corepack + activate pnpm
         run: |
