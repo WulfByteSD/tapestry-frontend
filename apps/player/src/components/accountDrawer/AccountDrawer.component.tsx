@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useMe, useLogout } from "@/lib/auth-hooks";
+import { usePlayerProfile } from "@/lib/settings-hooks";
 import styles from "./AccountDrawer.module.scss";
 import { Button } from "@tapestry/ui";
 
@@ -16,6 +17,7 @@ type Props = {
 export default function AccountDrawer({ open, onClose }: Props) {
   const router = useRouter();
   const { data: me } = useMe();
+  const { data: profile } = usePlayerProfile(me?.profileRefs?.player);
   const logout = useLogout();
 
   // ESC to close
@@ -48,7 +50,7 @@ export default function AccountDrawer({ open, onClose }: Props) {
               className={styles.logo}
             />
           </div>
-          <div className={styles.name}>{me?.fullName ?? "Adventurer"}</div>
+          <div className={styles.name}>{profile?.displayName ?? "Adventurer"}</div>
           <div className={styles.email}>{me?.email ?? ""}</div>
         </div>
 

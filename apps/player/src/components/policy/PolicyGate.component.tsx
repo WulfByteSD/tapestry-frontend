@@ -29,7 +29,7 @@ export default function PolicyGate({
   const [checked, setChecked] = useState<Record<string, boolean>>({});
 
   const requiredMap = useMemo(() => {
-    const map: Record<string, { version: number; title: string; effective_date?: string }> = {};
+    const map: Record<string, { version: string; title: string; effective_date?: Date }> = {};
 
     for (const policy of policies ?? []) {
       if (requiredPolicies.includes(policy.type)) {

@@ -6,6 +6,8 @@
     "dev:player": "pnpm --filter @tapestry/player dev",
     "dev:admin": "pnpm --filter @tapestry/admin dev",
     "dev": "pnpm -r --parallel dev",
+    "build:player": "pnpm --filter @tapestry/player build",
+    "build:admin": "pnpm --filter @tapestry/admin build",
     "lint": "pnpm -r lint",
     "build": "pnpm -r build"
   },
