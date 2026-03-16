@@ -49,7 +49,7 @@ jobs:
           pnpm --version
 
       - name: Install deps (workspace)
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile --prod=false
 
       - name: Build player
         run: pnpm -C apps/player build
