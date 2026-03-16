@@ -1,7 +1,5 @@
-import Legal from "@/views/legal/Legal.view";
+import LegalPageClient from "./LegalPage.client";
 import { Metadata } from "next";
-import { api } from "@/lib/api";
-import { getLegalPolicies, getLegalPolicyByType } from "@tapestry/api-client";
 
 // Force the page to revalidate on every request
 export const revalidate = 0;
@@ -89,18 +87,5 @@ interface PageProps {
 export default async function Page({ params }: PageProps) {
   const { legalType } = await params;
 
-  // Guard against undefined legalType
-  if (!legalType) {
-    return <div>Legal document not found.</div>;
-  }
-
-  try {
-    // Fetch dynamic legal document based on the legalType parameter
-    const content = await getLegalPolicyByType(api, legalType);
-
-    return <Legal content={content} />;
-  } catch (error) {
-    console.error("Error fetching legal content:", error);
-    return <div>Error loading legal document. Please try again later.</div>;
-  }
+  return <LegalPageClient legalType={legalType} />;
 }
