@@ -23,6 +23,13 @@ export type StudioSettingSummary = {
     magic?: boolean;
   };
 };
+export type LoreRelation = {
+  type: string;
+  targetId?: string;
+  targetKey?: string;
+  label?: string;
+  notes?: string;
+};
 
 export type LoreTreeNode = {
   _id: string;
@@ -35,6 +42,7 @@ export type LoreTreeNode = {
   childCount?: number;
   hasChildren?: boolean;
   children?: LoreTreeNode[];
+  relations?: LoreRelation[];
   summary?: string;
 };
 

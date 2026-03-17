@@ -154,3 +154,55 @@
   font-size: 14px;
   line-height: 1.65;
 }
+.statusSetting {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--accent-4) 20%, transparent),
+    color-mix(in srgb, var(--surface) 92%, black)
+  );
+}
+
+.settingNodeCard {
+  width: 260px;
+}
+
+.relationHandle {
+  width: 10px !important;
+  height: 10px !important;
+  border: none !important;
+  background: color-mix(in srgb, var(--accent-4) 72%, white) !important;
+}
+
+.settingEdge {
+  :global(.react-flow__edge-path) {
+    stroke: color-mix(in srgb, var(--accent-4) 52%, transparent);
+    stroke-width: 2px;
+  }
+}
+
+.hierarchyEdge {
+  :global(.react-flow__edge-path) {
+    stroke: color-mix(in srgb, var(--contrast-2) 36%, transparent);
+    stroke-width: 2px;
+  }
+}
+ 
+
+.relationEdge {
+  :global(.react-flow__edge-path) {
+    stroke: color-mix(in srgb, var(--gold) 68%, white);
+    stroke-width: 2px;
+    stroke-dasharray: 6 6;
+  }
+}
+.relationEdge {
+  :global(.react-flow__edge-textbg) {
+    fill: color-mix(in srgb, var(--surface) 94%, black);
+  }
+}
+.relationEdge {
+  :global(.react-flow__edge-text) {
+    fill: var(--gold-soft);
+    font-weight: 700;
+  }
+}

@@ -130,6 +130,14 @@ export default function ContentStudio() {
                     tree={studio.loreTree}
                     selectedKey={studio.selectedLoreKey}
                     onOpenNode={studio.selectLoreNode}
+                    settingNode={
+                      studio.selectedSetting
+                        ? {
+                            key: studio.selectedSetting.key,
+                            name: studio.selectedSetting.name,
+                          }
+                        : null
+                    }
                   />
                 )}
               </section>
