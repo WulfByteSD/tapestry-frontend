@@ -35,6 +35,13 @@ jobs:
           node-version: "22"
           # cache: "pnpm"
 
+      - name: Configure pnpm to avoid symlinked node_modules (CI only)
+        run: |
+          echo "node-linker=hoisted" >> .npmrc
+          echo "public-hoist-pattern[]=*" >> .npmrc
+          echo "shamefully-hoist=true" >> .npmrc
+          cat .npmrc
+
       - name: Enable corepack + activate pnpm
         run: |
           corepack enable
@@ -42,28 +49,33 @@ jobs:
           pnpm --version
 
       - name: Install deps (workspace)
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile --prod=false
 
       - name: Build admin
-        run: pnpm -C apps/admin build
+        run: pnpm -w --filter @tapestry/admin... build
 
+      - name: Fail if standalone has broken symlinks
+        run: |
+          BROKEN=$(find apps/admin/.next/standalone -type l -xtype l | wc -l)
+          if [ "$BROKEN" -ne 0 ]; then
+            echo "Broken symlinks found in standalone output:"
+            find apps/admin/.next/standalone -type l -xtype l
+            exit 1
+          fi
       - name: Create standalone deploy artifact (admin)
         run: |
           rm -rf deploy-admin
           mkdir -p deploy-admin
 
-          # Copy Next standalone output
-          cp -R apps/admin/.next/standalone/* deploy-admin/
+          # Copy standalone output and DEREFERENCE symlinks
+          rsync -aL apps/admin/.next/standalone/ deploy-admin/
 
-          # Copy static + public (required for standalone)
-          mkdir -p deploy-admin/.next
-          cp -R apps/admin/.next/static deploy-admin/.next/static
-          cp -R apps/admin/public deploy-admin/public
+          # Put static + public next to the app root inside the standalone tree
+          mkdir -p deploy-admin/apps/admin/.next
+          rsync -a apps/admin/.next/static/ deploy-admin/apps/admin/.next/static/
+          rsync -a apps/admin/public/ deploy-admin/apps/admin/public/
 
-          # Zip for deployment
-          cd deploy-admin
-          zip -r ../deploy-admin.zip .
-          cd ..
+          cd deploy-admin && zip -r ../deploy-admin.zip . && cd ..
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4

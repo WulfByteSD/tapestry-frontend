@@ -1,34 +1,21 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useAlert } from "@tapestry/ui";
+import { createSessionAuth } from "@tapestry/hooks";
 import { api, tokenStore } from "@/lib/api";
-import { login, me, setAuthToken, normalizeRoles } from "@tapestry/api-client";
 
-export function useMe() {
-  const token = tokenStore.get();
+function useLoginErrorHandler() {
+  const { addAlert } = useAlert();
 
-  return useQuery({
-    queryKey: ["me"],
-    queryFn: async () => me(api),
-    enabled: !!token,
-  });
+  return () => {
+    addAlert({
+      type: "error",
+      message: "Login failed. Please check your credentials and try again.",
+    });
+  };
 }
 
-export function useLogin() {
-  const qc = useQueryClient();
+const sessionAuth = createSessionAuth(api, tokenStore, {
+  useOnLoginError: useLoginErrorHandler,
+  loginErrorLogLabel: "Admin login error:",
+});
 
-  return useMutation({
-    mutationFn: async (input: { email: string; password: string }) => {
-      const res = await login(api, input.email, input.password);
-      tokenStore.set(res.token);
-      setAuthToken(api, res.token);
-      return res;
-    },
-    onSuccess: async () => {
-      await qc.invalidateQueries({ queryKey: ["me"] });
-    },
-  });
-}
-
-export function logout() {
-  tokenStore.clear();
-  setAuthToken(api, null);
-}
+export const { useLogout, useMe, useLogin, logout } = sessionAuth;

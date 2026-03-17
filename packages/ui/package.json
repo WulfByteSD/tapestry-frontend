@@ -9,6 +9,7 @@
     "react-dom": "^18.0.0"
   },
   "dependencies": {
+    "@tapestry/hooks": "workspace:*",
     "clsx": "^2.1.1"
   },
   "devDependencies": {
