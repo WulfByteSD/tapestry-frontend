@@ -1,5 +1,5 @@
-import ContentView from "@/views/content/Content.view";
+import ContentStudio from "@/features/content/_components/contentStudio/ContentStudio";
 
 export default function ContentPage() {
-  return <ContentView />;
+  return <ContentStudio />;
 }

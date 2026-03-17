@@ -1,0 +1,348 @@
+.studio {
+  display: grid;
+  gap: 24px;
+  position: relative;
+  z-index: 1;
+}
+
+.hero {
+  display: grid;
+  gap: 10px;
+  max-width: 840px;
+}
+
+.eyebrow {
+  margin: 0;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  color: var(--text-muted);
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(32px, 4vw, 44px);
+  line-height: 1.04;
+  color: var(--text);
+}
+
+.subtitle {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--text-muted);
+  max-width: 760px;
+}
+
+.layout {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: 320px minmax(0, 1fr);
+  align-items: start;
+
+  @media (max-width: 1100px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.workspace {
+  display: grid;
+  gap: 18px;
+}
+
+.panel {
+  display: grid;
+  gap: 18px;
+  padding: 22px;
+  border-radius: 20px;
+  border: 1px solid color-mix(in srgb, var(--contrast-2) 14%, transparent);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--surface) 88%, black),
+    color-mix(in srgb, var(--surface-2) 90%, black)
+  );
+  box-shadow: var(--shadow-1);
+}
+
+.panelHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: flex-start;
+
+  @media (max-width: 840px) {
+    flex-direction: column;
+  }
+}
+
+.panelTitleWrap {
+  display: grid;
+  gap: 6px;
+  max-width: 760px;
+}
+
+.panelEyebrow {
+  margin: 0;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: var(--text-muted);
+}
+
+.panelTitle {
+  margin: 0;
+  font-size: 24px;
+  color: var(--text);
+}
+
+.panelCopy {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text-muted);
+}
+
+.actionRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.actionButton,
+.ghostButton {
+  min-height: 42px;
+  padding: 0 16px;
+  border-radius: 14px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    transform 140ms ease,
+    border-color 140ms ease,
+    background 140ms ease;
+}
+
+.actionButton {
+  color: var(--text);
+  border: 1px solid color-mix(in srgb, var(--gold) 28%, transparent);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--gold) 18%, transparent),
+    color-mix(in srgb, var(--accent-4) 10%, transparent)
+  );
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+}
+
+.ghostButton {
+  color: var(--text);
+  border: 1px solid color-mix(in srgb, var(--contrast-2) 14%, transparent);
+  background: transparent;
+
+  &:hover {
+    transform: translateY(-1px);
+    border-color: color-mix(in srgb, var(--gold) 26%, transparent);
+  }
+}
+
+.metricGrid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+
+  @media (max-width: 1100px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.metricCard {
+  display: grid;
+  gap: 6px;
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid color-mix(in srgb, var(--contrast-2) 12%, transparent);
+  background: color-mix(in srgb, var(--base-2) 52%, black);
+}
+
+.metricLabel {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--text-muted);
+}
+
+.metricValue {
+  font-size: clamp(24px, 3vw, 32px);
+  color: var(--text);
+}
+
+.metricCopy {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+.inlineNotice,
+.treeEmpty {
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px dashed color-mix(in srgb, var(--contrast-2) 18%, transparent);
+  background: color-mix(in srgb, var(--surface) 70%, transparent);
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.treeList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.treeItem {
+  display: grid;
+  gap: 10px;
+}
+
+.treeBranch {
+  margin-left: 16px;
+  padding-left: 14px;
+  border-left: 1px solid color-mix(in srgb, var(--contrast-2) 14%, transparent);
+}
+
+.treeNode {
+  display: grid;
+  gap: 10px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1px solid color-mix(in srgb, var(--contrast-2) 12%, transparent);
+  background: color-mix(in srgb, var(--surface) 80%, transparent);
+}
+
+.treeNodeHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+
+  @media (max-width: 640px) {
+    flex-direction: column;
+  }
+}
+
+.treeNodeName {
+  font-size: 16px;
+  color: var(--text);
+}
+
+.treeMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.kindBadge,
+.statusBadge,
+.childBadge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.kindBadge {
+  color: var(--text);
+  background: color-mix(in srgb, var(--accent-4) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent-4) 20%, transparent);
+}
+
+.childBadge {
+  color: var(--text-muted);
+  background: color-mix(in srgb, var(--surface) 75%, transparent);
+  border: 1px solid color-mix(in srgb, var(--contrast-2) 12%, transparent);
+}
+
+.statusBadge {
+  border: 1px solid transparent;
+}
+
+.statusDraft {
+  color: var(--text);
+  background: color-mix(in srgb, var(--gold) 12%, transparent);
+  border-color: color-mix(in srgb, var(--gold) 24%, transparent);
+}
+
+.statusPublished {
+  color: var(--text);
+  background: color-mix(in srgb, #42d392 16%, transparent);
+  border-color: color-mix(in srgb, #42d392 26%, transparent);
+}
+
+.statusArchived {
+  color: var(--text-muted);
+  background: color-mix(in srgb, var(--contrast-2) 8%, transparent);
+  border-color: color-mix(in srgb, var(--contrast-2) 16%, transparent);
+}
+
+.treeNodeBody {
+  display: grid;
+  gap: 6px;
+}
+
+.treeKey {
+  font-size: 12px;
+  color: var(--gold-soft);
+}
+
+.treeSummary {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--text-muted);
+}
+
+.laneGrid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  @media (max-width: 840px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.laneCard {
+  display: grid;
+  gap: 8px;
+  padding: 18px;
+  border-radius: 16px;
+  border: 1px solid color-mix(in srgb, var(--contrast-2) 12%, transparent);
+  background: color-mix(in srgb, var(--base-2) 54%, black);
+}
+
+.laneTitle {
+  margin: 0;
+  font-size: 17px;
+  color: var(--text);
+}
+
+.laneCopy {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text-muted);
+}

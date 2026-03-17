@@ -1,6 +1,7 @@
 .shell {
   display: grid;
   grid-template-columns: auto 1fr;
+  grid-template-areas: "sidebar content";
   min-height: 100vh;
 
   --sidebar-width: 280px;
@@ -18,9 +19,10 @@
 }
 
 .contentArea {
+  grid-area: content;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  height: 100vh;
 }
 
 .header {
@@ -47,29 +49,26 @@
   color: var(--text-muted);
 }
 
-.main {
-  position: relative;
-  flex: 1;
-  overflow-y: auto;
-  padding: 24px 32px;
-}
-
 .watermark {
   position: fixed;
-  top: var(--header-height);
-  left: var(--sidebar-width);
+  top: var(--header-height, 64px);
+  left: var(--sidebar-width, 280px);
   right: 0;
   bottom: 0;
+  background-image: url("https://res.cloudinary.com/dmc7wmarf/image/upload/v1771775270/ChatGPT_Image_Jan_10_2026_11_32_39_AM_-_Copy_bcpc4f.png");
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
   opacity: 0.05;
   pointer-events: none;
   z-index: 0;
-  background:
-    radial-gradient(circle at center, color-mix(in srgb, var(--gold) 26%, transparent), transparent 38%),
-    radial-gradient(circle at 70% 30%, color-mix(in srgb, var(--accent-4) 24%, transparent), transparent 28%);
-
-  @media (max-width: 767px) {
-    left: 0;
-  }
+}
+.main {
+  position: relative;
+  flex: 1;
+  padding: 24px 32px;
+  height: 100%;
+  overflow-y: auto;
 }
 
 .logoBadge {
