@@ -3,127 +3,16 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Tabs } from "@tapestry/ui";
 import { api } from "@/lib/api";
-import NodeEditorForm, { toTagArray, type NodeEditorFormValue } from "../nodeEditorForm/NodeEditorForm.component";
+import type { NodeEditorFormValue } from "../nodeEditorForm/NodeEditorForm.component";
 import styles from "./NodeWorkspace.module.scss";
-
-type WorkspaceTab = "editor" | "graph" | "relationships";
-
-type LoreNodeDetail = {
-  _id: string;
-  settingKey: string;
-  key: string;
-  name: string;
-  kind: string;
-  status: "draft" | "published" | "archived";
-  parentId?: string | null;
-  sortOrder?: number;
-  tags?: string[];
-  summary?: string;
-  body?: string;
-  relations?: LoreRelation[];
-  createdAt?: string;
-  updatedAt?: string;
-};
-type LoreRelation = {
-  type: string;
-  targetId?: string;
-  targetKey?: string;
-  label?: string;
-  notes?: string;
-};
-
-type LoreTreeNode = {
-  _id: string;
-  key: string;
-  name: string;
-  kind: string;
-  status: "draft" | "published" | "archived";
-  depth: number;
-  parentId?: string | null;
-  children?: LoreTreeNode[];
-};
-
-type NodeEditorParentOption = {
-  _id: string;
-  key: string;
-  name: string;
-  kind: string;
-  depth: number;
-};
-type NodeWorkspaceProps = {
-  nodeId: string;
-};
-
-const TAB_OPTIONS: Array<{
-  key: WorkspaceTab;
-  label: string;
-  copy: string;
-}> = [
-  {
-    key: "editor",
-    label: "Editor",
-    copy: "Edit the core node record.",
-  },
-  {
-    key: "graph",
-    label: "Graph",
-    copy: "Local neighborhood view comes next.",
-  },
-  {
-    key: "relationships",
-    label: "Relationships",
-    copy: "Outgoing and incoming links come next.",
-  },
-];
-
-function toFormValue(node: LoreNodeDetail): NodeEditorFormValue {
-  return {
-    settingKey: node.settingKey,
-    name: node.name ?? "",
-    key: node.key ?? "",
-    kind: (node.kind as NodeEditorFormValue["kind"]) ?? "other",
-    status: node.status ?? "draft",
-    parentId: node.parentId ?? "",
-    sortOrder: String(node.sortOrder ?? 0),
-    tags: Array.isArray(node.tags) ? node.tags.join(", ") : "",
-    summary: node.summary ?? "",
-    body: node.body ?? "",
-    relations: Array.isArray(node.relations)
-      ? node.relations.map((relation) => ({
-          type: relation.type,
-          targetKey: relation.targetKey || "",
-          label: relation.label || "",
-          notes: relation.notes || "",
-        }))
-      : [],
-  };
-}
-function toUpdatePayload(form: NodeEditorFormValue) {
-  return {
-    name: form.name.trim(),
-    key: form.key.trim().toLowerCase(),
-    kind: form.kind,
-    status: form.status,
-    parentId: form.parentId || null,
-    sortOrder: Number(form.sortOrder || 0),
-    tags: toTagArray(form.tags),
-    summary: form.summary.trim(),
-    body: form.body.trim(),
-    relations: form.relations
-      .map((relation) => ({
-        type: relation.type,
-        targetKey: relation.targetKey.trim(),
-        label: relation.label?.trim() || "",
-        notes: relation.notes?.trim() || "",
-      }))
-      .filter((relation) => relation.targetKey),
-  };
-}
+import type { LoreNodeDetail, LoreTreeNode, NodeWorkspaceProps } from "./nodeWorkspace.types";
+import { toUpdatePayload, flattenTree, findNodeById, collectDescendantIds } from "./nodeWorkspace.helper";
+import { createTabs } from "./nodeWorkspace.tabs";
 
 export default function NodeWorkspace({ nodeId }: NodeWorkspaceProps) {
   const queryClient = useQueryClient();
-  const [activeTab, setActiveTab] = useState<WorkspaceTab>("editor");
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
 
   const nodeQuery = useQuery({
@@ -209,6 +98,22 @@ export default function NodeWorkspace({ nodeId }: NodeWorkspaceProps) {
     ];
   }, [node]);
 
+  const tabItems = useMemo(() => {
+    if (!node) return [];
+
+    return createTabs({
+      node,
+      parentOptions,
+      relationTargets,
+      isSaving: saveMutation.isPending,
+      saveMessage,
+      onSave: async (formValue) => {
+        setSaveMessage(null);
+        await saveMutation.mutateAsync(formValue);
+      },
+    });
+  }, [node, parentOptions, relationTargets, saveMutation, saveMessage]);
+
   return (
     <section className={styles.page}>
       <div className={styles.header}>
@@ -255,97 +160,9 @@ export default function NodeWorkspace({ nodeId }: NodeWorkspaceProps) {
             ))}
           </div>
 
-          <div className={styles.tabRow}>
-            {TAB_OPTIONS.map((tab) => {
-              const isActive = tab.key === activeTab;
-
-              return (
-                <button
-                  key={tab.key}
-                  type="button"
-                  className={`${styles.tabButton} ${isActive ? styles.tabButtonActive : ""}`}
-                  onClick={() => setActiveTab(tab.key)}
-                >
-                  <span className={styles.tabLabel}>{tab.label}</span>
-                  <span className={styles.tabCopy}>{tab.copy}</span>
-                </button>
-              );
-            })}
-          </div>
-
-          <div className={styles.panel}>
-            {activeTab === "editor" ? (
-              <NodeEditorForm
-                initialValue={toFormValue(node)}
-                parentOptions={parentOptions}
-                relationTargets={relationTargets}
-                isSaving={saveMutation.isPending}
-                saveMessage={saveMessage}
-                onSave={async (formValue) => {
-                  setSaveMessage(null);
-                  await saveMutation.mutateAsync(formValue);
-                }}
-              />
-            ) : activeTab === "graph" ? (
-              <div className={styles.placeholder}>
-                <h2 className={styles.placeholderTitle}>Node graph</h2>
-                <p className={styles.placeholderCopy}>
-                  This tab will render the current node as the local root and show its immediate children in a focused
-                  graph instead of the full setting atlas.
-                </p>
-              </div>
-            ) : (
-              <div className={styles.placeholder}>
-                <h2 className={styles.placeholderTitle}>Relationships</h2>
-                <p className={styles.placeholderCopy}>
-                  This tab will show outgoing and incoming relations in separate, readable panels so cross-links stay
-                  useful instead of turning into visual spaghetti.
-                </p>
-              </div>
-            )}
-          </div>
+          <Tabs items={tabItems} defaultActiveKey="editor" variant="pills" fit="equal" />
         </>
       )}
     </section>
   );
-}
-function flattenTree(nodes: LoreTreeNode[], bucket: NodeEditorParentOption[] = []): NodeEditorParentOption[] {
-  for (const node of nodes) {
-    bucket.push({
-      _id: node._id,
-      key: node.key,
-      name: node.name,
-      kind: node.kind,
-      depth: node.depth,
-    });
-
-    if (node.children?.length) {
-      flattenTree(node.children, bucket);
-    }
-  }
-
-  return bucket;
-}
-
-function findNodeById(nodes: LoreTreeNode[], id: string): LoreTreeNode | null {
-  for (const node of nodes) {
-    if (node._id === id) return node;
-    if (node.children?.length) {
-      const nested = findNodeById(node.children, id);
-      if (nested) return nested;
-    }
-  }
-
-  return null;
-}
-
-function collectDescendantIds(node: LoreTreeNode | null, bucket = new Set<string>()) {
-  if (!node?.children?.length) return bucket;
-
-  for (const child of node.children) {
-    bucket.add(child._id);
-    collectDescendantIds(child, bucket);
-  }
-
-  return bucket;
 }
