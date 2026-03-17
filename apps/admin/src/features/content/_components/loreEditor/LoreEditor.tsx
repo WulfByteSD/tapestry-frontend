@@ -4,6 +4,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import styles from "./LoreEditor.module.scss";
+import RelationEditor from "../relationEditor/RelationEditor.component";
+import { LoreRelationDraft } from "../../_hooks/useContentStudio";
 
 export type LoreEditorMode = "create-root" | "create-child" | "edit";
 
@@ -119,6 +121,8 @@ export default function LoreEditor({
   const [summary, setSummary] = useState("");
   const [body, setBody] = useState("");
   const [formError, setFormError] = useState<string | null>(null);
+
+  const [draftRelations, setDraftRelations] = useState<LoreRelationDraft[]>([]);
 
   const detailQuery = useQuery({
     queryKey: ["admin-content", "lore-detail", selectedSettingKey, selectedNodeKey],
@@ -426,7 +430,12 @@ export default function LoreEditor({
           </div>
 
           {formError ? <div className={styles.error}>{formError}</div> : null}
-
+          <RelationEditor
+            value={draftRelations}
+            onChange={setDraftRelations}
+            targets={parentOptions as LoreParentOption[]}
+            disabled
+          />
           <div className={styles.actions}>
             <button
               type="submit"

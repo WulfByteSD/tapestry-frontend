@@ -1,0 +1,111 @@
+.listShell {
+  display: grid;
+  gap: 16px;
+}
+
+.header {
+  display: grid;
+  gap: 6px;
+}
+
+.title {
+  margin: 0;
+  font-size: 20px;
+  color: var(--text);
+}
+
+.copy {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--text-muted);
+}
+
+.list {
+  display: grid;
+  gap: 12px;
+}
+
+.item {
+  width: 100%;
+  display: grid;
+  gap: 8px;
+  text-align: left;
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid color-mix(in srgb, var(--contrast-2) 12%, transparent);
+  background: color-mix(in srgb, var(--surface) 78%, transparent);
+  color: inherit;
+  cursor: pointer;
+  transition:
+    transform 140ms ease,
+    border-color 140ms ease,
+    background 140ms ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    border-color: color-mix(in srgb, var(--gold) 26%, transparent);
+    background: color-mix(in srgb, var(--gold) 10%, transparent);
+  }
+}
+
+.itemSelected {
+  border-color: color-mix(in srgb, var(--gold) 34%, transparent);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--gold) 14%, transparent),
+    color-mix(in srgb, var(--accent-4) 10%, transparent)
+  );
+}
+
+.itemHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.itemTitle {
+  font-size: 15px;
+  color: var(--text);
+}
+
+.itemMeta {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+}
+
+.itemSubtitle {
+  font-size: 12px;
+  color: var(--gold-soft);
+}
+
+.itemDescription {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--text-muted);
+}
+
+.empty {
+  display: grid;
+  gap: 6px;
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px dashed color-mix(in srgb, var(--contrast-2) 18%, transparent);
+  background: color-mix(in srgb, var(--surface) 70%, transparent);
+}
+
+.emptyTitle {
+  font-size: 15px;
+  color: var(--text);
+}
+
+.emptyCopy {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--text-muted);
+}
