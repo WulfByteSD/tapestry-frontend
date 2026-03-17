@@ -10,3 +10,4 @@ export * from "./components/alert";
 export * from "./components/tooltip";
 export * from "./components/form";
 export * from "./components/switcher";
+export * from "./components/loginScreen";

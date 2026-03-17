@@ -1,60 +1,31 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { api, tokenStore } from "@/lib/api";
-import { login, me, setAuthToken, normalizeRoles, register } from "@tapestry/api-client";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { me, register, setAuthToken } from "@tapestry/api-client";
 import { useAlert } from "@tapestry/ui";
+import { createSessionAuth } from "@tapestry/hooks";
+import { api, tokenStore } from "@/lib/api";
 
-export function useLogout() {
-  const qc = useQueryClient();
+function useLoginErrorHandler() {
+  const { addAlert } = useAlert();
 
   return () => {
-    tokenStore.clear();
-    setAuthToken(api, null);
-    qc.setQueryData(["me"], null);
+    addAlert({
+      type: "error",
+      message: "Login failed. Please check your credentials and try again.",
+    });
   };
 }
-// auth-hooks.ts
-export function useMe() {
-  return useQuery({
-    queryKey: ["me"],
-    queryFn: async () => {
-      const token = tokenStore.get();
-      if (!token) return null; // <- no token: no request, not an error
-      return me(api); // <- token: hit /auth/me
-    },
-    retry: false,
-    staleTime: 60_000,
-  });
-}
-export function useLogin() {
-  const qc = useQueryClient();
-  const { addAlert } = useAlert();
-  return useMutation({
-    mutationFn: async (input: { email: string; password: string }) => {
-      const res = await login(api, input.email, input.password);
-      tokenStore.set(res.token);
-      setAuthToken(api, res.token);
-      // Fetch the profile immediately
-      const profile = await me(api);
-      return { res, profile };
-    },
-    onSuccess: async ({ profile }) => {
-      await qc.invalidateQueries({ queryKey: ["me"] });
-      qc.setQueryData(["me"], profile); // <- THIS is the important line
-    },
-    onError: (error) => {
-      console.error("Login error:", error);
-      addAlert({ type: "error", message: "Login failed. Please check your credentials and try again." });
-    },
-  });
-}
 
-export function logout() {
-  tokenStore.clear();
-  setAuthToken(api, null);
-}
+const sessionAuth = createSessionAuth(api, tokenStore, {
+  useOnLoginError: useLoginErrorHandler,
+  loginErrorLogLabel: "Login error:",
+});
+
+export const { useLogout, useMe, useLogin, logout } = sessionAuth;
+
 export function useRegister() {
   const qc = useQueryClient();
   const { addAlert } = useAlert();
+
   return useMutation({
     mutationFn: async (input: {
       auth: {
@@ -74,7 +45,6 @@ export function useRegister() {
     }) => {
       const res = await register(api, input);
 
-      // If your register endpoint returns token like login, treat it the same:
       tokenStore.set(res.token);
       setAuthToken(api, res.token);
 

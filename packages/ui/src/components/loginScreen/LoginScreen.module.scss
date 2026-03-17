@@ -5,21 +5,28 @@
   padding: 24px;
 }
 
+.fullHeight {
+  min-height: 100vh;
+}
+
+.loadingCompact {
+  min-height: 70vh;
+}
+
+.loadingFull {
+  min-height: 100vh;
+}
+
 .card {
   width: 100%;
-  max-width: 420px;
-
+  max-width: 440px;
   position: relative;
+  overflow: hidden;
   border-radius: var(--radius-lg);
   padding: 20px;
-
-  /* Surface with a little depth */
   background: linear-gradient(180deg, color-mix(in srgb, var(--surface) 92%, black), var(--surface-2));
-
   box-shadow: var(--shadow-1);
-  overflow: hidden;
 
-  /* Gold inlay border */
   &::before {
     content: "";
     position: absolute;
@@ -32,8 +39,6 @@
       var(--gold-soft),
       color-mix(in srgb, var(--gold) 90%, white)
     );
-
-    /* hollow center so it looks like an inlay border */
     -webkit-mask:
       linear-gradient(#000 0 0) content-box,
       linear-gradient(#000 0 0);
@@ -42,59 +47,79 @@
     pointer-events: none;
   }
 
-  /* subtle inner sheen */
   &::after {
     content: "";
     position: absolute;
     inset: 1px;
     border-radius: calc(var(--radius-lg) - 1px);
-    background: radial-gradient(
-      600px 240px at 20% 0%,
-      color-mix(in srgb, var(--accent-4) 22%, transparent),
-      transparent 60%
-    );
+    background:
+      radial-gradient(600px 240px at 20% 0%, color-mix(in srgb, var(--accent-4) 22%, transparent), transparent 60%),
+      radial-gradient(420px 180px at 100% 0%, color-mix(in srgb, var(--gold) 14%, transparent), transparent 58%);
     pointer-events: none;
   }
 }
 
 .header {
-  margin-bottom: 16px;
-  position: relative; /* above sheen */
+  position: relative;
   z-index: 1;
+  display: grid;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.logoContainer {
+  display: grid;
+  place-items: center;
+}
+
+.logo {
+  width: 180px;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 18px;
+  border: 1px solid var(--border-strong);
+  background: color-mix(in srgb, var(--gold) 18%, transparent);
+  color: var(--gold-soft);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.eyebrow {
+  margin: 0;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  color: var(--text-muted);
 }
 
 .title {
   margin: 0;
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 750;
-  letter-spacing: 0.2px;
+  color: var(--text);
 }
 
 .subtitle {
-  margin: 6px 0 0;
+  margin: 0;
   font-size: 14px;
+  line-height: 1.6;
   color: var(--text-muted);
 }
 
 .form {
-  display: grid;
-  gap: 14px;
   position: relative;
   z-index: 1;
-}
-
-.hint {
-  font-size: 12px;
-  color: color-mix(in srgb, var(--text-muted) 75%, transparent);
-}
-
-.errorBox {
-  border: 1px solid color-mix(in srgb, #ff6b6b 45%, transparent);
-  background: color-mix(in srgb, #ff6b6b 10%, transparent);
-  color: color-mix(in srgb, var(--contrast) 92%, #ffb3b3);
-  padding: 10px 12px;
-  border-radius: var(--radius-sm);
-  font-size: 13px;
+  display: grid;
+  gap: 14px;
 }
 
 .primaryBtn {
@@ -102,7 +127,6 @@
   border-radius: var(--radius-sm);
   border: 1px solid color-mix(in srgb, var(--gold) 55%, transparent);
   background: linear-gradient(135deg, color-mix(in srgb, var(--gold) 92%, white), var(--gold-soft));
-
   color: var(--base);
   font-weight: 800;
   letter-spacing: 0.2px;
@@ -121,12 +145,16 @@
 .links {
   margin-top: 20px;
   padding-top: 18px;
-  border-top: 1px solid var(--border-subtle);
+  border-top: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   gap: 10px;
   position: relative;
   z-index: 1;
+}
+
+.divider {
+  display: none;
 }
 
 .link {
