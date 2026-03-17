@@ -382,7 +382,7 @@ export default function LoreEditor({
           {formError ? <div className={styles.error}>{formError}</div> : null}
           <RelationEditor
             value={draftRelations}
-            onChange={setDraftRelations}
+            onChange={setDraftRelations as any}
             targets={relationTargets}
             disabled={!selectedSettingKey || saveMutation.isPending}
           />

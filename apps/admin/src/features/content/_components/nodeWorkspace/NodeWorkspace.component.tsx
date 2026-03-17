@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api";
-import NodeEditorForm, { type NodeEditorFormValue } from "../nodeEditorForm/NodeEditorForm.component";
+import NodeEditorForm, { toTagArray, type NodeEditorFormValue } from "../nodeEditorForm/NodeEditorForm.component";
 import styles from "./NodeWorkspace.module.scss";
 
 type WorkspaceTab = "editor" | "graph" | "relationships";
@@ -21,10 +21,36 @@ type LoreNodeDetail = {
   tags?: string[];
   summary?: string;
   body?: string;
+  relations?: LoreRelation[];
   createdAt?: string;
   updatedAt?: string;
 };
+type LoreRelation = {
+  type: string;
+  targetId?: string;
+  targetKey?: string;
+  label?: string;
+  notes?: string;
+};
 
+type LoreTreeNode = {
+  _id: string;
+  key: string;
+  name: string;
+  kind: string;
+  status: "draft" | "published" | "archived";
+  depth: number;
+  parentId?: string | null;
+  children?: LoreTreeNode[];
+};
+
+type NodeEditorParentOption = {
+  _id: string;
+  key: string;
+  name: string;
+  kind: string;
+  depth: number;
+};
 type NodeWorkspaceProps = {
   nodeId: string;
 };
@@ -53,30 +79,45 @@ const TAB_OPTIONS: Array<{
 
 function toFormValue(node: LoreNodeDetail): NodeEditorFormValue {
   return {
+    settingKey: node.settingKey,
     name: node.name ?? "",
     key: node.key ?? "",
-    kind: node.kind ?? "other",
+    kind: (node.kind as NodeEditorFormValue["kind"]) ?? "other",
     status: node.status ?? "draft",
+    parentId: node.parentId ?? "",
     sortOrder: String(node.sortOrder ?? 0),
     tags: Array.isArray(node.tags) ? node.tags.join(", ") : "",
     summary: node.summary ?? "",
     body: node.body ?? "",
+    relations: Array.isArray(node.relations)
+      ? node.relations.map((relation) => ({
+          type: relation.type,
+          targetKey: relation.targetKey || "",
+          label: relation.label || "",
+          notes: relation.notes || "",
+        }))
+      : [],
   };
 }
-
 function toUpdatePayload(form: NodeEditorFormValue) {
   return {
     name: form.name.trim(),
     key: form.key.trim().toLowerCase(),
     kind: form.kind,
     status: form.status,
+    parentId: form.parentId || null,
     sortOrder: Number(form.sortOrder || 0),
-    tags: form.tags
-      .split(",")
-      .map((entry: any) => entry.trim())
-      .filter(Boolean),
+    tags: toTagArray(form.tags),
     summary: form.summary.trim(),
     body: form.body.trim(),
+    relations: form.relations
+      .map((relation) => ({
+        type: relation.type,
+        targetKey: relation.targetKey.trim(),
+        label: relation.label?.trim() || "",
+        notes: relation.notes?.trim() || "",
+      }))
+      .filter((relation) => relation.targetKey),
   };
 }
 
@@ -95,7 +136,41 @@ export default function NodeWorkspace({ nodeId }: NodeWorkspaceProps) {
   });
 
   const node = nodeQuery.data ?? null;
+  const treeQuery = useQuery({
+    queryKey: ["content-node-tree", node?.settingKey],
+    enabled: Boolean(node?.settingKey),
+    queryFn: async () => {
+      const response = await api.get(`/game/content/lore/tree/${encodeURIComponent(node?.settingKey as string)}`);
 
+      return (response.data?.payload ?? []) as LoreTreeNode[];
+    },
+  });
+  const tree = treeQuery.data ?? [];
+
+  const currentTreeNode = useMemo(() => {
+    return node ? findNodeById(tree, node._id) : null;
+  }, [node, tree]);
+
+  const descendantIds = useMemo(() => {
+    return collectDescendantIds(currentTreeNode);
+  }, [currentTreeNode]);
+
+  const flatNodes = useMemo(() => flattenTree(tree), [tree]);
+
+  const parentOptions = useMemo(() => {
+    if (!node) return [];
+
+    return flatNodes.filter((option) => {
+      if (option._id === node._id) return false;
+      if (descendantIds.has(option._id)) return false;
+      return true;
+    });
+  }, [descendantIds, flatNodes, node]);
+
+  const relationTargets = useMemo(() => {
+    if (!node) return [];
+    return flatNodes.filter((option) => option._id !== node._id);
+  }, [flatNodes, node]);
   const saveMutation = useMutation({
     mutationFn: async (formValue: NodeEditorFormValue) => {
       const payload = toUpdatePayload(formValue);
@@ -202,9 +277,11 @@ export default function NodeWorkspace({ nodeId }: NodeWorkspaceProps) {
             {activeTab === "editor" ? (
               <NodeEditorForm
                 initialValue={toFormValue(node)}
+                parentOptions={parentOptions}
+                relationTargets={relationTargets}
                 isSaving={saveMutation.isPending}
                 saveMessage={saveMessage}
-                onSave={async (formValue: any) => {
+                onSave={async (formValue) => {
                   setSaveMessage(null);
                   await saveMutation.mutateAsync(formValue);
                 }}
@@ -231,4 +308,44 @@ export default function NodeWorkspace({ nodeId }: NodeWorkspaceProps) {
       )}
     </section>
   );
+}
+function flattenTree(nodes: LoreTreeNode[], bucket: NodeEditorParentOption[] = []): NodeEditorParentOption[] {
+  for (const node of nodes) {
+    bucket.push({
+      _id: node._id,
+      key: node.key,
+      name: node.name,
+      kind: node.kind,
+      depth: node.depth,
+    });
+
+    if (node.children?.length) {
+      flattenTree(node.children, bucket);
+    }
+  }
+
+  return bucket;
+}
+
+function findNodeById(nodes: LoreTreeNode[], id: string): LoreTreeNode | null {
+  for (const node of nodes) {
+    if (node._id === id) return node;
+    if (node.children?.length) {
+      const nested = findNodeById(node.children, id);
+      if (nested) return nested;
+    }
+  }
+
+  return null;
+}
+
+function collectDescendantIds(node: LoreTreeNode | null, bucket = new Set<string>()) {
+  if (!node?.children?.length) return bucket;
+
+  for (const child of node.children) {
+    bucket.add(child._id);
+    collectDescendantIds(child, bucket);
+  }
+
+  return bucket;
 }

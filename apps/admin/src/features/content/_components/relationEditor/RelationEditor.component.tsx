@@ -2,10 +2,11 @@
 
 import styles from "./RelationEditor.module.scss";
 import type { LoreParentOption, LoreRelationDraft, LoreRelationType } from "../../_hooks/useContentStudio";
+import { NodeRelationDraft } from "../nodeEditorForm/NodeEditorForm.component";
 
 type RelationEditorProps = {
-  value: LoreRelationDraft[];
-  onChange: (value: LoreRelationDraft[]) => void;
+  value: LoreRelationDraft[] | NodeRelationDraft[];
+  onChange: (value: LoreRelationDraft[] | NodeRelationDraft[]) => void;
   targets: LoreParentOption[];
   disabled?: boolean;
 };

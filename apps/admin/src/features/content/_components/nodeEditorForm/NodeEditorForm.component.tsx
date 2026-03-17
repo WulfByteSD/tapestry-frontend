@@ -1,27 +1,12 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import styles from "./NodeEditorForm.module.scss";
 
-export type NodeEditorFormValue = {
-  name: string;
-  key: string;
-  kind: string;
-  status: "draft" | "published" | "archived";
-  sortOrder: string;
-  tags: string;
-  summary: string;
-  body: string;
-};
+// Adjust this import path to wherever your existing relation editor lives now.
+import RelationEditor from "../relationEditor/RelationEditor.component";
 
-type NodeEditorFormProps = {
-  initialValue: NodeEditorFormValue;
-  isSaving?: boolean;
-  saveMessage?: string | null;
-  onSave: (value: NodeEditorFormValue) => Promise<void> | void;
-};
-
-const KIND_OPTIONS = [
+const LORE_KIND_OPTIONS = [
   "region",
   "nation",
   "province",
@@ -38,6 +23,8 @@ const KIND_OPTIONS = [
   "other",
 ] as const;
 
+const STATUS_OPTIONS = ["draft", "published", "archived"] as const;
+
 function slugifyKey(value: string) {
   return value
     .trim()
@@ -48,24 +35,110 @@ function slugifyKey(value: string) {
     .replace(/-{2,}/g, "-");
 }
 
-export default function NodeEditorForm({ initialValue, isSaving = false, saveMessage, onSave }: NodeEditorFormProps) {
+function formatParentLabel(option: NodeEditorParentOption) {
+  const indent = "— ".repeat(Math.max(option.depth, 0));
+  return `${indent}${option.name} (${option.kind})`;
+}
+
+function toTagsInput(tags?: string[]) {
+  return Array.isArray(tags) ? tags.join(", ") : "";
+}
+
+export function toTagArray(value: string) {
+  return value
+    .split(",")
+    .map((entry) => entry.trim())
+    .filter(Boolean);
+}
+
+export type NodeEditorParentOption = {
+  _id: string;
+  key: string;
+  name: string;
+  kind: string;
+  depth: number;
+};
+
+export type NodeRelationDraft = {
+  type: string;
+  targetKey: string;
+  label?: string;
+  notes?: string;
+};
+
+export type NodeEditorFormValue = {
+  settingKey: string;
+  name: string;
+  key: string;
+  kind: (typeof LORE_KIND_OPTIONS)[number];
+  status: (typeof STATUS_OPTIONS)[number];
+  parentId: string;
+  sortOrder: string;
+  tags: string;
+  summary: string;
+  body: string;
+  relations: NodeRelationDraft[];
+};
+
+type NodeEditorFormProps = {
+  initialValue: NodeEditorFormValue;
+  parentOptions: NodeEditorParentOption[];
+  relationTargets: NodeEditorParentOption[];
+  isSaving?: boolean;
+  saveMessage?: string | null;
+  onSave: (value: NodeEditorFormValue) => Promise<void> | void;
+};
+
+export default function NodeEditorForm({
+  initialValue,
+  parentOptions,
+  relationTargets,
+  isSaving = false,
+  saveMessage,
+  onSave,
+}: NodeEditorFormProps) {
   const [form, setForm] = useState<NodeEditorFormValue>(initialValue);
-  const [keyTouched, setKeyTouched] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
+  const keyTouchedRef = useRef(false);
 
   useEffect(() => {
     setForm(initialValue);
-    setKeyTouched(true);
+    setFormError(null);
+    keyTouchedRef.current = true;
   }, [initialValue]);
 
+  useEffect(() => {
+    if (keyTouchedRef.current) return;
+
+    setForm((current) => ({
+      ...current,
+      key: slugifyKey(current.name),
+    }));
+  }, [form.name]);
+
   const canSave = useMemo(() => {
-    return Boolean(form.name.trim() && form.key.trim());
-  }, [form.key, form.name]);
+    return Boolean(form.name.trim() && form.key.trim() && form.settingKey.trim());
+  }, [form.key, form.name, form.settingKey]);
+
+  const parentName = parentOptions.find((option) => option._id === form.parentId)?.name ?? null;
 
   return (
     <form
       className={styles.form}
       onSubmit={async (event) => {
         event.preventDefault();
+        setFormError(null);
+
+        if (!form.name.trim()) {
+          setFormError("Lore nodes need a name.");
+          return;
+        }
+
+        if (!form.key.trim()) {
+          setFormError("Lore nodes need a key.");
+          return;
+        }
+
         await onSave({
           ...form,
           key: slugifyKey(form.key),
@@ -77,8 +150,8 @@ export default function NodeEditorForm({ initialValue, isSaving = false, saveMes
           <p className={styles.eyebrow}>Node editor</p>
           <h2 className={styles.title}>Edit node</h2>
           <p className={styles.copy}>
-            This tab is for the core record only. Graph and relationship work live in their own tabs so this form stays
-            clean.
+            This is the full lore editor again — parent, tags, body, and relations — just moved onto the dedicated node
+            page where it belongs.
           </p>
         </div>
 
@@ -101,10 +174,10 @@ export default function NodeEditorForm({ initialValue, isSaving = false, saveMes
               setForm((current) => ({
                 ...current,
                 name: nextName,
-                key: keyTouched ? current.key : slugifyKey(nextName),
+                key: keyTouchedRef.current ? current.key : slugifyKey(nextName),
               }));
             }}
-            placeholder="Isabella"
+            placeholder="Everpine, Isabella, Followers of the Lantern..."
           />
         </label>
 
@@ -114,7 +187,7 @@ export default function NodeEditorForm({ initialValue, isSaving = false, saveMes
             className={styles.input}
             value={form.key}
             onChange={(event) => {
-              setKeyTouched(true);
+              keyTouchedRef.current = true;
               setForm((current) => ({
                 ...current,
                 key: slugifyKey(event.target.value),
@@ -132,11 +205,11 @@ export default function NodeEditorForm({ initialValue, isSaving = false, saveMes
             onChange={(event) =>
               setForm((current) => ({
                 ...current,
-                kind: event.target.value,
+                kind: event.target.value as NodeEditorFormValue["kind"],
               }))
             }
           >
-            {KIND_OPTIONS.map((option) => (
+            {LORE_KIND_OPTIONS.map((option) => (
               <option key={option} value={option}>
                 {option}
               </option>
@@ -156,9 +229,32 @@ export default function NodeEditorForm({ initialValue, isSaving = false, saveMes
               }))
             }
           >
-            <option value="draft">draft</option>
-            <option value="published">published</option>
-            <option value="archived">archived</option>
+            {STATUS_OPTIONS.map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label className={styles.field}>
+          <span className={styles.label}>Parent</span>
+          <select
+            className={styles.select}
+            value={form.parentId}
+            onChange={(event) =>
+              setForm((current) => ({
+                ...current,
+                parentId: event.target.value,
+              }))
+            }
+          >
+            <option value="">No parent (root node)</option>
+            {parentOptions.map((option) => (
+              <option key={option._id} value={option._id}>
+                {formatParentLabel(option)}
+              </option>
+            ))}
           </select>
         </label>
 
@@ -177,22 +273,23 @@ export default function NodeEditorForm({ initialValue, isSaving = false, saveMes
             placeholder="0"
           />
         </label>
-
-        <label className={styles.field}>
-          <span className={styles.label}>Tags</span>
-          <input
-            className={styles.input}
-            value={form.tags}
-            onChange={(event) =>
-              setForm((current) => ({
-                ...current,
-                tags: event.target.value,
-              }))
-            }
-            placeholder="shrine, lantern, middletown"
-          />
-        </label>
       </div>
+
+      <label className={styles.field}>
+        <span className={styles.label}>Tags</span>
+        <input
+          className={styles.input}
+          value={form.tags}
+          onChange={(event) =>
+            setForm((current) => ({
+              ...current,
+              tags: event.target.value,
+            }))
+          }
+          placeholder="frontier, shrine, lantern, middletown"
+        />
+        <span className={styles.helper}>Comma-separated. Keep them boring and useful.</span>
+      </label>
 
       <label className={styles.field}>
         <span className={styles.label}>Summary</span>
@@ -205,7 +302,7 @@ export default function NodeEditorForm({ initialValue, isSaving = false, saveMes
               summary: event.target.value,
             }))
           }
-          placeholder="Short card summary for the node."
+          placeholder="Short admin-facing summary for previews."
         />
       </label>
 
@@ -223,6 +320,37 @@ export default function NodeEditorForm({ initialValue, isSaving = false, saveMes
           placeholder="Full lore entry..."
         />
       </label>
+
+      <div className={styles.metaStrip}>
+        <div className={styles.metaCard}>
+          <span className={styles.metaLabel}>Setting</span>
+          <strong className={styles.metaValue}>{form.settingKey}</strong>
+        </div>
+
+        <div className={styles.metaCard}>
+          <span className={styles.metaLabel}>Parent</span>
+          <strong className={styles.metaValue}>{parentName ?? "Root"}</strong>
+        </div>
+
+        <div className={styles.metaCard}>
+          <span className={styles.metaLabel}>Mode</span>
+          <strong className={styles.metaValue}>edit</strong>
+        </div>
+      </div>
+
+      {formError ? <div className={styles.error}>{formError}</div> : null}
+
+      <RelationEditor
+        value={form.relations}
+        onChange={(relations) =>
+          setForm((current) => ({
+            ...current,
+            relations,
+          }))
+        }
+        targets={relationTargets}
+        disabled={isSaving}
+      />
 
       {saveMessage ? <div className={styles.success}>{saveMessage}</div> : null}
     </form>
