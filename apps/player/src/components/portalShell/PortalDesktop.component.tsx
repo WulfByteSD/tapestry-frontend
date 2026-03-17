@@ -47,7 +47,7 @@ export default function PortalDesktop({ children }: Props) {
           <div>
             <div>
               <p style={{ margin: 0, fontSize: "14px", fontWeight: "600" }}>Tapestry</p>
-              <p style={{ margin: 0, fontSize: "11px", opacity: 0.6 }}>v1.0.0</p>
+              <p style={{ margin: 0, fontSize: "11px", opacity: 0.6 }}>v{process.env.NEXT_PUBLIC_VERSION}</p>
             </div>
           </div>
         }

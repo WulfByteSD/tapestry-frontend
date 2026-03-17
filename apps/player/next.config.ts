@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
     NEXT_PUBLIC_VAPID_PUBLIC_KEY:
       "BHzWdQAaEufFGtn0zj0hNc_BXDwN98t6NO8-2Hk77y3hFTGZdpxX406RIgg85p9Pc5pwLQDNG2MCknrwb0oP4s8",
     NEXT_PUBLIC_API_ORIGIN: "https://api.tapestry-ttrpg.com",
+    NEXT_PUBLIC_VERSION: process.env.npm_package_version,
   },
   images: {
     remotePatterns: [

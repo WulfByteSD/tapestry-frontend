@@ -9,6 +9,7 @@ import { AlertContainer, Header, Sidebar, type SidebarGroup } from "@tapestry/ui
 import { api } from "@/lib/api";
 import { useLogout, useMe } from "@/lib/auth-hooks";
 import styles from "./AdminShell.module.scss";
+import Image from "next/image";
 
 const sidebarGroups: SidebarGroup[] = [
   {
@@ -129,11 +130,18 @@ export default function AdminShell({ children }: { children: ReactNode }) {
           groups={sidebarGroups}
           currentPath={pathname || "/"}
           LinkComponent={Link}
-          logo={<div className={styles.logoBadge}>TA</div>}
+          logo={
+            <Image
+              src="https://res.cloudinary.com/dmc7wmarf/image/upload/v1771775270/ChatGPT_Image_Jan_10_2026_11_32_39_AM_-_Copy_bcpc4f.png"
+              alt="Tapestry Logo"
+              width={75}
+              height={75}
+            />
+          }
           footer={
             <div className={styles.footerCopy}>
               <p className={styles.footerTitle}>Storyweaver Console</p>
-              <p className={styles.footerVersion}>Admin foundation</p>
+              <p className={styles.footerVersion}>Admin foundation v{process.env.NEXT_PUBLIC_VERSION}</p>
             </div>
           }
           collapsible={false}
