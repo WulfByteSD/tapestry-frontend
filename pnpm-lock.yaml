@@ -198,6 +198,9 @@ importers:
 
   packages/ui:
     dependencies:
+      '@tapestry/hooks':
+        specifier: workspace:*
+        version: link:../hooks
       clsx:
         specifier: ^2.1.1
         version: 2.1.1

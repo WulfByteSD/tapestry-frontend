@@ -1,13 +1,27 @@
 "use client";
 
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { useLogin } from "@/lib/auth-hooks";
 import { LoginScreen } from "@tapestry/ui";
+import { useLogout, useMe } from "@/lib/auth-hooks";
+
+function getSafeNextTarget(value: string | null) {
+  if (!value || !value.startsWith("/")) {
+    return "/";
+  }
+
+  return value;
+}
 
 export default function LoginView() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const { data: user, isLoading, isError } = useMe();
+  const logout = useLogout();
+  const nextTarget = getSafeNextTarget(searchParams.get("next"));
+
   return (
     <LoginScreen
-      useLoginHook={useLogin}
       title="Welcome back"
       brandImageSrc="https://res.cloudinary.com/dmc7wmarf/image/upload/v1771775270/ChatGPT_Image_Jan_10_2026_11_32_39_AM_-_Copy_bcpc4f.png"
       brandImageAlt="Tapestry Logo"
@@ -17,6 +31,14 @@ export default function LoginView() {
       ]}
       LinkComponent={Link}
       showAlertContainer={false}
+      authState={{
+        user,
+        isLoading,
+        isError,
+        nextTarget,
+        onAuthError: logout,
+        onAuthenticated: (target) => router.replace(target),
+      }}
     />
   );
 }

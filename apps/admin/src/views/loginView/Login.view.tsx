@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { LoginScreen } from "@tapestry/ui";
-import { useLogin, useLogout, useMe } from "@/lib/auth-hooks";
+import { useLogout, useMe } from "@/lib/auth-hooks";
 
 function getSafeNextTarget(value: string | null) {
   if (!value || !value.startsWith("/")) {
@@ -21,7 +21,6 @@ export default function LoginView() {
 
   return (
     <LoginScreen
-      useLoginHook={useLogin}
       eyebrow="Tapestry Admin"
       title="Sign in to continue"
       subtitle="Authenticate with your admin account to enter the storyweaver workspace."

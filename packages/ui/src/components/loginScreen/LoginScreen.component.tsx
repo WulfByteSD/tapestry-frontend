@@ -2,6 +2,7 @@
 
 import React, { FormEvent, useEffect, useMemo, useState } from "react";
 import clsx from "clsx";
+import { useAuthContext } from "@tapestry/hooks";
 import { AlertContainer } from "../alert";
 import { Button } from "../button";
 import { Card, CardBody, CardHeader } from "../card";
@@ -28,10 +29,6 @@ export type LoginAuthState = {
 };
 
 export type LoginScreenProps = {
-  useLoginHook: () => {
-    mutate: (credentials: LoginCredentials) => void;
-    isPending: boolean;
-  };
   title?: string;
   subtitle?: string;
   eyebrow?: string;
@@ -51,7 +48,6 @@ function isValidEmail(value: string) {
 }
 
 export default function LoginScreen({
-  useLoginHook,
   title = "Welcome back",
   subtitle,
   eyebrow,
@@ -65,7 +61,8 @@ export default function LoginScreen({
   showAlertContainer = true,
   className,
 }: LoginScreenProps) {
-  const login = useLoginHook();
+  const { useLogin } = useAuthContext();
+  const login = useLogin();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [didSubmit, setDidSubmit] = useState(false);
