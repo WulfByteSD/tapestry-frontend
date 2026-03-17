@@ -1,7 +1,10 @@
-import { GrantedAbilityRef } from "./abilities";
+// packages/types/src/content.ts
+import type { AbilityDefinition } from "./abilities";
+import type { GrantedAbilityRef } from "./abilities";
 import type { AttackProfile, InventoryCategory } from "./characters";
 
 export type ContentStatus = "draft" | "published" | "archived";
+export type ContentEntityType = "setting" | "item" | "skill" | "ability" | "lore";
 
 export type SettingDefinition = {
   _id: string;
@@ -23,7 +26,7 @@ export type SettingDefinition = {
 
 export type ItemDefinition = {
   _id: string;
-  settingKey: string;
+  settingKeys: string[];
   activeSettingKey?: string;
   key: string;
   name: string;
@@ -56,3 +59,65 @@ export type SkillDefinition = {
   createdAt: string;
   updatedAt: string;
 };
+
+export type LoreNodeKind =
+  | "region"
+  | "nation"
+  | "province"
+  | "settlement"
+  | "district"
+  | "landmark"
+  | "faction"
+  | "npc"
+  | "organization"
+  | "culture"
+  | "religion"
+  | "event"
+  | "history"
+  | "other";
+
+export type LoreRelationType =
+  | "located_in"
+  | "member_of"
+  | "rules"
+  | "serves"
+  | "allied_with"
+  | "enemy_of"
+  | "related_to"
+  | "appears_in"
+  | "originates_from";
+
+export type LoreRelation = {
+  type: LoreRelationType;
+  targetId: string;
+  targetKey?: string;
+  label?: string;
+  notes?: string;
+};
+
+export type LoreNode = {
+  _id: string;
+  settingKey: string;
+  key: string;
+  name: string;
+  kind: LoreNodeKind;
+  status: ContentStatus;
+  parentId?: string | null;
+  ancestorIds: string[];
+  depth: number;
+  sortOrder: number;
+  tags?: string[];
+  summary?: string;
+  body?: string;
+  relations: LoreRelation[];
+  meta?: {
+    imageUrl?: string;
+    bannerUrl?: string;
+    coordinates?: { x: number; y: number } | null;
+    regionLabel?: string;
+  };
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type ContentRecord = SettingDefinition | ItemDefinition | SkillDefinition | AbilityDefinition | LoreNode;
