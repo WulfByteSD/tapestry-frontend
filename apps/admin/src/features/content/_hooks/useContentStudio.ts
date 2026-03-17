@@ -256,9 +256,9 @@ export function useContentStudio() {
         copy: "Total nodes currently returned by the lore tree endpoint.",
       },
       {
-        label: "Selected node",
-        value: selectedTreeNode?.name ?? "None",
-        copy: "The currently focused lore record.",
+        label: "Focus",
+        value: "Atlas view",
+        copy: "Select a node from the graph to open its dedicated workspace.",
       },
     ],
     [loreNodeCount, loreTree.length, selectedTreeNode?.name, settings.length],
