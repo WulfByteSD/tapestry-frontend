@@ -15,10 +15,6 @@ export default function ContentStudio() {
       <header className={styles.hero}>
         <p className={styles.eyebrow}>Gameplay</p>
         <h1 className={styles.title}>Content studio</h1>
-        <p className={styles.subtitle}>
-          Lore stays first because hierarchy is the easiest place for the whole admin experience to become an unusable
-          mess if we get lazy.
-        </p>
       </header>
 
       <div className={styles.layout}>
@@ -119,6 +115,7 @@ export default function ContentStudio() {
                 selectedNodeSummary={studio.selectedNodeSummary}
                 mode={studio.editorMode}
                 parentOptions={studio.parentOptions}
+                relationTargets={studio.relationTargets}
                 onSaved={studio.handleLoreSaved}
                 onCancelCreate={studio.cancelCreate}
               />

@@ -6,99 +6,21 @@ import { api } from "@/lib/api";
 import styles from "./LoreEditor.module.scss";
 import RelationEditor from "../relationEditor/RelationEditor.component";
 import { LoreRelationDraft } from "../../_hooks/useContentStudio";
-
-export type LoreEditorMode = "create-root" | "create-child" | "edit";
-
-export type LoreParentOption = {
-  _id: string;
-  key: string;
-  name: string;
-  kind: string;
-  depth: number;
-};
-
-export type LoreNodeSummary = {
-  _id: string;
-  key: string;
-  name: string;
-  kind: string;
-  status: "draft" | "published" | "archived";
-  parentId?: string | null;
-};
-
-type LoreEditorProps = {
-  selectedSettingKey: string | null;
-  selectedNodeKey: string | null;
-  selectedNodeSummary?: LoreNodeSummary | null;
-  mode: LoreEditorMode;
-  parentOptions: LoreParentOption[];
-  onSaved: (nextKey: string) => void;
-  onCancelCreate: () => void;
-};
-
-type LoreNodePayload = {
-  _id: string;
-  settingKey: string;
-  key: string;
-  name: string;
-  kind: string;
-  status: "draft" | "published" | "archived";
-  parentId?: string | null;
-  sortOrder?: number;
-  tags?: string[];
-  summary?: string;
-  body?: string;
-};
-
-const LORE_KIND_OPTIONS = [
-  "region",
-  "nation",
-  "province",
-  "settlement",
-  "district",
-  "landmark",
-  "faction",
-  "npc",
-  "organization",
-  "culture",
-  "religion",
-  "event",
-  "history",
-  "other",
-] as const;
-
-const STATUS_OPTIONS = ["draft", "published", "archived"] as const;
-
-function slugifyKey(value: string) {
-  return value
-    .trim()
-    .toLowerCase()
-    .replace(/['"]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .replace(/-{2,}/g, "-");
-}
-
-function formatParentLabel(option: LoreParentOption) {
-  const indent = "— ".repeat(Math.max(option.depth, 0));
-  return `${indent}${option.name} (${option.kind})`;
-}
-
-function toTagsInput(tags?: string[]) {
-  return Array.isArray(tags) ? tags.join(", ") : "";
-}
-
-function toTagArray(value: string) {
-  return value
-    .split(",")
-    .map((entry) => entry.trim())
-    .filter(Boolean);
-}
+import {
+  LORE_KIND_OPTIONS,
+  STATUS_OPTIONS,
+  slugifyKey,
+  formatParentLabel,
+  toTagsInput,
+  toTagArray,
+} from "./lore.helper";
+import type { LoreEditorMode, LoreEditorProps, LoreNodePayload, LoreNodeSummary, LoreParentOption } from "./lore.types";
 
 export default function LoreEditor({
   selectedSettingKey,
   selectedNodeKey,
   selectedNodeSummary,
+  relationTargets,
   mode,
   parentOptions,
   onSaved,
@@ -156,6 +78,7 @@ export default function LoreEditor({
       setStatus("draft");
       setParentId("");
       setSortOrder("0");
+      setDraftRelations([]);
       setTagsInput("");
       setSummary("");
       setBody("");
@@ -173,6 +96,16 @@ export default function LoreEditor({
       setParentId(payload.parentId ?? "");
       setSortOrder(String(payload.sortOrder ?? 0));
       setTagsInput(toTagsInput(payload.tags));
+      setDraftRelations(
+        Array.isArray(payload.relations)
+          ? payload.relations.map((relation) => ({
+              type: relation.type,
+              targetKey: relation.targetKey || "",
+              label: relation.label || "",
+              notes: relation.notes || "",
+            }))
+          : [],
+      );
       setSummary(payload.summary ?? "");
       setBody(payload.body ?? "");
       keyTouchedRef.current = true;
@@ -187,6 +120,7 @@ export default function LoreEditor({
       setParentId(selectedNodeSummary._id);
       setSortOrder("0");
       setTagsInput("");
+      setDraftRelations([]);
       setSummary("");
       setBody("");
       keyTouchedRef.current = false;
@@ -200,6 +134,7 @@ export default function LoreEditor({
       setStatus("draft");
       setParentId("");
       setSortOrder("0");
+      setDraftRelations([]);
       setTagsInput("");
       setSummary("");
       setBody("");
@@ -240,6 +175,14 @@ export default function LoreEditor({
         tags: toTagArray(tagsInput),
         summary: summary.trim(),
         body: body.trim(),
+        relations: draftRelations
+          .map((relation) => ({
+            type: relation.type,
+            targetKey: relation.targetKey.trim(),
+            label: relation.label?.trim() || "",
+            notes: relation.notes?.trim() || "",
+          }))
+          .filter((relation) => relation.targetKey),
       };
 
       if (isEditMode && currentNode?._id) {
@@ -433,8 +376,8 @@ export default function LoreEditor({
           <RelationEditor
             value={draftRelations}
             onChange={setDraftRelations}
-            targets={parentOptions as LoreParentOption[]}
-            disabled
+            targets={relationTargets}
+            disabled={!selectedSettingKey || saveMutation.isPending}
           />
           <div className={styles.actions}>
             <button

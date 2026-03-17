@@ -201,6 +201,13 @@ export function useContentStudio() {
     });
   }, [descendantIds, editorMode, flatLoreNodes, selectedTreeNode]);
 
+  const relationTargets = useMemo(() => {
+    if (editorMode === "edit" && selectedTreeNode) {
+      return flatLoreNodes.filter((option) => option._id !== selectedTreeNode._id);
+    }
+    return flatLoreNodes;
+  }, [editorMode, flatLoreNodes, selectedTreeNode]);
+
   const relationTargetOptions = useMemo(() => {
     if (!selectedTreeNode) return flatLoreNodes;
 
@@ -304,6 +311,7 @@ export function useContentStudio() {
     relationTargetOptions,
     summaryCards,
     laneItems,
+    relationTargets,
 
     selectLoreNode: (node: LoreTreeNode) => {
       setSelectedLoreKey(node.key);
