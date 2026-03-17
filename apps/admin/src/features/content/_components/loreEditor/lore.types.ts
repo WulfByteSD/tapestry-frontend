@@ -26,6 +26,7 @@ export type LoreEditorProps = {
   parentOptions: LoreParentOption[];
   onSaved: (nextKey: string) => void;
   onCancelCreate: () => void;
+  onBackToBrowser: () => void;
 };
 
 export type LoreNodePayload = {

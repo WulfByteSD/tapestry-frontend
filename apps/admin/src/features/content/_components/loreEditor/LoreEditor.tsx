@@ -25,6 +25,7 @@ export default function LoreEditor({
   parentOptions,
   onSaved,
   onCancelCreate,
+  onBackToBrowser,
 }: LoreEditorProps) {
   const queryClient = useQueryClient();
   const keyTouchedRef = useRef(false);
@@ -226,11 +227,17 @@ export default function LoreEditor({
           <p className={styles.copy}>{modeCopy}</p>
         </div>
 
-        {!isEditMode ? (
-          <button type="button" className={styles.ghostButton} onClick={onCancelCreate}>
-            Cancel create
+        <div className={styles.actions}>
+          <button type="button" className={styles.ghostButton} onClick={onBackToBrowser}>
+            Back to node tree
           </button>
-        ) : null}
+
+          {!isEditMode ? (
+            <button type="button" className={styles.ghostButton} onClick={onCancelCreate}>
+              Cancel create
+            </button>
+          ) : null}
+        </div>
       </div>
 
       {!selectedSettingKey ? (

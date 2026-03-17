@@ -6,6 +6,7 @@ import LoreEditor from "../loreEditor/LoreEditor";
 import LoreTree from "../loreTree/LoreTree.component";
 import { useContentStudio } from "../../_hooks/useContentStudio";
 import styles from "./ContentStudio.module.scss";
+import LoreGraphView from "../loreGraphView/LoreGraph.view";
 
 export default function ContentStudio() {
   const studio = useContentStudio();
@@ -80,15 +81,39 @@ export default function ContentStudio() {
           </section>
 
           {studio.activeType === "lore" ? (
-            <>
+            studio.viewMode === "browser" ? (
               <section className={styles.panel}>
                 <div className={styles.panelHeader}>
                   <div className={styles.panelTitleWrap}>
                     <p className={styles.panelEyebrow}>Lore browser</p>
-                    <h2 className={styles.panelTitle}>Hierarchy</h2>
+                    <h2 className={styles.panelTitle}>Node graph</h2>
                     <p className={styles.panelCopy}>
-                      Select a node to edit it, or use it as the parent for a new child.
+                      Pan around the graph, click a node to edit it, or create a new root node.
                     </p>
+                  </div>
+
+                  <div className={styles.actionRow}>
+                    <button type="button" className={styles.actionButton} onClick={studio.startCreateRoot}>
+                      New root node
+                    </button>
+
+                    <button
+                      type="button"
+                      className={styles.ghostButton}
+                      disabled={!studio.selectedTreeNode}
+                      onClick={studio.startCreateChild}
+                    >
+                      New child node
+                    </button>
+
+                    <button
+                      type="button"
+                      className={styles.ghostButton}
+                      disabled={!studio.selectedTreeNode}
+                      onClick={studio.startEditSelected}
+                    >
+                      Edit selected
+                    </button>
                   </div>
                 </div>
 
@@ -96,30 +121,31 @@ export default function ContentStudio() {
                   <div className={styles.inlineNotice}>Settings failed to load. Check auth and API origin first.</div>
                 ) : studio.loreTreeQuery.isError ? (
                   <div className={styles.inlineNotice}>
-                    Lore tree failed to load. That’s route, auth, or backend trouble.
+                    Lore graph failed to load. That’s route, auth, or backend trouble.
                   </div>
                 ) : studio.loreTreeQuery.isLoading ? (
-                  <div className={styles.inlineNotice}>Loading lore tree…</div>
+                  <div className={styles.inlineNotice}>Loading lore graph…</div>
                 ) : (
-                  <LoreTree
-                    nodes={studio.loreTree}
+                  <LoreGraphView
+                    tree={studio.loreTree}
                     selectedKey={studio.selectedLoreKey}
-                    onSelectNode={studio.selectLoreNode}
+                    onOpenNode={studio.selectLoreNode}
                   />
                 )}
               </section>
-
+            ) : (
               <LoreEditor
                 selectedSettingKey={studio.selectedSettingKey}
                 selectedNodeKey={studio.selectedLoreKey}
                 selectedNodeSummary={studio.selectedNodeSummary}
                 mode={studio.editorMode}
                 parentOptions={studio.parentOptions}
-                relationTargets={studio.relationTargets}
+                relationTargets={studio.relationTargetOptions}
                 onSaved={studio.handleLoreSaved}
                 onCancelCreate={studio.cancelCreate}
+                onBackToBrowser={studio.goBackToBrowser}
               />
-            </>
+            )
           ) : (
             <section className={styles.panel}>
               <ContentList

@@ -9,6 +9,7 @@ export type StudioContentType = "settings" | "lore" | "items" | "abilities" | "s
 
 export type LoreStatus = "draft" | "published" | "archived";
 export type LoreEditorMode = "create-root" | "create-child" | "edit";
+export type StudioViewMode = "browser" | "editor";
 
 export type StudioSettingSummary = {
   _id: string;
@@ -127,6 +128,17 @@ export function useContentStudio() {
   const [selectedSettingKey, setSelectedSettingKey] = useState<string | null>(null);
   const [selectedLoreKey, setSelectedLoreKey] = useState<string | null>(null);
   const [editorMode, setEditorMode] = useState<LoreEditorMode>("create-root");
+  const [viewMode, setViewMode] = useState<StudioViewMode>("browser");
+
+  function openEditorForNode(node: LoreTreeNode) {
+    setSelectedLoreKey(node.key);
+    setEditorMode("edit");
+    setViewMode("editor");
+  }
+
+  function goBackToBrowser() {
+    setViewMode("browser");
+  }
 
   const settingsQuery = useQuery({
     queryKey: ["admin-content", "settings"],
@@ -142,7 +154,11 @@ export function useContentStudio() {
   });
 
   const settings = settingsQuery.data ?? [];
-
+  useEffect(() => {
+    setSelectedLoreKey(null);
+    setEditorMode("create-root");
+    setViewMode("browser");
+  }, [selectedSettingKey]);
   useEffect(() => {
     if (!selectedSettingKey && settings.length > 0) {
       setSelectedSettingKey(settings[0].key);
@@ -289,6 +305,9 @@ export function useContentStudio() {
     activeType,
     setActiveType,
 
+    viewMode,
+    openEditorForNode,
+
     selectedSettingKey,
     setSelectedSettingKey,
     selectedSetting,
@@ -316,36 +335,40 @@ export function useContentStudio() {
     selectLoreNode: (node: LoreTreeNode) => {
       setSelectedLoreKey(node.key);
       setEditorMode("edit");
+      setViewMode("editor");
     },
 
     startCreateRoot: () => {
       setSelectedLoreKey(null);
       setEditorMode("create-root");
+      setViewMode("editor");
     },
 
     startCreateChild: () => {
       if (!selectedTreeNode) return;
       setEditorMode("create-child");
+      setViewMode("editor");
     },
 
     startEditSelected: () => {
       if (!selectedTreeNode) return;
       setEditorMode("edit");
+      setViewMode("editor");
+    },
+
+    goBackToBrowser: () => {
+      setViewMode("browser");
     },
 
     cancelCreate: () => {
-      if (selectedLoreKey) {
-        setEditorMode("edit");
-        return;
-      }
-
-      setEditorMode("create-root");
+      setViewMode("browser");
     },
 
     handleLoreSaved: async (nextKey: string) => {
       setSelectedLoreKey(nextKey);
       setEditorMode("edit");
       await loreTreeQuery.refetch();
+      setViewMode("browser");
     },
   };
 }
