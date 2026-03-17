@@ -346,3 +346,34 @@
   line-height: 1.7;
   color: var(--text-muted);
 }
+.treeNodeButton {
+  width: 100%;
+  display: grid;
+  gap: 10px;
+  text-align: left;
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1px solid color-mix(in srgb, var(--contrast-2) 12%, transparent);
+  background: color-mix(in srgb, var(--surface) 80%, transparent);
+  color: inherit;
+  cursor: pointer;
+  transition:
+    transform 140ms ease,
+    border-color 140ms ease,
+    background 140ms ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    border-color: color-mix(in srgb, var(--gold) 28%, transparent);
+    background: color-mix(in srgb, var(--gold) 10%, transparent);
+  }
+}
+
+.treeNodeButtonSelected {
+  border-color: color-mix(in srgb, var(--gold) 34%, transparent);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--gold) 14%, transparent),
+    color-mix(in srgb, var(--accent-4) 10%, transparent)
+  );
+}
