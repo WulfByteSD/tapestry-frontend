@@ -10,7 +10,7 @@ import { api } from "@/lib/api";
 import NodeEditorForm, { type NodeEditorFormValue } from "../nodeEditorForm/NodeEditorForm.component";
 import styles from "./NodeWorkspace.module.scss";
 import type { LoreNodeDetail, LoreTreeNode } from "./nodeWorkspace.types";
-import { flattenTree, toUpdatePayload } from "./nodeWorkspace.helper";
+import { createEmptyNodeEditorFormValue, flattenTree, toUpdatePayload } from "./nodeWorkspace.helper";
 
 type NewNodeWorkspaceProps = {
   settingKey: string;
@@ -40,20 +40,12 @@ export default function NewNodeWorkspace({ settingKey, parentId = null }: NewNod
 
   const parentNode = useMemo(() => flatNodes.find((option) => option._id === parentId) ?? null, [flatNodes, parentId]);
 
-  const initialValue = useMemo<NodeEditorFormValue>(
-    () => ({
-      settingKey,
-      name: "",
-      key: "",
-      kind: "other",
-      status: "draft",
-      parentId: parentId ?? "",
-      sortOrder: "0",
-      tags: "",
-      summary: "",
-      body: "",
-      relations: [],
-    }),
+  const initialValue = useMemo(
+    () =>
+      createEmptyNodeEditorFormValue({
+        settingKey,
+        parentId,
+      }),
     [parentId, settingKey],
   );
 

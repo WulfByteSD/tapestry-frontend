@@ -1,5 +1,70 @@
 export type WorkspaceTab = "editor" | "graph" | "relationships";
 
+export type LinkedContentRef = {
+  type: "combatant";
+  targetId: string;
+  label?: string;
+};
+
+export type LoreNodeMediaItem = {
+  id?: string;
+  url: string;
+  kind: "image" | "video";
+  title?: string;
+  caption?: string;
+  alt?: string;
+};
+
+export type LoreNodeEmbed = {
+  id?: string;
+  kind: "youtube" | "vimeo" | "audio" | "other";
+  url: string;
+  title?: string;
+  caption?: string;
+};
+
+export type LoreNodeMeta = {
+  media?: {
+    portraitUrl?: string;
+    bannerUrl?: string;
+    tokenUrl?: string;
+    gallery?: LoreNodeMediaItem[];
+    embeds?: LoreNodeEmbed[];
+  };
+  identity?: {
+    subtitle?: string;
+    epithet?: string;
+    aliases?: string[];
+    pronunciation?: string;
+    title?: string;
+  };
+  classification?: {
+    species?: string;
+    culture?: string;
+    occupation?: string;
+    affiliation?: string[];
+    religion?: string[];
+    region?: string;
+    settlement?: string;
+  };
+  world?: {
+    regionLabel?: string;
+    coordinates?: {
+      x?: number | null;
+      y?: number | null;
+    };
+    era?: string;
+    timelineNote?: string;
+  };
+  story?: {
+    hooks?: string[];
+    rumors?: string[];
+    secrets?: string[];
+    quotes?: string[];
+    gmNotes?: string[];
+  };
+};
+
 export type LoreNodeDetail = {
   _id: string;
   settingKey: string;
@@ -13,6 +78,8 @@ export type LoreNodeDetail = {
   summary?: string;
   body?: string;
   relations?: LoreRelation[];
+  linkedContent?: LinkedContentRef[];
+  meta?: LoreNodeMeta;
   createdAt?: string;
   updatedAt?: string;
 };
@@ -31,14 +98,11 @@ export type LoreRelation = {
   targetKey?: string;
   label?: string;
   notes?: string;
-
-  // Flexible on purpose. Use whichever shape your backend now returns.
   targetNode?: LoreRelationTargetRef | null;
   target?: LoreRelationTargetRef | null;
-
-  // Optional future-proofing if you later return incoming relations too.
   direction?: "outgoing" | "incoming";
 };
+
 export type LoreTreeNode = {
   _id: string;
   key: string;
