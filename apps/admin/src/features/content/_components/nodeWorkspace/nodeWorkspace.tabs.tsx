@@ -1,11 +1,12 @@
 import type { TabsItem } from "@tapestry/ui";
 
-import NodeEditorForm, { type NodeEditorFormValue } from "../nodeEditorForm/NodeEditorForm.component";
+import NodeEditorForm from "../nodeEditorForm/NodeEditorForm.component";
 import NodeGraphTab from "./NodeGraphTab.component";
 import styles from "./NodeWorkspace.module.scss";
 import type { FocusedLoreContext, LoreNodeDetail, NodeEditorParentOption } from "./nodeWorkspace.types";
 import { toFormValue } from "./nodeWorkspace.helper";
 import RelationshipGraphTab from "./RelationshipGraphTab.component";
+import { NodeEditorFormValue } from "../nodeEditorForm/NodeEditorForm.types";
 
 type TabKey = "editor" | "graph" | "relationships";
 export type { TabKey };

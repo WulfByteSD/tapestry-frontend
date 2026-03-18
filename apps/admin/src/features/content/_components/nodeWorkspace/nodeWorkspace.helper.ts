@@ -1,4 +1,4 @@
-import type { NodeEditorFormValue } from "../nodeEditorForm/NodeEditorForm.component";
+import { NodeEditorFormValue } from "../nodeEditorForm/NodeEditorForm.types";
 import type { LoreNodeDetail, LoreTreeNode, NodeEditorParentOption } from "./nodeWorkspace.types";
 
 function toCommaInput(values?: string[]) {

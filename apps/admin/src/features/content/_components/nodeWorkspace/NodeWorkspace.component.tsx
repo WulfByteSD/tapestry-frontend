@@ -6,12 +6,12 @@ import { useRouter } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Tabs } from "@tapestry/ui";
 
-import { api } from "@/lib/api";
-import type { NodeEditorFormValue } from "../nodeEditorForm/NodeEditorForm.component";
+import { api } from "@/lib/api"; 
 import styles from "./NodeWorkspace.module.scss";
 import type { FocusedLoreContext, LoreNodeDetail, LoreTreeNode, NodeWorkspaceProps } from "./nodeWorkspace.types";
 import { toUpdatePayload, flattenTree, findNodeById, collectDescendantIds } from "./nodeWorkspace.helper";
 import { createTabs, TabKey } from "./nodeWorkspace.tabs";
+import { NodeEditorFormValue } from "../nodeEditorForm/NodeEditorForm.types";
 
 export default function NodeWorkspace({ nodeId }: NodeWorkspaceProps) {
   const router = useRouter();

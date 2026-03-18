@@ -7,10 +7,11 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Tabs } from "@tapestry/ui";
 
 import { api } from "@/lib/api";
-import NodeEditorForm, { type NodeEditorFormValue } from "../nodeEditorForm/NodeEditorForm.component";
+import NodeEditorForm from "../nodeEditorForm/NodeEditorForm.component";
 import styles from "./NodeWorkspace.module.scss";
 import type { LoreNodeDetail, LoreTreeNode } from "./nodeWorkspace.types";
 import { createEmptyNodeEditorFormValue, flattenTree, toUpdatePayload } from "./nodeWorkspace.helper";
+import { NodeEditorFormValue } from "../nodeEditorForm/NodeEditorForm.types";
 
 type NewNodeWorkspaceProps = {
   settingKey: string;
