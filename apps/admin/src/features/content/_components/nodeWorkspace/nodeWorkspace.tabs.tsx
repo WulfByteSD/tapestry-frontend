@@ -5,12 +5,13 @@ import NodeGraphTab from "./NodeGraphTab.component";
 import styles from "./NodeWorkspace.module.scss";
 import type { FocusedLoreContext, LoreNodeDetail, NodeEditorParentOption } from "./nodeWorkspace.types";
 import { toFormValue } from "./nodeWorkspace.helper";
+import RelationshipGraphTab from "./RelationshipGraphTab.component";
 
 type TabKey = "editor" | "graph" | "relationships";
 export type { TabKey };
-
 export function createTabs(props: {
   node: LoreNodeDetail;
+  activeTab: TabKey;
   parentOptions: NodeEditorParentOption[];
   relationTargets: NodeEditorParentOption[];
   isSaving: boolean;
@@ -20,9 +21,11 @@ export function createTabs(props: {
   graphError: boolean;
   onSave: (formValue: NodeEditorFormValue) => Promise<void>;
   onOpenGraphNode: (nodeId: string) => void;
+  onOpenRelationNode?: (nodeId: string) => void;
 }): TabsItem[] {
   const {
     node,
+    activeTab,
     parentOptions,
     relationTargets,
     isSaving,
@@ -32,6 +35,7 @@ export function createTabs(props: {
     graphError,
     onSave,
     onOpenGraphNode,
+    onOpenRelationNode,
   } = props;
 
   return [
@@ -53,28 +57,36 @@ export function createTabs(props: {
     {
       key: "graph",
       label: "Graph",
-      children: (
-        <NodeGraphTab
-          context={graphContext}
-          currentNodeId={node._id}
-          isLoading={graphLoading}
-          isError={graphError}
-          onOpenNode={onOpenGraphNode}
-        />
-      ),
+      children:
+        activeTab === "graph" ? (
+          <NodeGraphTab
+            context={graphContext}
+            currentNodeId={node._id}
+            isLoading={graphLoading}
+            isError={graphError}
+            onOpenNode={onOpenGraphNode}
+            active
+          />
+        ) : (
+          <div style={{ minHeight: 640 }} />
+        ),
     },
     {
       key: "relationships",
       label: "Relationships",
-      children: (
-        <div className={styles.placeholder}>
-          <h2 className={styles.placeholderTitle}>Relationships</h2>
-          <p className={styles.placeholderCopy}>
-            This tab will show outgoing and incoming relations in separate, readable panels so cross-links stay useful
-            instead of turning into visual spaghetti.
-          </p>
-        </div>
-      ),
+      children:
+        activeTab === "relationships" ? (
+          <RelationshipGraphTab
+            context={graphContext}
+            currentNodeId={node._id}
+            isLoading={graphLoading}
+            isError={graphError}
+            onOpenNode={onOpenRelationNode}
+            active
+          />
+        ) : (
+          <div style={{ minHeight: 640 }} />
+        ),
     },
   ];
 }

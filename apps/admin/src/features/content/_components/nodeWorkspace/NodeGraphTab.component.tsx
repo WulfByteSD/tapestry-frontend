@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Background,
   Controls,
@@ -8,6 +8,7 @@ import {
   MarkerType,
   Position,
   ReactFlow,
+  ReactFlowInstance,
   type Edge,
   type Node,
   type NodeProps,
@@ -22,6 +23,7 @@ type NodeGraphTabProps = {
   currentNodeId: string;
   isLoading?: boolean;
   isError?: boolean;
+  active?: boolean;
   onOpenNode: (nodeId: string) => void;
 };
 
@@ -177,9 +179,26 @@ export default function NodeGraphTab({
   currentNodeId,
   isLoading = false,
   isError = false,
+  active,
   onOpenNode,
 }: NodeGraphTabProps) {
   const graph = useMemo(() => buildFocusedGraph(context?.tree ?? null), [context]);
+  const [instance, setInstance] = useState<ReactFlowInstance | null>(null);
+
+  useEffect(() => {
+    if (!active || !instance || !graph.nodes.length) return;
+
+    const id = requestAnimationFrame(() => {
+      instance.fitView({
+        padding: 0.28,
+        minZoom: 0.2,
+        maxZoom: 1.3,
+        duration: 250,
+      });
+    });
+
+    return () => cancelAnimationFrame(id);
+  }, [active, instance, graph.nodes.length]);
 
   if (isLoading) {
     return <div className={graphStyles.empty}>Loading focused node graph…</div>;
@@ -205,8 +224,8 @@ export default function NodeGraphTab({
           key={currentNodeId}
           nodes={graph.nodes}
           edges={graph.edges}
-          nodeTypes={nodeTypes} 
-          // on initial load, center on the current node
+          nodeTypes={nodeTypes}
+          fitView
           defaultViewport={{ x: 0, y: 0, zoom: 1 }}
           nodesDraggable={false}
           nodesConnectable={false}

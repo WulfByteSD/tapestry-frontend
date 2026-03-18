@@ -11,12 +11,13 @@ import type { NodeEditorFormValue } from "../nodeEditorForm/NodeEditorForm.compo
 import styles from "./NodeWorkspace.module.scss";
 import type { FocusedLoreContext, LoreNodeDetail, LoreTreeNode, NodeWorkspaceProps } from "./nodeWorkspace.types";
 import { toUpdatePayload, flattenTree, findNodeById, collectDescendantIds } from "./nodeWorkspace.helper";
-import { createTabs } from "./nodeWorkspace.tabs";
+import { createTabs, TabKey } from "./nodeWorkspace.tabs";
 
 export default function NodeWorkspace({ nodeId }: NodeWorkspaceProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<TabKey>("editor");
 
   const nodeQuery = useQuery({
     queryKey: ["content-node", nodeId],
@@ -120,6 +121,7 @@ export default function NodeWorkspace({ nodeId }: NodeWorkspaceProps) {
 
     return createTabs({
       node,
+      activeTab,
       parentOptions,
       relationTargets,
       isSaving: saveMutation.isPending,
@@ -134,9 +136,13 @@ export default function NodeWorkspace({ nodeId }: NodeWorkspaceProps) {
       onOpenGraphNode: (targetNodeId) => {
         router.push(`/content/node/${targetNodeId}`);
       },
+      onOpenRelationNode: (targetNodeId) => {
+        router.push(`/content/node/${targetNodeId}`);
+      },
     });
   }, [
     node,
+    activeTab,
     parentOptions,
     relationTargets,
     saveMutation,
@@ -202,7 +208,14 @@ export default function NodeWorkspace({ nodeId }: NodeWorkspaceProps) {
             ))}
           </div>
 
-          <Tabs items={tabItems} defaultActiveKey="editor" variant="pills" fit="equal" />
+          <Tabs
+            activeKey={activeTab}
+            onChange={(key) => setActiveTab(key as TabKey)}
+            items={tabItems}
+            defaultActiveKey="editor"
+            variant="pills"
+            fit="equal"
+          />
         </>
       )}
     </section>

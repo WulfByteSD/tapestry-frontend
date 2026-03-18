@@ -17,14 +17,28 @@ export type LoreNodeDetail = {
   updatedAt?: string;
 };
 
+export type LoreRelationTargetRef = {
+  _id: string;
+  key: string;
+  name: string;
+  kind?: string;
+  status?: "draft" | "published" | "archived";
+};
+
 export type LoreRelation = {
   type: string;
   targetId?: string;
   targetKey?: string;
   label?: string;
   notes?: string;
-};
 
+  // Flexible on purpose. Use whichever shape your backend now returns.
+  targetNode?: LoreRelationTargetRef | null;
+  target?: LoreRelationTargetRef | null;
+
+  // Optional future-proofing if you later return incoming relations too.
+  direction?: "outgoing" | "incoming";
+};
 export type LoreTreeNode = {
   _id: string;
   key: string;
@@ -53,6 +67,8 @@ export type FocusedLoreNodeRef = {
   key: string;
   name: string;
   kind?: string;
+  status?: "draft" | "published" | "archived";
+  relations?: LoreRelation[];
 };
 
 export type FocusedLoreTreeNode = {
