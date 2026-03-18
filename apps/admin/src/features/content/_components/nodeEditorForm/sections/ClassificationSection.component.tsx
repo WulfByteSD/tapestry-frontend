@@ -1,3 +1,4 @@
+import { TextField } from "@tapestry/ui";
 import type { NodeEditorFormValue } from "../NodeEditorForm.types";
 import styles from "../NodeEditorForm.module.scss";
 
@@ -24,78 +25,64 @@ export default function ClassificationSection({ classification, onUpdateMeta }: 
       </div>
 
       <div className={styles.grid}>
-        <label className={styles.field}>
-          <span className={styles.label}>Species</span>
-          <input
-            className={styles.input}
-            value={classification.species}
-            onChange={(event) => onUpdateMeta("classification", "species", event.target.value)}
-            placeholder="Human"
-          />
-        </label>
+        <TextField
+          floatingLabel
+          label="Species"
+          value={classification.species}
+          onChange={(event) => onUpdateMeta("classification", "species", event.target.value)}
+          placeholder="Human"
+        />
 
-        <label className={styles.field}>
-          <span className={styles.label}>Culture</span>
-          <input
-            className={styles.input}
-            value={classification.culture}
-            onChange={(event) => onUpdateMeta("classification", "culture", event.target.value)}
-            placeholder="Everpine frontier"
-          />
-        </label>
+        <TextField
+          floatingLabel
+          label="Culture"
+          value={classification.culture}
+          onChange={(event) => onUpdateMeta("classification", "culture", event.target.value)}
+          placeholder="Everpine frontier"
+        />
 
-        <label className={styles.field}>
-          <span className={styles.label}>Occupation</span>
-          <input
-            className={styles.input}
-            value={classification.occupation}
-            onChange={(event) => onUpdateMeta("classification", "occupation", event.target.value)}
-            placeholder="Militia captain"
-          />
-        </label>
+        <TextField
+          floatingLabel
+          label="Occupation"
+          value={classification.occupation}
+          onChange={(event) => onUpdateMeta("classification", "occupation", event.target.value)}
+          placeholder="Militia captain"
+        />
 
-        <label className={styles.field}>
-          <span className={styles.label}>Region</span>
-          <input
-            className={styles.input}
-            value={classification.region}
-            onChange={(event) => onUpdateMeta("classification", "region", event.target.value)}
-            placeholder="The Northwood March"
-          />
-        </label>
+        <TextField
+          floatingLabel
+          label="Region"
+          value={classification.region}
+          onChange={(event) => onUpdateMeta("classification", "region", event.target.value)}
+          placeholder="The Northwood March"
+        />
 
-        <label className={styles.field}>
-          <span className={styles.label}>Settlement</span>
-          <input
-            className={styles.input}
-            value={classification.settlement}
-            onChange={(event) => onUpdateMeta("classification", "settlement", event.target.value)}
-            placeholder="Everpine"
-          />
-        </label>
+        <TextField
+          floatingLabel
+          label="Settlement"
+          value={classification.settlement}
+          onChange={(event) => onUpdateMeta("classification", "settlement", event.target.value)}
+          placeholder="Everpine"
+        />
       </div>
 
-      <label className={styles.field}>
-        <span className={styles.label}>Affiliation</span>
-        <input
-          className={styles.input}
-          value={classification.affiliation}
-          onChange={(event) => onUpdateMeta("classification", "affiliation", event.target.value)}
-          placeholder="Everpine Council, Militia of Everpine"
-        />
-        <span className={styles.helper}>Comma-separated.</span>
-      </label>
+      <TextField
+        floatingLabel
+        label="Affiliation"
+        value={classification.affiliation}
+        onChange={(event) => onUpdateMeta("classification", "affiliation", event.target.value)}
+        placeholder="Everpine Council, Militia of Everpine"
+        helpText="Comma-separated."
+      />
 
-      <label className={styles.field}>
-        <span className={styles.label}>Religion</span>
-        <input
-          className={styles.input}
-          value={classification.religion}
-          onChange={(event) => onUpdateMeta("classification", "religion", event.target.value)}
-          placeholder="Followers of the Lantern"
-        />
-        <span className={styles.helper}>Comma-separated.</span>
-      </label>
+      <TextField
+        floatingLabel
+        label="Religion"
+        value={classification.religion}
+        onChange={(event) => onUpdateMeta("classification", "religion", event.target.value)}
+        placeholder="Followers of the Lantern"
+        helpText="Comma-separated."
+      />
     </section>
   );
 }
