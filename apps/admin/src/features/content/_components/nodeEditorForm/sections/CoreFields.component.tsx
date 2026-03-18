@@ -42,6 +42,7 @@ export default function CoreFields({ form, parentOptions, keyTouchedRef, onUpdat
       />
 
       <SelectField
+        floatingLabel
         label="Kind"
         value={form.kind}
         onChange={(event) => onUpdate({ kind: event.target.value as NodeEditorFormValue["kind"] })}
@@ -53,7 +54,8 @@ export default function CoreFields({ form, parentOptions, keyTouchedRef, onUpdat
         ))}
       </SelectField>
 
-      <SelectField 
+      <SelectField
+        floatingLabel
         label="Status"
         value={form.status}
         onChange={(event) => onUpdate({ status: event.target.value as NodeEditorFormValue["status"] })}
@@ -65,7 +67,8 @@ export default function CoreFields({ form, parentOptions, keyTouchedRef, onUpdat
         ))}
       </SelectField>
 
-      <SelectField 
+      <SelectField
+        floatingLabel
         label="Parent"
         value={form.parentId}
         onChange={(event) => onUpdate({ parentId: event.target.value })}
