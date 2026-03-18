@@ -5,6 +5,7 @@ import styles from "./NodeEditorForm.module.scss";
 
 // Adjust this import path to wherever your existing relation editor lives now.
 import RelationEditor from "../relationEditor/RelationEditor.component";
+import { NodeEditorParentOption } from "../nodeWorkspace/nodeWorkspace.types";
 
 const LORE_KIND_OPTIONS = [
   "region",
@@ -51,14 +52,6 @@ export function toTagArray(value: string) {
     .filter(Boolean);
 }
 
-export type NodeEditorParentOption = {
-  _id: string;
-  key: string;
-  name: string;
-  kind: string;
-  depth: number;
-};
-
 export type NodeRelationDraft = {
   type: string;
   targetKey: string;
@@ -80,12 +73,15 @@ export type NodeEditorFormValue = {
   relations: NodeRelationDraft[];
 };
 
+export type NodeEditorFormMode = "edit" | "create-root" | "create-child";
+
 type NodeEditorFormProps = {
   initialValue: NodeEditorFormValue;
   parentOptions: NodeEditorParentOption[];
   relationTargets: NodeEditorParentOption[];
   isSaving?: boolean;
   saveMessage?: string | null;
+  mode?: NodeEditorFormMode;
   onSave: (value: NodeEditorFormValue) => Promise<void> | void;
 };
 
@@ -93,6 +89,7 @@ export default function NodeEditorForm({
   initialValue,
   parentOptions,
   relationTargets,
+  mode = "edit",
   isSaving = false,
   saveMessage,
   onSave,
@@ -104,7 +101,7 @@ export default function NodeEditorForm({
   useEffect(() => {
     setForm(initialValue);
     setFormError(null);
-    keyTouchedRef.current = true;
+    keyTouchedRef.current = false;
   }, [initialValue]);
 
   useEffect(() => {
@@ -115,6 +112,23 @@ export default function NodeEditorForm({
       key: slugifyKey(current.name),
     }));
   }, [form.name]);
+  const formTitle =
+    mode === "create-child" ? "Create child node" : mode === "create-root" ? "Create root node" : "Edit node";
+
+  const formCopy =
+    mode === "create-child"
+      ? "Create a new child lore node under the selected parent. You can still change the parent before saving."
+      : mode === "create-root"
+        ? "Create a new root-level lore node for this setting. Keep parent/child strictly for containment."
+        : "This is the full lore editor again — parent, tags, body, and relations — just moved onto the dedicated node page where it belongs.";
+
+  const submitLabel = isSaving
+    ? mode === "edit"
+      ? "Saving…"
+      : "Creating…"
+    : mode === "edit"
+      ? "Save node"
+      : "Create node";
 
   const canSave = useMemo(() => {
     return Boolean(form.name.trim() && form.key.trim() && form.settingKey.trim());
@@ -148,16 +162,16 @@ export default function NodeEditorForm({
       <div className={styles.header}>
         <div>
           <p className={styles.eyebrow}>Node editor</p>
-          <h2 className={styles.title}>Edit node</h2>
-          <p className={styles.copy}>
-            This is the full lore editor again — parent, tags, body, and relations — just moved onto the dedicated node
-            page where it belongs.
-          </p>
+          <h2 className={styles.title}>{formTitle}</h2>
+
+          <p className={styles.copy}>{formCopy}</p>
+
+          <strong className={styles.metaValue}>{mode}</strong>
         </div>
 
         <div className={styles.actionRow}>
           <button type="submit" className={styles.primaryButton} disabled={!canSave || isSaving}>
-            {isSaving ? "Saving…" : "Save node"}
+            {submitLabel}
           </button>
         </div>
       </div>

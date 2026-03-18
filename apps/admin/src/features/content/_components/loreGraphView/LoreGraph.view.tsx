@@ -43,10 +43,6 @@ function formatKindLabel(value: string) {
   return value.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
-function formatRelationLabel(value: string) {
-  return value.replace(/_/g, " ");
-}
-
 function LoreGraphNode({ data }: NodeProps<GraphNode>) {
   const statusClass =
     data.status === "published"
@@ -236,47 +232,6 @@ function buildGraph(tree: LoreTreeNode[], selectedKey: string | null, settingNod
         focusable: false,
         className: styles.settingEdge,
         zIndex: 0,
-      });
-    }
-  }
-
-  const flatNodes = flattenNodes(tree);
-  const byId = new Map(flatNodes.map((node) => [node._id, node]));
-  const byKey = new Map(flatNodes.map((node) => [node.key, node]));
-  const existingEdgeIds = new Set(edges.map((edge) => edge.id));
-
-  for (const node of flatNodes) {
-    for (const relation of node.relations ?? []) {
-      const target =
-        (relation.targetId ? byId.get(relation.targetId) : undefined) ||
-        (relation.targetKey ? byKey.get(relation.targetKey) : undefined);
-
-      if (!target) continue;
-      if (target._id === node._id) continue;
-
-      const relationEdgeId = `relation:${node._id}:${target._id}:${relation.type}`;
-
-      if (existingEdgeIds.has(relationEdgeId)) continue;
-      existingEdgeIds.add(relationEdgeId);
-
-      edges.push({
-        id: relationEdgeId,
-        source: node._id,
-        target: target._id,
-        sourceHandle: "relation-out",
-        targetHandle: "relation-in",
-        type: "default",
-        markerEnd: { type: MarkerType.ArrowClosed },
-        selectable: false,
-        focusable: false,
-        animated: false,
-        label: relation.label?.trim() || formatRelationLabel(relation.type),
-        labelStyle: {
-          fontSize: 11,
-          fontWeight: 700,
-        },
-        className: styles.relationEdge,
-        zIndex: -1,
       });
     }
   }

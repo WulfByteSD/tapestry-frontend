@@ -2,16 +2,19 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Tabs } from "@tapestry/ui";
+
 import { api } from "@/lib/api";
 import type { NodeEditorFormValue } from "../nodeEditorForm/NodeEditorForm.component";
 import styles from "./NodeWorkspace.module.scss";
-import type { LoreNodeDetail, LoreTreeNode, NodeWorkspaceProps } from "./nodeWorkspace.types";
+import type { FocusedLoreContext, LoreNodeDetail, LoreTreeNode, NodeWorkspaceProps } from "./nodeWorkspace.types";
 import { toUpdatePayload, flattenTree, findNodeById, collectDescendantIds } from "./nodeWorkspace.helper";
 import { createTabs } from "./nodeWorkspace.tabs";
 
 export default function NodeWorkspace({ nodeId }: NodeWorkspaceProps) {
+  const router = useRouter();
   const queryClient = useQueryClient();
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
 
@@ -25,15 +28,25 @@ export default function NodeWorkspace({ nodeId }: NodeWorkspaceProps) {
   });
 
   const node = nodeQuery.data ?? null;
+
   const treeQuery = useQuery({
     queryKey: ["content-node-tree", node?.settingKey],
     enabled: Boolean(node?.settingKey),
     queryFn: async () => {
       const response = await api.get(`/game/content/lore/tree/${encodeURIComponent(node?.settingKey as string)}`);
-
       return (response.data?.payload ?? []) as LoreTreeNode[];
     },
   });
+
+  const graphQuery = useQuery({
+    queryKey: ["content-node-context", nodeId, 2],
+    enabled: Boolean(nodeId),
+    queryFn: async () => {
+      const response = await api.get(`/game/content/lore/context/${encodeURIComponent(nodeId)}?descendantDepth=2`);
+      return (response.data?.payload ?? null) as FocusedLoreContext | null;
+    },
+  });
+
   const tree = treeQuery.data ?? [];
 
   const currentTreeNode = useMemo(() => {
@@ -60,6 +73,7 @@ export default function NodeWorkspace({ nodeId }: NodeWorkspaceProps) {
     if (!node) return [];
     return flatNodes.filter((option) => option._id !== node._id);
   }, [flatNodes, node]);
+
   const saveMutation = useMutation({
     mutationFn: async (formValue: NodeEditorFormValue) => {
       const payload = toUpdatePayload(formValue);
@@ -69,6 +83,9 @@ export default function NodeWorkspace({ nodeId }: NodeWorkspaceProps) {
     onSuccess: async () => {
       setSaveMessage("Node updated.");
       await queryClient.invalidateQueries({ queryKey: ["content-node", nodeId] });
+      await queryClient.invalidateQueries({
+        queryKey: ["content-node-context", nodeId, 2],
+      });
     },
     onError: () => {
       setSaveMessage(null);
@@ -107,12 +124,28 @@ export default function NodeWorkspace({ nodeId }: NodeWorkspaceProps) {
       relationTargets,
       isSaving: saveMutation.isPending,
       saveMessage,
+      graphContext: graphQuery.data ?? null,
+      graphLoading: graphQuery.isLoading,
+      graphError: graphQuery.isError,
       onSave: async (formValue) => {
         setSaveMessage(null);
         await saveMutation.mutateAsync(formValue);
       },
+      onOpenGraphNode: (targetNodeId) => {
+        router.push(`/content/node/${targetNodeId}`);
+      },
     });
-  }, [node, parentOptions, relationTargets, saveMutation, saveMessage]);
+  }, [
+    node,
+    parentOptions,
+    relationTargets,
+    saveMutation,
+    saveMessage,
+    graphQuery.data,
+    graphQuery.isLoading,
+    graphQuery.isError,
+    router,
+  ]);
 
   return (
     <section className={styles.page}>
@@ -136,6 +169,15 @@ export default function NodeWorkspace({ nodeId }: NodeWorkspaceProps) {
           </div>
 
           <div className={styles.headerActions}>
+            {node ? (
+              <Link
+                href={`/content/node/new?settingKey=${encodeURIComponent(node.settingKey)}&parentId=${encodeURIComponent(node._id)}`}
+                className={styles.ghostButton}
+              >
+                New child node
+              </Link>
+            ) : null}
+
             <Link href="/content" className={styles.ghostButton}>
               Back to content
             </Link>

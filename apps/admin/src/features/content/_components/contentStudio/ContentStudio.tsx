@@ -1,7 +1,7 @@
 "use client";
 
 import ContentSidebar from "../contentSidebar/ContentSidebar";
-import ContentList from "../contentList/ContentList"; 
+import ContentList from "../contentList/ContentList";
 import { useContentStudio } from "../../_hooks/useContentStudio";
 import styles from "./ContentStudio.module.scss";
 import LoreGraphView from "../loreGraphView/LoreGraph.view";
@@ -10,6 +10,9 @@ import { useRouter } from "next/navigation";
 export default function ContentStudio() {
   const studio = useContentStudio();
   const router = useRouter();
+  const createRootHref = studio.selectedSetting
+    ? `/content/node/new?settingKey=${encodeURIComponent(studio.selectedSetting.key)}`
+    : null;
 
   return (
     <div className={styles.studio}>
@@ -44,26 +47,16 @@ export default function ContentStudio() {
 
               {studio.activeType === "lore" ? (
                 <div className={styles.actionRow}>
-                  <button type="button" className={styles.actionButton} onClick={studio.startCreateRoot}>
+                  <button
+                    type="button"
+                    className={styles.actionButton}
+                    disabled={!createRootHref}
+                    onClick={() => {
+                      if (!createRootHref) return;
+                      router.push(createRootHref);
+                    }}
+                  >
                     New root node
-                  </button>
-
-                  <button
-                    type="button"
-                    className={styles.ghostButton}
-                    disabled={!studio.selectedTreeNode}
-                    onClick={studio.startCreateChild}
-                  >
-                    New child node
-                  </button>
-
-                  <button
-                    type="button"
-                    className={styles.ghostButton}
-                    disabled={!studio.selectedTreeNode}
-                    onClick={studio.startEditSelected}
-                  >
-                    Edit selected
                   </button>
                 </div>
               ) : null}
@@ -95,8 +88,11 @@ export default function ContentStudio() {
                   <button
                     type="button"
                     className={styles.actionButton}
-                    disabled
-                    title="Root creation will move to a dedicated route next."
+                    disabled={!createRootHref}
+                    onClick={() => {
+                      if (!createRootHref) return;
+                      router.push(createRootHref);
+                    }}
                   >
                     New root node
                   </button>

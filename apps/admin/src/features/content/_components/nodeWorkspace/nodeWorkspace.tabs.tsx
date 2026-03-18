@@ -1,11 +1,12 @@
 import type { TabsItem } from "@tapestry/ui";
+
 import NodeEditorForm, { type NodeEditorFormValue } from "../nodeEditorForm/NodeEditorForm.component";
+import NodeGraphTab from "./NodeGraphTab.component";
 import styles from "./NodeWorkspace.module.scss";
-import type { LoreNodeDetail, NodeEditorParentOption } from "./nodeWorkspace.types";
+import type { FocusedLoreContext, LoreNodeDetail, NodeEditorParentOption } from "./nodeWorkspace.types";
 import { toFormValue } from "./nodeWorkspace.helper";
 
 type TabKey = "editor" | "graph" | "relationships";
-
 export type { TabKey };
 
 export function createTabs(props: {
@@ -14,9 +15,24 @@ export function createTabs(props: {
   relationTargets: NodeEditorParentOption[];
   isSaving: boolean;
   saveMessage: string | null;
+  graphContext: FocusedLoreContext | null;
+  graphLoading: boolean;
+  graphError: boolean;
   onSave: (formValue: NodeEditorFormValue) => Promise<void>;
+  onOpenGraphNode: (nodeId: string) => void;
 }): TabsItem[] {
-  const { node, parentOptions, relationTargets, isSaving, saveMessage, onSave } = props;
+  const {
+    node,
+    parentOptions,
+    relationTargets,
+    isSaving,
+    saveMessage,
+    graphContext,
+    graphLoading,
+    graphError,
+    onSave,
+    onOpenGraphNode,
+  } = props;
 
   return [
     {
@@ -29,6 +45,7 @@ export function createTabs(props: {
           relationTargets={relationTargets}
           isSaving={isSaving}
           saveMessage={saveMessage}
+          mode="edit"
           onSave={onSave}
         />
       ),
@@ -37,13 +54,13 @@ export function createTabs(props: {
       key: "graph",
       label: "Graph",
       children: (
-        <div className={styles.placeholder}>
-          <h2 className={styles.placeholderTitle}>Node graph</h2>
-          <p className={styles.placeholderCopy}>
-            This tab will render the current node as the local root and show its immediate children in a focused graph
-            instead of the full setting atlas.
-          </p>
-        </div>
+        <NodeGraphTab
+          context={graphContext}
+          currentNodeId={node._id}
+          isLoading={graphLoading}
+          isError={graphError}
+          onOpenNode={onOpenGraphNode}
+        />
       ),
     },
     {

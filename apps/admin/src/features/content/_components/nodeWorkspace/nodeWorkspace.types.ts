@@ -47,3 +47,41 @@ export type NodeEditorParentOption = {
 export type NodeWorkspaceProps = {
   nodeId: string;
 };
+
+export type FocusedLoreNodeRef = {
+  _id: string;
+  key: string;
+  name: string;
+  kind?: string;
+};
+
+export type FocusedLoreTreeNode = {
+  _id: string;
+  settingKey: string;
+  key: string;
+  name: string;
+  kind: string;
+  status: "draft" | "published" | "archived";
+  parentId?: string | null;
+  ancestorIds?: string[];
+  depth: number;
+  sortOrder?: number;
+  summary?: string;
+  childCount?: number;
+  hasChildren?: boolean;
+  isRoot?: boolean;
+  isFocus?: boolean;
+  isLineage?: boolean;
+  children?: FocusedLoreTreeNode[];
+};
+
+export type FocusedLoreContext = {
+  focus: FocusedLoreNodeRef;
+  lineage: FocusedLoreNodeRef[];
+  tree: FocusedLoreTreeNode | null;
+  metadata?: {
+    descendantDepth: number;
+    rootId: string;
+    focusId: string;
+  };
+};
