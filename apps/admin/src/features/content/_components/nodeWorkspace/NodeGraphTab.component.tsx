@@ -201,10 +201,13 @@ export default function NodeGraphTab({
     <div className={graphStyles.shell}>
       <div className={graphStyles.canvas}>
         <ReactFlow
+          // use the current node id
+          key={currentNodeId}
           nodes={graph.nodes}
           edges={graph.edges}
-          nodeTypes={nodeTypes}
-          fitView
+          nodeTypes={nodeTypes} 
+          // on initial load, center on the current node
+          defaultViewport={{ x: 0, y: 0, zoom: 1 }}
           nodesDraggable={false}
           nodesConnectable={false}
           elementsSelectable

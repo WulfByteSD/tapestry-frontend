@@ -39,10 +39,10 @@ export default function NodeWorkspace({ nodeId }: NodeWorkspaceProps) {
   });
 
   const graphQuery = useQuery({
-    queryKey: ["content-node-context", nodeId, 2],
+    queryKey: ["content-node-context", nodeId, 3],
     enabled: Boolean(nodeId),
     queryFn: async () => {
-      const response = await api.get(`/game/content/lore/context/${encodeURIComponent(nodeId)}?descendantDepth=2`);
+      const response = await api.get(`/game/content/lore/context/${encodeURIComponent(nodeId)}?descendantDepth=3`);
       return (response.data?.payload ?? null) as FocusedLoreContext | null;
     },
   });
