@@ -20,6 +20,24 @@ export const LINKED_CONTENT_OPTIONS = ["combatant"] as const;
 export const MEDIA_ITEM_KIND_OPTIONS = ["image", "video"] as const;
 export const EMBED_KIND_OPTIONS = ["youtube", "vimeo", "audio", "other"] as const;
 
+export type LinkedContentType = (typeof LINKED_CONTENT_OPTIONS)[number];
+
+export type LinkedContentOption = {
+  id: string;
+  type: LinkedContentType;
+  key: string;
+  name: string;
+  subtitle?: string;
+  meta?: string;
+};
+
+export type SearchLinkedContentParams = {
+  type: LinkedContentType;
+  settingKey: string;
+  query: string;
+  limit?: number;
+};
+
 export type NodeRelationDraft = {
   type: string;
   targetKey: string;
@@ -29,8 +47,10 @@ export type NodeRelationDraft = {
 
 export type NodeLinkedContentDraft = {
   id: string;
-  type: (typeof LINKED_CONTENT_OPTIONS)[number];
+  type: LinkedContentType;
   targetId: string;
+  targetKey?: string;
+  targetName?: string;
   label: string;
 };
 

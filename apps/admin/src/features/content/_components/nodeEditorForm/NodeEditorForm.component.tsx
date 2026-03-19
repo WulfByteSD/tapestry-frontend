@@ -11,6 +11,8 @@ import {
   type NodeLinkedContentDraft,
   type NodeMediaGalleryDraft,
   type NodeMediaEmbedDraft,
+  type LinkedContentOption,
+  type SearchLinkedContentParams,
 } from "./NodeEditorForm.types";
 import { slugifyKey, createDraftId } from "./NodeEditorForm.helpers";
 
@@ -33,6 +35,7 @@ type NodeEditorFormProps = {
   saveMessage?: string | null;
   mode?: NodeEditorFormMode;
   onSave: (value: NodeEditorFormValue) => Promise<void> | void;
+  onSearchLinkedContent?: (params: SearchLinkedContentParams) => Promise<LinkedContentOption[]>;
 };
 
 export default function NodeEditorForm({
@@ -43,6 +46,7 @@ export default function NodeEditorForm({
   isSaving = false,
   saveMessage,
   onSave,
+  onSearchLinkedContent,
 }: NodeEditorFormProps) {
   const [form, setForm] = useState<NodeEditorFormValue>(initialValue);
   const [formError, setFormError] = useState<string | null>(null);
@@ -217,6 +221,8 @@ export default function NodeEditorForm({
           id: createDraftId("linked"),
           type: "combatant",
           targetId: "",
+          targetKey: "",
+          targetName: "",
           label: "",
         },
       ],
@@ -285,18 +291,17 @@ export default function NodeEditorForm({
       />
 
       <IdentitySection identity={form.meta.identity} onUpdateMeta={updateMeta} />
-
       <ClassificationSection classification={form.meta.classification} onUpdateMeta={updateMeta} />
-
       <WorldSection world={form.meta.world} onUpdateMeta={updateMeta} />
-
       <StorySection story={form.meta.story} onUpdateMeta={updateMeta} />
 
       <LinkedContentSection
+        settingKey={form.settingKey}
         linkedContent={form.linkedContent}
         onAddLinkedContent={addLinkedContent}
         onUpdateLinkedContent={updateLinkedContent}
         onRemoveLinkedContent={removeLinkedContent}
+        onSearchLinkedContent={onSearchLinkedContent}
       />
 
       <MetaStrip settingKey={form.settingKey} parentName={parentName} mode={mode} />
