@@ -1,18 +1,13 @@
-"use client";
+﻿"use client";
 
+import { Tabs } from "@tapestry/ui";
 import ContentSidebar from "../contentSidebar/ContentSidebar";
-import ContentList from "../contentList/ContentList";
 import { useContentStudio } from "../../_hooks/useContentStudio";
 import styles from "./ContentStudio.module.scss";
-import LoreGraphView from "../loreGraphView/LoreGraph.view";
-import { useRouter } from "next/navigation";
+import { createStudioTabs } from "./contentStudio.tabs";
 
 export default function ContentStudio() {
   const studio = useContentStudio();
-  const router = useRouter();
-  const createRootHref = studio.selectedSetting
-    ? `/content/node/new?settingKey=${encodeURIComponent(studio.selectedSetting.key)}`
-    : null;
 
   return (
     <div className={styles.studio}>
@@ -44,22 +39,6 @@ export default function ContentStudio() {
                     "Pick a setting to start attaching content to its root record."}
                 </p>
               </div>
-
-              {studio.activeType === "lore" ? (
-                <div className={styles.actionRow}>
-                  <button
-                    type="button"
-                    className={styles.actionButton}
-                    disabled={!createRootHref}
-                    onClick={() => {
-                      if (!createRootHref) return;
-                      router.push(createRootHref);
-                    }}
-                  >
-                    New root node
-                  </button>
-                </div>
-              ) : null}
             </div>
 
             <div className={styles.metricGrid}>
@@ -73,69 +52,18 @@ export default function ContentStudio() {
             </div>
           </section>
 
-          {studio.activeType === "lore" ? (
-            <section className={styles.panel}>
-              <div className={styles.panelHeader}>
-                <div className={styles.panelTitleWrap}>
-                  <p className={styles.panelEyebrow}>Lore browser</p>
-                  <h2 className={styles.panelTitle}>Node graph</h2>
-                  <p className={styles.panelCopy}>
-                    This graph is now the atlas for the setting. Click a node to open its dedicated workspace page.
-                  </p>
-                </div>
-
-                <div className={styles.actionRow}>
-                  <button
-                    type="button"
-                    className={styles.actionButton}
-                    disabled={!createRootHref}
-                    onClick={() => {
-                      if (!createRootHref) return;
-                      router.push(createRootHref);
-                    }}
-                  >
-                    New root node
-                  </button>
-                </div>
-              </div>
-
-              {studio.settingsQuery.isError ? (
-                <div className={styles.inlineNotice}>Settings failed to load. Check auth and API origin first.</div>
-              ) : studio.loreTreeQuery.isError ? (
-                <div className={styles.inlineNotice}>
-                  Lore graph failed to load. That’s route, auth, or backend trouble.
-                </div>
-              ) : studio.loreTreeQuery.isLoading ? (
-                <div className={styles.inlineNotice}>Loading lore graph…</div>
-              ) : (
-                <LoreGraphView
-                  tree={studio.loreTree}
-                  selectedKey={studio.selectedLoreKey}
-                  settingNode={
-                    studio.selectedSetting
-                      ? {
-                          key: studio.selectedSetting.key,
-                          name: studio.selectedSetting.name,
-                        }
-                      : null
-                  }
-                  onOpenNode={(node) => {
-                    router.push(`/content/node/${node._id}`);
-                  }}
-                />
-              )}
-            </section>
-          ) : (
-            <section className={styles.panel}>
-              <ContentList
-                title={`${studio.activeType.charAt(0).toUpperCase()}${studio.activeType.slice(1)} lane`}
-                copy="This lane now has a dedicated browser component instead of more junk crammed into ContentStudio."
-                items={studio.laneItems}
-                emptyTitle="No content wired yet"
-                emptyCopy="The component is in place. Wire the query + editor when you move to this lane."
-              />
-            </section>
-          )}
+          <section className={styles.panel}>
+            <Tabs
+              activeKey={studio.activeType}
+              onChange={(key) => studio.setActiveType(key as any)}
+              items={createStudioTabs({
+                activeTab: studio.activeType as any,
+                selectedSetting: studio.selectedSetting,
+              })}
+              keepMounted={false}
+              hideTabList
+            />
+          </section>
         </div>
       </div>
     </div>
