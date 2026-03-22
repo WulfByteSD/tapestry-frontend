@@ -2,7 +2,9 @@
 
 import styles from "./RelationEditor.module.scss";
 import type { LoreParentOption, LoreRelationDraft, LoreRelationType } from "../../_hooks/useContentStudio";
-import { NodeRelationDraft } from "../nodeEditorForm/NodeEditorForm.component";
+import { NodeRelationDraft } from "../nodeEditorForm/NodeEditorForm.types";
+import { RELATION_TYPE_GROUPS, getRelationTypeHelper } from "./relationTypes.data";
+import { SelectField, TextField, TextAreaField } from "@tapestry/ui";
 
 type RelationEditorProps = {
   value: LoreRelationDraft[] | NodeRelationDraft[];
@@ -10,18 +12,6 @@ type RelationEditorProps = {
   targets: LoreParentOption[];
   disabled?: boolean;
 };
-
-const RELATION_TYPE_OPTIONS: LoreRelationType[] = [
-  "located_in",
-  "member_of",
-  "rules",
-  "serves",
-  "allied_with",
-  "enemy_of",
-  "related_to",
-  "appears_in",
-  "originates_from",
-];
 
 function makeEmptyRelation(): LoreRelationDraft {
   return {
@@ -67,91 +57,84 @@ export default function RelationEditor({ value, onChange, targets, disabled = fa
           {value.map((relation, index) => (
             <div key={`${relation.type}-${index}`} className={styles.card}>
               <div className={styles.row}>
-                <label className={styles.field}>
-                  <span className={styles.label}>Type</span>
-                  <select
-                    className={styles.select}
-                    disabled={disabled}
-                    value={relation.type}
-                    onChange={(event) =>
-                      onChange(
-                        updateAtIndex(value, index, {
-                          ...relation,
-                          type: event.target.value as LoreRelationType,
-                        }),
-                      )
-                    }
-                  >
-                    {RELATION_TYPE_OPTIONS.map((option) => (
-                      <option key={option} value={option}>
-                        {option}
-                      </option>
-                    ))}
-                  </select>
-                </label>
+                <SelectField
+                  label="Type"
+                  value={relation.type}
+                  disabled={disabled}
+                  onChange={(event) =>
+                    onChange(
+                      updateAtIndex(value, index, {
+                        ...relation,
+                        type: event.target.value as LoreRelationType,
+                      }),
+                    )
+                  }
+                  helpText={relation.type ? getRelationTypeHelper(relation.type as LoreRelationType) : undefined}
+                >
+                  {RELATION_TYPE_GROUPS.map((group) => (
+                    <optgroup key={group.group} label={group.group}>
+                      {group.options.map((option) => (
+                        <option key={option.value} value={option.value} title={option.helper}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </optgroup>
+                  ))}
+                </SelectField>
 
-                <label className={styles.field}>
-                  <span className={styles.label}>Target key</span>
-                  <input
-                    className={styles.input}
-                    list={`relation-targets-${index}`}
-                    disabled={disabled}
-                    value={relation.targetKey}
-                    onChange={(event) =>
-                      onChange(
-                        updateAtIndex(value, index, {
-                          ...relation,
-                          targetKey: event.target.value,
-                        }),
-                      )
-                    }
-                    placeholder="everpine"
-                  />
-                  <datalist id={`relation-targets-${index}`}>
-                    {targets.map((target) => (
-                      <option key={target._id} value={target.key}>
-                        {target.name}
-                      </option>
-                    ))}
-                  </datalist>
-                </label>
+                <TextField
+                  label="Target key"
+                  list={`relation-targets-${index}`}
+                  disabled={disabled}
+                  value={relation.targetKey}
+                  onChange={(event) =>
+                    onChange(
+                      updateAtIndex(value, index, {
+                        ...relation,
+                        targetKey: event.target.value,
+                      }),
+                    )
+                  }
+                  placeholder="everpine"
+                />
+                <datalist id={`relation-targets-${index}`}>
+                  {targets.map((target) => (
+                    <option key={target._id} value={target.key}>
+                      {target.name}
+                    </option>
+                  ))}
+                </datalist>
               </div>
 
-              <label className={styles.field}>
-                <span className={styles.label}>Label</span>
-                <input
-                  className={styles.input}
-                  disabled={disabled}
-                  value={relation.label ?? ""}
-                  onChange={(event) =>
-                    onChange(
-                      updateAtIndex(value, index, {
-                        ...relation,
-                        label: event.target.value,
-                      }),
-                    )
-                  }
-                  placeholder="Captain of the watch"
-                />
-              </label>
+              <TextField
+                label="Label"
+                disabled={disabled}
+                value={relation.label ?? ""}
+                onChange={(event) =>
+                  onChange(
+                    updateAtIndex(value, index, {
+                      ...relation,
+                      label: event.target.value,
+                    }),
+                  )
+                }
+                placeholder="Captain of the watch"
+              />
 
-              <label className={styles.field}>
-                <span className={styles.label}>Notes</span>
-                <textarea
-                  className={styles.textarea}
-                  disabled={disabled}
-                  value={relation.notes ?? ""}
-                  onChange={(event) =>
-                    onChange(
-                      updateAtIndex(value, index, {
-                        ...relation,
-                        notes: event.target.value,
-                      }),
-                    )
-                  }
-                  placeholder="Optional admin note for this relation"
-                />
-              </label>
+              <TextAreaField
+                label="Notes"
+                disabled={disabled}
+                value={relation.notes ?? ""}
+                onChange={(event) =>
+                  onChange(
+                    updateAtIndex(value, index, {
+                      ...relation,
+                      notes: event.target.value,
+                    }),
+                  )
+                }
+                placeholder="Optional admin note for this relation"
+              />
 
               <div className={styles.actions}>
                 <button

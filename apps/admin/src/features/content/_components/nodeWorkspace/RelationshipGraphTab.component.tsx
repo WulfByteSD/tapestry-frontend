@@ -17,6 +17,7 @@ import "@xyflow/react/dist/style.css";
 
 import graphStyles from "../loreGraphView/LoreGraph.module.scss";
 import type { FocusedLoreContext, LoreRelation, LoreRelationTargetRef } from "./nodeWorkspace.types";
+import { formatRelationType } from "../relationEditor/relationTypes.data";
 
 type RelationshipGraphTabProps = {
   context: FocusedLoreContext | null;
@@ -55,7 +56,9 @@ function formatKindLabel(value: string) {
 
 function formatRelationLabel(relations: LoreRelation[]) {
   const labels = Array.from(
-    new Set(relations.map((relation) => relation.label?.trim() || relation.type?.trim()).filter(Boolean)),
+    new Set(
+      relations.map((relation) => relation.label?.trim() || formatRelationType(relation.type as any)).filter(Boolean),
+    ),
   );
 
   return labels.join(" • ");
