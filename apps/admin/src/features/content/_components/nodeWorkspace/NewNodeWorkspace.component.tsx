@@ -59,11 +59,14 @@ export default function NewNodeWorkspace({ settingKey, parentId = null }: NewNod
 
       const response = await api.post("/game/content/lore", payload);
 
-      return (response.data?.payload ?? response.data) as LoreNodeDetail;
+      return {
+        node: (response.data?.payload ?? response.data) as LoreNodeDetail,
+        formValue,
+      };
     },
-    onSuccess: async (created) => {
+    onSuccess: async ({ node: created, formValue }) => {
       console.log("Created node:", created);
-      setSaveMessage("Node created.");
+      setSaveMessage(`Created "${formValue.name}" successfully.`);
 
       await Promise.all([
         queryClient.invalidateQueries({
@@ -75,7 +78,7 @@ export default function NewNodeWorkspace({ settingKey, parentId = null }: NewNod
       ]);
 
       if (!created) {
-        setSaveMessage("Node created, but the API did not return an id.");
+        setSaveMessage(`Created "${formValue.name}", but the API did not return an id.`);
         return;
       }
 

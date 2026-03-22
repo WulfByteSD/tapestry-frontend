@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { BiSave, BiChevronUp } from "react-icons/bi";
 import { FloatingActionDock, useAlert } from "@tapestry/ui";
 import styles from "./NodeEditorForm.module.scss";
 
@@ -28,6 +29,7 @@ import StorySection from "./sections/StorySection.component";
 import LinkedContentSection from "./sections/LinkedContentSection.component";
 import MetaStrip from "./sections/MetaStrip.component";
 import { api } from "@/lib/api";
+import { useRouter } from "next/navigation";
 
 type NodeEditorFormProps = {
   initialValue: NodeEditorFormValue;
@@ -54,6 +56,7 @@ export default function NodeEditorForm({
   const [form, setForm] = useState<NodeEditorFormValue>(initialValue);
   const [formError, setFormError] = useState<string | null>(null);
   const keyTouchedRef = useRef(false);
+  const router = useRouter();
 
   useEffect(() => {
     setForm(initialValue);
@@ -350,7 +353,8 @@ export default function NodeEditorForm({
         actions={[
           {
             key: "save-node",
-            label: mode === "edit" ? "Save node" : "Create node",
+            icon: <BiSave />,
+            tooltip: mode === "edit" ? "Save node" : "Create node",
             type: "submit",
             form: "node-editor-form",
             disabled: !canSave || isSaving,
@@ -359,7 +363,8 @@ export default function NodeEditorForm({
           },
           {
             key: "scroll-top",
-            label: "Top",
+            icon: <BiChevronUp />,
+            tooltip: "Scroll to top",
             type: "button",
             tone: "secondary",
             onClick: () => {
@@ -369,6 +374,15 @@ export default function NodeEditorForm({
               } else {
                 window.scrollTo({ top: 0, behavior: "smooth" });
               }
+            },
+          },
+          {
+            key: "go-back",
+            icon: <BiChevronUp style={{ transform: "rotate(-90deg)" }} />,
+            type: "button",
+            tone: "secondary",
+            onClick: () => {
+              router.push("/content");
             },
           },
         ]}

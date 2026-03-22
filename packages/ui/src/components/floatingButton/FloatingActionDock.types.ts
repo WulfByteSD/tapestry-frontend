@@ -1,6 +1,10 @@
+import type { ReactNode } from "react";
+
 export type FloatingActionItem = {
   key: string;
-  label: string;
+  label?: string;
+  icon?: ReactNode;
+  tooltip?: string;
   onClick?: () => void;
   type?: "button" | "submit";
   form?: string;
