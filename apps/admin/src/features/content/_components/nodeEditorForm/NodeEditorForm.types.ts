@@ -38,13 +38,6 @@ export type SearchLinkedContentParams = {
   limit?: number;
 };
 
-export type NodeRelationDraft = {
-  type: string;
-  targetKey: string;
-  label?: string;
-  notes?: string;
-};
-
 export type NodeLinkedContentDraft = {
   id: string;
   type: LinkedContentType;
@@ -52,6 +45,13 @@ export type NodeLinkedContentDraft = {
   targetKey?: string;
   targetName?: string;
   label: string;
+};
+
+export type NodeRelationDraft = {
+  type: string;
+  targetKey: string;
+  label?: string;
+  notes?: string;
 };
 
 export type NodeMediaGalleryDraft = {

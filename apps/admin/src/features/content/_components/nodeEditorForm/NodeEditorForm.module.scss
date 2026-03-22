@@ -323,3 +323,42 @@
     flex-direction: column;
   }
 }
+.optionList {
+  display: grid;
+  gap: 8px;
+}
+
+.optionButton {
+  display: grid;
+  gap: 4px;
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid color-mix(in srgb, var(--contrast-2) 12%, transparent);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--surface-2) 80%, transparent);
+  text-align: left;
+  cursor: pointer;
+}
+
+.optionTitle {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.optionSubline {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.selectedContentCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px;
+  border-radius: 16px;
+  border: 1px solid color-mix(in srgb, var(--contrast-2) 10%, transparent);
+  background: color-mix(in srgb, var(--surface) 78%, transparent);
+}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useAlert } from "@tapestry/ui";
 import styles from "./NodeEditorForm.module.scss";
 
 import RelationEditor from "../relationEditor/RelationEditor.component";
@@ -26,6 +27,7 @@ import WorldSection from "./sections/WorldSection.component";
 import StorySection from "./sections/StorySection.component";
 import LinkedContentSection from "./sections/LinkedContentSection.component";
 import MetaStrip from "./sections/MetaStrip.component";
+import { api } from "@/lib/api";
 
 type NodeEditorFormProps = {
   initialValue: NodeEditorFormValue;
@@ -48,6 +50,7 @@ export default function NodeEditorForm({
   onSave,
   onSearchLinkedContent,
 }: NodeEditorFormProps) {
+  const { addAlert } = useAlert();
   const [form, setForm] = useState<NodeEditorFormValue>(initialValue);
   const [formError, setFormError] = useState<string | null>(null);
   const keyTouchedRef = useRef(false);
@@ -66,6 +69,12 @@ export default function NodeEditorForm({
       key: slugifyKey(current.name),
     }));
   }, [form.name]);
+
+  useEffect(() => {
+    if (saveMessage) {
+      addAlert(saveMessage, "success");
+    }
+  }, [saveMessage, addAlert]);
 
   const formTitle =
     mode === "create-child" ? "Create child node" : mode === "create-root" ? "Create root node" : "Edit node";
@@ -198,6 +207,23 @@ export default function NodeEditorForm({
       },
     }));
   };
+  const searchLinkedContent = async ({
+    type,
+    settingKey,
+    query,
+    limit = 8,
+  }: SearchLinkedContentParams): Promise<LinkedContentOption[]> => {
+    const response = await api.get("/game/content/linked-content/search", {
+      params: {
+        type,
+        settingKey,
+        q: query,
+        limit,
+      },
+    });
+
+    return response.data?.payload ?? [];
+  };
 
   const removeEmbedItem = (itemId: string) => {
     setForm((current) => ({
@@ -301,7 +327,7 @@ export default function NodeEditorForm({
         onAddLinkedContent={addLinkedContent}
         onUpdateLinkedContent={updateLinkedContent}
         onRemoveLinkedContent={removeLinkedContent}
-        onSearchLinkedContent={onSearchLinkedContent}
+        onSearchLinkedContent={searchLinkedContent}
       />
 
       <MetaStrip settingKey={form.settingKey} parentName={parentName} mode={mode} />
@@ -319,8 +345,6 @@ export default function NodeEditorForm({
         targets={relationTargets}
         disabled={isSaving}
       />
-
-      {saveMessage ? <div className={styles.success}>{saveMessage}</div> : null}
     </form>
   );
 }

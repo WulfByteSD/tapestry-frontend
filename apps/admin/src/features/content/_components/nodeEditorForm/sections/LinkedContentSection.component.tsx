@@ -2,9 +2,9 @@
 
 import { useEffect, useMemo, useState } from "react";
 import type {
-  LinkedContentOption,
   NodeEditorFormValue,
   NodeLinkedContentDraft,
+  LinkedContentOption,
   SearchLinkedContentParams,
 } from "../NodeEditorForm.types";
 import { LINKED_CONTENT_OPTIONS } from "../NodeEditorForm.types";
@@ -19,7 +19,7 @@ type LinkedContentSectionProps = {
   onSearchLinkedContent?: (params: SearchLinkedContentParams) => Promise<LinkedContentOption[]>;
 };
 
-type LinkedContentRowProps = {
+type RowProps = {
   item: NodeLinkedContentDraft;
   settingKey: string;
   onUpdateLinkedContent: (itemId: string, patch: Partial<NodeLinkedContentDraft>) => void;
@@ -33,11 +33,10 @@ function LinkedContentRow({
   onUpdateLinkedContent,
   onRemoveLinkedContent,
   onSearchLinkedContent,
-}: LinkedContentRowProps) {
+}: RowProps) {
   const [query, setQuery] = useState(item.targetName || item.targetKey || "");
   const [results, setResults] = useState<LinkedContentOption[]>([]);
   const [isSearching, setIsSearching] = useState(false);
-  const [searchError, setSearchError] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -45,29 +44,25 @@ function LinkedContentRow({
   }, [item.targetKey, item.targetName]);
 
   useEffect(() => {
-    if (!onSearchLinkedContent || !settingKey || !query.trim()) {
+    if (!onSearchLinkedContent || !settingKey) {
       setResults([]);
-      setSearchError(null);
       return;
     }
+
+    const trimmed = query.trim();
 
     const timeoutId = window.setTimeout(async () => {
       try {
         setIsSearching(true);
-        setSearchError(null);
 
         const nextResults = await onSearchLinkedContent({
           type: item.type,
           settingKey,
-          query,
+          query: trimmed,
           limit: 8,
         });
 
         setResults(nextResults);
-        setIsOpen(true);
-      } catch {
-        setResults([]);
-        setSearchError("Search failed.");
       } finally {
         setIsSearching(false);
       }
@@ -94,7 +89,6 @@ function LinkedContentRow({
     });
 
     setQuery(option.name);
-    setResults([]);
     setIsOpen(false);
   };
 
@@ -112,6 +106,7 @@ function LinkedContentRow({
                 targetId: "",
                 targetKey: "",
                 targetName: "",
+                label: "",
               })
             }
           >
@@ -128,13 +123,14 @@ function LinkedContentRow({
           <input
             className={styles.input}
             value={query}
+            onFocus={() => setIsOpen(true)}
             onChange={(event) => {
               setQuery(event.target.value);
               setIsOpen(true);
             }}
             placeholder={`Search ${item.type}...`}
           />
-          <span className={styles.helper}>Search by name or key. Selection writes the real target id.</span>
+          <span className={styles.helper}>Search by name, key, role, origin, or tags.</span>
         </label>
 
         <label className={styles.field}>
@@ -151,8 +147,6 @@ function LinkedContentRow({
       {onSearchLinkedContent ? (
         <div className={styles.stack}>
           {isSearching ? <p className={styles.helper}>Searching…</p> : null}
-
-          {searchError ? <p className={styles.error}>{searchError}</p> : null}
 
           {isOpen && results.length ? (
             <div className={styles.optionList}>
@@ -183,7 +177,6 @@ function LinkedContentRow({
             onChange={(event) => onUpdateLinkedContent(item.id, { targetId: event.target.value })}
             placeholder="combatant id"
           />
-          <span className={styles.helper}>Manual fallback until the linked-content search API is wired.</span>
         </label>
       )}
 
@@ -233,7 +226,7 @@ export default function LinkedContentSection({
       <div className={styles.sectionHeader}>
         <div>
           <h3 className={styles.sectionTitle}>Linked content</h3>
-          <p className={styles.sectionCopy}>Cross-system references. Start small: combatants first.</p>
+          <p className={styles.sectionCopy}>Cross-system references.</p>
         </div>
 
         <button type="button" className={styles.secondaryButton} onClick={onAddLinkedContent}>
