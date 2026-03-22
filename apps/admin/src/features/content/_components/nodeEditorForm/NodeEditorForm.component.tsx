@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useAlert } from "@tapestry/ui";
+import { FloatingActionDock, useAlert } from "@tapestry/ui";
 import styles from "./NodeEditorForm.module.scss";
 
 import RelationEditor from "../relationEditor/RelationEditor.component";
@@ -272,6 +272,7 @@ export default function NodeEditorForm({
   return (
     <form
       className={styles.form}
+      id="node-editor-form"
       onSubmit={async (event) => {
         event.preventDefault();
         setFormError(null);
@@ -344,6 +345,33 @@ export default function NodeEditorForm({
         }
         targets={relationTargets}
         disabled={isSaving}
+      />
+      <FloatingActionDock
+        actions={[
+          {
+            key: "save-node",
+            label: mode === "edit" ? "Save node" : "Create node",
+            type: "submit",
+            form: "node-editor-form",
+            disabled: !canSave || isSaving,
+            loading: isSaving,
+            tone: "primary",
+          },
+          {
+            key: "scroll-top",
+            label: "Top",
+            type: "button",
+            tone: "secondary",
+            onClick: () => {
+              const scrollableContainer = document.querySelector("main");
+              if (scrollableContainer) {
+                scrollableContainer.scrollTo({ top: 0, behavior: "smooth" });
+              } else {
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }
+            },
+          },
+        ]}
       />
     </form>
   );
