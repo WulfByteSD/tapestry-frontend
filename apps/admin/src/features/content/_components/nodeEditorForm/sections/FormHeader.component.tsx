@@ -7,9 +7,20 @@ type FormHeaderProps = {
   submitLabel: string;
   canSave: boolean;
   isSaving: boolean;
+  isDeleting?: boolean;
+  onDelete?: () => void;
 };
 
-export default function FormHeader({ formTitle, formCopy, mode, submitLabel, canSave, isSaving }: FormHeaderProps) {
+export default function FormHeader({
+  formTitle,
+  formCopy,
+  mode,
+  submitLabel,
+  canSave,
+  isSaving,
+  isDeleting,
+  onDelete,
+}: FormHeaderProps) {
   return (
     <div className={styles.header}>
       <div>
@@ -20,6 +31,11 @@ export default function FormHeader({ formTitle, formCopy, mode, submitLabel, can
       </div>
 
       <div className={styles.actionRow}>
+        {mode === "edit" && onDelete && (
+          <button type="button" className={styles.dangerButton} onClick={onDelete} disabled={isSaving || isDeleting}>
+            {isDeleting ? "Deleting…" : "Delete node"}
+          </button>
+        )}
         <button type="submit" className={styles.primaryButton} disabled={!canSave || isSaving}>
           {submitLabel}
         </button>

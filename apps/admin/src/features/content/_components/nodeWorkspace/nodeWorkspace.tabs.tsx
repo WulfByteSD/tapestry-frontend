@@ -16,11 +16,13 @@ export function createTabs(props: {
   parentOptions: NodeEditorParentOption[];
   relationTargets: NodeEditorParentOption[];
   isSaving: boolean;
+  isDeleting?: boolean;
   saveMessage: string | null;
   graphContext: FocusedLoreContext | null;
   graphLoading: boolean;
   graphError: boolean;
   onSave: (formValue: NodeEditorFormValue) => Promise<void>;
+  onDelete?: () => Promise<void>;
   onOpenGraphNode: (nodeId: string) => void;
   onOpenRelationNode?: (nodeId: string) => void;
 }): TabsItem[] {
@@ -30,11 +32,13 @@ export function createTabs(props: {
     parentOptions,
     relationTargets,
     isSaving,
+    isDeleting,
     saveMessage,
     graphContext,
     graphLoading,
     graphError,
     onSave,
+    onDelete,
     onOpenGraphNode,
     onOpenRelationNode,
   } = props;
@@ -49,9 +53,11 @@ export function createTabs(props: {
           parentOptions={parentOptions}
           relationTargets={relationTargets}
           isSaving={isSaving}
+          isDeleting={isDeleting}
           saveMessage={saveMessage}
           mode="edit"
           onSave={onSave}
+          onDelete={onDelete}
         />
       ),
     },

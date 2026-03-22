@@ -170,7 +170,6 @@ function buildGraph(tree: LoreTreeNode[], selectedKey: string | null, settingNod
         label: node.name,
         kind: node.kind,
         status: node.status,
-        summary: node.summary,
         childCount,
         selected: selectedKey === node.key,
         sourceNode: node,

@@ -4,9 +4,10 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Tabs } from "@tapestry/ui";
+import { Tabs, useAlert } from "@tapestry/ui";
 
 import { api } from "@/lib/api";
+import DeleteNodeModal from "./components/DeleteNodeModal.component";
 import styles from "./NodeWorkspace.module.scss";
 import type { FocusedLoreContext, LoreNodeDetail, LoreTreeNode, NodeWorkspaceProps } from "./nodeWorkspace.types";
 import { toUpdatePayload, flattenTree, findNodeById, collectDescendantIds } from "./nodeWorkspace.helper";
@@ -18,6 +19,9 @@ export default function NodeWorkspace({ nodeId }: NodeWorkspaceProps) {
   const queryClient = useQueryClient();
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<TabKey>("editor");
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [reassignChildren, setReassignChildren] = useState(true);
+  const { addAlert } = useAlert();
 
   const nodeQuery = useQuery({
     queryKey: ["content-node", nodeId],
@@ -93,6 +97,26 @@ export default function NodeWorkspace({ nodeId }: NodeWorkspaceProps) {
     },
   });
 
+  const deleteMutation = useMutation({
+    mutationFn: async (deleteChildren: boolean) => {
+      await api.delete(`/game/content/lore/${nodeId}`, {
+        params: { deleteChildren },
+      });
+    },
+    onSuccess: async () => {
+      addAlert({ type: "success", message: `Deleted "${node?.name ?? "node"}" successfully.` });
+      await queryClient.invalidateQueries({
+        queryKey: ["content-node-tree", node?.settingKey],
+      });
+      router.push("/content");
+    },
+    onError: (error: any) => {
+      const messageTxt = error.response && error.response.data.message ? error.response.data.message : error.message;
+
+      addAlert({ type: "error", message: `Failed to delete "${node?.name ?? "node"}". Error: ${messageTxt}` });
+    },
+  });
+
   const metaCards = useMemo(() => {
     if (!node) return [];
 
@@ -125,6 +149,7 @@ export default function NodeWorkspace({ nodeId }: NodeWorkspaceProps) {
       parentOptions,
       relationTargets,
       isSaving: saveMutation.isPending,
+      isDeleting: deleteMutation.isPending,
       saveMessage,
       graphContext: graphQuery.data ?? null,
       graphLoading: graphQuery.isLoading,
@@ -132,6 +157,10 @@ export default function NodeWorkspace({ nodeId }: NodeWorkspaceProps) {
       onSave: async (formValue) => {
         setSaveMessage(null);
         await saveMutation.mutateAsync(formValue);
+      },
+      onDelete: async () => {
+        setReassignChildren(true); // Reset to safe default
+        setDeleteModalOpen(true);
       },
       onOpenGraphNode: (targetNodeId) => {
         router.push(`/content/node/${targetNodeId}`);
@@ -146,12 +175,23 @@ export default function NodeWorkspace({ nodeId }: NodeWorkspaceProps) {
     parentOptions,
     relationTargets,
     saveMutation,
+    deleteMutation,
     saveMessage,
     graphQuery.data,
     graphQuery.isLoading,
     graphQuery.isError,
     router,
+    currentTreeNode,
+    descendantIds,
   ]);
+
+  const handleConfirmDelete = async () => {
+    await deleteMutation.mutateAsync(!reassignChildren);
+    setDeleteModalOpen(false);
+  };
+
+  const childCount = currentTreeNode?.children?.length ?? 0;
+  const descendantCount = descendantIds.size;
 
   return (
     <section className={styles.page}>
@@ -218,6 +258,18 @@ export default function NodeWorkspace({ nodeId }: NodeWorkspaceProps) {
           />
         </>
       )}
+
+      <DeleteNodeModal
+        open={deleteModalOpen}
+        nodeName={node?.name}
+        childCount={childCount}
+        descendantCount={descendantCount}
+        reassignChildren={reassignChildren}
+        isDeleting={deleteMutation.isPending}
+        onReassignChildrenChange={setReassignChildren}
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setDeleteModalOpen(false)}
+      />
     </section>
   );
 }

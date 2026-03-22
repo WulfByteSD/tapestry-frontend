@@ -36,9 +36,11 @@ type NodeEditorFormProps = {
   parentOptions: NodeEditorParentOption[];
   relationTargets: NodeEditorParentOption[];
   isSaving?: boolean;
+  isDeleting?: boolean;
   saveMessage?: string | null;
   mode?: NodeEditorFormMode;
   onSave: (value: NodeEditorFormValue) => Promise<void> | void;
+  onDelete?: () => Promise<void> | void;
   onSearchLinkedContent?: (params: SearchLinkedContentParams) => Promise<LinkedContentOption[]>;
 };
 
@@ -48,8 +50,10 @@ export default function NodeEditorForm({
   relationTargets,
   mode = "edit",
   isSaving = false,
+  isDeleting = false,
   saveMessage,
   onSave,
+  onDelete,
   onSearchLinkedContent,
 }: NodeEditorFormProps) {
   const { addAlert } = useAlert();
@@ -303,6 +307,8 @@ export default function NodeEditorForm({
         submitLabel={submitLabel}
         canSave={canSave}
         isSaving={isSaving}
+        isDeleting={isDeleting}
+        onDelete={onDelete}
       />
 
       <CoreFields form={form} parentOptions={parentOptions} keyTouchedRef={keyTouchedRef} onUpdate={updateForm} />
