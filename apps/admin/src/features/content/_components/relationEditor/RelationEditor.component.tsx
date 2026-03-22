@@ -59,6 +59,7 @@ export default function RelationEditor({ value, onChange, targets, disabled = fa
               <div className={styles.row}>
                 <SelectField
                   label="Type"
+                  floatingLabel
                   value={relation.type}
                   disabled={disabled}
                   onChange={(event) =>
@@ -69,13 +70,12 @@ export default function RelationEditor({ value, onChange, targets, disabled = fa
                       }),
                     )
                   }
-                  helpText={relation.type ? getRelationTypeHelper(relation.type as LoreRelationType) : undefined}
                 >
                   {RELATION_TYPE_GROUPS.map((group) => (
                     <optgroup key={group.group} label={group.group}>
                       {group.options.map((option) => (
                         <option key={option.value} value={option.value} title={option.helper}>
-                          {option.label}
+                          {option.label} — {option.helper}
                         </option>
                       ))}
                     </optgroup>
@@ -84,6 +84,7 @@ export default function RelationEditor({ value, onChange, targets, disabled = fa
 
                 <TextField
                   label="Target key"
+                  floatingLabel
                   list={`relation-targets-${index}`}
                   disabled={disabled}
                   value={relation.targetKey}
@@ -100,7 +101,7 @@ export default function RelationEditor({ value, onChange, targets, disabled = fa
                 <datalist id={`relation-targets-${index}`}>
                   {targets.map((target) => (
                     <option key={target._id} value={target.key}>
-                      {target.name}
+                      {target.name} 
                     </option>
                   ))}
                 </datalist>
