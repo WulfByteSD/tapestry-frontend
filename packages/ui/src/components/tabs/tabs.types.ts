@@ -24,6 +24,7 @@ export interface TabsProps {
   variant?: TabsVariant; // default: "pills"
   fit?: TabsFit; // default: "equal"
   keepMounted?: boolean; // default: true
+  hideTabList?: boolean; // default: false
 
   className?: string;
   tabListClassName?: string;

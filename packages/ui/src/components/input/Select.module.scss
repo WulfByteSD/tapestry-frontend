@@ -23,9 +23,18 @@
   background-position: right 12px center;
   padding-right: 32px;
 
+  optgroup {
+    background: color-mix(in srgb, var(--surface) 50%, black);
+    color: var(--text);
+    font-weight: 700;
+    font-size: 13px;
+    padding: 8px 12px;
+  }
+
   option {
     background: var(--surface);
     color: var(--text);
+    padding: 6px 12px;
   }
 
   &:disabled {

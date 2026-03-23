@@ -1,3 +1,4 @@
+import { SelectField } from "@tapestry/ui";
 import styles from "./ContentSidebar.module.scss";
 
 export type StudioContentType = "settings" | "lore" | "items" | "abilities" | "skills";
@@ -51,11 +52,6 @@ const contentOptions: Array<{
     label: "Skills",
     copy: "Core and setting-flavored skill definitions.",
   },
-  {
-    key: "settings",
-    label: "Settings",
-    copy: "Top-level world records and module availability.",
-  },
 ];
 
 export default function ContentSidebar({
@@ -79,70 +75,6 @@ export default function ContentSidebar({
 
   return (
     <aside className={styles.sidebar}>
-      <section className={styles.card}>
-        <div className={styles.cardHeader}>
-          <p className={styles.eyebrow}>Setting focus</p>
-          <h2 className={styles.title}>Choose a world</h2>
-          <p className={styles.copy}>
-            Everything below this line hangs off a setting. No setting, no content, no tacos.
-          </p>
-        </div>
-
-        {isLoadingSettings ? (
-          <p className={styles.empty}>Loading settings…</p>
-        ) : settings.length === 0 ? (
-          <p className={styles.empty}>
-            No settings were returned yet. The studio shell is ready, but the world list is still empty.
-          </p>
-        ) : (
-          <div className={styles.settingList}>
-            {settings.map((setting) => {
-              const isActive = selectedSettingKey === setting.key;
-
-              return (
-                <button
-                  key={setting._id}
-                  type="button"
-                  onClick={() => onSelectSetting(setting.key)}
-                  className={`${styles.settingButton} ${isActive ? styles.settingButtonActive : ""}`}
-                >
-                  <span className={styles.settingName}>{setting.name}</span>
-                  <span className={styles.settingKey}>{setting.key}</span>
-                </button>
-              );
-            })}
-          </div>
-        )}
-      </section>
-
-      <section className={styles.card}>
-        <div className={styles.cardHeader}>
-          <p className={styles.eyebrow}>Authoring lane</p>
-          <h2 className={styles.title}>Content type</h2>
-          <p className={styles.copy}>Pick the lane you want the right-hand workspace to emphasize first.</p>
-        </div>
-
-        <div className={styles.typeList}>
-          {contentOptions.map((option) => {
-            const isActive = activeType === option.key;
-            const disabled = !selectedSetting && option.key !== "settings";
-
-            return (
-              <button
-                key={option.key}
-                type="button"
-                disabled={disabled}
-                onClick={() => onSelectType(option.key)}
-                className={`${styles.typeButton} ${isActive ? styles.typeButtonActive : ""}`}
-              >
-                <span className={styles.typeLabel}>{option.label}</span>
-                <span className={styles.typeCopy}>{option.copy}</span>
-              </button>
-            );
-          })}
-        </div>
-      </section>
-
       <section className={styles.card}>
         <div className={styles.cardHeader}>
           <p className={styles.eyebrow}>Current snapshot</p>
@@ -173,6 +105,70 @@ export default function ContentSidebar({
               {module.label}
             </span>
           ))}
+        </div>
+      </section>
+      <section className={styles.card}>
+        <div className={styles.cardHeader}>
+          <p className={styles.eyebrow}>Setting focus</p>
+          {/* <h2 className={styles.title}>Choose a world</h2> */}
+          <p className={styles.copy}>
+            Everything below this line hangs off a setting. No setting, no content, no tacos.
+          </p>
+        </div>
+
+        {isLoadingSettings ? (
+          <p className={styles.empty}>Loading settings…</p>
+        ) : settings.length === 0 ? (
+          <p className={styles.empty}>
+            No settings were returned yet. The studio shell is ready, but the world list is still empty.
+          </p>
+        ) : (
+          <SelectField
+            floatingLabel
+            label="Setting"
+            value={selectedSettingKey ?? ""}
+            onChange={(e) => onSelectSetting(e.target.value)}
+            disabled={settings.length === 0}
+          >
+            {!selectedSettingKey && (
+              <option value="" disabled>
+                Select a setting…
+              </option>
+            )}
+            {settings.map((setting) => (
+              <option key={setting._id} value={setting.key}>
+                {setting.name}
+              </option>
+            ))}
+          </SelectField>
+        )}
+      </section>
+
+      <section className={styles.card}>
+        <div className={styles.cardHeader}>
+          <p className={styles.eyebrow}>Authoring lane</p>
+          <h2 className={styles.title}>Content type</h2>
+          <p className={styles.copy}>Pick the lane you want the right-hand workspace to emphasize first.</p>
+        </div>
+
+        <div className={styles.typeList}>
+          {contentOptions.map((option) => {
+            const isActive = activeType === option.key;
+            const disabled = !selectedSetting && option.key !== "settings";
+
+            return (
+              <button
+                key={option.key}
+                type="button"
+                disabled={disabled}
+                onClick={() => onSelectType(option.key)}
+                className={`${styles.typeButton} ${isActive ? styles.typeButtonActive : ""}`}
+              >
+                <span className={styles.typeLabel}>{option.label}</span>
+                <span className={styles.typeCopy}>{option.copy}</span>
+              </button>
+            );
+          })}
         </div>
       </section>
     </aside>

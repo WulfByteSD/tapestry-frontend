@@ -1,6 +1,7 @@
 export * from "./components/avatar";
 export * from "./components/button";
 export * from "./components/card";
+export * from "./components/checkbox";
 export * from "./components/header";
 export * from "./components/input";
 export * from "./components/sidebar";
@@ -11,3 +12,4 @@ export * from "./components/tooltip";
 export * from "./components/form";
 export * from "./components/switcher";
 export * from "./components/loginScreen";
+export * from "./components/floatingButton";

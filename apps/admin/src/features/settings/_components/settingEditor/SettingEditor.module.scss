@@ -1,0 +1,104 @@
+.editor {
+  display: grid;
+  gap: 24px;
+  position: relative;
+  z-index: 1;
+}
+
+.hero {
+  display: grid;
+  gap: 10px;
+}
+
+.eyebrow {
+  margin: 0;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  color: var(--text-muted);
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(32px, 4vw, 44px);
+  line-height: 1.04;
+  color: var(--text);
+}
+
+.subtitle {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--text-muted);
+  max-width: 760px;
+}
+
+.formContainer {
+  max-width: 1240px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.panel {
+  display: grid;
+  gap: 18px;
+  padding: 22px;
+  border-radius: 20px;
+  border: 1px solid color-mix(in srgb, var(--contrast-2) 14%, transparent);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--surface) 88%, black),
+    color-mix(in srgb, var(--surface-2) 90%, black)
+  );
+  box-shadow: var(--shadow-1);
+}
+
+.panelHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: flex-start;
+
+  @media (max-width: 840px) {
+    flex-direction: column;
+  }
+}
+
+.panelTitleWrap {
+  display: grid;
+  gap: 6px;
+  max-width: 760px;
+}
+
+.panelEyebrow {
+  margin: 0;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: var(--text-muted);
+}
+
+.panelTitle {
+  margin: 0;
+  font-size: 24px;
+  color: var(--text);
+}
+
+.panelCopy {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+.loading,
+.error {
+  padding: 48px 24px;
+  text-align: center;
+  font-size: 16px;
+  color: var(--text-muted);
+}
+
+.error {
+  color: color-mix(in srgb, red 90%, white);
+}

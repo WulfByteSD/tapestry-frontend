@@ -104,3 +104,54 @@ export async function updateLoreNode(api: AxiosInstance, id: string, payload: Pa
   const res = await api.put(`/game/content/lore/${id}`, payload);
   return res.data;
 }
+// packages/api-client/src/resources/content.api.ts
+
+export async function deleteSetting(api: AxiosInstance, id: string) {
+  const res = await api.delete(`/game/content/settings/${id}`);
+  return res.data;
+}
+
+export async function deleteItem(api: AxiosInstance, id: string) {
+  const res = await api.delete(`/game/content/items/${id}`);
+  return res.data;
+}
+
+export async function getSkills(
+  api: AxiosInstance,
+  params?: ListQueryParams,
+): Promise<ApiListResponse<SkillDefinition>> {
+  const res = await api.get("/game/content/skills", {
+    params: cleanParams(params || {}),
+  });
+  return res.data;
+}
+
+export async function updateSkill(api: AxiosInstance, id: string, payload: Partial<SkillDefinition>) {
+  const res = await api.put(`/game/content/skills/${id}`, payload);
+  return res.data;
+}
+
+export async function deleteSkill(api: AxiosInstance, id: string) {
+  const res = await api.delete(`/game/content/skills/${id}`);
+  return res.data;
+}
+
+export async function getAbilities(
+  api: AxiosInstance,
+  params?: ListQueryParams,
+): Promise<ApiListResponse<AbilityDefinition>> {
+  const res = await api.get("/game/content/abilities", {
+    params: cleanParams(params || {}),
+  });
+  return res.data;
+}
+
+export async function updateAbility(api: AxiosInstance, id: string, payload: Partial<AbilityDefinition>) {
+  const res = await api.put(`/game/content/abilities/${id}`, payload);
+  return res.data;
+}
+
+export async function deleteAbility(api: AxiosInstance, id: string) {
+  const res = await api.delete(`/game/content/abilities/${id}`);
+  return res.data;
+}

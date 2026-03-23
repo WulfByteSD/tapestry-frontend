@@ -1,22 +1,47 @@
 import type { TabsItem } from "@tapestry/ui";
-import NodeEditorForm, { type NodeEditorFormValue } from "../nodeEditorForm/NodeEditorForm.component";
+
+import NodeEditorForm from "../nodeEditorForm/NodeEditorForm.component";
+import NodeGraphTab from "./NodeGraphTab.component";
 import styles from "./NodeWorkspace.module.scss";
-import type { LoreNodeDetail, NodeEditorParentOption } from "./nodeWorkspace.types";
+import type { FocusedLoreContext, LoreNodeDetail, NodeEditorParentOption } from "./nodeWorkspace.types";
 import { toFormValue } from "./nodeWorkspace.helper";
+import RelationshipGraphTab from "./RelationshipGraphTab.component";
+import { NodeEditorFormValue } from "../nodeEditorForm/NodeEditorForm.types";
 
 type TabKey = "editor" | "graph" | "relationships";
-
 export type { TabKey };
-
 export function createTabs(props: {
   node: LoreNodeDetail;
+  activeTab: TabKey;
   parentOptions: NodeEditorParentOption[];
   relationTargets: NodeEditorParentOption[];
   isSaving: boolean;
+  isDeleting?: boolean;
   saveMessage: string | null;
+  graphContext: FocusedLoreContext | null;
+  graphLoading: boolean;
+  graphError: boolean;
   onSave: (formValue: NodeEditorFormValue) => Promise<void>;
+  onDelete?: () => Promise<void>;
+  onOpenGraphNode: (nodeId: string) => void;
+  onOpenRelationNode?: (nodeId: string) => void;
 }): TabsItem[] {
-  const { node, parentOptions, relationTargets, isSaving, saveMessage, onSave } = props;
+  const {
+    node,
+    activeTab,
+    parentOptions,
+    relationTargets,
+    isSaving,
+    isDeleting,
+    saveMessage,
+    graphContext,
+    graphLoading,
+    graphError,
+    onSave,
+    onDelete,
+    onOpenGraphNode,
+    onOpenRelationNode,
+  } = props;
 
   return [
     {
@@ -28,36 +53,47 @@ export function createTabs(props: {
           parentOptions={parentOptions}
           relationTargets={relationTargets}
           isSaving={isSaving}
+          isDeleting={isDeleting}
           saveMessage={saveMessage}
+          mode="edit"
           onSave={onSave}
+          onDelete={onDelete}
         />
       ),
     },
     {
       key: "graph",
       label: "Graph",
-      children: (
-        <div className={styles.placeholder}>
-          <h2 className={styles.placeholderTitle}>Node graph</h2>
-          <p className={styles.placeholderCopy}>
-            This tab will render the current node as the local root and show its immediate children in a focused graph
-            instead of the full setting atlas.
-          </p>
-        </div>
-      ),
+      children:
+        activeTab === "graph" ? (
+          <NodeGraphTab
+            context={graphContext}
+            currentNodeId={node._id}
+            isLoading={graphLoading}
+            isError={graphError}
+            onOpenNode={onOpenGraphNode}
+            active
+          />
+        ) : (
+          <div style={{ minHeight: 640 }} />
+        ),
     },
     {
       key: "relationships",
       label: "Relationships",
-      children: (
-        <div className={styles.placeholder}>
-          <h2 className={styles.placeholderTitle}>Relationships</h2>
-          <p className={styles.placeholderCopy}>
-            This tab will show outgoing and incoming relations in separate, readable panels so cross-links stay useful
-            instead of turning into visual spaghetti.
-          </p>
-        </div>
-      ),
+      children:
+        activeTab === "relationships" ? (
+          <RelationshipGraphTab
+            context={graphContext}
+            currentNodeId={node._id}
+            isLoading={graphLoading}
+            isError={graphError}
+            onOpenNode={onOpenRelationNode}
+            active
+          />
+        ) : (
+          <div style={{ minHeight: 640 }} />
+        ),
     },
   ];
 }

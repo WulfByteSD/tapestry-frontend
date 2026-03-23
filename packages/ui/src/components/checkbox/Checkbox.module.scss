@@ -1,0 +1,116 @@
+.checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+}
+
+.input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.box {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+  border: 2px solid color-mix(in srgb, var(--contrast) 20%, transparent);
+  background: color-mix(in srgb, var(--base-2) 80%, transparent);
+  flex-shrink: 0;
+}
+
+.icon {
+  opacity: 0;
+  transform: scale(0.8);
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease;
+  color: white;
+}
+
+/* Sizes */
+.size_sm .box {
+  width: 16px;
+  height: 16px;
+}
+
+.size_sm .icon {
+  width: 12px;
+  height: 12px;
+}
+
+.size_md .box {
+  width: 20px;
+  height: 20px;
+}
+
+.size_md .icon {
+  width: 14px;
+  height: 14px;
+}
+
+.size_lg .box {
+  width: 24px;
+  height: 24px;
+}
+
+.size_lg .icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* Checked state */
+.checked .box,
+.indeterminate .box {
+  background: var(--gold);
+  border-color: var(--gold);
+}
+
+.checked .icon,
+.indeterminate .icon {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Hover state */
+.checkbox:hover:not(.disabled) .box {
+  border-color: color-mix(in srgb, var(--contrast) 30%, transparent);
+}
+
+.checked:hover:not(.disabled) .box,
+.indeterminate:hover:not(.disabled) .box {
+  background: color-mix(in srgb, var(--gold) 90%, white);
+  border-color: color-mix(in srgb, var(--gold) 90%, white);
+}
+
+/* Focus state */
+.input:focus-visible + .box {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+/* Disabled state */
+.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.label {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+.disabled .label {
+  color: var(--text-muted);
+}

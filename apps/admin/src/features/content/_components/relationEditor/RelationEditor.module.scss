@@ -102,44 +102,6 @@
   }
 }
 
-.field {
-  display: grid;
-  gap: 8px;
-}
-
-.label {
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  color: var(--text-muted);
-}
-
-.input,
-.select,
-.textarea {
-  width: 100%;
-  border-radius: 12px;
-  border: 1px solid color-mix(in srgb, var(--contrast-2) 14%, transparent);
-  background: color-mix(in srgb, var(--base-2) 54%, black);
-  color: var(--text);
-  padding: 11px 12px;
-  font: inherit;
-
-  &:focus {
-    outline: none;
-    border-color: color-mix(in srgb, var(--gold) 34%, transparent);
-  }
-}
-
-.select {
-  min-height: 42px;
-}
-
-.textarea {
-  min-height: 92px;
-  resize: vertical;
-}
-
 .actions {
   display: flex;
   justify-content: flex-end;

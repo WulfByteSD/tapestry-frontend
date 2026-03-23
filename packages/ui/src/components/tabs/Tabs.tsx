@@ -20,6 +20,7 @@ export function Tabs({
   variant = "pills",
   fit = "equal",
   keepMounted = true,
+  hideTabList = false,
   className,
   tabListClassName,
   tabClassName,
@@ -112,47 +113,49 @@ export function Tabs({
 
   return (
     <div className={cx(styles.root, className)}>
-      <div
-        role="tablist"
-        aria-label={ariaLabel}
-        className={cx(
-          styles.tabList,
-          variant === "pills" ? styles.variantPills : styles.variantUnderline,
-          fit === "equal" ? styles.fitEqual : styles.fitContent,
-          tabListClassName,
-        )}
-        onKeyDown={onKeyDown}
-      >
-        {items.map((t, idx) => {
-          const isActive = t.key === currentKey;
-          return (
-            <button
-              key={t.key}
-              ref={(el) => {
-                tabsRef.current[idx] = el;
-              }}
-              role="tab"
-              aria-selected={isActive}
-              aria-controls={`tabpanel-${t.key}`}
-              id={`tab-${t.key}`}
-              tabIndex={isActive ? 0 : -1}
-              type="button"
-              disabled={t.disabled}
-              className={cx(
-                styles.tab,
-                isActive && styles.tabActive,
-                t.disabled && styles.tabDisabled,
-                tabClassName,
-                isActive && activeTabClassName,
-              )}
-              onClick={() => !t.disabled && setKey(t.key)}
-            >
-              {t.icon ? <span className={styles.icon}>{t.icon}</span> : null}
-              <span className={styles.label}>{t.label}</span>
-            </button>
-          );
-        })}
-      </div>
+      {!hideTabList && (
+        <div
+          role="tablist"
+          aria-label={ariaLabel}
+          className={cx(
+            styles.tabList,
+            variant === "pills" ? styles.variantPills : styles.variantUnderline,
+            fit === "equal" ? styles.fitEqual : styles.fitContent,
+            tabListClassName,
+          )}
+          onKeyDown={onKeyDown}
+        >
+          {items.map((t, idx) => {
+            const isActive = t.key === currentKey;
+            return (
+              <button
+                key={t.key}
+                ref={(el) => {
+                  tabsRef.current[idx] = el;
+                }}
+                role="tab"
+                aria-selected={isActive}
+                aria-controls={`tabpanel-${t.key}`}
+                id={`tab-${t.key}`}
+                tabIndex={isActive ? 0 : -1}
+                type="button"
+                disabled={t.disabled}
+                className={cx(
+                  styles.tab,
+                  isActive && styles.tabActive,
+                  t.disabled && styles.tabDisabled,
+                  tabClassName,
+                  isActive && activeTabClassName,
+                )}
+                onClick={() => !t.disabled && setKey(t.key)}
+              >
+                {t.icon ? <span className={styles.icon}>{t.icon}</span> : null}
+                <span className={styles.label}>{t.label}</span>
+              </button>
+            );
+          })}
+        </div>
+      )}
 
       <div className={cx(styles.content, contentClassName)}>
         {keepMounted ? (
