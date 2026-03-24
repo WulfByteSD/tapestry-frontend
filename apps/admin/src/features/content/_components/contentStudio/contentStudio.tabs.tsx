@@ -1,10 +1,10 @@
 import type { TabsItem } from '@tapestry/ui';
 import type { StudioSettingSummary } from '../../_hooks/useContentStudio';
 
-import LoreView from '@/features/content/views/LoreView.component';
-import ItemsView from '@/features/content/views/ItemsView.component';
-import AbilitiesView from '@/features/content/views/AbilitiesView.component';
-import SkillsView from '@/features/content/views/SkillsView.component';
+import ItemsView from '@/views/content/items/ItemsView.component';
+import LoreView from '../../views/LoreView.component';
+import AbilitiesView from '@/views/content/abilities/AbilitiesView.component';
+import SkillsView from '@/views/content/skills/SkillsView.component';
 
 type TabKey = 'lore' | 'items' | 'abilities' | 'skills';
 

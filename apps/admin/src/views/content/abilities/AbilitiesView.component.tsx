@@ -1,12 +1,12 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
-import type { StudioSettingSummary } from "../_hooks/useContentStudio";
+import { useRouter } from "next/navigation"; 
 import Link from "next/link";
 
 import { api } from "@/lib/api";
-import styles from "./ContentView.module.scss";
+import styles from "./AbilitiesView.module.scss";
+import { StudioSettingSummary } from "@/features/content/_hooks/useContentStudio";
 
 type AbilitiesViewProps = {
   selectedSetting: StudioSettingSummary | null;

@@ -140,6 +140,11 @@
     text-decoration: none;
     transition: all 0.15s ease;
     position: relative;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
 
     &:hover {
       background: color-mix(in srgb, var(--text) 6%, transparent);
@@ -156,6 +161,27 @@
         transform: scale(1.1);
       }
     }
+
+    &.parentLink {
+      position: relative;
+    }
+  }
+
+  .expandIcon {
+    font-size: 10px;
+    margin-left: auto;
+    transition: transform 0.2s ease;
+    color: var(--text-muted);
+
+    &.expanded {
+      transform: rotate(180deg);
+    }
+  }
+
+  .childrenContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
   }
 
   .icon {
