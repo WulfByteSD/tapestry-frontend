@@ -1,17 +1,22 @@
+import React from "react";
+import type { ButtonTone } from "../button";
+
+export type TableAlign = "left" | "center" | "right";
+
 export type TableColumn<T> = {
   key: string;
   title: React.ReactNode;
   dataIndex?: keyof T;
   width?: number | string;
-  align?: "left" | "center" | "right";
-  render?: (value: unknown, row: T, index: number) => React.ReactNode;
+  align?: TableAlign;
   className?: string;
+  render?: (value: unknown, row: T, index: number) => React.ReactNode;
 };
 
 export type TableRowAction<T> = {
   key: string;
   label: React.ReactNode;
-  tone?: "neutral" | "gold" | "danger";
+  tone?: ButtonTone;
   onClick: (row: T) => void;
   disabled?: boolean | ((row: T) => boolean);
 };
@@ -28,11 +33,12 @@ export type TableProps<T> = {
   rows: T[];
   rowKey: keyof T | ((row: T) => string);
   loading?: boolean;
-  emptyTitle?: string;
-  emptyMessage?: string;
+  toolbar?: React.ReactNode;
+  className?: string;
   onRowClick?: (row: T) => void;
   rowActions?: TableRowAction<T>[];
-  toolbar?: React.ReactNode;
   pagination?: TablePagination;
-  className?: string;
+  emptyTitle?: string;
+  emptyMessage?: string;
+  loadingMessage?: string;
 };
