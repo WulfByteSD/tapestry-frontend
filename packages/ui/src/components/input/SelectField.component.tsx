@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import React, { useState, useRef } from "react";
-import clsx from "clsx";
-import { Select, SelectProps } from "./Select.component";
-import styles from "./TextField.module.scss";
+import React, { useState, useRef } from 'react';
+import clsx from 'clsx';
+import { Select, SelectProps, SelectOption } from './Select.component';
+import styles from './TextField.module.scss';
 
 export type SelectFieldProps = SelectProps & {
   label?: string;
@@ -11,19 +11,10 @@ export type SelectFieldProps = SelectProps & {
   helpText?: string;
   error?: string;
   floatingLabel?: boolean;
+  options?: SelectOption[];
 };
 
-export function SelectField({
-  id,
-  label,
-  hint,
-  helpText,
-  error,
-  className,
-  floatingLabel = false,
-  children,
-  ...selectProps
-}: SelectFieldProps) {
+export function SelectField({ id, label, hint, helpText, error, className, floatingLabel = false, options, children, ...selectProps }: SelectFieldProps) {
   const displayHint = helpText ?? hint;
   const selectRef = useRef<HTMLSelectElement>(null);
   const [isFocused, setIsFocused] = useState(false);
@@ -45,15 +36,7 @@ export function SelectField({
     return (
       <div className={clsx(styles.field, className)}>
         <div className={clsx(styles.floatingWrap, isFloating && styles.floating, hasError && styles.hasError)}>
-          <Select
-            ref={selectRef}
-            id={id}
-            {...selectProps}
-            hasError={hasError}
-            onFocus={handleFocus}
-            onBlur={handleBlur}
-            className={styles.floatingInput}
-          >
+          <Select ref={selectRef} id={id} {...selectProps} hasError={hasError} onFocus={handleFocus} onBlur={handleBlur} className={styles.floatingInput} options={options}>
             {children}
           </Select>
           <label className={styles.floatingLabel} htmlFor={id}>
@@ -80,7 +63,7 @@ export function SelectField({
         </label>
       )}
 
-      <Select id={id} {...selectProps} hasError={hasError}>
+      <Select id={id} {...selectProps} hasError={hasError} options={options}>
         {children}
       </Select>
 
