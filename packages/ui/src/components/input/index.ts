@@ -15,3 +15,9 @@ export type { TextAreaProps, TextAreaSize } from './TextArea.component';
 
 export { TextAreaField } from './TextAreaField.component';
 export type { TextAreaFieldProps } from './TextAreaField.component';
+
+export { TagInput } from './TagInput.component';
+export type { TagInputProps } from './TagInput.component';
+
+export { TagInputField } from './TagInputField.component';
+export type { TagInputFieldProps } from './TagInputField.component';
