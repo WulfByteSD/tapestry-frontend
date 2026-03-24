@@ -1,9 +1,8 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import styles from "./Sidebar.module.scss";
-import { SidebarGroup, SidebarLink } from "./sidebar.types";
-
+import { useState } from 'react';
+import styles from './Sidebar.module.scss';
+import { SidebarGroup, SidebarLink } from './sidebar.types';
 
 type Props = {
   title: string;
@@ -24,27 +23,14 @@ export default function Sidebar({
   footer,
   collapsible = true,
   defaultCollapsed = false,
-  LinkComponent = "a", // Default to standard anchor tag
+  LinkComponent = 'a', // Default to standard anchor tag
 }: Props) {
   const [isCollapsed, setIsCollapsed] = useState(defaultCollapsed);
-  const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
 
   const toggleCollapse = () => {
     if (collapsible) {
       setIsCollapsed(!isCollapsed);
     }
-  };
-
-  const toggleExpand = (href: string) => {
-    setExpandedItems((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(href)) {
-        newSet.delete(href);
-      } else {
-        newSet.add(href);
-      }
-      return newSet;
-    });
   };
 
   const isLinkActive = (link: SidebarLink): boolean => {
@@ -57,70 +43,33 @@ export default function Sidebar({
 
   const renderLink = (link: SidebarLink, depth: number = 0) => {
     const hasChildren = link.children && link.children.length > 0;
-    const isExpanded = expandedItems.has(link.href);
     const isActive = isLinkActive(link);
 
     return (
       <div key={link.href}>
-        {hasChildren ? (
-          <>
-            <button
-              className={`${styles.link} ${isActive ? styles.active : ""} ${styles.parentLink}`}
-              onClick={() => toggleExpand(link.href)}
-              style={{ paddingLeft: `${12 + depth * 16}px` }}
-            >
-              {link.icon && <span className={styles.icon}>{link.icon}</span>}
-              {!isCollapsed && (
-                <span className={styles.label}>
-                  {link.label}
-                  {link.badge !== undefined && link.badge > 0 && (
-                    <span className={styles.badge}>{link.badge}</span>
-                  )}
-                </span>
-              )}
-              {!isCollapsed && (
-                <span className={`${styles.expandIcon} ${isExpanded ? styles.expanded : ""}`}>
-                  ▼
-                </span>
-              )}
-            </button>
-            {isExpanded && !isCollapsed && (
-              <div className={styles.childrenContainer}>
-                {link.children!.map((child) => renderLink(child, depth + 1))}
-              </div>
-            )}
-          </>
-        ) : (
-          <LinkComponent
-            key={link.href}
-            href={link.href}
-            className={`${styles.link} ${currentPath === link.href ? styles.active : ""}`}
-            style={{ paddingLeft: `${12 + depth * 16}px` }}
-          >
-            {link.icon && <span className={styles.icon}>{link.icon}</span>}
-            {!isCollapsed && (
-              <span className={styles.label}>
-                {link.label}
-                {link.badge !== undefined && link.badge > 0 && (
-                  <span className={styles.badge}>{link.badge}</span>
-                )}
-              </span>
-            )}
-          </LinkComponent>
-        )}
+        <LinkComponent
+          href={link.href}
+          className={`${styles.link} ${isActive ? styles.active : ''} ${hasChildren ? styles.parentLink : ''} ${depth > 0 ? styles.childLink : ''}`}
+          style={{ paddingLeft: `${12 + depth * 10}px` }}
+        >
+          {link.icon && <span className={styles.icon}>{link.icon}</span>}
+          {!isCollapsed && (
+            <span className={styles.label}>
+              {link.label}
+              {link.badge !== undefined && link.badge > 0 && <span className={styles.badge}>{link.badge}</span>}
+            </span>
+          )}
+        </LinkComponent>
+        {hasChildren && !isCollapsed && <div className={styles.childrenContainer}>{link.children!.map((child) => renderLink(child, depth + 1))}</div>}
       </div>
     );
   };
 
   return (
-    <aside className={`${styles.sidebar} ${isCollapsed ? styles.collapsed : ""}`}>
+    <aside className={`${styles.sidebar} ${isCollapsed ? styles.collapsed : ''}`}>
       {collapsible && (
-        <button
-          className={styles.collapseButton}
-          onClick={toggleCollapse}
-          aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-        >
-          {isCollapsed ? "→" : "←"}
+        <button className={styles.collapseButton} onClick={toggleCollapse} aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}>
+          {isCollapsed ? '→' : '←'}
         </button>
       )}
 
@@ -137,9 +86,7 @@ export default function Sidebar({
         {groups.map((group, groupIndex) => (
           <div key={groupIndex} className={styles.group}>
             {!isCollapsed && <h2 className={styles.groupHeader}>{group.title}</h2>}
-            <nav className={styles.links}>
-              {group.links.map((link) => renderLink(link))}
-            </nav>
+            <nav className={styles.links}>{group.links.map((link) => renderLink(link))}</nav>
           </div>
         ))}
       </div>

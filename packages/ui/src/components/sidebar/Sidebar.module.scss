@@ -140,11 +140,6 @@
     text-decoration: none;
     transition: all 0.15s ease;
     position: relative;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    width: 100%;
-    text-align: left;
 
     &:hover {
       background: color-mix(in srgb, var(--text) 6%, transparent);
@@ -163,18 +158,22 @@
     }
 
     &.parentLink {
-      position: relative;
+      font-weight: 600;
     }
-  }
 
-  .expandIcon {
-    font-size: 10px;
-    margin-left: auto;
-    transition: transform 0.2s ease;
-    color: var(--text-muted);
+    &.childLink {
+      font-size: 13px;
+      font-weight: 400;
+      color: color-mix(in srgb, var(--text) 85%, transparent);
 
-    &.expanded {
-      transform: rotate(180deg);
+      &:hover {
+        color: var(--text);
+      }
+
+      &.active {
+        color: var(--accent-5);
+        font-weight: 600;
+      }
     }
   }
 
@@ -182,6 +181,7 @@
     display: flex;
     flex-direction: column;
     gap: 2px;
+    margin-top: 2px;
   }
 
   .icon {
