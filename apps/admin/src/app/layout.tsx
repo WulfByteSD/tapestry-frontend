@@ -4,8 +4,15 @@ import QueryProvider from "./QueryProvider";
 import { AuthProviderWrapper } from "./AuthProviderWrapper";
 
 export const metadata: Metadata = {
-  title: "Tapestry Admin",
-  description: "Manage content, products, and tables",
+  title: {
+    default: "Tapestry Admin",
+    template: "%s | Tapestry Admin",
+  },
+  description: "Manage content, settings, and storyweaver workflows.",
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
