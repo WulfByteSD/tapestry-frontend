@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { BiCog, BiFile, BiHome, BiLibrary, BiShoppingBag, BiTable } from "react-icons/bi";
 import { useAdminProfile } from "@tapestry/hooks";
-import { AlertContainer, Header, Sidebar, type SidebarGroup } from "@tapestry/ui";
+import { AlertContainer, Header, Loader, Sidebar, type SidebarGroup } from "@tapestry/ui";
 import { api } from "@/lib/api";
 import { useLogout, useMe } from "@/lib/auth-hooks";
 import styles from "./AdminShell.module.scss";
@@ -35,11 +35,7 @@ function LoadingState({ message }: { message: string }) {
   return (
     <div className={styles.stateWrap}>
       <div className={styles.stateCard}>
-        <div className={styles.spinner} />
-        <div className={styles.stateCopy}>
-          <p className={styles.stateTitle}>Tapestry Admin</p>
-          <p className={styles.stateMessage}>{message}</p>
-        </div>
+        <Loader caption={message} />;
       </div>
     </div>
   );
@@ -152,7 +148,7 @@ export default function AdminShell({ children }: { children: ReactNode }) {
       <div className={styles.contentArea}>
         <Header
           user={{
-            fullName: getDisplayName(adminProfile, user.email),
+            fullName: getDisplayName(adminProfile, user?.email),
             profileImageUrl:
               typeof adminProfile?.avatar === "string"
                 ? adminProfile.avatar

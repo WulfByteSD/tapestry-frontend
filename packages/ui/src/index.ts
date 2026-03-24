@@ -14,3 +14,4 @@ export * from "./components/switcher";
 export * from "./components/loginScreen";
 export * from "./components/floatingButton";
 export * from "./components/table";
+export * from "./components/loader";
