@@ -1,33 +1,49 @@
-"use client";
+'use client';
 
-import { ReactNode, useCallback, useEffect, useMemo, useRef } from "react";
-import Link from "next/link";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { BiCog, BiFile, BiHome, BiLibrary, BiShoppingBag, BiTable } from "react-icons/bi";
-import { useAdminProfile } from "@tapestry/hooks";
-import { AlertContainer, Header, Loader, Sidebar, type SidebarGroup } from "@tapestry/ui";
-import { api } from "@/lib/api";
-import { useLogout, useMe } from "@/lib/auth-hooks";
-import styles from "./AdminShell.module.scss";
-import Image from "next/image";
+import { ReactNode, useCallback, useEffect, useMemo, useRef } from 'react';
+import Link from 'next/link';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { BiCog, BiFile, BiHome, BiLibrary, BiShoppingBag, BiTable } from 'react-icons/bi';
+import { useAdminProfile } from '@tapestry/hooks';
+import { AlertContainer, Header, Loader, Sidebar, type SidebarGroup } from '@tapestry/ui';
+import { api } from '@/lib/api';
+import { useLogout, useMe } from '@/lib/auth-hooks';
+import styles from './AdminShell.module.scss';
+import Image from 'next/image';
 
 const sidebarGroups: SidebarGroup[] = [
   {
-    title: "Main",
-    links: [{ href: "/", label: "Dashboard", icon: <BiHome /> }],
+    title: 'Main',
+    links: [{ href: '/', label: 'Dashboard', icon: <BiHome /> }],
   },
   {
-    title: "Gameplay",
+    title: 'Gameplay',
     links: [
-      { href: "/content", label: "Content", icon: <BiLibrary /> },
-      { href: "/products", label: "Products", icon: <BiShoppingBag /> },
-      { href: "/tables", label: "Tables", icon: <BiTable /> },
-      { href: "/settings-admin", label: "Settings", icon: <BiFile /> },
+      {
+        href: '/content',
+        label: 'Content',
+        icon: <BiLibrary />,
+        children: [
+          {
+            href: '/content/items',
+            label: 'Items',
+            icon: <>A</>,
+          },
+          {
+            href: '/content/abilities',
+            label: 'Abilities',
+            icon: <>B</>,
+          },
+        ],
+      },
+      { href: '/products', label: 'Products', icon: <BiShoppingBag /> },
+      { href: '/tables', label: 'Tables', icon: <BiTable /> },
+      { href: '/settings-admin', label: 'Settings', icon: <BiFile /> },
     ],
   },
   {
-    title: "Account",
-    links: [{ href: "/settings", label: "Settings", icon: <BiCog /> }],
+    title: 'Account',
+    links: [{ href: '/settings', label: 'Settings', icon: <BiCog /> }],
   },
 ];
 
@@ -42,19 +58,19 @@ function LoadingState({ message }: { message: string }) {
 }
 
 function getDisplayName(profile: any, email?: string | null) {
-  if (typeof profile?.displayName === "string" && profile.displayName.trim()) {
+  if (typeof profile?.displayName === 'string' && profile.displayName.trim()) {
     return profile.displayName;
   }
 
-  const firstName = typeof profile?.firstName === "string" ? profile.firstName.trim() : "";
-  const lastName = typeof profile?.lastName === "string" ? profile.lastName.trim() : "";
-  const fullName = [firstName, lastName].filter(Boolean).join(" ");
+  const firstName = typeof profile?.firstName === 'string' ? profile.firstName.trim() : '';
+  const lastName = typeof profile?.lastName === 'string' ? profile.lastName.trim() : '';
+  const fullName = [firstName, lastName].filter(Boolean).join(' ');
 
   if (fullName) {
     return fullName;
   }
 
-  return email || "Admin";
+  return email || 'Admin';
 }
 
 export default function AdminShell({ children }: { children: ReactNode }) {
@@ -77,7 +93,7 @@ export default function AdminShell({ children }: { children: ReactNode }) {
 
   const nextTarget = useMemo(() => {
     const query = searchParams.toString();
-    if (!pathname) return "/";
+    if (!pathname) return '/';
     return query ? `${pathname}?${query}` : pathname;
   }, [pathname, searchParams]);
 
@@ -125,7 +141,7 @@ export default function AdminShell({ children }: { children: ReactNode }) {
         <Sidebar
           title="Tapestry Admin"
           groups={sidebarGroups}
-          currentPath={pathname || "/"}
+          currentPath={pathname || '/'}
           LinkComponent={Link}
           logo={
             <Image
@@ -150,11 +166,7 @@ export default function AdminShell({ children }: { children: ReactNode }) {
           user={{
             fullName: getDisplayName(adminProfile, user?.email),
             profileImageUrl:
-              typeof adminProfile?.avatar === "string"
-                ? adminProfile.avatar
-                : typeof adminProfile?.profileImageUrl === "string"
-                  ? adminProfile.profileImageUrl
-                  : null,
+              typeof adminProfile?.avatar === 'string' ? adminProfile.avatar : typeof adminProfile?.profileImageUrl === 'string' ? adminProfile.profileImageUrl : null,
           }}
           onLogout={logout}
           showMenuToggle={false}

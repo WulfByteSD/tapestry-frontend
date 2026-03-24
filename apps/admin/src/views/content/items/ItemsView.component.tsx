@@ -137,8 +137,7 @@ export default function ItemsListView({ selectedSetting }: ItemsListPageProps) {
       },
     ],
     [deleteItem]
-  );
-  console.log(selectedSetting);
+  ); 
 
   return (
     <div className={styles.page}>
@@ -215,7 +214,7 @@ export default function ItemsListView({ selectedSetting }: ItemsListPageProps) {
             rows={items}
             rowKey="_id"
             loading={itemsQuery.isLoading || itemsQuery.isFetching}
-            onRowClick={(row) => router.push(`/items/${row._id}`)}
+            onRowClick={(row) => router.push(`/content/items/${row._id}`)}
             rowActions={rowActions}
             emptyTitle="No items found"
             emptyMessage="Try adjusting your filters or create a new item."

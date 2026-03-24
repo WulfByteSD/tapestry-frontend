@@ -1,10 +1,12 @@
 // packages/types/src/content.ts
-import type { AbilityDefinition } from "./abilities";
-import type { GrantedAbilityRef } from "./abilities";
-import type { AttackProfile, InventoryCategory } from "./characters";
+import type { AbilityDefinition } from './abilities';
+import type { GrantedAbilityRef } from './abilities';
+import type { AttackProfile, InventoryCategory } from './characters';
 
-export type ContentStatus = "draft" | "published" | "archived";
-export type ContentEntityType = "setting" | "item" | "skill" | "ability" | "lore";
+export type ContentStatus = 'draft' | 'published' | 'archived';
+export type ContentEntityType = 'setting' | 'item' | 'skill' | 'ability' | 'lore';
+
+export type ItemSlot = 'head' | 'body' | 'legs' | 'feet' | 'hands' | 'weapon' | 'shield' | 'accessory' | 'consumable' | 'other';
 
 export type SettingDefinition = {
   _id: string;
@@ -35,7 +37,7 @@ export type ItemDefinition = {
   status: ContentStatus;
   tags?: string[];
   equippable?: boolean;
-  slot?: string | null;
+  slot?: ItemSlot | null;
   stackable?: boolean;
   notes?: string;
   attackProfiles?: AttackProfile[];
@@ -44,7 +46,7 @@ export type ItemDefinition = {
   updatedAt: string;
 };
 
-export type SkillCategory = "social" | "combat" | "technical" | "knowledge" | "survival" | "magic" | "other";
+export type SkillCategory = 'social' | 'combat' | 'technical' | 'knowledge' | 'survival' | 'magic' | 'other';
 
 export type SkillDefinition = {
   _id: string;
@@ -61,81 +63,81 @@ export type SkillDefinition = {
 };
 
 export type LoreNodeKind =
-  | "region"
-  | "nation"
-  | "province"
-  | "settlement"
-  | "district"
-  | "landmark"
-  | "faction"
-  | "npc"
-  | "organization"
-  | "culture"
-  | "religion"
-  | "event"
-  | "history"
-  | "other";
+  | 'region'
+  | 'nation'
+  | 'province'
+  | 'settlement'
+  | 'district'
+  | 'landmark'
+  | 'faction'
+  | 'npc'
+  | 'organization'
+  | 'culture'
+  | 'religion'
+  | 'event'
+  | 'history'
+  | 'other';
 
 export type LoreRelationType =
-  | "allied_with"
-  | "ancestor_of"
-  | "appears_in"
-  | "at_foot_of"
-  | "banished_by"
-  | "betrayed_by"
-  | "blessed_by"
-  | "borders"
-  | "bound_to"
-  | "child_of"
-  | "contains"
-  | "created_by"
-  | "cursed_by"
-  | "defends"
-  | "descended_from"
-  | "destroyed_by"
-  | "enemy_of"
-  | "employed_by"
-  | "fears"
-  | "founded_by"
-  | "governs"
-  | "guards"
-  | "hunts"
-  | "imprisoned_by"
-  | "influences"
-  | "inspired_by"
-  | "leads"
-  | "located_in"
-  | "loyal_to"
-  | "member_of"
-  | "mentor_of"
-  | "neighbor_of"
-  | "nominally_loyal_to"
-  | "opposed_to"
-  | "originates_from"
-  | "owns"
-  | "parent_of"
-  | "part_of"
-  | "prophesied_about"
-  | "protected_by"
-  | "related_to"
-  | "rescued_by"
-  | "rival_of"
-  | "rules"
-  | "sealed_by"
-  | "seeks"
-  | "serves"
-  | "shadowed_by"
-  | "sibling_of"
-  | "spouse_of"
-  | "student_of"
-  | "subject_of"
-  | "summoned_by"
-  | "supports"
-  | "trades_with"
-  | "transformed_from"
-  | "under_claim_of"
-  | "witnessed_by"
-  | "worships";
+  | 'allied_with'
+  | 'ancestor_of'
+  | 'appears_in'
+  | 'at_foot_of'
+  | 'banished_by'
+  | 'betrayed_by'
+  | 'blessed_by'
+  | 'borders'
+  | 'bound_to'
+  | 'child_of'
+  | 'contains'
+  | 'created_by'
+  | 'cursed_by'
+  | 'defends'
+  | 'descended_from'
+  | 'destroyed_by'
+  | 'enemy_of'
+  | 'employed_by'
+  | 'fears'
+  | 'founded_by'
+  | 'governs'
+  | 'guards'
+  | 'hunts'
+  | 'imprisoned_by'
+  | 'influences'
+  | 'inspired_by'
+  | 'leads'
+  | 'located_in'
+  | 'loyal_to'
+  | 'member_of'
+  | 'mentor_of'
+  | 'neighbor_of'
+  | 'nominally_loyal_to'
+  | 'opposed_to'
+  | 'originates_from'
+  | 'owns'
+  | 'parent_of'
+  | 'part_of'
+  | 'prophesied_about'
+  | 'protected_by'
+  | 'related_to'
+  | 'rescued_by'
+  | 'rival_of'
+  | 'rules'
+  | 'sealed_by'
+  | 'seeks'
+  | 'serves'
+  | 'shadowed_by'
+  | 'sibling_of'
+  | 'spouse_of'
+  | 'student_of'
+  | 'subject_of'
+  | 'summoned_by'
+  | 'supports'
+  | 'trades_with'
+  | 'transformed_from'
+  | 'under_claim_of'
+  | 'witnessed_by'
+  | 'worships';
 
 export type LoreRelation = {
   type: LoreRelationType;
