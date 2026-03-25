@@ -1,0 +1,219 @@
+.multiSelect {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 30px;
+  width: 100%;
+  padding: 4px 8px;
+
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-strong);
+  background: color-mix(in srgb, var(--surface) 75%, black);
+
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &:hover:not(.disabled) {
+    border-color: color-mix(in srgb, var(--accent-2) 40%, transparent);
+  }
+
+  &.focused {
+    border-color: color-mix(in srgb, var(--accent-2) 60%, transparent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
+  }
+
+  &.hasError {
+    border-color: color-mix(in srgb, #ff6b6b 55%, transparent);
+
+    &.focused {
+      box-shadow: 0 0 0 3px color-mix(in srgb, #ff6b6b 15%, transparent);
+    }
+  }
+
+  &.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: color-mix(in srgb, var(--surface) 60%, black);
+  }
+}
+
+.tagsContainer {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px;
+  height: 22px;
+
+  background: color-mix(in srgb, var(--accent) 15%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent-2) 25%, transparent);
+  border-radius: 4px;
+
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text);
+  white-space: nowrap;
+
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+
+  &:hover {
+    background: color-mix(in srgb, var(--accent) 22%, transparent);
+    border-color: color-mix(in srgb, var(--accent-2) 35%, transparent);
+  }
+}
+
+.tagLabel {
+  line-height: 1;
+}
+
+.tagRemove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  padding: 0;
+  margin: 0;
+
+  border: none;
+  background: transparent;
+  border-radius: 2px;
+
+  font-size: 16px;
+  line-height: 1;
+  font-weight: 600;
+  color: color-mix(in srgb, var(--text-muted) 80%, transparent);
+
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    background: color-mix(in srgb, var(--contrast) 35%, transparent);
+    color: var(--text);
+  }
+
+  &:focus-visible {
+    outline: 2px solid color-mix(in srgb, var(--accent-2) 40%, transparent);
+    outline-offset: -1px;
+  }
+}
+
+.placeholder {
+  color: color-mix(in srgb, var(--text-muted) 70%, transparent);
+  font-size: 13px;
+  user-select: none;
+}
+
+.arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: color-mix(in srgb, var(--text-muted) 80%, transparent);
+  margin-left: auto;
+  padding-left: 8px;
+  transition: transform 0.2s ease;
+
+  .open & {
+    transform: rotate(180deg);
+  }
+}
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 1000;
+
+  max-height: 240px;
+  overflow-y: auto;
+
+  background: color-mix(in srgb, var(--surface) 85%, black);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+
+  animation: dropdownSlide 0.15s ease-out;
+}
+
+@keyframes dropdownSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+
+  &:hover:not(.optionDisabled) {
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+  }
+
+  &.selected {
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+
+    &:hover {
+      background: color-mix(in srgb, var(--accent) 18%, transparent);
+    }
+  }
+
+  &.optionDisabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid var(--border-strong);
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--surface) 60%, black);
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+
+  .selected & {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--background);
+  }
+
+  svg {
+    width: 12px;
+    height: 10px;
+  }
+}
+
+.optionLabel {
+  font-size: 13px;
+  color: var(--text);
+  user-select: none;
+}

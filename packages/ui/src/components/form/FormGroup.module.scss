@@ -1,0 +1,22 @@
+.group {
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+
+  > * {
+    flex: 1;
+    min-width: 0; /* Prevents flex items from overflowing */
+  }
+}
+
+.gap-sm {
+  gap: 8px;
+}
+
+.gap-md {
+  gap: 12px;
+}
+
+.gap-lg {
+  gap: 16px;
+}

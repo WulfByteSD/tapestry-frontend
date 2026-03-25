@@ -1,4 +1,10 @@
+import { createAdminPageMetadata } from "@/app/pageMetadata";
 import NewNodeWorkspace from "@/features/content/_components/nodeWorkspace/NewNodeWorkspace.component";
+
+export const metadata = createAdminPageMetadata({
+  title: "New Lore Node",
+  description: "Create a new lore node and place it within a setting's content graph.",
+});
 
 type PageProps = {
   searchParams: Promise<{

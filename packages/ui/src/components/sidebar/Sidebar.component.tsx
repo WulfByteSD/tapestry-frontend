@@ -1,9 +1,8 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import styles from "./Sidebar.module.scss";
-import { SidebarGroup } from "./sidebar.types";
-
+import { useState } from 'react';
+import styles from './Sidebar.module.scss';
+import { SidebarGroup, SidebarLink } from './sidebar.types';
 
 type Props = {
   title: string;
@@ -24,7 +23,7 @@ export default function Sidebar({
   footer,
   collapsible = true,
   defaultCollapsed = false,
-  LinkComponent = "a", // Default to standard anchor tag
+  LinkComponent = 'a', // Default to standard anchor tag
 }: Props) {
   const [isCollapsed, setIsCollapsed] = useState(defaultCollapsed);
 
@@ -34,15 +33,43 @@ export default function Sidebar({
     }
   };
 
-  return (
-    <aside className={`${styles.sidebar} ${isCollapsed ? styles.collapsed : ""}`}>
-      {collapsible && (
-        <button
-          className={styles.collapseButton}
-          onClick={toggleCollapse}
-          aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+  const isLinkActive = (link: SidebarLink): boolean => {
+    if (currentPath === link.href) return true;
+    if (link.children) {
+      return link.children.some((child) => currentPath === child.href);
+    }
+    return false;
+  };
+
+  const renderLink = (link: SidebarLink, depth: number = 0) => {
+    const hasChildren = link.children && link.children.length > 0;
+    const isActive = isLinkActive(link);
+
+    return (
+      <div key={link.href}>
+        <LinkComponent
+          href={link.href}
+          className={`${styles.link} ${isActive ? styles.active : ''} ${hasChildren ? styles.parentLink : ''} ${depth > 0 ? styles.childLink : ''}`}
+          style={{ paddingLeft: `${12 + depth * 10}px` }}
         >
-          {isCollapsed ? "→" : "←"}
+          {link.icon && <span className={styles.icon}>{link.icon}</span>}
+          {!isCollapsed && (
+            <span className={styles.label}>
+              {link.label}
+              {link.badge !== undefined && link.badge > 0 && <span className={styles.badge}>{link.badge}</span>}
+            </span>
+          )}
+        </LinkComponent>
+        {hasChildren && !isCollapsed && <div className={styles.childrenContainer}>{link.children!.map((child) => renderLink(child, depth + 1))}</div>}
+      </div>
+    );
+  };
+
+  return (
+    <aside className={`${styles.sidebar} ${isCollapsed ? styles.collapsed : ''}`}>
+      {collapsible && (
+        <button className={styles.collapseButton} onClick={toggleCollapse} aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}>
+          {isCollapsed ? '→' : '←'}
         </button>
       )}
 
@@ -59,23 +86,7 @@ export default function Sidebar({
         {groups.map((group, groupIndex) => (
           <div key={groupIndex} className={styles.group}>
             {!isCollapsed && <h2 className={styles.groupHeader}>{group.title}</h2>}
-            <nav className={styles.links}>
-              {group.links.map((link) => (
-                <LinkComponent
-                  key={link.href}
-                  href={link.href}
-                  className={`${styles.link} ${currentPath === link.href ? styles.active : ""}`}
-                >
-                  {link.icon && <span className={styles.icon}>{link.icon}</span>}
-                  {!isCollapsed && (
-                    <span className={styles.label}>
-                      {link.label}
-                      {link.badge !== undefined && link.badge > 0 && <span className={styles.badge}>{link.badge}</span>}
-                    </span>
-                  )}
-                </LinkComponent>
-              ))}
-            </nav>
+            <nav className={styles.links}>{group.links.map((link) => renderLink(link))}</nav>
           </div>
         ))}
       </div>

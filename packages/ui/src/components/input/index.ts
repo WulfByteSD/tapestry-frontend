@@ -1,17 +1,26 @@
-export { Input } from "./Input.component";
-export type { InputProps, InputSize } from "./Input.component";
+export { Input } from './Input.component';
+export type { InputProps, InputSize } from './Input.component';
 
-export { TextField } from "./TextField.component";
-export type { TextFieldProps } from "./TextField.component";
+export { TextField } from './TextField.component';
+export type { TextFieldProps } from './TextField.component';
 
-export { Select } from "./Select.component";
-export type { SelectProps, SelectSize } from "./Select.component";
+export { Select } from './Select.component';
+export type { SelectProps, SelectSize, SelectOption } from './Select.component';
 
-export { SelectField } from "./SelectField.component";
-export type { SelectFieldProps } from "./SelectField.component";
+export { MultiSelect } from './MultiSelect.component';
+export type { MultiSelectProps } from './MultiSelect.component';
 
-export { TextArea } from "./TextArea.component";
-export type { TextAreaProps, TextAreaSize } from "./TextArea.component";
+export { SelectField } from './SelectField.component';
+export type { SelectFieldProps } from './SelectField.component';
 
-export { TextAreaField } from "./TextAreaField.component";
-export type { TextAreaFieldProps } from "./TextAreaField.component";
+export { TextArea } from './TextArea.component';
+export type { TextAreaProps, TextAreaSize } from './TextArea.component';
+
+export { TextAreaField } from './TextAreaField.component';
+export type { TextAreaFieldProps } from './TextAreaField.component';
+
+export { TagInput } from './TagInput.component';
+export type { TagInputProps } from './TagInput.component';
+
+export { TagInputField } from './TagInputField.component';
+export type { TagInputFieldProps } from './TagInputField.component';
