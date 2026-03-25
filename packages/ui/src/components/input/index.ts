@@ -7,6 +7,9 @@ export type { TextFieldProps } from './TextField.component';
 export { Select } from './Select.component';
 export type { SelectProps, SelectSize, SelectOption } from './Select.component';
 
+export { MultiSelect } from './MultiSelect.component';
+export type { MultiSelectProps } from './MultiSelect.component';
+
 export { SelectField } from './SelectField.component';
 export type { SelectFieldProps } from './SelectField.component';
 

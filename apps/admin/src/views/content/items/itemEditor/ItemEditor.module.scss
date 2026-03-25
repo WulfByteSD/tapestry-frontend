@@ -97,6 +97,13 @@
   }
 }
 
+.checkboxField {
+  display: flex;
+  align-items: center;
+  min-height: 40px;
+  flex: 1;
+}
+
 .footer {
   display: flex;
   align-items: center;
@@ -105,6 +112,8 @@
   flex-wrap: wrap;
 }
 
+.footerActions,
+.footerDanger,
 .footerLeft,
 .footerRight {
   display: flex;
@@ -171,11 +180,15 @@
     align-items: stretch;
   }
 
+  .footerActions,
+  .footerDanger,
   .footerLeft,
   .footerRight {
     width: 100%;
   }
 
+  .footerActions :global(button),
+  .footerDanger :global(button),
   .footerLeft :global(button),
   .footerRight :global(button) {
     flex: 1 1 160px;
