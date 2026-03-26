@@ -7,7 +7,9 @@ import fieldStyles from "./TextField.module.scss";
 
 export type InputSize = "sm" | "md" | "lg";
 
-export type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
+export type InputChangeValue = string | number | undefined;
+
+type InputBaseProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, "onChange"> & {
   size?: InputSize;
   hasError?: boolean;
   leftSlot?: React.ReactNode;
@@ -17,6 +19,18 @@ export type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   hint?: string;
   error?: string;
 };
+
+type RawInputProps = InputBaseProps & {
+  valueMode?: "raw";
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+};
+
+type NumericInputProps = InputBaseProps & {
+  valueMode: "number";
+  onChange?: (value: InputChangeValue) => void;
+};
+
+export type InputProps = RawInputProps | NumericInputProps;
 
 const EyeIcon = ({ visible }: { visible: boolean }) => (
   <svg
@@ -50,8 +64,10 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(function Inp
     leftSlot,
     rightSlot,
     showPasswordToggle = false,
+    valueMode = "raw",
     className,
     type,
+    onChange,
     label,
     hint,
     error,
@@ -68,6 +84,19 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(function Inp
   // Override type if password toggle is enabled
   const inputType = showPasswordToggle ? (passwordVisible ? "text" : "password") : type;
 
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!onChange) return;
+
+    if (valueMode === "number") {
+      const nextValue = event.target.value;
+      const parsedValue = nextValue === "" ? undefined : event.target.valueAsNumber;
+      (onChange as NumericInputProps["onChange"])?.(Number.isNaN(parsedValue as number) ? undefined : parsedValue);
+      return;
+    }
+
+    (onChange as RawInputProps["onChange"])?.(event);
+  };
+
   const inputElement = (
     <div
       className={clsx(
@@ -79,7 +108,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(function Inp
       )}
     >
       {leftSlot && <span className={styles.slotLeft}>{leftSlot}</span>}
-      <input ref={ref} id={inputId} className={styles.input} type={inputType} {...rest} />
+      <input ref={ref} id={inputId} className={styles.input} type={inputType} {...rest} onChange={handleChange} />
       {showPasswordToggle && (
         <button
           type="button"

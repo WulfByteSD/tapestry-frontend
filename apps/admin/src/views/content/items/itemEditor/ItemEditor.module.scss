@@ -104,6 +104,117 @@
   flex: 1;
 }
 
+.attackProfileEmpty {
+  display: grid;
+  gap: 6px;
+  padding: 18px;
+  border: 1px dashed color-mix(in srgb, var(--gold-soft) 40%, transparent);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--surface-2, rgba(255, 255, 255, 0.04)) 80%, transparent);
+}
+
+.attackProfileEmptyTitle {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.attackProfileEmptyText {
+  margin: 0;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+
+.attackProfileList {
+  display: grid;
+  gap: 12px;
+}
+
+.attackProfileCard {
+  display: grid;
+  gap: 12px;
+  width: 100%;
+  padding: 16px;
+  border: 1px solid color-mix(in srgb, var(--gold-soft) 25%, transparent);
+  border-radius: 14px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--surface, #161616) 92%, transparent), color-mix(in srgb, var(--surface-2, #1d1d1d) 86%, transparent));
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 120ms ease,
+    transform 120ms ease,
+    background 120ms ease;
+}
+
+.attackProfileCard:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--gold-soft) 55%, transparent);
+  transform: translateY(-1px);
+}
+
+.attackProfileCard:disabled {
+  cursor: default;
+  opacity: 0.7;
+}
+
+.attackProfileCardHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.attackProfileName {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.attackProfileMeta {
+  margin-top: 4px;
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.attackProfileEditHint {
+  color: var(--gold-soft);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.attackProfileDetails {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.modalBody {
+  display: grid;
+  gap: 16px;
+}
+
+.modalFooterActions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.modalFooterButtons {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
 .footer {
   display: flex;
   align-items: center;
@@ -161,6 +272,11 @@
   .gridTwo {
     grid-template-columns: 1fr;
   }
+
+  .attackProfileCardHeader,
+  .modalFooterActions {
+    align-items: stretch;
+  }
 }
 
 @media (max-width: 640px) {
@@ -191,6 +307,14 @@
   .footerDanger :global(button),
   .footerLeft :global(button),
   .footerRight :global(button) {
+    flex: 1 1 160px;
+  }
+
+  .modalFooterButtons {
+    width: 100%;
+  }
+
+  .modalFooterButtons :global(button) {
     flex: 1 1 160px;
   }
 }

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import clsx from "clsx";
-import { Input, InputProps } from "./Input.component";
+import { Input, InputChangeValue, InputProps } from "./Input.component";
 import styles from "./TextField.module.scss";
 
 export type TextFieldProps = InputProps & {
@@ -21,6 +21,7 @@ export function TextField({
   error,
   className,
   floatingLabel = false,
+  valueMode = "raw",
   ...inputProps
 }: TextFieldProps) {
   const displayHint = helpText ?? hint;
@@ -60,9 +61,16 @@ export function TextField({
     inputProps.onBlur?.(e);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setHasValue(Boolean(e.target.value));
-    inputProps.onChange?.(e);
+  const handleChange = (nextValue: React.ChangeEvent<HTMLInputElement> | InputChangeValue) => {
+    if (valueMode === "number") {
+      setHasValue(nextValue !== undefined && nextValue !== "");
+      (inputProps.onChange as ((value: InputChangeValue) => void) | undefined)?.(nextValue as InputChangeValue);
+      return;
+    }
+
+    const event = nextValue as React.ChangeEvent<HTMLInputElement>;
+    setHasValue(Boolean(event.target.value));
+    (inputProps.onChange as ((event: React.ChangeEvent<HTMLInputElement>) => void) | undefined)?.(event);
   };
 
   if (floatingLabel && label) {
@@ -73,6 +81,7 @@ export function TextField({
             ref={inputRef}
             id={id}
             {...inputProps}
+            valueMode={valueMode}
             hasError={hasError}
             onFocus={handleFocus}
             onBlur={handleBlur}
@@ -104,7 +113,7 @@ export function TextField({
         </label>
       )}
 
-      <Input id={id} {...inputProps} hasError={hasError} />
+      <Input id={id} {...inputProps} valueMode={valueMode} hasError={hasError} onChange={handleChange} />
 
       {error ? (
         <div className={styles.error} role="alert">

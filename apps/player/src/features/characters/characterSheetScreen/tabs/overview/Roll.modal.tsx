@@ -1,12 +1,13 @@
 import { useMemo, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { ASPECT_BLOCKS, type AspectGroup, type AspectKey } from "@tapestry/types";
 import { Button, Modal, Input, SelectField } from "@tapestry/ui";
 import { createRoll, getSkillsForSetting, type CreateRollData } from "@tapestry/api-client";
 import { useMe } from "@/lib/auth-hooks";
 import { RollResultCard } from "@/components/rollResultCard/RollResultCard.component";
 import styles from "./Roll.modal.module.scss";
 import { api } from "@/lib/api";
-import { ASPECT_BLOCKS, getAspectValue, type AspectGroup, type AspectKey } from "../../../aspects/aspectutils";
+import { getAspectValue } from "../../../aspects/aspectutils";
 import { buildSkillOptions } from "../skills/skillDisplay.helpers";
 
 type Props = {

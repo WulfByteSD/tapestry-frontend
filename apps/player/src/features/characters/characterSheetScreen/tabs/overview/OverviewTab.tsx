@@ -1,15 +1,10 @@
 import { useMemo, useState } from "react";
 import { Button, Card, CardBody, CardHeader } from "@tapestry/ui";
+import { ASPECT_BLOCKS, type AspectGroup, type AspectKey } from "@tapestry/types";
 import styles from "./OverviewTab.module.scss";
 import { RollModal } from "./Roll.modal";
 import { AspectStepperRow } from "../../../aspects/AspectStepperRow";
-import {
-  ASPECT_BLOCKS,
-  aspectPath,
-  getAspectValue,
-  type AspectGroup,
-  type AspectKey,
-} from "../../../aspects/aspectutils";
+import { aspectPath, getAspectValue } from "../../../aspects/aspectutils";
 import { useUpdateCharacterSheetMutation } from "../../../characterSheetScreen/characterSheet.mutations";
 import { HpModal } from "./Hp.modal";
 import { ThreadsModal } from "./Threads.modal";
