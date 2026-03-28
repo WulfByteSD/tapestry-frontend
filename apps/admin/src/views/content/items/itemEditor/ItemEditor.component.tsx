@@ -1,15 +1,18 @@
 'use client';
 
-import React, { useEffect } from 'react';
-import { useDeleteItem, useItem, useUpdateItem } from '@/lib/content-admin';
+import React, { useEffect, useMemo } from 'react';
+import { useAbilities, useDeleteItem, useItem, useUpdateItem } from '@/lib/content-admin';
 import { AttackProfile, GrantedAbilityRef } from '@tapestry/types';
 import { Button, Card, CardBody, Loader, useAlert, useForm } from '@tapestry/ui';
 import { useRouter } from 'next/navigation';
 import { ItemEditorFormValues } from './editor.types';
 import { useAttackProfileEditor } from './useAttackProfileEditor';
 import { AttackProfileModal } from './AttackProfileModal';
+import { useGrantedAbilityEditor } from './useGrantedAbilityEditor';
+import { GrantedAbilityModal } from './GrantedAbilityModal';
 import { CoreDetailsSection } from './CoreDetailsSection';
 import { AttackProfilesSection } from './AttackProfilesSection';
+import { GrantedAbilitiesSection } from './GrantedAbilitiesSection';
 
 import styles from './ItemEditor.module.scss';
 
@@ -22,6 +25,7 @@ const ItemEditor = ({ id }: ItemEditorProps) => {
   const { addAlert } = useAlert();
 
   const itemQuery = useItem(id);
+  const abilitiesQuery = useAbilities({ pageNumber: 1, pageLimit: 500, sortOptions: 'name' });
   const updateItem = useUpdateItem();
   const deleteItem = useDeleteItem();
 
@@ -49,8 +53,24 @@ const ItemEditor = ({ id }: ItemEditorProps) => {
     replaceFormValues: form.replaceValues,
   });
 
+  const grantedAbilityEditor = useGrantedAbilityEditor({
+    itemId: id,
+    formValues: form.values,
+    onAbilitiesChange: (abilities) => form.setValue('grantedAbilities', abilities),
+    replaceFormValues: form.replaceValues,
+  });
+
   const itemTitle = form.values.name || 'Item Editor';
   const attackProfiles = form.values.attackProfiles ?? [];
+  const grantedAbilities = form.values.grantedAbilities ?? [];
+
+  const abilitiesLookup = useMemo(() => {
+    const map = new Map();
+    (abilitiesQuery.data?.payload ?? []).forEach((ability) => {
+      map.set(ability._id, ability);
+    });
+    return map;
+  }, [abilitiesQuery.data?.payload]);
 
   useEffect(() => {
     if (itemQuery.data?.payload) {
@@ -167,6 +187,14 @@ const ItemEditor = ({ id }: ItemEditorProps) => {
         disabled={attackProfileEditor.isPending}
       />
 
+      <GrantedAbilitiesSection
+        grantedAbilities={grantedAbilities}
+        abilitiesLookup={abilitiesLookup}
+        onAddAbility={grantedAbilityEditor.openCreateModal}
+        onEditAbility={grantedAbilityEditor.openEditModal}
+        disabled={grantedAbilityEditor.isPending}
+      />
+
       <div className={styles.footer}>
         <div className={styles.footerActions}>
           <Button variant="solid" tone="gold" onClick={handleSave} disabled={updateItem.isPending || !form.isValid}>
@@ -184,6 +212,8 @@ const ItemEditor = ({ id }: ItemEditorProps) => {
       </div>
 
       <AttackProfileModal attackProfileEditor={attackProfileEditor} currentSettingKeys={form.values.settingKeys ?? []} />
+
+      <GrantedAbilityModal grantedAbilityEditor={grantedAbilityEditor} currentSettingKeys={form.values.settingKeys ?? []} />
     </div>
   );
 };

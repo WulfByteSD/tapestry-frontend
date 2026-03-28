@@ -100,8 +100,16 @@
 .checkboxField {
   display: flex;
   align-items: center;
+
   min-height: 40px;
   flex: 1;
+
+  .fieldHelpText {
+    margin-left: 32px;
+    color: var(--text-muted);
+    font-size: 13px;
+    line-height: 1.4;
+  }
 }
 
 .attackProfileEmpty {
@@ -196,6 +204,124 @@
 .modalBody {
   display: grid;
   gap: 16px;
+}
+
+.abilitySearchSection {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--surface, #000) 30%, transparent);
+  border: 1px solid color-mix(in srgb, var(--gold-soft) 15%, transparent);
+}
+
+.abilityResultCount {
+  padding: 6px 10px;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.abilityPreview {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid color-mix(in srgb, var(--gold-soft) 30%, transparent);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--surface-2, rgba(255, 255, 255, 0.04)) 60%, transparent);
+}
+
+.abilityPreviewHeader {
+  display: grid;
+  gap: 8px;
+}
+
+.abilityPreviewTitle {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--gold-soft);
+}
+
+.abilityPreviewMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.abilityPreviewBadge {
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--gold-soft) 15%, transparent);
+  color: var(--gold-soft);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.abilityPreviewSummary {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text);
+}
+
+.abilityPreviewEffect {
+  padding: 10px 12px;
+  border-left: 3px solid var(--gold-soft);
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--surface, #000) 40%, transparent);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-muted);
+
+  strong {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--text);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+}
+
+.abilityPreviewCost {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-muted);
+
+  strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  span {
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: color-mix(in srgb, var(--gold-soft) 10%, transparent);
+  }
+}
+
+.abilityPreviewTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.abilityPreviewTag {
+  padding: 3px 8px;
+  border-radius: 5px;
+  background: color-mix(in srgb, var(--text) 8%, transparent);
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 500;
 }
 
 .modalFooterActions {
