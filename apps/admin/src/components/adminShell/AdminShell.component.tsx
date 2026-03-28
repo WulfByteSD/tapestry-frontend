@@ -34,6 +34,11 @@ const sidebarGroups: SidebarGroup[] = [
             label: 'Abilities',
             icon: <>B</>,
           },
+          {
+            href: '/content/skills',
+            label: 'Skills',
+            icon: <>S</>,
+          }
         ],
       },
       { href: '/products', label: 'Products', icon: <BiShoppingBag /> },

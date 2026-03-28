@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button, Card, CardBody, CardHeader, Input, SelectField, Table } from '@tapestry/ui';
+import { Button, Card, CardBody, CardHeader, Input, Loader, SelectField, Table } from '@tapestry/ui';
 import type { TableColumn, TableRowAction } from '@tapestry/ui';
 import type { ItemDefinition, SettingDefinition } from '@tapestry/types';
 import { useDeleteItem, useItems } from '@/lib/content-admin';
@@ -137,7 +137,7 @@ export default function ItemsListView({ selectedSetting }: ItemsListPageProps) {
       },
     ],
     [deleteItem]
-  ); 
+  );
 
   return (
     <div className={styles.page}>
@@ -214,6 +214,7 @@ export default function ItemsListView({ selectedSetting }: ItemsListPageProps) {
             rows={items}
             rowKey="_id"
             loading={itemsQuery.isLoading || itemsQuery.isFetching}
+            loadingComponent={<Loader label="Loading items" />}
             onRowClick={(row) => router.push(`/content/items/${row._id}`)}
             rowActions={rowActions}
             emptyTitle="No items found"
