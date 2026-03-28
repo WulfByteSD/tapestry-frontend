@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import React, { useMemo } from "react";
-import clsx from "clsx";
-import { Button } from "../button";
-import styles from "./Table.module.scss";
-import type { TableAlign, TableColumn, TablePagination, TableProps, TableRowAction } from "./table.types";
+import React, { useMemo } from 'react';
+import clsx from 'clsx';
+import { Button } from '../button';
+import styles from './Table.module.scss';
+import type { TableAlign, TableColumn, TablePagination, TableProps, TableRowAction } from './table.types';
 
 function resolveRowKey<T>(row: T, rowKey: keyof T | ((row: T) => string)) {
-  if (typeof rowKey === "function") {
+  if (typeof rowKey === 'function') {
     return rowKey(row);
   }
 
@@ -21,7 +21,7 @@ function resolveCellValue<T>(row: T, column: TableColumn<T>) {
 }
 
 function resolveActionDisabled<T>(action: TableRowAction<T>, row: T) {
-  if (typeof action.disabled === "function") {
+  if (typeof action.disabled === 'function') {
     return action.disabled(row);
   }
 
@@ -48,8 +48,8 @@ function getVisiblePages(pagination: TablePagination) {
 }
 
 function getAlignClass(align: TableAlign | undefined) {
-  if (align === "center") return styles.alignCenter;
-  if (align === "right") return styles.alignRight;
+  if (align === 'center') return styles.alignCenter;
+  if (align === 'right') return styles.alignRight;
   return styles.alignLeft;
 }
 
@@ -58,14 +58,15 @@ export default function Table<T>({
   rows,
   rowKey,
   loading = false,
+  loadingComponent,
   toolbar,
   className,
   onRowClick,
   rowActions = [],
   pagination,
-  emptyTitle = "No records found",
-  emptyMessage = "There is nothing to display yet.",
-  loadingMessage = "Loading records...",
+  emptyTitle = 'No records found',
+  emptyMessage = 'There is nothing to display yet.',
+  loadingMessage = 'Loading records...',
 }: TableProps<T>) {
   const hasActions = rowActions.length > 0;
   const totalColumns = columns.length + (hasActions ? 1 : 0);
@@ -121,10 +122,14 @@ export default function Table<T>({
               {loading ? (
                 <tr>
                   <td colSpan={totalColumns} className={styles.stateCell}>
-                    <div className={styles.stateBlock}>
-                      <div className={styles.loadingDot} aria-hidden="true" />
-                      <div>{loadingMessage}</div>
-                    </div>
+                    {loadingComponent ? (
+                      loadingComponent
+                    ) : (
+                      <div className={styles.stateBlock}>
+                        <div className={styles.loadingDot} aria-hidden="true" />
+                        <div>{loadingMessage}</div>
+                      </div>
+                    )}
                   </td>
                 </tr>
               ) : rows.length === 0 ? (
@@ -141,36 +146,26 @@ export default function Table<T>({
                   const key = resolveRowKey(row, rowKey);
 
                   return (
-                    <tr
-                      key={key}
-                      className={clsx(styles.row, onRowClick && styles.clickableRow)}
-                      onClick={onRowClick ? () => onRowClick(row) : undefined}
-                    >
+                    <tr key={key} className={clsx(styles.row, onRowClick && styles.clickableRow)} onClick={onRowClick ? () => onRowClick(row) : undefined}>
                       {columns.map((column) => {
                         const value = resolveCellValue(row, column);
 
                         return (
-                          <td
-                            key={column.key}
-                            className={clsx(styles.bodyCell, getAlignClass(column.align), column.className)}
-                          >
-                            {column.render ? column.render(value, row, rowIndex) : value != null ? String(value) : "—"}
+                          <td key={column.key} className={clsx(styles.bodyCell, getAlignClass(column.align), column.className)}>
+                            {column.render ? column.render(value, row, rowIndex) : value != null ? String(value) : '—'}
                           </td>
                         );
                       })}
 
                       {hasActions ? (
-                        <td
-                          className={clsx(styles.bodyCell, styles.actionsCell)}
-                          onClick={(event) => event.stopPropagation()}
-                        >
+                        <td className={clsx(styles.bodyCell, styles.actionsCell)} onClick={(event) => event.stopPropagation()}>
                           <div className={styles.actions}>
                             {rowActions.map((action) => (
                               <Button
                                 key={action.key}
                                 size="sm"
                                 variant="ghost"
-                                tone={action.tone ?? "neutral"}
+                                tone={action.tone ?? 'neutral'}
                                 disabled={resolveActionDisabled(action, row)}
                                 onClick={() => action.onClick(row)}
                               >
@@ -202,13 +197,7 @@ export default function Table<T>({
           </div>
 
           <div className={styles.paginationControls}>
-            <Button
-              size="sm"
-              variant="ghost"
-              tone="neutral"
-              disabled={!pageInfo.hasPrev}
-              onClick={() => pagination?.onPageChange(pageInfo.current - 1)}
-            >
+            <Button size="sm" variant="ghost" tone="neutral" disabled={!pageInfo.hasPrev} onClick={() => pagination?.onPageChange(pageInfo.current - 1)}>
               Previous
             </Button>
 
@@ -224,21 +213,15 @@ export default function Table<T>({
                     type="button"
                     className={clsx(styles.pageButton, page === pageInfo.current && styles.pageButtonActive)}
                     onClick={() => pagination?.onPageChange(page)}
-                    aria-current={page === pageInfo.current ? "page" : undefined}
+                    aria-current={page === pageInfo.current ? 'page' : undefined}
                   >
                     {page}
                   </button>
-                ),
+                )
               )}
             </div>
 
-            <Button
-              size="sm"
-              variant="ghost"
-              tone="neutral"
-              disabled={!pageInfo.hasNext}
-              onClick={() => pagination?.onPageChange(pageInfo.current + 1)}
-            >
+            <Button size="sm" variant="ghost" tone="neutral" disabled={!pageInfo.hasNext} onClick={() => pagination?.onPageChange(pageInfo.current + 1)}>
               Next
             </Button>
           </div>

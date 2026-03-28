@@ -1,7 +1,7 @@
-import React from "react";
-import type { ButtonTone } from "../button";
+import React from 'react';
+import type { ButtonTone } from '../button';
 
-export type TableAlign = "left" | "center" | "right";
+export type TableAlign = 'left' | 'center' | 'right';
 
 export type TableColumn<T> = {
   key: string;
@@ -33,6 +33,7 @@ export type TableProps<T> = {
   rows: T[];
   rowKey: keyof T | ((row: T) => string);
   loading?: boolean;
+  loadingComponent?: React.ReactNode;
   toolbar?: React.ReactNode;
   className?: string;
   onRowClick?: (row: T) => void;
