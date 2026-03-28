@@ -97,7 +97,7 @@ const ATTACK_PROFILE_ASPECT_OPTIONS: SelectOption[] = [
     block.keys.map((aspect) => ({
       label: `${aspect.label} (${block.title})`,
       value: `${block.group}.${aspect.key}`,
-    })),
+    }))
   ),
 ];
 
@@ -163,11 +163,7 @@ function normalizeAttackProfileDraft(draft: AttackProfileDraft): AttackProfile {
   };
 }
 
-function validateAttackProfileDraft(
-  draft: AttackProfileDraft,
-  attackProfiles: AttackProfile[],
-  originalAttackProfileKey: string | null,
-): AttackProfileDraftErrors {
+function validateAttackProfileDraft(draft: AttackProfileDraft, attackProfiles: AttackProfile[], originalAttackProfileKey: string | null): AttackProfileDraftErrors {
   const errors: AttackProfileDraftErrors = {};
   const nextKey = draft.key.trim();
 
@@ -270,7 +266,7 @@ const ItemEditor = ({ id }: ItemEditorProps) => {
         ...nextValues,
       });
     }
-  }, [form, itemQuery.data?.payload]);
+  }, [itemQuery.data?.payload]);
 
   const handleSave = async () => {
     if (!id || !form.isValid) return;
@@ -391,13 +387,7 @@ const ItemEditor = ({ id }: ItemEditorProps) => {
     updateAttackProfileDraft('key', value);
   };
 
-  const persistAttackProfiles = async (
-    nextProfiles: AttackProfile[],
-    successMessage: string,
-    successDescription: string,
-    errorMessage: string,
-    errorDescription: string,
-  ) => {
+  const persistAttackProfiles = async (nextProfiles: AttackProfile[], successMessage: string, successDescription: string, errorMessage: string, errorDescription: string) => {
     if (!id) return false;
 
     const previousProfiles = attackProfiles;
@@ -442,16 +432,14 @@ const ItemEditor = ({ id }: ItemEditorProps) => {
 
     const nextProfile = normalizeAttackProfileDraft(attackProfileDraft);
     const nextProfiles =
-      originalAttackProfileKey == null
-        ? [...attackProfiles, nextProfile]
-        : attackProfiles.map((profile) => (profile.key === originalAttackProfileKey ? nextProfile : profile));
+      originalAttackProfileKey == null ? [...attackProfiles, nextProfile] : attackProfiles.map((profile) => (profile.key === originalAttackProfileKey ? nextProfile : profile));
 
     const success = await persistAttackProfiles(
       nextProfiles,
       originalAttackProfileKey == null ? 'Attack profile added' : 'Attack profile saved',
       `${nextProfile.name} was saved to this item immediately.`,
       originalAttackProfileKey == null ? 'Attack profile add failed' : 'Attack profile save failed',
-      'The attack profile could not be persisted. Your local change was rolled back.',
+      'The attack profile could not be persisted. Your local change was rolled back.'
     );
 
     if (success) {
@@ -470,7 +458,7 @@ const ItemEditor = ({ id }: ItemEditorProps) => {
       'Attack profile removed',
       `${profileToRemove?.name ?? 'The attack profile'} was removed and synced immediately.`,
       'Attack profile remove failed',
-      'The attack profile could not be removed. The saved item data is unchanged.',
+      'The attack profile could not be removed. The saved item data is unchanged.'
     );
 
     if (success) {
@@ -642,7 +630,7 @@ const ItemEditor = ({ id }: ItemEditorProps) => {
                     id={field.id}
                     label="Protection"
                     type="number"
-                    value={field.value ?? ''}
+                    value={field.value as number}
                     valueMode="number"
                     onChange={field.onChange}
                     onBlur={field.onBlur}
@@ -708,9 +696,7 @@ const ItemEditor = ({ id }: ItemEditorProps) => {
         <CardHeader className={styles.sectionHeader}>
           <div>
             <h2 className={styles.sectionTitle}>Attack Profiles</h2>
-            <p className={styles.sectionSubtitle}>
-              Add named attack modes for this item. Creating, editing, or removing a profile saves the item immediately.
-            </p>
+            <p className={styles.sectionSubtitle}>Add named attack modes for this item. Creating, editing, or removing a profile saves the item immediately.</p>
           </div>
 
           <Button variant="outline" tone="neutral" onClick={openCreateAttackProfileModal} disabled={updateItem.isPending}>
@@ -721,20 +707,12 @@ const ItemEditor = ({ id }: ItemEditorProps) => {
           {!attackProfiles.length ? (
             <div className={styles.attackProfileEmpty}>
               <p className={styles.attackProfileEmptyTitle}>No attack profiles yet.</p>
-              <p className={styles.attackProfileEmptyText}>
-                Add one when this item needs named attacks, alternate firing modes, or different aspect and skill rules.
-              </p>
+              <p className={styles.attackProfileEmptyText}>Add one when this item needs named attacks, alternate firing modes, or different aspect and skill rules.</p>
             </div>
           ) : (
             <div className={styles.attackProfileList}>
               {attackProfiles.map((profile) => (
-                <button
-                  key={profile.key}
-                  type="button"
-                  className={styles.attackProfileCard}
-                  onClick={() => openEditAttackProfileModal(profile)}
-                  disabled={updateItem.isPending}
-                >
+                <button key={profile.key} type="button" className={styles.attackProfileCard} onClick={() => openEditAttackProfileModal(profile)} disabled={updateItem.isPending}>
                   <div className={styles.attackProfileCardHeader}>
                     <div>
                       <div className={styles.attackProfileName}>{profile.name}</div>

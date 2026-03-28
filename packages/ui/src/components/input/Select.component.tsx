@@ -2,9 +2,10 @@
 
 import React from 'react';
 import clsx from 'clsx';
+import { FormControlShell, type FormControlSize } from './FormControlShell.component';
 import styles from './Select.module.scss';
 
-export type SelectSize = 'sm' | 'md' | 'lg';
+export type SelectSize = FormControlSize;
 
 export type SelectOption = {
   label: string;
@@ -18,10 +19,11 @@ export type SelectProps = React.SelectHTMLAttributes<HTMLSelectElement> & {
   leftSlot?: React.ReactNode;
   rightSlot?: React.ReactNode;
   options?: SelectOption[];
+  hideDisplayWhenEmpty?: boolean;
 };
 
 export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(function Select(
-  { size = 'md', hasError = false, leftSlot, rightSlot, className, options, children, ...rest },
+  { size = 'md', hasError = false, leftSlot, rightSlot, className, options, children, disabled, hideDisplayWhenEmpty = false, value, defaultValue, ...rest },
   ref
 ) {
   const content = options
@@ -32,13 +34,22 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(function 
       ))
     : children;
 
+  const currentValue = value ?? defaultValue;
+  const isEmpty = currentValue === undefined || currentValue === null || currentValue === '';
+
   return (
-    <div className={clsx(styles.wrap, styles[`size_${size}`], hasError && styles.error, className)}>
-      {leftSlot && <span className={styles.slotLeft}>{leftSlot}</span>}
-      <select ref={ref} className={styles.select} {...rest}>
+    <FormControlShell size={size as any} hasError={hasError} disabled={disabled} leftSlot={leftSlot} rightSlot={rightSlot} className={className}>
+      <select
+        ref={ref}
+        className={clsx(styles.select, hideDisplayWhenEmpty && isEmpty && styles.displayHiddenWhenEmpty)}
+        disabled={disabled}
+        value={value}
+        defaultValue={defaultValue}
+        data-empty={isEmpty ? 'true' : 'false'}
+        {...rest}
+      >
         {content}
       </select>
-      {rightSlot && <span className={styles.slotRight}>{rightSlot}</span>}
-    </div>
+    </FormControlShell>
   );
 });
