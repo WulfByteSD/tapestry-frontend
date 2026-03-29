@@ -89,13 +89,16 @@ export function useDeleteContentEntry() {
   return useMutation<ContentAdminDeleteResponse, Error, DeleteContentVariables<ContentAdminResource>>({
     mutationFn: ({ resource, id }) => deleteContent(resource, id),
     onSuccess: (_result, variables) => {
+      // Invalidate list queries to refresh the list view
       queryClient.invalidateQueries({
         queryKey: contentAdminQueryKeys.lists(variables.resource),
       });
 
-      queryClient.removeQueries({
+      // Cancel any outgoing refetches for the detail query to avoid 404 errors after deletion
+      queryClient.cancelQueries({
         queryKey: contentAdminQueryKeys.detail(variables.resource, variables.id),
       });
+
     },
   });
 }

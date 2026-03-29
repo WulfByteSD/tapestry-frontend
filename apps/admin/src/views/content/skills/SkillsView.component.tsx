@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button, Card, CardBody, CardHeader, Input, Loader, SelectField, Table } from '@tapestry/ui';
+import { Button, Card, CardBody, CardHeader, Input, Loader, Modal, SelectField, Table } from '@tapestry/ui';
 import type { TableColumn, TableRowAction } from '@tapestry/ui';
 import type { SkillDefinition, SettingDefinition } from '@tapestry/types';
 import { useDeleteSkill, useSkills } from '@/lib/content-admin';
@@ -39,6 +39,8 @@ export default function SkillsListView({ selectedSetting }: SkillsListPageProps)
   const [statusFilter, setStatusFilter] = useState<SkillStatusFilter>('');
   const [categoryFilter, setCategoryFilter] = useState<SkillCategoryFilter>('');
   const [page, setPage] = useState(1);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [skillToDelete, setSkillToDelete] = useState<SkillDefinition | null>(null);
 
   const filterOptions = useMemo(() => {
     let filterOptions = '';
@@ -129,27 +131,39 @@ export default function SkillsListView({ selectedSetting }: SkillsListPageProps)
     []
   );
 
+  const handleDeleteClick = (row: SkillDefinition) => {
+    setSkillToDelete(row);
+    setDeleteModalOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!skillToDelete) return;
+
+    try {
+      await deleteSkill.mutateAsync(skillToDelete._id);
+      setDeleteModalOpen(false);
+      setSkillToDelete(null);
+    } catch (error) {
+      console.error('Failed to delete skill:', error);
+    }
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteModalOpen(false);
+    setSkillToDelete(null);
+  };
+
   const rowActions = useMemo<TableRowAction<SkillDefinition>[]>(
     () => [
       {
         key: 'delete',
-        label: deleteSkill.isPending ? 'Deleting...' : 'Delete',
+        label: 'Delete',
         tone: 'danger',
         disabled: deleteSkill.isPending,
-        onClick: async (row) => {
-          const confirmed = window.confirm(`Delete skill "${row.name}"?\n\nThis action cannot be undone.`);
-
-          if (!confirmed) return;
-
-          try {
-            await deleteSkill.mutateAsync(row._id);
-          } catch (error) {
-            console.error('Failed to delete skill:', error);
-          }
-        },
+        onClick: handleDeleteClick,
       },
     ],
-    [deleteSkill]
+    [deleteSkill.isPending]
   );
 
   return (
@@ -266,6 +280,22 @@ export default function SkillsListView({ selectedSetting }: SkillsListPageProps)
           />
         </CardBody>
       </Card>
+
+      <Modal
+        open={deleteModalOpen}
+        title="Delete Skill"
+        onCancel={handleDeleteCancel}
+        onOk={handleDeleteConfirm}
+        confirmLoading={deleteSkill.isPending}
+        okText="Delete"
+        cancelText="Cancel"
+        okButtonProps={{ tone: 'danger' }}
+      >
+        <p>
+          Are you sure you want to delete <strong>{skillToDelete?.name}</strong>?
+        </p>
+        <p>This action cannot be undone.</p>
+      </Modal>
     </div>
   );
 }

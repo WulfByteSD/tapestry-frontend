@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button, Card, CardBody, CardHeader, Input, Loader, SelectField, Table } from '@tapestry/ui';
+import { Button, Card, CardBody, CardHeader, Input, Loader, Modal, SelectField, Table } from '@tapestry/ui';
 import type { TableColumn, TableRowAction } from '@tapestry/ui';
 import type { ItemDefinition, SettingDefinition } from '@tapestry/types';
 import { useDeleteItem, useItems } from '@/lib/content-admin';
@@ -37,6 +37,8 @@ export default function ItemsListView({ selectedSetting }: ItemsListPageProps) {
   const [keyword, setKeyword] = useState('');
   const [statusFilter, setStatusFilter] = useState<ItemStatusFilter>('');
   const [page, setPage] = useState(1);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState<ItemDefinition | null>(null);
 
   const filterOptions = useMemo(() => {
     let filterOptions = '';
@@ -116,27 +118,39 @@ export default function ItemsListView({ selectedSetting }: ItemsListPageProps) {
     []
   );
 
+  const handleDeleteClick = (row: ItemDefinition) => {
+    setItemToDelete(row);
+    setDeleteModalOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!itemToDelete) return;
+
+    try {
+      await deleteItem.mutateAsync(itemToDelete._id);
+      setDeleteModalOpen(false);
+      setItemToDelete(null);
+    } catch (error) {
+      console.error('Failed to delete item:', error);
+    }
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteModalOpen(false);
+    setItemToDelete(null);
+  };
+
   const rowActions = useMemo<TableRowAction<ItemDefinition>[]>(
     () => [
       {
         key: 'delete',
-        label: deleteItem.isPending ? 'Deleting...' : 'Delete',
+        label: 'Delete',
         tone: 'danger',
         disabled: deleteItem.isPending,
-        onClick: async (row) => {
-          const confirmed = window.confirm(`Delete item "${row.name}"?\n\nThis action cannot be undone.`);
-
-          if (!confirmed) return;
-
-          try {
-            await deleteItem.mutateAsync(row._id);
-          } catch (error) {
-            console.error('Failed to delete item:', error);
-          }
-        },
+        onClick: handleDeleteClick,
       },
     ],
-    [deleteItem]
+    [deleteItem.isPending]
   );
 
   return (
@@ -236,6 +250,22 @@ export default function ItemsListView({ selectedSetting }: ItemsListPageProps) {
           />
         </CardBody>
       </Card>
+
+      <Modal
+        open={deleteModalOpen}
+        title="Delete Item"
+        onCancel={handleDeleteCancel}
+        onOk={handleDeleteConfirm}
+        confirmLoading={deleteItem.isPending}
+        okText="Delete"
+        cancelText="Cancel"
+        okButtonProps={{ tone: 'danger' }}
+      >
+        <p>
+          Are you sure you want to delete <strong>{itemToDelete?.name}</strong>?
+        </p>
+        <p>This action cannot be undone.</p>
+      </Modal>
     </div>
   );
 }

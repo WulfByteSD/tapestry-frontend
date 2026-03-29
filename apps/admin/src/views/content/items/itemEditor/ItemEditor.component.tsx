@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useAbilities, useDeleteItem, useItem, useUpdateItem } from '@/lib/content-admin';
 import { AttackProfile, GrantedAbilityRef } from '@tapestry/types';
-import { Button, Card, CardBody, Loader, useAlert, useForm } from '@tapestry/ui';
+import { Button, Card, CardBody, Loader, Modal, useAlert, useForm } from '@tapestry/ui';
 import { useRouter } from 'next/navigation';
 import { ItemEditorFormValues } from './editor.types';
 import { useAttackProfileEditor } from './useAttackProfileEditor';
@@ -63,6 +63,7 @@ const ItemEditor = ({ id }: ItemEditorProps) => {
   const itemTitle = form.values.name || 'Item Editor';
   const attackProfiles = form.values.attackProfiles ?? [];
   const grantedAbilities = form.values.grantedAbilities ?? [];
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const abilitiesLookup = useMemo(() => {
     const map = new Map();
@@ -107,11 +108,12 @@ const ItemEditor = ({ id }: ItemEditorProps) => {
     }
   };
 
-  const handleDelete = async () => {
-    if (!id) return;
+  const handleDeleteClick = () => {
+    setIsDeleteModalOpen(true);
+  };
 
-    const confirmed = confirm('Are you sure you want to delete this item? This action cannot be undone.');
-    if (!confirmed) return;
+  const handleDeleteConfirm = async () => {
+    if (!id) return;
 
     try {
       await deleteItem.mutateAsync(id);
@@ -122,7 +124,8 @@ const ItemEditor = ({ id }: ItemEditorProps) => {
         description: 'The item has been deleted successfully.',
       });
 
-      router.push('/items');
+      setIsDeleteModalOpen(false);
+      router.push('/content/items');
     } catch (error) {
       addAlert({
         type: 'error',
@@ -130,6 +133,10 @@ const ItemEditor = ({ id }: ItemEditorProps) => {
         description: 'Failed to delete item. Please try again.',
       });
     }
+  };
+
+  const handleDeleteCancel = () => {
+    setIsDeleteModalOpen(false);
   };
 
   if (itemQuery.isLoading) {
@@ -205,8 +212,8 @@ const ItemEditor = ({ id }: ItemEditorProps) => {
           </Button>
         </div>
         <div className={styles.footerDanger}>
-          <Button variant="outline" tone="danger" onClick={handleDelete} disabled={deleteItem.isPending}>
-            {deleteItem.isPending ? 'Deleting...' : 'Delete Item'}
+          <Button variant="outline" tone="danger" onClick={handleDeleteClick} disabled={deleteItem.isPending}>
+            Delete Item
           </Button>
         </div>
       </div>
@@ -214,6 +221,22 @@ const ItemEditor = ({ id }: ItemEditorProps) => {
       <AttackProfileModal attackProfileEditor={attackProfileEditor} currentSettingKeys={form.values.settingKeys ?? []} />
 
       <GrantedAbilityModal grantedAbilityEditor={grantedAbilityEditor} currentSettingKeys={form.values.settingKeys ?? []} />
+
+      <Modal
+        open={isDeleteModalOpen}
+        title="Delete Item"
+        onCancel={handleDeleteCancel}
+        onOk={handleDeleteConfirm}
+        confirmLoading={deleteItem.isPending}
+        okText="Delete"
+        cancelText="Cancel"
+        okButtonProps={{ tone: 'danger' }}
+      >
+        <p>
+          Are you sure you want to delete <strong>{form.values.name}</strong>?
+        </p>
+        <p>This action cannot be undone.</p>
+      </Modal>
     </div>
   );
 };
