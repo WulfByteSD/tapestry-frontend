@@ -1,25 +1,18 @@
 'use client';
-import React, { useEffect, useMemo } from 'react';
-import { useDeleteItem, useItem, useUpdateItem } from '@/lib/content-admin';
-import { AttackProfile, GrantedAbilityRef, InventoryCategory, ItemDefinition } from '@tapestry/types';
-import {
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  Checkbox,
-  Form,
-  FormField,
-  FormGroup,
-  Loader,
-  SelectField,
-  TagInputField,
-  TextAreaField,
-  TextField,
-  useAlert,
-  useForm,
-} from '@tapestry/ui';
+
+import React, { useEffect, useMemo, useState } from 'react';
+import { useAbilities, useDeleteItem, useItem, useUpdateItem } from '@/lib/content-admin';
+import { AttackProfile, GrantedAbilityRef } from '@tapestry/types';
+import { Button, Card, CardBody, Loader, Modal, useAlert, useForm } from '@tapestry/ui';
 import { useRouter } from 'next/navigation';
+import { ItemEditorFormValues } from './editor.types';
+import { useAttackProfileEditor } from './useAttackProfileEditor';
+import { AttackProfileModal } from './AttackProfileModal';
+import { useGrantedAbilityEditor } from './useGrantedAbilityEditor';
+import { GrantedAbilityModal } from './GrantedAbilityModal';
+import { CoreDetailsSection } from './CoreDetailsSection';
+import { AttackProfilesSection } from './AttackProfilesSection';
+import { GrantedAbilitiesSection } from './GrantedAbilitiesSection';
 
 import styles from './ItemEditor.module.scss';
 
@@ -32,10 +25,11 @@ const ItemEditor = ({ id }: ItemEditorProps) => {
   const { addAlert } = useAlert();
 
   const itemQuery = useItem(id);
+  const abilitiesQuery = useAbilities({ pageNumber: 1, pageLimit: 500, sortOptions: 'name' });
   const updateItem = useUpdateItem();
   const deleteItem = useDeleteItem();
 
-  const form = useForm<Omit<ItemDefinition, '_id' | 'createdAt' | 'updatedAt'>>({
+  const form = useForm<ItemEditorFormValues>({
     initialValues: {
       key: '',
       name: '',
@@ -52,11 +46,53 @@ const ItemEditor = ({ id }: ItemEditorProps) => {
     },
   });
 
+  const attackProfileEditor = useAttackProfileEditor({
+    itemId: id,
+    formValues: form.values,
+    onProfilesChange: (profiles) => form.setValue('attackProfiles', profiles),
+    replaceFormValues: form.replaceValues,
+  });
+
+  const grantedAbilityEditor = useGrantedAbilityEditor({
+    itemId: id,
+    formValues: form.values,
+    onAbilitiesChange: (abilities) => form.setValue('grantedAbilities', abilities),
+    replaceFormValues: form.replaceValues,
+  });
+
+  const itemTitle = form.values.name || 'Item Editor';
+  const attackProfiles = form.values.attackProfiles ?? [];
+  const grantedAbilities = form.values.grantedAbilities ?? [];
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+  const abilitiesLookup = useMemo(() => {
+    const map = new Map();
+    (abilitiesQuery.data?.payload ?? []).forEach((ability) => {
+      map.set(ability._id, ability);
+    });
+    return map;
+  }, [abilitiesQuery.data?.payload]);
+
+  useEffect(() => {
+    if (itemQuery.data?.payload) {
+      const { _id, createdAt, updatedAt, ...nextValues } = itemQuery.data.payload;
+      form.replaceValues({
+        ...nextValues,
+      });
+    }
+  }, [itemQuery.data?.payload]);
+
   const handleSave = async () => {
     if (!id || !form.isValid) return;
 
+    const nextValues: ItemEditorFormValues = {
+      ...form.values,
+      attackProfiles,
+    };
+
     try {
-      await updateItem.mutateAsync(id, form.values);
+      await updateItem.mutateAsync(id, nextValues);
+      form.replaceValues(nextValues);
 
       addAlert({
         type: 'success',
@@ -72,11 +108,12 @@ const ItemEditor = ({ id }: ItemEditorProps) => {
     }
   };
 
-  const handleDelete = async () => {
-    if (!id) return;
+  const handleDeleteClick = () => {
+    setIsDeleteModalOpen(true);
+  };
 
-    const confirmed = confirm('Are you sure you want to delete this item? This action cannot be undone.');
-    if (!confirmed) return;
+  const handleDeleteConfirm = async () => {
+    if (!id) return;
 
     try {
       await deleteItem.mutateAsync(id);
@@ -87,7 +124,8 @@ const ItemEditor = ({ id }: ItemEditorProps) => {
         description: 'The item has been deleted successfully.',
       });
 
-      router.push('/items');
+      setIsDeleteModalOpen(false);
+      router.push('/content/items');
     } catch (error) {
       addAlert({
         type: 'error',
@@ -97,24 +135,16 @@ const ItemEditor = ({ id }: ItemEditorProps) => {
     }
   };
 
-  const title = useMemo(() => {
-    if (!form.getValue('name')) return 'Item Editor';
-    return form.getValue('name');
-  }, [form.getValue('name')]);
-  useEffect(() => {
-    if (itemQuery.data?.payload) {
-      const { payload } = itemQuery.data;
-      form.setValues({
-        ...payload,
-      });
-    }
-  }, [itemQuery.data]);
-  if (itemQuery.isLoading || !form) {
+  const handleDeleteCancel = () => {
+    setIsDeleteModalOpen(false);
+  };
+
+  if (itemQuery.isLoading) {
     return (
       <div className={styles.page}>
         <Card>
           <CardBody className={styles.stateCard}>
-            <Loader caption="Loading item…" />
+            <Loader caption="Loading item..." />
           </CardBody>
         </Card>
       </div>
@@ -138,228 +168,39 @@ const ItemEditor = ({ id }: ItemEditorProps) => {
       </div>
     );
   }
+
   return (
     <div className={styles.page}>
       <div className={styles.pageHeader}>
         <div className={styles.headerCopy}>
           <p className={styles.eyebrow}>Content Admin</p>
-          <h1 className={styles.title}>{title}</h1>
+          <h1 className={styles.title}>{itemTitle}</h1>
           <p className={styles.subtitle}>Edit the item definition, then save your changes back to the content library.</p>
         </div>
 
         <div className={styles.headerActions}>
-          <Button variant="ghost" tone="neutral" onClick={() => router.push('/items')}>
+          <Button variant="ghost" tone="neutral" onClick={() => router.push('/content/items')}>
             Back to Items
           </Button>
         </div>
       </div>
 
-      <Card>
-        <CardHeader className={styles.sectionHeader}>
-          <div>
-            <h2 className={styles.sectionTitle}>Core Details</h2>
-            <p className={styles.sectionSubtitle}>These fields define the item identity and its content metadata.</p>
-          </div>
-        </CardHeader>
-        <CardBody>
-          <Form form={form} className={styles.form}>
-            <FormGroup>
-              <FormField name="name">
-                {(field) => (
-                  <TextField
-                    floatingLabel
-                    id={field.id}
-                    label="Name"
-                    value={field.value as string}
-                    onChange={field.onChange}
-                    onBlur={field.onBlur}
-                    error={field.shouldShowError ? field.error : undefined}
-                    inputMode="text"
-                    autoComplete="off"
-                    disabled={updateItem.isPending}
-                  />
-                )}
-              </FormField>
-              <FormField name="key">
-                {(field) => (
-                  <TextField
-                    floatingLabel
-                    id={field.id}
-                    label="Key"
-                    value={field.value as string}
-                    onChange={field.onChange}
-                    onBlur={field.onBlur}
-                    error={field.shouldShowError ? field.error : undefined}
-                    inputMode="text"
-                    autoComplete="off"
-                    disabled={updateItem.isPending}
-                  />
-                )}
-              </FormField>
-            </FormGroup>
-            <FormField name="notes">
-              {(field) => (
-                <TextAreaField
-                  floatingLabel
-                  id={field.id}
-                  label="Notes"
-                  value={field.value as string}
-                  onChange={field.onChange}
-                  onBlur={field.onBlur}
-                  error={field.shouldShowError ? field.error : undefined}
-                  inputMode="text"
-                  autoComplete="off"
-                  disabled={updateItem.isPending}
-                />
-              )}
-            </FormField>
-            <FormGroup>
-              <FormField name="settingKeys">
-                {(field) => (
-                  <SelectField
-                    mode="multiple"
-                    floatingLabel
-                    id={field.id}
-                    label="Associated Settings"
-                    value={field.value as (string | number)[]}
-                    onChange={field.onChange}
-                    onBlur={field.onBlur}
-                    error={field.shouldShowError ? field.error : undefined}
-                    disabled={updateItem.isPending}
-                    placeholder="Select setting(s)..."
-                    options={[
-                      { label: 'Woven Realms', value: 'woven-realms' },
-                      { label: 'Neon Lights', value: 'neon-lights' },
-                    ]}
-                  />
-                )}
-              </FormField>
-            </FormGroup>
-            <FormGroup>
-              <FormField name="category">
-                {(field) => (
-                  <SelectField
-                    floatingLabel
-                    id={field.id}
-                    label="Category"
-                    value={field.value as string}
-                    onChange={field.onChange}
-                    onBlur={field.onBlur}
-                    error={field.shouldShowError ? field.error : undefined}
-                    disabled={updateItem.isPending}
-                    options={[
-                      { label: 'Weapon', value: 'weapon' },
-                      { label: 'Armor', value: 'armor' },
-                      { label: 'Gear', value: 'gear' },
-                      { label: 'Consumable', value: 'consumable' },
-                      { label: 'Tool', value: 'tool' },
-                      { label: 'Currency', value: 'currency' },
-                      { label: 'Quest', value: 'quest' },
-                      { label: 'Other', value: 'other' },
-                    ]}
-                  />
-                )}
-              </FormField>
-              <FormField name="status">
-                {(field) => (
-                  <SelectField
-                    floatingLabel
-                    id={field.id}
-                    label="Status"
-                    value={field.value as string}
-                    onChange={field.onChange}
-                    onBlur={field.onBlur}
-                    error={field.shouldShowError ? field.error : undefined}
-                    disabled={updateItem.isPending}
-                    options={[
-                      { label: 'Draft', value: 'draft' },
-                      { label: 'Published', value: 'published' },
-                      { label: 'Archived', value: 'archived' },
-                    ]}
-                  />
-                )}
-              </FormField>
-            </FormGroup>
-            <FormGroup>
-              <FormField name="protection">
-                {(field) => (
-                  <TextField
-                    floatingLabel
-                    id={field.id}
-                    label="Protection"
-                    type="number"
-                    value={String(field.value ?? '')}
-                    onChange={(value) => field.onChange(value ? Number(value) : undefined)}
-                    onBlur={field.onBlur}
-                    error={field.shouldShowError ? field.error : undefined}
-                    disabled={updateItem.isPending}
-                    placeholder="0"
-                  />
-                )}
-              </FormField>
-              <FormField name="slot">
-                {(field) => (
-                  <SelectField
-                    floatingLabel
-                    id={field.id}
-                    label="Equipment Slot"
-                    value={field.value as string}
-                    onChange={field.onChange}
-                    onBlur={field.onBlur}
-                    error={field.shouldShowError ? field.error : undefined}
-                    disabled={updateItem.isPending || !form.getValue('equippable')}
-                    placeholder="Select slot..."
-                    options={[
-                      { label: 'None', value: '' },
-                      { label: 'Head', value: 'head' },
-                      { label: 'Body', value: 'body' },
-                      { label: 'Legs', value: 'legs' },
-                      { label: 'Feet', value: 'feet' },
-                      { label: 'Hands', value: 'hands' },
-                      { label: 'Weapon', value: 'weapon' },
-                      { label: 'Shield', value: 'shield' },
-                      { label: 'Accessory', value: 'accessory' },
-                      { label: 'Consumable', value: 'consumable' },
-                      { label: 'Other', value: 'other' },
-                    ]}
-                  />
-                )}
-              </FormField>
-            </FormGroup>
-            <FormGroup>
-              <FormField name="equippable">
-                {(field) => (
-                  <div className={styles.checkboxField}>
-                    <Checkbox id={field.id} checked={field.value as boolean} onChange={field.onChange} disabled={updateItem.isPending} label="Equippable" />
-                  </div>
-                )}
-              </FormField>
-              <FormField name="stackable">
-                {(field) => (
-                  <div className={styles.checkboxField}>
-                    <Checkbox id={field.id} checked={field.value as boolean} onChange={field.onChange} disabled={updateItem.isPending} label="Stackable" />
-                  </div>
-                )}
-              </FormField>
-            </FormGroup>
-            <FormField name="tags">
-              {(field) => (
-                <TagInputField
-                  floatingLabel
-                  id={field.id}
-                  label="Tags"
-                  value={field.value as string[]}
-                  onChange={field.onChange}
-                  onBlur={field.onBlur}
-                  error={field.shouldShowError ? field.error : undefined}
-                  disabled={updateItem.isPending}
-                  placeholder="Type a tag and press comma or enter..."
-                />
-              )}
-            </FormField>
-          </Form>
-        </CardBody>
-      </Card>
+      <CoreDetailsSection form={form} disabled={updateItem.isPending} />
+
+      <AttackProfilesSection
+        attackProfiles={attackProfiles}
+        onAddProfile={attackProfileEditor.openCreateModal}
+        onEditProfile={attackProfileEditor.openEditModal}
+        disabled={attackProfileEditor.isPending}
+      />
+
+      <GrantedAbilitiesSection
+        grantedAbilities={grantedAbilities}
+        abilitiesLookup={abilitiesLookup}
+        onAddAbility={grantedAbilityEditor.openCreateModal}
+        onEditAbility={grantedAbilityEditor.openEditModal}
+        disabled={grantedAbilityEditor.isPending}
+      />
 
       <div className={styles.footer}>
         <div className={styles.footerActions}>
@@ -371,11 +212,31 @@ const ItemEditor = ({ id }: ItemEditorProps) => {
           </Button>
         </div>
         <div className={styles.footerDanger}>
-          <Button variant="outline" tone="danger" onClick={handleDelete} disabled={deleteItem.isPending}>
-            {deleteItem.isPending ? 'Deleting...' : 'Delete Item'}
+          <Button variant="outline" tone="danger" onClick={handleDeleteClick} disabled={deleteItem.isPending}>
+            Delete Item
           </Button>
         </div>
       </div>
+
+      <AttackProfileModal attackProfileEditor={attackProfileEditor} currentSettingKeys={form.values.settingKeys ?? []} />
+
+      <GrantedAbilityModal grantedAbilityEditor={grantedAbilityEditor} currentSettingKeys={form.values.settingKeys ?? []} />
+
+      <Modal
+        open={isDeleteModalOpen}
+        title="Delete Item"
+        onCancel={handleDeleteCancel}
+        onOk={handleDeleteConfirm}
+        confirmLoading={deleteItem.isPending}
+        okText="Delete"
+        cancelText="Cancel"
+        okButtonProps={{ tone: 'danger' }}
+      >
+        <p>
+          Are you sure you want to delete <strong>{form.values.name}</strong>?
+        </p>
+        <p>This action cannot be undone.</p>
+      </Modal>
     </div>
   );
 };

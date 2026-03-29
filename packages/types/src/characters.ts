@@ -30,7 +30,7 @@ export type AttackProfile = {
   defaultAspect?: string;
   allowedSkillKeys?: string[];
   modifier?: number;
-  harm?: number | string;
+  harm?: number;
   rangeLabel?: string;
   tags?: string[];
   notes?: string;

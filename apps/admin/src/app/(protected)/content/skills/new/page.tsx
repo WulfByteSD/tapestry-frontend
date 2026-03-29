@@ -1,16 +1,11 @@
-import { createAdminPageMetadata } from "@/app/pageMetadata";
-import NodeWorkspace from "@/features/content/_components/nodeWorkspace/NodeWorkspace.component";
+import { createAdminPageMetadata } from '@/app/pageMetadata';
+import SkillEditor from '@/views/content/skills/skillEditor/SkillEditor.component';
 
 export const metadata = createAdminPageMetadata({
-  title: "New Skill",
-  description: "Create a new skill record for a setting and prepare it for broader content authoring.",
+  title: 'New Skill',
+  description: 'Create a new skill record for a setting and prepare it for broader content authoring.',
 });
 
-type PageProps = {
-  params: Promise<{ id: string }>;
-};
-
-export default async function ContentNodePage({ params }: PageProps) {
-  const { id } = await params;
-  return <NodeWorkspace nodeId={id} />;
+export default async function Page() {
+  return <SkillEditor />;
 }

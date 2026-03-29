@@ -3,6 +3,7 @@ export * from "./characters";
 export * from "./content";
 export * from "./players";
 export * from "./abilities";
+export * from "./aspects";
 export * from "./auth";
 export * from "./billing";
 export * from "./plan";

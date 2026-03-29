@@ -1,5 +1,4 @@
-import type { InventoryItem } from "@tapestry/types";
-import { ASPECT_BLOCKS, type AspectGroup, type AspectKey } from "../../../aspects/aspectutils";
+import { ASPECT_BLOCKS, type AspectGroup, type AspectKey, type InventoryItem } from "@tapestry/types";
 
 export function titleCaseFromId(id: string) {
   const raw = id.includes(":") ? id.split(":").pop()! : id;

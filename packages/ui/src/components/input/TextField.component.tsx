@@ -1,9 +1,9 @@
-"use client";
+// TextField.component.tsx
+'use client';
 
-import React, { useState, useEffect, useRef } from "react";
-import clsx from "clsx";
-import { Input, InputProps } from "./Input.component";
-import styles from "./TextField.module.scss";
+import React, { useEffect, useId, useRef, useState } from 'react';
+import { Input, InputChangeValue, InputProps } from './Input.component';
+import { FormFieldFrame } from './FormFieldFrame.component';
 
 export type TextFieldProps = InputProps & {
   label?: string;
@@ -13,106 +13,88 @@ export type TextFieldProps = InputProps & {
   floatingLabel?: boolean;
 };
 
-export function TextField({
-  id,
-  label,
-  hint,
-  helpText,
-  error,
-  className,
-  floatingLabel = false,
-  ...inputProps
-}: TextFieldProps) {
+function hasValue(value: unknown) {
+  return value !== undefined && value !== null && value !== '';
+}
+
+export function TextField({ id, label, hint, helpText, error, className, floatingLabel = false, valueMode = 'raw', ...inputProps }: TextFieldProps) {
+  const generatedId = useId();
+  const controlId = id ?? generatedId;
   const displayHint = helpText ?? hint;
   const inputRef = useRef<HTMLInputElement>(null);
-  const [isFocused, setIsFocused] = useState(false);
-  const [hasValue, setHasValue] = useState(Boolean(inputProps.value || inputProps.defaultValue));
-  const hasError = Boolean(error) || Boolean(inputProps.hasError);
-  const isFloating = isFocused || hasValue;
 
-  // Check for autofill on mount and periodically
+  const [isFocused, setIsFocused] = useState(false);
+  const [fieldHasValue, setFieldHasValue] = useState(hasValue(inputProps.value) || hasValue(inputProps.defaultValue));
+
+  const hasError = Boolean(error) || Boolean(inputProps.hasError);
+  const isFloating = isFocused || fieldHasValue;
+
   useEffect(() => {
     const checkAutofill = () => {
-      if (inputRef.current) {
-        const hasAutofill = inputRef.current.matches(":-webkit-autofill");
-        const currentValue = inputRef.current.value;
-        if (hasAutofill || currentValue) {
-          setHasValue(true);
-        }
+      if (!inputRef.current) return;
+
+      const hasAutofill = inputRef.current.matches(':-webkit-autofill');
+      const currentValue = inputRef.current.value;
+
+      if (hasAutofill || currentValue) {
+        setFieldHasValue(true);
       }
     };
 
-    // Check immediately and after a short delay (for autofill)
     checkAutofill();
     const timer = setTimeout(checkAutofill, 100);
 
     return () => clearTimeout(timer);
   }, []);
 
-  const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+  const handleFocus = (event: React.FocusEvent<HTMLInputElement>) => {
     setIsFocused(true);
-    inputProps.onFocus?.(e);
+    inputProps.onFocus?.(event);
   };
 
-  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+  const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
     setIsFocused(false);
-    setHasValue(Boolean(e.target.value));
-    inputProps.onBlur?.(e);
+    setFieldHasValue(hasValue(event.target.value));
+    inputProps.onBlur?.(event);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setHasValue(Boolean(e.target.value));
-    inputProps.onChange?.(e);
+  const handleChange = (nextValue: React.ChangeEvent<HTMLInputElement> | InputChangeValue) => {
+    if (valueMode === 'number') {
+      setFieldHasValue(hasValue(nextValue));
+      (inputProps.onChange as ((value: InputChangeValue) => void) | undefined)?.(nextValue as InputChangeValue);
+      return;
+    }
+
+    const event = nextValue as React.ChangeEvent<HTMLInputElement>;
+    setFieldHasValue(hasValue(event.target.value));
+    (inputProps.onChange as ((event: React.ChangeEvent<HTMLInputElement>) => void) | undefined)?.(event);
   };
-
-  if (floatingLabel && label) {
-    return (
-      <div className={clsx(styles.field, className)}>
-        <div className={clsx(styles.floatingWrap, isFloating && styles.floating, hasError && styles.hasError)}>
-          <Input
-            ref={inputRef}
-            id={id}
-            {...inputProps}
-            hasError={hasError}
-            onFocus={handleFocus}
-            onBlur={handleBlur}
-            onChange={handleChange}
-            className={styles.floatingInput}
-            placeholder={isFloating ? inputProps.placeholder : undefined}
-          />
-          <label className={styles.floatingLabel} htmlFor={id}>
-            {label}
-          </label>
-        </div>
-
-        {error ? (
-          <div className={styles.error} role="alert">
-            {error}
-          </div>
-        ) : displayHint ? (
-          <div className={styles.hint}>{displayHint}</div>
-        ) : null}
-      </div>
-    );
-  }
 
   return (
-    <div className={clsx(styles.field, className)}>
-      {label && (
-        <label className={styles.label} htmlFor={id}>
-          {label}
-        </label>
+    <FormFieldFrame
+      id={controlId}
+      label={label}
+      hint={displayHint}
+      error={error}
+      className={className}
+      floatingLabel={floatingLabel}
+      isFloating={isFloating}
+      hasError={hasError}
+      renderControl={({ controlClassName, describedBy, showPlaceholder }) => (
+        <Input
+          ref={inputRef}
+          id={controlId}
+          {...inputProps}
+          valueMode={valueMode}
+          hasError={hasError}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          onChange={handleChange}
+          className={controlClassName}
+          aria-describedby={describedBy}
+          placeholder={showPlaceholder ? inputProps.placeholder : undefined}
+        />
       )}
-
-      <Input id={id} {...inputProps} hasError={hasError} />
-
-      {error ? (
-        <div className={styles.error} role="alert">
-          {error}
-        </div>
-      ) : displayHint ? (
-        <div className={styles.hint}>{displayHint}</div>
-      ) : null}
-    </div>
+    />
   );
 }

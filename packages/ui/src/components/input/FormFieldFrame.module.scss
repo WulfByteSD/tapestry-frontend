@@ -1,0 +1,73 @@
+/* FormFieldFrame.module.scss */
+.field {
+  display: grid;
+  gap: 6px;
+}
+
+.label {
+  font-size: 13px;
+  font-weight: 650;
+  color: color-mix(in srgb, var(--text) 90%, transparent);
+}
+
+.hint {
+  font-size: 12px;
+  color: color-mix(in srgb, var(--text-muted) 75%, transparent);
+}
+
+.error {
+  font-size: 12px;
+  color: color-mix(in srgb, var(--contrast) 85%, #ffb3b3);
+}
+
+.floatingWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.floatingInput {
+  padding-top: 20px !important;
+  padding-bottom: 4px !important;
+}
+
+.floatingLabel {
+  position: absolute;
+  left: 13px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  font-weight: 500;
+  color: color-mix(in srgb, var(--text-muted) 75%, transparent);
+  pointer-events: none;
+  transition:
+    transform 200ms cubic-bezier(0.4, 0, 0.2, 1),
+    font-size 200ms cubic-bezier(0.4, 0, 0.2, 1),
+    color 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  background: transparent;
+  padding: 0 4px;
+  z-index: 1;
+}
+
+.floating .floatingLabel {
+  transform: translateY(-20px);
+  font-size: 11px;
+  font-weight: 650;
+  color: color-mix(in srgb, var(--accent-2) 80%, transparent);
+}
+
+.floatingWrap:has(input:-webkit-autofill) .floatingLabel {
+  transform: translateY(-20px);
+  font-size: 11px;
+  font-weight: 650;
+  color: color-mix(in srgb, var(--accent-2) 80%, transparent);
+}
+
+.hasError .floatingLabel {
+  color: color-mix(in srgb, #ff6b6b 75%, transparent);
+}
+
+.floating.hasError .floatingLabel {
+  color: color-mix(in srgb, #ff6b6b 85%, transparent);
+}
