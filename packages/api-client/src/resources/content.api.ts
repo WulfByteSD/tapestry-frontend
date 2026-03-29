@@ -3,13 +3,8 @@ import type { ApiListResponse, ListQueryParams } from "../list/list.types";
 import { cleanParams } from "../list/list.utils";
 import { ItemDefinition, LoreNode, SettingDefinition, SkillDefinition } from "../../../types/src/content";
 import { AbilityDefinition } from "../../../types/src";
-
-export type ApiResponse<T> = {
-  success: boolean;
-  payload: T;
-  message?: string;
-};
-
+import { ApiResponse } from "../fetch";
+ 
 export type ApiDeleteResponse = {
   success: boolean;
   message?: string;

@@ -32,7 +32,7 @@ export function createStudioTabs(props: { activeTab: TabKey; selectedSetting: St
     {
       key: 'skills',
       label: 'Skills',
-      children: activeTab === 'skills' ? <SkillsView selectedSetting={selectedSetting} /> : <div style={{ minHeight: 640 }} />,
+      children: activeTab === 'skills' ? <SkillsView selectedSetting={selectedSetting as any} /> : <div style={{ minHeight: 640 }} />,
     },
   ];
 }

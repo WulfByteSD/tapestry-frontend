@@ -1,7 +1,8 @@
-import { useCallback } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import type { AxiosInstance } from "axios";
-import { createTokenStore, login, me, setAuthToken } from "@tapestry/api-client";
+import { useCallback } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import type { AxiosInstance } from 'axios';
+import axios from 'axios';
+import { createTokenStore, login, me, setAuthToken } from '@tapestry/api-client';
 
 type TokenStore = ReturnType<typeof createTokenStore>;
 
@@ -17,14 +18,16 @@ export function createSessionAuth(api: AxiosInstance, tokenStore: TokenStore, op
     return useCallback(() => {
       tokenStore.clear();
       setAuthToken(api, null);
-      qc.setQueryData(["me"], null);
-      qc.removeQueries({ queryKey: ["profile"] });
+      qc.setQueryData(['me'], null);
+      qc.removeQueries({ queryKey: ['profile'] });
     }, [qc]);
   }
 
   function useMe() {
+    const qc = useQueryClient();
+
     return useQuery({
-      queryKey: ["me"],
+      queryKey: ['me'],
       queryFn: async () => {
         const token = tokenStore.get();
 
@@ -32,7 +35,18 @@ export function createSessionAuth(api: AxiosInstance, tokenStore: TokenStore, op
           return null;
         }
 
-        return me(api);
+        try {
+          return await me(api);
+        } catch (error) {
+          // If the token is expired or invalid (401), clear it
+          if (axios.isAxiosError(error) && error.response?.status === 401) {
+            tokenStore.clear();
+            setAuthToken(api, null);
+            qc.setQueryData(['me'], null);
+            return null;
+          }
+          throw error;
+        }
       },
       retry: false,
       staleTime: 60_000,
@@ -52,10 +66,10 @@ export function createSessionAuth(api: AxiosInstance, tokenStore: TokenStore, op
         return { res, user };
       },
       onSuccess: ({ user }) => {
-        qc.setQueryData(["me"], user);
+        qc.setQueryData(['me'], user);
       },
       onError: (error) => {
-        console.error(options?.loginErrorLogLabel || "Login error:", error);
+        console.error(options?.loginErrorLogLabel || 'Login error:', error);
         handleLoginError?.(error as Error);
       },
     });
