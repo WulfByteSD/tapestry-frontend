@@ -1,0 +1,1 @@
+export { PlayerProfileSection } from './PlayerProfileSection';

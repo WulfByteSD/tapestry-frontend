@@ -15,6 +15,7 @@ import {
   ResetPasswordInput,
   setCustomPassword,
   SetPasswordInput,
+  deleteCharacter,
 } from '@tapestry/api-client';
 import type { ListQueryParams } from '@tapestry/api-client';
 import { api } from '@/lib/api';
@@ -146,5 +147,19 @@ export function useResetUserPassword(authId: string) {
 export function useSetCustomPassword(authId: string) {
   return useMutation({
     mutationFn: (input: SetPasswordInput) => setCustomPassword(api, authId, input),
+  });
+}
+
+/**
+ * Delete a character (admin)
+ */
+export function useAdminDeleteCharacter(playerId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (characterId: string) => deleteCharacter(api, characterId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: playerAdminQueryKeys.playerCharacters(playerId) });
+    },
   });
 }

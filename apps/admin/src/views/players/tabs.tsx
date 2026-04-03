@@ -1,7 +1,7 @@
 import type { TabsItem } from '@tapestry/ui';
-import { PlayerProfileSection } from './sections/PlayerProfileSection';
+import { PlayerProfileSection } from './sections/playerProfile';
 import { AccountAuthSection } from './sections/accountAuth';
-import { CharactersSection } from './sections/CharactersSection';
+import { CharactersSection } from './sections/characters';
 import { CampaignsSection } from './sections/CampaignsSection';
 
 export type TabKey = 'profile' | 'account' | 'characters' | 'campaigns';

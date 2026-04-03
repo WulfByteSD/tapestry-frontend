@@ -1,9 +1,9 @@
-import type { AxiosInstance } from "axios";
-import { ApiListResponse, ListQueryParams, cleanParams } from "../list";
+import type { AxiosInstance } from 'axios';
+import { ApiListResponse, ListQueryParams, cleanParams } from '../list';
 
 // Characters
 export async function listCharacters<T>(api: AxiosInstance, params: ListQueryParams = {}): Promise<ApiListResponse<T>> {
-  const res = await api.get("/game/characters", { params: cleanParams(params) });
+  const res = await api.get('/game/characters', { params: cleanParams(params) });
   return res.data;
 }
 
@@ -25,11 +25,13 @@ export type ApplyHarmResponse = {
   };
 };
 
-export async function applyHarm(
-  api: AxiosInstance,
-  characterId: string,
-  data: ApplyHarmData,
-): Promise<ApplyHarmResponse> {
+export async function applyHarm(api: AxiosInstance, characterId: string, data: ApplyHarmData): Promise<ApplyHarmResponse> {
   const res = await api.post(`/game/characters/${characterId}/apply-harm`, data);
+  return res.data;
+}
+
+// Delete character
+export async function deleteCharacter(api: AxiosInstance, characterId: string): Promise<{ _id: string }> {
+  const res = await api.delete(`/game/characters/${characterId}`);
   return res.data;
 }

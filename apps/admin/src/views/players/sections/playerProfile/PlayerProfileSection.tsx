@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { Card, CardBody, CardHeader, Button, TextField, TextAreaField, SelectField, Form, FormField, useForm, CopyField } from '@tapestry/ui';
 import { TIMEZONES } from '@tapestry/types';
 import { usePlayerDetail, useUpdatePlayerProfile } from '@/lib/player-admin';
-import styles from '../PlayerDetailView.module.scss';
+import styles from './PlayerProfileSection.module.scss';
 
 const ROLE_OPTIONS = [
   { value: 'player', label: 'Player' },
