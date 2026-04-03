@@ -20,3 +20,28 @@ export interface PlayerType {
   createdAt: Date;
   updatedAt: Date;
 }
+
+// Admin-facing types
+export interface PlayerWithAuth extends PlayerType {
+  auth: {
+    _id: string;
+    customerId: string;
+    email: string;
+    role: string[];
+    isActive: boolean;
+    notificationSettings: Record<string, boolean>;
+    createdAt: Date;
+    updatedAt: Date;
+    isEmailVerified: boolean;
+    acceptedPolicies: Record<string, number>;
+    permissions: string[];
+    profileRefs: Record<string, string | null>;
+  };
+}
+
+export interface PlayerStats {
+  characterCount: number;
+  campaignCount: number;
+  activeCampaignCount?: number;
+  lastLoginAt?: Date;
+}
