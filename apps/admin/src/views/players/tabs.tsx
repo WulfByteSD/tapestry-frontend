@@ -1,6 +1,6 @@
 import type { TabsItem } from '@tapestry/ui';
 import { PlayerProfileSection } from './sections/PlayerProfileSection';
-import { AccountAuthSection } from './sections/AccountAuthSection';
+import { AccountAuthSection } from './sections/accountAuth';
 import { CharactersSection } from './sections/CharactersSection';
 import { CampaignsSection } from './sections/CampaignsSection';
 

@@ -1,7 +1,21 @@
 'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { listPlayers, getPlayerDetails, getPlayerCharacters, getPlayerCampaigns, fetchAuthObject, updatePlayerProfile, UpdatePlayerProfileInput } from '@tapestry/api-client';
+import {
+  listPlayers,
+  getPlayerDetails,
+  getPlayerCharacters,
+  getPlayerCampaigns,
+  fetchAuthObject,
+  updatePlayerProfile,
+  UpdatePlayerProfileInput,
+  updateAuthAccount,
+  UpdateAuthAccountInput,
+  resetUserPassword,
+  ResetPasswordInput,
+  setCustomPassword,
+  SetPasswordInput,
+} from '@tapestry/api-client';
 import type { ListQueryParams } from '@tapestry/api-client';
 import { api } from '@/lib/api';
 
@@ -53,7 +67,7 @@ export function usePlayerAuth(authId?: string) {
     queryKey: [...playerAdminQueryKeys.detail(authId || 'missing'), 'auth'] as const,
     queryFn: async () => {
       const playerRes = await fetchAuthObject(api, authId as string);
-      return playerRes.payload;
+      return playerRes;
     },
     enabled: Boolean(authId),
   });
@@ -97,5 +111,40 @@ export function useUpdatePlayerProfile(playerId: string) {
       // Invalidate the list to ensure consistency
       queryClient.invalidateQueries({ queryKey: playerAdminQueryKeys.lists() });
     },
+  });
+}
+
+/**
+ * Update auth account (email, verification status, active status)
+ */
+export function useUpdateAuthAccount(authId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (input: UpdateAuthAccountInput) => updateAuthAccount(api, authId, input),
+    onSuccess: (updatedAuth) => {
+      // Update the auth query cache
+      queryClient.setQueryData([...playerAdminQueryKeys.detail(authId), 'auth'] as const, updatedAuth);
+      // Invalidate queries that depend on auth data
+      queryClient.invalidateQueries({ queryKey: playerAdminQueryKeys.all });
+    },
+  });
+}
+
+/**
+ * Reset user password (auto-generate and send email)
+ */
+export function useResetUserPassword(authId: string) {
+  return useMutation({
+    mutationFn: (input: ResetPasswordInput) => resetUserPassword(api, authId, input),
+  });
+}
+
+/**
+ * Set custom password for user
+ */
+export function useSetCustomPassword(authId: string) {
+  return useMutation({
+    mutationFn: (input: SetPasswordInput) => setCustomPassword(api, authId, input),
   });
 }

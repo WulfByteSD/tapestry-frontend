@@ -30,15 +30,15 @@ function truncateValue(value: string, truncate: boolean | number): string {
 
   const maxLength = typeof truncate === 'number' ? truncate : 32;
 
-  if (value.length <= maxLength) return value;
+  if (value?.length <= maxLength) return value;
 
   // For IDs and hashes, show first and last chars
   if (maxLength > 10) {
     const sideLength = Math.floor((maxLength - 3) / 2);
-    return `${value.slice(0, sideLength)}...${value.slice(-sideLength)}`;
+    return `${value?.slice(0, sideLength)}...${value?.slice(-sideLength)}`;
   }
 
-  return `${value.slice(0, maxLength - 3)}...`;
+  return `${value?.slice(0, maxLength - 3)}...`;
 }
 
 export function CopyField({

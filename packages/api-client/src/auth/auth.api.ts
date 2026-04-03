@@ -20,7 +20,7 @@ export async function register(api: AxiosInstance, input: RegisterInput) {
 }
 
 export async function fetchAuthObject(api: AxiosInstance, id: string) {
-  // GET /api/v1/auth/{id}
-  const res = await api.get(`/auth/${id}`);
+  // GET /api/v1/auth/users/{id}
+  const res = await api.get(`/auth/users/${id}`);
   return res.data.payload;
 }
