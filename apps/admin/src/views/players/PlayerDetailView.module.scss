@@ -110,6 +110,13 @@
   }
 }
 
+.copyField {
+  flex: 1;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .formRow {
   display: flex;
   flex-direction: column;

@@ -1,10 +1,15 @@
 'use client';
 
 import { useEffect } from 'react';
-import { Card, CardBody, CardHeader, Button, TextField, TextAreaField, SelectField, Form, FormField, useForm } from '@tapestry/ui';
+import { Card, CardBody, CardHeader, Button, TextField, TextAreaField, SelectField, Form, FormField, useForm, CopyField } from '@tapestry/ui';
 import { TIMEZONES } from '@tapestry/types';
 import { usePlayerDetail, useUpdatePlayerProfile } from '@/lib/player-admin';
 import styles from '../PlayerDetailView.module.scss';
+
+const ROLE_OPTIONS = [
+  { value: 'player', label: 'Player' },
+  { value: 'storyweaver', label: 'Storyweaver' },
+];
 
 function formatDate(value?: string | Date) {
   if (!value) return '—';
@@ -65,6 +70,7 @@ export function PlayerProfileSection({ playerId }: PlayerProfileSectionProps) {
         displayName: form.values.displayName.trim() || undefined,
         bio: form.values.bio.trim() || undefined,
         timezone: form.values.timezone.trim() || undefined,
+        roles: form.values.roles,
       },
       {
         onSuccess: () => {
@@ -89,8 +95,16 @@ export function PlayerProfileSection({ playerId }: PlayerProfileSectionProps) {
       <CardBody>
         <div className={styles.infoGrid}>
           <div className={styles.infoRow}>
-            <span className={styles.label}>Player ID</span>
-            <code className={styles.value}>{player._id}</code>
+            <CopyField
+              label="Player ID"
+              value={player._id}
+              variant="field"
+              displayAs="code"
+              truncate
+              size="sm"
+              copyMessage="Player ID copied to clipboard"
+              className={styles.copyField}
+            />
           </div>
 
           <Form form={form} className={styles.form}>
@@ -146,21 +160,26 @@ export function PlayerProfileSection({ playerId }: PlayerProfileSectionProps) {
                 )}
               </FormField>
             </div>
-          </Form>
 
-          <div className={styles.infoRow}>
-            <div>
-              <span className={styles.label}>Roles</span>
-              <div className={styles.helpText}>Role management requires separate authorization API (readonly for now)</div>
+            <div className={styles.formRow}>
+              <FormField name="roles">
+                {(field) => (
+                  <SelectField
+                    mode="multiple"
+                    id={field.id}
+                    label="Roles"
+                    value={field.value as string[]}
+                    onChange={field.onChange}
+                    onBlur={field.onBlur}
+                    error={field.shouldShowError ? field.error : undefined}
+                    placeholder="Select roles..."
+                    disabled={updateMutation.isPending}
+                    options={ROLE_OPTIONS}
+                  />
+                )}
+              </FormField>
             </div>
-            <div className={styles.roleList}>
-              {form.values.roles.map((role: string) => (
-                <span key={role} className={styles.roleBadge} data-role={role}>
-                  {role}
-                </span>
-              ))}
-            </div>
-          </div>
+          </Form>
 
           <div className={styles.infoRow}>
             <span className={styles.label}>Created</span>

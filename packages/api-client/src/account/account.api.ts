@@ -1,5 +1,5 @@
-import { AxiosInstance } from "axios"; 
-import { AuthType, PlayerType } from "../../../types/src";
+import { AxiosInstance } from 'axios';
+import { AuthType, PlayerType } from '../../../types/src';
 
 export type UpdateUserAccountInput = {
   email?: string;
@@ -11,7 +11,8 @@ export type UpdatePlayerProfileInput = {
   bio?: string;
   timezone?: string;
   avatar?: string;
-  preferences?: PlayerType["preferences"];
+  preferences?: PlayerType['preferences'];
+  roles?: string[];
 };
 
 export async function getPlayerProfile(api: AxiosInstance, profileId: string) {
