@@ -1,12 +1,15 @@
-"use client";
+'use client';
 
-import { useQuery } from "@tanstack/react-query";
-import { useRouter } from "next/navigation"; 
-import Link from "next/link";
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { Button } from '@tapestry/ui';
 
-import { api } from "@/lib/api";
-import styles from "./AbilitiesView.module.scss";
-import { StudioSettingSummary } from "@/features/content/_hooks/useContentStudio";
+import { api } from '@/lib/api';
+import { ImportCsvModal } from '@/features/content/_components/importCsvModal';
+import styles from './AbilitiesView.module.scss';
+import { StudioSettingSummary } from '@/features/content/_hooks/useContentStudio';
 
 type AbilitiesViewProps = {
   selectedSetting: StudioSettingSummary | null;
@@ -14,10 +17,11 @@ type AbilitiesViewProps = {
 
 export default function AbilitiesView({ selectedSetting }: AbilitiesViewProps) {
   const router = useRouter();
+  const [importModalOpen, setImportModalOpen] = useState(false);
 
   // TODO: Update with actual abilities API endpoint when available
   const abilitiesQuery = useQuery({
-    queryKey: ["abilities", "by-setting", selectedSetting?.key],
+    queryKey: ['abilities', 'by-setting', selectedSetting?.key],
     queryFn: async () => {
       if (!selectedSetting) return [];
       // Placeholder - replace with actual API call
@@ -28,9 +32,7 @@ export default function AbilitiesView({ selectedSetting }: AbilitiesViewProps) {
   });
 
   const abilities = abilitiesQuery.data ?? [];
-  const createHref = selectedSetting
-    ? `/abilities/new?settingKey=${encodeURIComponent(selectedSetting.key)}`
-    : "/abilities/new";
+  const createHref = selectedSetting ? `/abilities/new?settingKey=${encodeURIComponent(selectedSetting.key)}` : '/abilities/new';
 
   return (
     <div className={styles.view}>
@@ -39,12 +41,14 @@ export default function AbilitiesView({ selectedSetting }: AbilitiesViewProps) {
           <p className={styles.viewEyebrow}>Abilities browser</p>
           <h2 className={styles.viewTitle}>Abilities in this setting</h2>
           <p className={styles.viewCopy}>
-            Read-only list of abilities belonging to {selectedSetting?.name ?? "this setting"}. Use Edit or Create
-            buttons to manage abilities in dedicated routes.
+            Read-only list of abilities belonging to {selectedSetting?.name ?? 'this setting'}. Use Edit or Create buttons to manage abilities in dedicated routes.
           </p>
         </div>
 
         <div className={styles.viewActions}>
+          <Button variant="ghost" tone="neutral" onClick={() => setImportModalOpen(true)}>
+            Import CSV
+          </Button>
           <Link href={createHref} className={styles.actionButton}>
             Create ability
           </Link>
@@ -68,7 +72,7 @@ export default function AbilitiesView({ selectedSetting }: AbilitiesViewProps) {
                 <div className={styles.itemInfo}>
                   <span className={styles.itemName}>{ability.name}</span>
                   <span className={styles.itemMeta}>
-                    {ability.type ?? "Ability"} · {ability.tier ?? "Basic"}
+                    {ability.type ?? 'Ability'} · {ability.tier ?? 'Basic'}
                   </span>
                 </div>
                 <div className={styles.itemActions}>
@@ -81,6 +85,8 @@ export default function AbilitiesView({ selectedSetting }: AbilitiesViewProps) {
           </div>
         )}
       </div>
+
+      <ImportCsvModal open={importModalOpen} onClose={() => setImportModalOpen(false)} resource="abilities" />
     </div>
   );
 }

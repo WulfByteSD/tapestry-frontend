@@ -16,3 +16,4 @@ export * from './components/loginScreen';
 export * from './components/floatingButton';
 export * from './components/table';
 export * from './components/loader';
+export * from './components/upload';

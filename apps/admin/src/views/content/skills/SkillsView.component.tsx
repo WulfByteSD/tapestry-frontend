@@ -6,6 +6,7 @@ import { Button, Card, CardBody, CardHeader, Input, Loader, Modal, SelectField, 
 import type { TableColumn, TableRowAction } from '@tapestry/ui';
 import type { SkillDefinition, SettingDefinition } from '@tapestry/types';
 import { useDeleteSkill, useSkills } from '@/lib/content-admin';
+import { ImportCsvModal } from '@/features/content/_components/importCsvModal';
 import styles from './SkillsView.module.scss';
 
 const PAGE_SIZE = 10;
@@ -41,6 +42,7 @@ export default function SkillsListView({ selectedSetting }: SkillsListPageProps)
   const [page, setPage] = useState(1);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [skillToDelete, setSkillToDelete] = useState<SkillDefinition | null>(null);
+  const [importModalOpen, setImportModalOpen] = useState(false);
 
   const filterOptions = useMemo(() => {
     let filterOptions = '';
@@ -176,6 +178,9 @@ export default function SkillsListView({ selectedSetting }: SkillsListPageProps)
         </div>
 
         <div className={styles.headerActions}>
+          <Button variant="ghost" tone="neutral" onClick={() => setImportModalOpen(true)}>
+            Import CSV
+          </Button>
           <Button variant="outline" tone="neutral" onClick={() => router.push('/content/skills/new')}>
             New Skill
           </Button>
@@ -296,6 +301,8 @@ export default function SkillsListView({ selectedSetting }: SkillsListPageProps)
         </p>
         <p>This action cannot be undone.</p>
       </Modal>
+
+      <ImportCsvModal open={importModalOpen} onClose={() => setImportModalOpen(false)} resource="skills" />
     </div>
   );
 }

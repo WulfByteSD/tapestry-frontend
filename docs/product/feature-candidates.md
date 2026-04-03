@@ -1,22 +1,5 @@
 # Feature Candidates
 
-## 1) Admin User Management
-- **Status**: idea
-- **Category**: admin feature
-- **Value**: medium
-- **Complexity**: medium
-- **Backend dependency**: yes
-- **Priority notes**:
-  - Needed for platform operations and account-level support
-  - Useful for visibility into user resources and account ownership
-- **Vision**:
-  - Admin can update a user’s email/password at a high level
-  - Admin can inspect resources tied to a user account
-- **Open questions**:
-  - What admin permissions are required?
-  - What is editable directly versus requiring reset flows?
-  - How deep should resource visibility go?
-
 ---
 
 ## 2) Admin Content CRUD Completion
