@@ -1,25 +1,11 @@
 'use client';
 
+import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button, Card, CardBody, CardHeader, Loader } from '@tapestry/ui';
-import type { PlayerWithAuth } from '@tapestry/types';
-import { usePlayerDetail, usePlayerCharacters, usePlayerCampaigns, usePlayerAuth } from '@/lib/player-admin';
+import { Button, Loader, Tabs } from '@tapestry/ui';
+import { usePlayerDetail } from '@/lib/player-admin';
+import { createTabs, type TabKey } from './tabs';
 import styles from './PlayerDetailView.module.scss';
-
-function formatDate(value?: string | Date) {
-  if (!value) return '—';
-
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return '—';
-
-  return date.toLocaleDateString(undefined, {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
-}
 
 type PlayerDetailViewProps = {
   playerId: string;
@@ -27,19 +13,13 @@ type PlayerDetailViewProps = {
 
 export default function PlayerDetailView({ playerId }: PlayerDetailViewProps) {
   const router = useRouter();
+  const [activeTab, setActiveTab] = useState<TabKey>('profile');
 
   const { data: playerData, isLoading: playerLoading, isError: playerError } = usePlayerDetail(playerId);
-  const { data: charactersData } = usePlayerCharacters(playerId, {
-    filterOptions: `player;${playerId}`,
-  });
-  const { data: campaignsData } = usePlayerCampaigns(playerId, {
-    filterOptions: `members;{"$in":"${playerId}"}`,
-  });
-  const { data: authData } = usePlayerAuth(playerData?.payload?.user);
 
   const player = playerData?.payload;
-  const characters = charactersData?.payload ?? [];
-  const campaigns = campaignsData?.payload ?? [];
+
+  const tabs = useMemo(() => createTabs(playerId), [playerId]);
 
   if (playerLoading) {
     return (
@@ -81,137 +61,7 @@ export default function PlayerDetailView({ playerId }: PlayerDetailViewProps) {
         </div>
       </div>
 
-      <div className={styles.grid}>
-        <Card className={styles.profileCard}>
-          <CardHeader>
-            <h2>Player Profile</h2>
-          </CardHeader>
-          <CardBody>
-            <div className={styles.infoGrid}>
-              <div className={styles.infoRow}>
-                <span className={styles.label}>Player ID</span>
-                <code className={styles.value}>{player._id}</code>
-              </div>
-
-              <div className={styles.infoRow}>
-                <span className={styles.label}>Display Name</span>
-                <span className={styles.value}>{player.displayName || '—'}</span>
-              </div>
-
-              <div className={styles.infoRow}>
-                <span className={styles.label}>Bio</span>
-                <span className={styles.value}>{player.bio || '—'}</span>
-              </div>
-
-              <div className={styles.infoRow}>
-                <span className={styles.label}>Timezone</span>
-                <span className={styles.value}>{player.timezone || '—'}</span>
-              </div>
-
-              <div className={styles.infoRow}>
-                <span className={styles.label}>Roles</span>
-                <div className={styles.roleList}>
-                  {player.roles.map((role: string) => (
-                    <span key={role} className={styles.roleBadge} data-role={role}>
-                      {role}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              <div className={styles.infoRow}>
-                <span className={styles.label}>Created</span>
-                <span className={styles.value}>{formatDate(player.createdAt)}</span>
-              </div>
-
-              <div className={styles.infoRow}>
-                <span className={styles.label}>Updated</span>
-                <span className={styles.value}>{formatDate(player.updatedAt)}</span>
-              </div>
-            </div>
-          </CardBody>
-        </Card>
-
-        {player.auth && (
-          <Card className={styles.authCard}>
-            <CardHeader>
-              <h2>Account & Auth</h2>
-            </CardHeader>
-            <CardBody>
-              <div className={styles.infoGrid}>
-                <div className={styles.infoRow}>
-                  <span className={styles.label}>User ID</span>
-                  <code className={styles.value}>{player.auth._id}</code>
-                </div>
-
-                <div className={styles.infoRow}>
-                  <span className={styles.label}>Email</span>
-                  <span className={styles.value}>{player.auth.email}</span>
-                </div>
-
-                <div className={styles.infoRow}>
-                  <span className={styles.label}>Email Verified</span>
-                  <span className={styles.value} data-verified={player.auth.isEmailVerified}>
-                    {player.auth.isEmailVerified ? '✓ Verified' : '✗ Not Verified'}
-                  </span>
-                </div>
-
-                <div className={styles.infoRow}>
-                  <span className={styles.label}>Account Status</span>
-                  <span className={styles.statusBadge} data-active={player.auth.isActive}>
-                    {player.auth.isActive ? 'Active' : 'Inactive'}
-                  </span>
-                </div>
-
-                <div className={styles.infoRow}>
-                  <span className={styles.label}>Customer ID</span>
-                  <code className={styles.value}>{player.auth.customerId}</code>
-                </div>
-              </div>
-            </CardBody>
-          </Card>
-        )}
-
-        <Card className={styles.resourcesCard}>
-          <CardHeader>
-            <h2>Characters ({characters.length})</h2>
-          </CardHeader>
-          <CardBody>
-            {characters.length === 0 ? (
-              <p className={styles.emptyMessage}>No characters created yet.</p>
-            ) : (
-              <ul className={styles.resourceList}>
-                {characters.map((character: any) => (
-                  <li key={character._id} className={styles.resourceItem}>
-                    <span className={styles.resourceName}>{character.name || 'Unnamed'}</span>
-                    <code className={styles.resourceId}>{character._id}</code>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </CardBody>
-        </Card>
-
-        <Card className={styles.resourcesCard}>
-          <CardHeader>
-            <h2>Campaigns ({campaigns.length})</h2>
-          </CardHeader>
-          <CardBody>
-            {campaigns.length === 0 ? (
-              <p className={styles.emptyMessage}>Not participating in any campaigns.</p>
-            ) : (
-              <ul className={styles.resourceList}>
-                {campaigns.map((campaign: any) => (
-                  <li key={campaign._id} className={styles.resourceItem}>
-                    <span className={styles.resourceName}>{campaign.name || 'Unnamed Campaign'}</span>
-                    <code className={styles.resourceId}>{campaign._id}</code>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </CardBody>
-        </Card>
-      </div>
+      <Tabs items={tabs} activeKey={activeTab} onChange={(key) => setActiveTab(key as TabKey)} className={styles.tabs} keepMounted={false} />
     </div>
   );
 }

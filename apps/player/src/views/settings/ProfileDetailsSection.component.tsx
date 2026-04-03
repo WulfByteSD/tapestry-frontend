@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useEffect } from "react";
-import { Button, Form, FormField, Select, TextField, useForm } from "@tapestry/ui";
-import { usePlayerProfile, useUpdatePlayerProfile } from "@/lib/settings-hooks";
-import { TIMEZONES } from "../registerView/data/timezones";
-import styles from "./AccountDetails.module.scss";
+import { useEffect } from 'react';
+import { Button, Form, FormField, Select, TextField, useForm } from '@tapestry/ui';
+import { usePlayerProfile, useUpdatePlayerProfile } from '@/lib/settings-hooks';
+import { TIMEZONES } from '@tapestry/types';
+import styles from './AccountDetails.module.scss';
 
 type Props = {
   profileId?: string | null;
@@ -23,10 +23,10 @@ export default function ProfileDetailsSection({ profileId }: Props) {
 
   const form = useForm<ProfileFormValues>({
     initialValues: {
-      avatar: "",
-      displayName: "",
-      bio: "",
-      timezone: "",
+      avatar: '',
+      displayName: '',
+      bio: '',
+      timezone: '',
     },
     validators: {
       avatar: (value) => {
@@ -35,11 +35,11 @@ export default function ProfileDetailsSection({ profileId }: Props) {
           new URL(value);
           return undefined;
         } catch {
-          return "Avatar must be a valid URL.";
+          return 'Avatar must be a valid URL.';
         }
       },
-      displayName: (value) => (String(value).trim() ? undefined : "Display name is required."),
-      bio: (value) => (String(value).length <= 500 ? undefined : "Bio must be 500 characters or less."),
+      displayName: (value) => (String(value).trim() ? undefined : 'Display name is required.'),
+      bio: (value) => (String(value).length <= 500 ? undefined : 'Bio must be 500 characters or less.'),
     },
     onSubmit: async (values) => {
       await updateProfile.mutateAsync({
@@ -55,10 +55,10 @@ export default function ProfileDetailsSection({ profileId }: Props) {
     if (!profile) return;
 
     form.replaceValues({
-      avatar: profile.avatar ?? "",
-      displayName: profile.displayName ?? "",
-      bio: profile.bio ?? "",
-      timezone: profile.timezone ?? "",
+      avatar: profile.avatar ?? '',
+      displayName: profile.displayName ?? '',
+      bio: profile.bio ?? '',
+      timezone: profile.timezone ?? '',
     });
   }, [profile]);
 
@@ -86,7 +86,7 @@ export default function ProfileDetailsSection({ profileId }: Props) {
                 label="Avatar URL"
                 floatingLabel
                 placeholder="https://example.com/avatar.png"
-                value={String(field.value ?? "")}
+                value={String(field.value ?? '')}
                 onChange={field.onChange}
                 onBlur={field.onBlur}
                 error={field.shouldShowError ? field.error : undefined}
@@ -101,7 +101,7 @@ export default function ProfileDetailsSection({ profileId }: Props) {
                 id={field.id}
                 label="Display name"
                 floatingLabel
-                value={String(field.value ?? "")}
+                value={String(field.value ?? '')}
                 onChange={field.onChange}
                 onBlur={field.onBlur}
                 error={field.shouldShowError ? field.error : undefined}
@@ -117,7 +117,7 @@ export default function ProfileDetailsSection({ profileId }: Props) {
                 label="Bio"
                 floatingLabel
                 placeholder="A short bio to introduce yourself to other Tapestry users."
-                value={String(field.value ?? "")}
+                value={String(field.value ?? '')}
                 onChange={field.onChange}
                 onBlur={field.onBlur}
                 error={field.shouldShowError ? field.error : undefined}
@@ -130,11 +130,11 @@ export default function ProfileDetailsSection({ profileId }: Props) {
             {(field) => (
               <Select
                 id={field.id}
-                value={String(field.value ?? "")}
+                value={String(field.value ?? '')}
                 onChange={(e) => field.onChange(e.target.value)}
                 onBlur={field.onBlur}
                 disabled={updateProfile.isPending}
-                style={{ padding: "0.75rem", fontSize: "1rem" }}
+                style={{ padding: '0.75rem', fontSize: '1rem' }}
               >
                 <option value="">Select timezone...</option>
                 {TIMEZONES.map((tz) => (
@@ -148,7 +148,7 @@ export default function ProfileDetailsSection({ profileId }: Props) {
 
           <div className={styles.actionsRow}>
             <Button type="submit" disabled={updateProfile.isPending}>
-              {updateProfile.isPending ? "Saving…" : "Save profile"}
+              {updateProfile.isPending ? 'Saving…' : 'Save profile'}
             </Button>
           </div>
         </Form>

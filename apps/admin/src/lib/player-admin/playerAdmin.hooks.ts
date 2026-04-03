@@ -1,7 +1,7 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
-import { listPlayers, getPlayerDetails, getPlayerCharacters, getPlayerCampaigns, fetchAuthObject } from '@tapestry/api-client';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { listPlayers, getPlayerDetails, getPlayerCharacters, getPlayerCampaigns, fetchAuthObject, updatePlayerProfile, UpdatePlayerProfileInput } from '@tapestry/api-client';
 import type { ListQueryParams } from '@tapestry/api-client';
 import { api } from '@/lib/api';
 
@@ -78,5 +78,24 @@ export function usePlayerCampaigns(playerId?: string, params?: ListQueryParams) 
     queryKey: playerAdminQueryKeys.playerCampaigns(playerId || 'missing', params),
     queryFn: () => getPlayerCampaigns(api, playerId as string, params),
     enabled: Boolean(playerId),
+  });
+}
+
+/**
+ * Update player profile
+ */
+export function useUpdatePlayerProfile(playerId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (input: UpdatePlayerProfileInput) => updatePlayerProfile(api, playerId, input),
+    onSuccess: (updatedPlayer) => {
+      // Update the detail query cache
+      queryClient.setQueryData(playerAdminQueryKeys.detail(playerId), {
+        payload: updatedPlayer,
+      });
+      // Invalidate the list to ensure consistency
+      queryClient.invalidateQueries({ queryKey: playerAdminQueryKeys.lists() });
+    },
   });
 }
