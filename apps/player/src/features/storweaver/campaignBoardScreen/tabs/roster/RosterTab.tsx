@@ -1,6 +1,9 @@
-import type { CampaignType } from "@tapestry/types";
-import styles from "./RosterTab.module.scss";
-import { MemberCard } from "./MemberCard";
+import type { CampaignType } from '@tapestry/types';
+import { useMe } from '@/lib/auth-hooks';
+import styles from './RosterTab.module.scss';
+import { MemberCard } from './MemberCard';
+import { usePlayerProfile, useProfile } from '@tapestry/hooks';
+import { api } from '@/lib/api';
 
 type Props = {
   campaign: CampaignType & { _id: string };
@@ -8,7 +11,14 @@ type Props = {
 };
 
 export function RosterTab({ campaign, isArchived }: Props) {
+  const { data: currentUser } = useMe();
+  const { data: playerProfile } = useProfile(api, currentUser, 'player');
   const members = campaign.members || [];
+
+  // Find current user's role in this campaign
+  const currentMember = members.find((m) => m.player._id === playerProfile?.payload._id);
+  const currentUserRole = (currentMember?.role || 'observer') as 'sw' | 'co-sw' | 'player' | 'observer';
+  const currentUserId = currentUser?._id || '';
 
   if (members.length === 0) {
     return (
@@ -20,14 +30,14 @@ export function RosterTab({ campaign, isArchived }: Props) {
   }
 
   // Group members by role
-  const storyweavers = members.filter((m) => m.role === "sw" || m.role === "co-sw");
-  const players = members.filter((m) => m.role === "player");
-  const observers = members.filter((m) => m.role === "observer");
+  const storyweavers = members.filter((m) => m.role === 'sw' || m.role === 'co-sw');
+  const players = members.filter((m) => m.role === 'player');
+  const observers = members.filter((m) => m.role === 'observer');
 
   return (
     <div className={styles.container}>
       <div className={styles.summary}>
-        <strong>{members.length}</strong> {members.length === 1 ? "member" : "members"}
+        <strong>{members.length}</strong> {members.length === 1 ? 'member' : 'members'}
       </div>
 
       {storyweavers.length > 0 && (
@@ -35,7 +45,14 @@ export function RosterTab({ campaign, isArchived }: Props) {
           <h4 className={styles.groupTitle}>Storyweavers</h4>
           <div className={styles.list}>
             {storyweavers.map((member, idx) => (
-              <MemberCard key={`${member.player}-${idx}`} member={member} isArchived={isArchived} />
+              <MemberCard
+                key={`${member.player}-${idx}`}
+                member={member}
+                isArchived={isArchived}
+                campaignId={campaign._id}
+                currentUserRole={currentUserRole}
+                currentUserId={currentUserId}
+              />
             ))}
           </div>
         </section>
@@ -46,7 +63,14 @@ export function RosterTab({ campaign, isArchived }: Props) {
           <h4 className={styles.groupTitle}>Players</h4>
           <div className={styles.list}>
             {players.map((member, idx) => (
-              <MemberCard key={`${member.player}-${idx}`} member={member} isArchived={isArchived} />
+              <MemberCard
+                key={`${member.player}-${idx}`}
+                member={member}
+                isArchived={isArchived}
+                campaignId={campaign._id}
+                currentUserRole={currentUserRole}
+                currentUserId={currentUserId}
+              />
             ))}
           </div>
         </section>
@@ -57,7 +81,14 @@ export function RosterTab({ campaign, isArchived }: Props) {
           <h4 className={styles.groupTitle}>Observers</h4>
           <div className={styles.list}>
             {observers.map((member, idx) => (
-              <MemberCard key={`${member.player}-${idx}`} member={member} isArchived={isArchived} />
+              <MemberCard
+                key={`${member.player}-${idx}`}
+                member={member}
+                isArchived={isArchived}
+                campaignId={campaign._id}
+                currentUserRole={currentUserRole}
+                currentUserId={currentUserId}
+              />
             ))}
           </div>
         </section>

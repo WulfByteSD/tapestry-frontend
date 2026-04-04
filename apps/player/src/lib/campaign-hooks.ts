@@ -1,7 +1,19 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from './api';
 import type { CampaignStatus, CampaignType, JoinRequest } from '@tapestry/types';
-import { cleanParams, getCampaign, getCampaigns, getMyCampaigns, getMyJoinRequests, ListQueryParams } from '@tapestry/api-client';
+import {
+  cleanParams,
+  getCampaign,
+  getCampaigns,
+  getMyCampaigns,
+  getMyJoinRequests,
+  ListQueryParams,
+  removeCampaignMember,
+  updateCampaignMemberRole,
+  updateCampaignMemberNickname,
+  transferCampaignOwnership,
+  archiveCampaignMember,
+} from '@tapestry/api-client';
 import { useMemo } from 'react';
 
 export type CreateCampaignInput = {
@@ -98,5 +110,92 @@ export function useMyJoinRequests(enabled: boolean = true) {
     queryFn: () => getMyJoinRequests<JoinRequest>(api),
     enabled,
     staleTime: 1000 * 60 * 2, // 2 minutes (more frequent than campaigns since status changes)
+  });
+}
+
+/**
+ * Remove a member from a campaign
+ * Requires SW or Co-SW permissions
+ */
+export function useRemoveMemberMutation(campaignId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ playerId }: { playerId: string }) => {
+      await removeCampaignMember(api, campaignId, playerId);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['campaign', campaignId] });
+      queryClient.invalidateQueries({ queryKey: ['my-campaigns'] });
+    },
+  });
+}
+
+/**
+ * Update a member's role in a campaign
+ * Requires SW or Co-SW permissions
+ */
+export function useUpdateMemberRoleMutation(campaignId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ playerId, role }: { playerId: string; role: 'sw' | 'co-sw' | 'player' | 'observer' }) => {
+      await updateCampaignMemberRole(api, campaignId, playerId, role);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['campaign', campaignId] });
+    },
+  });
+}
+
+/**
+ * Update a member's nickname in a campaign
+ * Requires SW or Co-SW permissions
+ */
+export function useUpdateMemberNicknameMutation(campaignId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ playerId, nickname }: { playerId: string; nickname: string }) => {
+      await updateCampaignMemberNickname(api, campaignId, playerId, nickname);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['campaign', campaignId] });
+    },
+  });
+}
+
+/**
+ * Transfer campaign ownership to another member
+ * Only available to current primary Storyweaver
+ */
+export function useTransferOwnershipMutation(campaignId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ newOwnerId }: { newOwnerId: string }) => {
+      await transferCampaignOwnership(api, campaignId, newOwnerId);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['campaign', campaignId] });
+      queryClient.invalidateQueries({ queryKey: ['my-campaigns'] });
+    },
+  });
+}
+
+/**
+ * Archive a member from a campaign
+ * Requires SW or Co-SW permissions
+ */
+export function useArchiveMemberMutation(campaignId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ playerId }: { playerId: string }) => {
+      await archiveCampaignMember(api, campaignId, playerId);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['campaign', campaignId] });
+    },
   });
 }
