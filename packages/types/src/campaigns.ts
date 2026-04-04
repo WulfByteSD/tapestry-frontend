@@ -1,9 +1,9 @@
-import { PlayerType } from "./players";
+import { PlayerType } from './players';
 
-export type CampaignStatus = "active" | "archived";
-export type CampaignRole = "sw" | "co-sw" | "player" | "observer";
+export type CampaignStatus = 'active' | 'archived';
+export type CampaignRole = 'sw' | 'co-sw' | 'player' | 'observer';
 
-export type DiscordMode = "none" | "webhook" | "bot";
+export type DiscordMode = 'none' | 'webhook' | 'bot';
 
 export interface CampaignMember {
   player: PlayerType; // ref Player
@@ -33,7 +33,7 @@ export interface DiscordConfig {
   // Formatting / behavior
   postRolls?: boolean;
   postToThread?: boolean;
-  messageStyle?: "compact" | "detailed";
+  messageStyle?: 'compact' | 'detailed';
 }
 
 export interface CampaignDisplayConfig {
@@ -85,6 +85,7 @@ export type CampaignType = {
   // Meta
   rulesetVersion: number;
   notes?: string;
+  tableExpectations?: string;
 
   createdAt: Date;
   updatedAt: Date;

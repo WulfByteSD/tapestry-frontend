@@ -1,204 +1,607 @@
+// ==========================
+// Enhanced GameOverview Styles
+// Mobile-first responsive design
+// ==========================
+
 .page {
   display: grid;
-  gap: 1rem;
-  padding: 1rem 0 2rem;
+  gap: 1.25rem;
+  padding: 1rem 0 3rem;
+  max-width: 1400px;
+  margin: 0 auto;
+
+  @media (min-width: 768px) {
+    padding: 1.5rem 0 4rem;
+  }
 }
+
+// ==========================
+// Back Link
+// ==========================
 
 .backLink {
   color: inherit;
   text-decoration: none;
-  opacity: 0.82;
+  opacity: 0.75;
   width: fit-content;
+  font-size: 0.95rem;
+  transition: opacity 180ms ease;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  &:focus-visible {
+    opacity: 1;
+    outline: 2px solid rgba(142, 111, 255, 0.6);
+    outline-offset: 4px;
+    border-radius: 4px;
+  }
 }
 
-.backLink:hover {
-  opacity: 1;
-}
+// ==========================
+// State Cards (Loading, Error, etc.)
+// ==========================
 
 .notice,
-.stateCard,
-.hero,
-.panel,
-.joinCard {
-  border-radius: 26px;
+.stateCard {
+  border-radius: 20px;
   border: 1px solid rgba(255, 255, 255, 0.06);
   background: rgba(15, 18, 28, 0.95);
+  padding: 1.25rem 1rem;
+
+  @media (min-width: 768px) {
+    border-radius: 26px;
+    padding: 1.5rem 1.75rem;
+  }
 }
 
 .notice {
-  padding: 0.9rem 1rem;
   background: radial-gradient(circle at top left, rgba(255, 192, 110, 0.12), transparent 50%), rgba(15, 18, 28, 0.95);
 }
 
 .stateCard {
   display: grid;
-  gap: 0.45rem;
-  padding: 1.25rem;
+  gap: 0.5rem;
+
+  h1,
+  p {
+    margin: 0;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  p {
+    opacity: 0.88;
+    line-height: 1.5;
+  }
 }
 
-.stateCard h1,
-.stateCard p {
-  margin: 0;
-}
+// ==========================
+// Hero Section with Avatar
+// ==========================
 
 .hero {
+  display: grid;
+  gap: 1.25rem;
+  padding: 1.75rem 1rem;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   overflow: hidden;
   background:
-    radial-gradient(circle at top left, rgba(142, 111, 255, 0.26), transparent 40%),
-    radial-gradient(circle at bottom right, rgba(255, 208, 117, 0.15), transparent 40%), rgba(15, 18, 28, 0.98);
+    radial-gradient(circle at top left, rgba(142, 111, 255, 0.28), transparent 50%), radial-gradient(circle at bottom right, rgba(255, 208, 117, 0.18), transparent 50%),
+    rgba(15, 18, 28, 0.98);
+
+  @media (min-width: 768px) {
+    gap: 2rem;
+    padding: 2.5rem 2rem;
+    border-radius: 26px;
+  }
+
+  @media (min-width: 1024px) {
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    padding: 3rem 2.5rem;
+  }
+}
+
+.heroAvatar {
+  width: 100% !important;
+  height: auto !important;
+  max-width: 600px;
+  aspect-ratio: 1;
+  border-radius: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  object-fit: cover;
+
+  @media (min-width: 768px) {
+    border-radius: 20px;
+  }
+
+  @media (min-width: 1024px) {
+    max-width: 460px;
+  }
 }
 
 .heroContent {
   display: grid;
-  gap: 0.8rem;
-  padding: 1.25rem;
+  gap: 0.9rem;
+  min-width: 0; // Allow flex items to shrink
 }
 
 .eyebrow {
   margin: 0;
-  font-size: 0.8rem;
-  letter-spacing: 0.14em;
+  font-size: 0.75rem;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  opacity: 0.74;
+  opacity: 0.68;
+  font-weight: 600;
+
+  @media (min-width: 768px) {
+    font-size: 0.8rem;
+  }
 }
 
 .title {
   margin: 0;
-  font-size: clamp(2rem, 4vw, 3.2rem);
-  line-height: 1;
+  font-size: clamp(1.75rem, 5vw, 3.2rem);
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
 .subtitle {
   margin: 0;
   max-width: 66ch;
   line-height: 1.6;
-  opacity: 0.88;
+  opacity: 0.9;
+  font-size: 1rem;
+
+  @media (min-width: 768px) {
+    font-size: 1.05rem;
+    line-height: 1.65;
+  }
 }
 
-.metaRow,
-.chipRow {
+.metaRow {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.65rem;
   flex-wrap: wrap;
+  margin-top: 0.25rem;
 }
 
-.pill,
-.chip,
-.empty {
+.pill {
   display: inline-flex;
-  align-items: center;
-  min-height: 2rem;
-  padding: 0.35rem 0.75rem;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
+  flex-direction: column;
+  gap: 0.15rem;
+  min-height: 2.5rem;
+  padding: 0.5rem 0.9rem;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.09);
+  backdrop-filter: blur(8px);
   font-size: 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 180ms ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+
+  @media (min-width: 768px) {
+    padding: 0.55rem 1rem;
+  }
 }
 
-.empty {
-  opacity: 0.64;
+.pillLabel {
+  font-size: 0.7rem;
+  opacity: 0.65;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
 }
+
+.pillValue {
+  font-size: 0.9rem;
+  opacity: 1;
+  font-weight: 600;
+}
+
+// ==========================
+// Layout Grid
+// ==========================
 
 .grid {
   display: grid;
-  gap: 1rem;
-  grid-template-columns: minmax(0, 1.4fr) minmax(320px, 0.9fr);
-  align-items: start;
+  gap: 1.25rem;
+  grid-template-columns: 1fr;
+
+  @media (min-width: 1024px) {
+    grid-template-columns: minmax(0, 1.5fr) minmax(320px, 0.85fr);
+    align-items: start;
+    gap: 1.5rem;
+  }
 }
 
 .mainColumn,
 .sideColumn {
   display: grid;
-  gap: 1rem;
+  gap: 1.25rem;
+
+  @media (min-width: 768px) {
+    gap: 1.5rem;
+  }
 }
 
-.panel,
-.joinCard {
+// ==========================
+// Panel Components
+// ==========================
+
+.panel {
   display: grid;
-  gap: 0.85rem;
+  gap: 1rem;
+  padding: 1.25rem 1rem;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(15, 18, 28, 0.95);
+  transition: all 200ms ease;
+
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.09);
+  }
+
+  @media (min-width: 768px) {
+    padding: 1.5rem 1.75rem;
+    border-radius: 24px;
+  }
+
+  h2 {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+
+    @media (min-width: 768px) {
+      font-size: 1.25rem;
+    }
+  }
+}
+
+.panelText {
+  margin: 0;
+  line-height: 1.65;
+  opacity: 0.92;
+  white-space: pre-wrap;
+}
+
+// ==========================
+// Scrollable Content Container
+// ==========================
+
+.scrollableContent {
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+
+  // Custom scrollbar styling
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+    transition: background 180ms ease;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.25);
+    }
+  }
+
+  // Firefox scrollbar
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.15) rgba(255, 255, 255, 0.03);
+}
+
+// ==========================
+// Expand Button
+// ==========================
+
+.expandButton {
+  background: none;
+  border: none;
+  color: rgba(142, 111, 255, 0.95);
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.5rem 0;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  opacity: 0.9;
+  transition: opacity 180ms ease;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba(142, 111, 255, 0.6);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+}
+
+// ==========================
+// Storyweaver Card
+// ==========================
+
+.storyweaverCard {
+  @extend .panel;
+  background: radial-gradient(circle at top left, rgba(111, 89, 255, 0.1), transparent 60%), rgba(15, 18, 28, 0.95);
+  border-color: rgba(111, 89, 255, 0.18);
+
+  &:hover {
+    border-color: rgba(111, 89, 255, 0.25);
+  }
+}
+
+.storyweaverContent {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1rem;
+  align-items: center;
+}
+
+.storyweaverAvatar {
+  width: 64px !important;
+  height: 64px !important;
+
+  @media (min-width: 768px) {
+    width: 80px !important;
+    height: 80px !important;
+  }
+}
+
+.storyweaverInfo {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.storyweaverName {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.storyweaverBio {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  opacity: 0.85;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+// ==========================
+// Members Section
+// ==========================
+
+.membersGrid {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.memberRoleSection {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.memberRoleTitle {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.7;
+}
+
+.memberAvatarRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.memberAvatar {
+  width: 48px !important;
+  height: 48px !important;
+  border: 2px solid rgba(255, 255, 255, 0.08);
+  transition: all 180ms ease;
+
+  &:hover {
+    border-color: rgba(142, 111, 255, 0.4);
+    transform: translateY(-2px);
+  }
+}
+
+.memberOverflow {
+  font-size: 0.9rem;
+  opacity: 0.7;
+  font-weight: 500;
+  padding: 0.5rem 0.75rem;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+}
+
+.emptyMembers {
+  margin: 0;
+  font-style: italic;
+  opacity: 0.65;
+  text-align: center;
   padding: 1rem;
 }
 
-.panel h2,
-.joinCard h2 {
-  margin: 0;
-  font-size: 1.05rem;
+// ==========================
+// Table Expectations Panel
+// ==========================
+
+.expectationsPanel {
+  @extend .panel;
+  background: radial-gradient(circle at top right, rgba(255, 208, 117, 0.08), transparent 60%), rgba(15, 18, 28, 0.95);
+  border-color: rgba(255, 208, 117, 0.15);
+
+  &:hover {
+    border-color: rgba(255, 208, 117, 0.22);
+  }
 }
 
-.panel p,
-.joinCard p {
-  margin: 0;
-  line-height: 1.6;
-  opacity: 0.9;
+.expectationsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+
+  h2 {
+    margin: 0;
+  }
 }
 
-.joinCardTop {
+.expectationsIcon {
+  font-size: 1.5rem;
+  opacity: 0.7;
+  filter: grayscale(0.3);
+}
+
+.expectationsText {
+  @extend .panelText;
+  font-size: 1.02rem;
+  line-height: 1.7;
+}
+
+// ==========================
+// Chips and Tags
+// ==========================
+
+.chipRow {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.chip,
+.empty {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 0.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition: all 160ms ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.12);
+  }
+}
+
+.empty {
+  opacity: 0.58;
+  font-style: italic;
+}
+
+// ==========================
+// Detail List (Campaign Details)
+// ==========================
+
+.detailList {
   display: grid;
-  gap: 0.4rem;
+  gap: 0.9rem;
+  margin: 0;
 }
 
-.messageField {
+.detailItem {
   display: grid;
-  gap: 0.45rem;
+  grid-template-columns: auto 1fr;
+  gap: 1rem;
+  align-items: baseline;
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  dt {
+    font-size: 0.88rem;
+    opacity: 0.7;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  dd {
+    margin: 0;
+    font-size: 0.98rem;
+    font-weight: 500;
+    text-align: right;
+    opacity: 0.95;
+  }
 }
 
-.messageField span {
-  font-size: 0.88rem;
-  opacity: 0.8;
+.status_active {
+  color: rgba(150, 255, 150, 0.95);
 }
 
-.messageField textarea {
-  width: 100%;
-  resize: vertical;
-  min-height: 7rem;
-  border-radius: 18px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(10, 12, 20, 0.9);
-  color: inherit;
-  padding: 0.9rem 1rem;
-  font: inherit;
+.status_draft {
+  color: rgba(255, 200, 100, 0.95);
 }
 
-.joinButton {
-  min-height: 3rem;
-  border: 0;
-  border-radius: 18px;
-  background: linear-gradient(135deg, rgba(111, 89, 255, 0.96), rgba(148, 118, 255, 0.96));
-  color: white;
-  font: inherit;
-  font-weight: 600;
-  padding: 0.8rem 1rem;
-  cursor: pointer;
-  transition:
-    transform 140ms ease,
-    opacity 140ms ease;
+.status_archived {
+  color: rgba(200, 200, 200, 0.7);
 }
 
-.joinButton:hover:not(:disabled) {
-  transform: translateY(-1px);
-}
+// ==========================
+// Legacy Styles (for compatibility)
+// ==========================
 
-.joinButton:disabled {
-  opacity: 0.62;
-  cursor: not-allowed;
-}
+.factList {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+  padding-left: 1.25rem;
 
-.helperText {
-  color: rgba(199, 231, 188, 0.95);
+  li {
+    line-height: 1.6;
+    opacity: 0.9;
+  }
 }
 
 .errorText {
   color: rgba(255, 168, 168, 0.96);
-}
-
-.factList {
-  display: grid;
-  gap: 0.5rem;
   margin: 0;
-  padding-left: 1rem;
+  line-height: 1.5;
 }
 
-.factList li {
-  line-height: 1.45;
+.helperText {
+  color: rgba(199, 231, 188, 0.95);
+  margin: 0;
+  line-height: 1.5;
 }
 
 @media (max-width: 960px) {

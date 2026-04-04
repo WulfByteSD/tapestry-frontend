@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from './api';
 import type { CampaignStatus } from '@tapestry/types';
-import { cleanParams, getCampaigns, ListQueryParams } from '@tapestry/api-client';
+import { cleanParams, getCampaign, getCampaigns, ListQueryParams } from '@tapestry/api-client';
 import { useMemo } from 'react';
 
 export type CreateCampaignInput = {
@@ -44,5 +44,14 @@ export function useCampaigns(params: ListQueryParams = {}) {
   return useQuery({
     queryKey: ['campaigns', cleaned],
     queryFn: () => getCampaigns(api, cleaned),
+  });
+}
+
+export function useCampaign(id: string | undefined) {
+  return useQuery({
+    queryKey: ['campaign', id],
+    queryFn: () => getCampaign(api, id!),
+    enabled: !!id,
+    staleTime: 1000 * 60 * 5, // 5 minutes
   });
 }

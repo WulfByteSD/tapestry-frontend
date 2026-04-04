@@ -1,107 +1,76 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { api } from "@/lib/api";
-import styles from "./GameOverview.module.scss";
-
-type GameDetail = {
-  id: string;
-  name: string;
-  storyweaverName: string;
-  settingKey?: string;
-  toneModules: string[];
-  playerCount: number;
-  maxPlayers?: number | null;
-  pitch?: string;
-  tableExpectations?: string;
-  summary?: string;
-  joinPolicy?: "open" | "approval" | "invite_only";
-  status?: string;
-  requestStatus?: "none" | "pending" | "accepted" | "declined";
-};
+import Link from 'next/link';
+import { useMemo, useState } from 'react';
+import { Avatar } from '@tapestry/ui';
+import { useCampaign } from '@/lib/campaign-hooks';
+import type { CampaignType, CampaignMember, CampaignRole } from '@tapestry/types';
+import JoinCampaignCard from '@/views/games/_components/joinCampaignCard/JoinCampaignCard.component';
+import styles from './GameOverview.module.scss';
+import Image from 'next/image';
 
 type Props = {
   gameId: string;
 };
 
-function normalizeGame(raw: any): GameDetail {
+type MembersByRole = {
+  sw: CampaignMember[];
+  'co-sw': CampaignMember[];
+  player: CampaignMember[];
+  observer: CampaignMember[];
+};
+
+function truncateWords(text: string, maxWords: number): { truncated: string; isTruncated: boolean } {
+  const words = text.trim().split(/\s+/);
+  if (words.length <= maxWords) {
+    return { truncated: text, isTruncated: false };
+  }
   return {
-    id: String(raw?._id ?? raw?.id ?? "unknown"),
-    name: String(raw?.name ?? "Untitled Campaign"),
-    storyweaverName: String(
-      raw?.storyweaverName ?? raw?.storyweaver?.displayName ?? raw?.storyweaver?.name ?? "Unknown Storyweaver",
-    ),
-    settingKey: raw?.settingKey ?? raw?.setting?.key ?? undefined,
-    toneModules: Array.isArray(raw?.toneModules) ? raw.toneModules : [],
-    playerCount:
-      typeof raw?.playerCount === "number"
-        ? raw.playerCount
-        : Array.isArray(raw?.members)
-          ? raw.members.filter((member: any) => member?.role === "player").length
-          : 0,
-    maxPlayers:
-      typeof raw?.maxPlayers === "number"
-        ? raw.maxPlayers
-        : typeof raw?.limits?.maxPlayers === "number"
-          ? raw.limits.maxPlayers
-          : null,
-    pitch: raw?.pitch ?? raw?.notes ?? "",
-    tableExpectations: raw?.tableExpectations ?? raw?.table?.expectations ?? raw?.expectations ?? "",
-    summary: raw?.summary ?? raw?.description ?? raw?.overview ?? "",
-    joinPolicy: raw?.joinPolicy ?? "approval",
-    status: raw?.status ?? "active",
-    requestStatus: raw?.requestStatus ?? "none",
+    truncated: words.slice(0, maxWords).join(' ') + '...',
+    isTruncated: true,
   };
 }
 
-async function fetchGameDetail(gameId: string): Promise<GameDetail | null> {
-  try {
-    const response = await api.get(`/game/campaigns/${gameId}/public`);
-    const payload = response?.data?.payload ?? response?.data ?? null;
+function groupMembersByRole(members: CampaignMember[]): MembersByRole {
+  const grouped: MembersByRole = {
+    sw: [],
+    'co-sw': [],
+    player: [],
+    observer: [],
+  };
 
-    if (!payload) return null;
-    return normalizeGame(payload);
-  } catch {
-    return null;
-  }
+  members.forEach((member) => {
+    grouped[member.role].push(member);
+  });
+
+  return grouped;
 }
 
 export default function GameOverviewView({ gameId }: Props) {
-  const [requestMessage, setRequestMessage] = useState("");
-  const [requestState, setRequestState] = useState<"none" | "pending" | "accepted" | "declined">("none");
+  const [notesExpanded, setNotesExpanded] = useState(false);
 
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["discoverable-game", gameId],
-    queryFn: () => fetchGameDetail(gameId),
-    enabled: !!gameId,
-    staleTime: 30_000,
-  });
+  const { data, isLoading, isError } = useCampaign(gameId);
+  const campaign = data?.payload as CampaignType | undefined;
 
-  useEffect(() => {
-    if (data?.requestStatus) {
-      setRequestState(data.requestStatus);
-    }
-  }, [data?.requestStatus]);
+  // Compute derived values (must be before early returns to satisfy Rules of Hooks)
+  const playerCount = campaign?.members?.length ?? 0;
+  const maxPlayers = (campaign as any)?.maxPlayers ?? null;
+  const settingLabel = campaign?.settingKey ?? 'No setting';
+  const joinPolicyLabel = campaign?.discoverable ? 'Open to discovery' : 'Private';
+  const joinPolicy = (campaign as any)?.joinPolicy ?? 'invite-only';
+  const capacityLabel = maxPlayers ? `${playerCount} / ${maxPlayers}` : `${playerCount}`;
 
-  const joinMutation = useMutation({
-    mutationFn: async () => {
-      await api.post(`/game/campaigns/${gameId}/join-requests`, {
-        message: requestMessage.trim() || undefined,
-      });
-    },
-    onSuccess: () => {
-      setRequestState("pending");
-    },
-  });
+  const membersByRole = useMemo(() => groupMembersByRole(campaign?.members ?? []), [campaign?.members]);
 
-  const joinLabel = useMemo(() => {
-    if (requestState === "pending") return "Request Pending";
-    if (requestState === "accepted") return "Joined";
-    if (requestState === "declined") return "Request Declined";
-    return data?.joinPolicy === "open" ? "Join Game" : "Request to Join";
-  }, [data?.joinPolicy, requestState]);
+  const storyweaver = useMemo(() => {
+    return membersByRole.sw[0]?.player ?? null;
+  }, [membersByRole]);
+
+  const notesContent = useMemo(() => {
+    const text = campaign?.notes ?? '';
+    if (!text) return { truncated: 'No campaign pitch has been written yet.', isTruncated: false };
+    return truncateWords(text, 50);
+  }, [campaign?.notes]);
 
   if (isLoading) {
     return (
@@ -112,7 +81,7 @@ export default function GameOverviewView({ gameId }: Props) {
     );
   }
 
-  if (!data) {
+  if (!campaign) {
     return (
       <div className={styles.stateCard}>
         <h1>Game not found</h1>
@@ -130,26 +99,27 @@ export default function GameOverviewView({ gameId }: Props) {
         ← Back to games
       </Link>
 
-      {isError ? (
-        <div className={styles.notice}>
-          Live detail fetch failed, so this page is using placeholder data while you build the frontend.
-        </div>
-      ) : null}
+      {isError ? <div className={styles.notice}>Live detail fetch failed, so this page is using placeholder data while you build the frontend.</div> : null}
 
       <section className={styles.hero}>
+        {campaign.avatar ? <Image src={campaign.avatar} alt={campaign.name} width={460} height={460} className={styles.heroAvatar} /> : null}
         <div className={styles.heroContent}>
           <p className={styles.eyebrow}>Campaign Overview</p>
-          <h1 className={styles.title}>{data.name}</h1>
-          <p className={styles.subtitle}>{data.pitch || "No campaign pitch yet."}</p>
+          <h1 className={styles.title}>{campaign.name}</h1>
 
           <div className={styles.metaRow}>
-            <span className={styles.pill}>{data.settingKey ?? "No setting"}</span>
             <span className={styles.pill}>
-              {data.playerCount}
-              {data.maxPlayers ? ` / ${data.maxPlayers}` : ""} players
+              <span className={styles.pillLabel}>Setting</span>
+              <span className={styles.pillValue}>{settingLabel}</span>
             </span>
-            <span className={styles.pill}>Storyweaver · {data.storyweaverName}</span>
-            <span className={styles.pill}>{data.joinPolicy === "open" ? "Open Join" : "Approval Required"}</span>
+            <span className={styles.pill}>
+              <span className={styles.pillLabel}>Players</span>
+              <span className={styles.pillValue}>{capacityLabel}</span>
+            </span>
+            <span className={styles.pill}>
+              <span className={styles.pillLabel}>Join Policy</span>
+              <span className={styles.pillValue}>{joinPolicy === 'open' ? 'Open' : joinPolicy === 'request' ? 'Request' : 'Invite Only'}</span>
+            </span>
           </div>
         </div>
       </section>
@@ -157,23 +127,92 @@ export default function GameOverviewView({ gameId }: Props) {
       <div className={styles.grid}>
         <main className={styles.mainColumn}>
           <section className={styles.panel}>
-            <h2>About this game</h2>
-            <p>{data.summary || "No summary has been written yet."}</p>
+            <h2>About this campaign</h2>
+            <div className={notesExpanded ? styles.scrollableContent : undefined}>
+              <p className={styles.panelText}>{notesExpanded ? campaign.notes : notesContent.truncated}</p>
+            </div>
+            {notesContent.isTruncated ? (
+              <button type="button" className={styles.expandButton} onClick={() => setNotesExpanded(!notesExpanded)}>
+                {notesExpanded ? 'Show less' : 'Read more'}
+              </button>
+            ) : null}
           </section>
 
-          <section className={styles.panel}>
-            <h2>Table expectations</h2>
-            <p>
-              {data.tableExpectations ||
-                "No expectations have been published yet. A little mystery is fun. A total vacuum is less fun."}
-            </p>
-          </section>
+          {storyweaver ? (
+            <section className={styles.storyweaverCard}>
+              <h2>Storyweaver</h2>
+              <div className={styles.storyweaverContent}>
+                <Avatar src={storyweaver.avatar ?? null} name={storyweaver.displayName ?? 'Unknown'} size="lg" className={styles.storyweaverAvatar} />
+                <div className={styles.storyweaverInfo}>
+                  <h3 className={styles.storyweaverName}>{storyweaver.displayName ?? 'Unknown Storyweaver'}</h3>
+                  {storyweaver.bio ? <p className={styles.storyweaverBio}>{storyweaver.bio}</p> : null}
+                </div>
+              </div>
+            </section>
+          ) : null}
 
           <section className={styles.panel}>
-            <h2>Tone modules</h2>
+            <h2>Campaign Members</h2>
+            <div className={styles.membersGrid}>
+              {membersByRole.player.length > 0 ? (
+                <div className={styles.memberRoleSection}>
+                  <h3 className={styles.memberRoleTitle}>Players</h3>
+                  <div className={styles.memberAvatarRow}>
+                    {membersByRole.player.slice(0, 4).map((member) => (
+                      <Avatar key={member.player._id} src={member.player.avatar ?? null} name={member.player.displayName ?? 'Player'} size="md" className={styles.memberAvatar} />
+                    ))}
+                    {membersByRole.player.length > 4 ? <span className={styles.memberOverflow}>+ {membersByRole.player.length - 4} others</span> : null}
+                  </div>
+                </div>
+              ) : null}
+
+              {membersByRole['co-sw'].length > 0 ? (
+                <div className={styles.memberRoleSection}>
+                  <h3 className={styles.memberRoleTitle}>Co-Storyweavers</h3>
+                  <div className={styles.memberAvatarRow}>
+                    {membersByRole['co-sw'].slice(0, 4).map((member) => (
+                      <Avatar key={member.player._id} src={member.player.avatar ?? null} name={member.player.displayName ?? 'Co-SW'} size="md" className={styles.memberAvatar} />
+                    ))}
+                    {membersByRole['co-sw'].length > 4 ? <span className={styles.memberOverflow}>+ {membersByRole['co-sw'].length - 4} others</span> : null}
+                  </div>
+                </div>
+              ) : null}
+
+              {membersByRole.observer.length > 0 ? (
+                <div className={styles.memberRoleSection}>
+                  <h3 className={styles.memberRoleTitle}>Observers</h3>
+                  <div className={styles.memberAvatarRow}>
+                    {membersByRole.observer.slice(0, 4).map((member) => (
+                      <Avatar key={member.player._id} src={member.player.avatar ?? null} name={member.player.displayName ?? 'Observer'} size="md" className={styles.memberAvatar} />
+                    ))}
+                    {membersByRole.observer.length > 4 ? <span className={styles.memberOverflow}>+ {membersByRole.observer.length - 4} others</span> : null}
+                  </div>
+                </div>
+              ) : null}
+
+              {membersByRole.player.length === 0 && membersByRole['co-sw'].length === 0 && membersByRole.observer.length === 0 ? (
+                <p className={styles.emptyMembers}>No members yet. Be the first to join!</p>
+              ) : null}
+            </div>
+          </section>
+
+          {campaign.tableExpectations ? (
+            <section className={styles.expectationsPanel}>
+              <div className={styles.expectationsHeader}>
+                <h2>Table Expectations</h2>
+                <span className={styles.expectationsIcon}>📋</span>
+              </div>
+              <div className={styles.scrollableContent}>
+                <p className={styles.expectationsText}>{campaign.tableExpectations}</p>
+              </div>
+            </section>
+          ) : null}
+
+          <section className={styles.panel}>
+            <h2>Tone & Atmosphere</h2>
             <div className={styles.chipRow}>
-              {data.toneModules.length > 0 ? (
-                data.toneModules.map((tone) => (
+              {campaign.toneModules && campaign.toneModules.length > 0 ? (
+                campaign.toneModules.map((tone) => (
                   <span key={tone} className={styles.chip}>
                     {tone}
                   </span>
@@ -186,56 +225,28 @@ export default function GameOverviewView({ gameId }: Props) {
         </main>
 
         <aside className={styles.sideColumn}>
-          <section className={styles.joinCard}>
-            <div className={styles.joinCardTop}>
-              <h2>Join this game</h2>
-              <p>
-                Send a request to the Storyweaver. Once accepted, the player can attach a character to the campaign.
-              </p>
-            </div>
-
-            <label className={styles.messageField}>
-              <span>Message to Storyweaver</span>
-              <textarea
-                value={requestMessage}
-                onChange={(event) => setRequestMessage(event.target.value)}
-                placeholder="Hey, this campaign looks like exactly my kind of bad decision."
-                rows={5}
-                disabled={requestState === "pending" || requestState === "accepted"}
-              />
-            </label>
-
-            <button
-              type="button"
-              className={styles.joinButton}
-              onClick={() => joinMutation.mutate()}
-              disabled={joinMutation.isPending || requestState === "pending" || requestState === "accepted"}
-            >
-              {joinMutation.isPending ? "Submitting..." : joinLabel}
-            </button>
-
-            {joinMutation.isError ? (
-              <p className={styles.errorText}>Join request failed. The backend probably hasn’t grown this limb yet.</p>
-            ) : null}
-
-            {requestState === "pending" ? <p className={styles.helperText}>Your request is pending review.</p> : null}
-
-            {requestState === "accepted" ? (
-              <p className={styles.helperText}>You’ve been accepted. Next step: attach a character to the campaign.</p>
-            ) : null}
-          </section>
+          <JoinCampaignCard gameId={gameId} joinPolicy={joinPolicy as 'open' | 'request' | 'invite-only'} />
 
           <section className={styles.panel}>
-            <h2>Quick facts</h2>
-            <ul className={styles.factList}>
-              <li>Status: {data.status ?? "active"}</li>
-              <li>Join policy: {data.joinPolicy ?? "approval"}</li>
-              <li>Current players: {data.playerCount}</li>
-              <li>
-                Open seats:{" "}
-                {typeof data.maxPlayers === "number" ? Math.max(data.maxPlayers - data.playerCount, 0) : "—"}
-              </li>
-            </ul>
+            <h2>Campaign Details</h2>
+            <dl className={styles.detailList}>
+              <div className={styles.detailItem}>
+                <dt>Status</dt>
+                <dd className={styles[`status_${campaign.status}`]}>{campaign.status ?? 'active'}</dd>
+              </div>
+              <div className={styles.detailItem}>
+                <dt>Current Players</dt>
+                <dd>{capacityLabel} players</dd>
+              </div>
+              <div className={styles.detailItem}>
+                <dt>Setting</dt>
+                <dd>{settingLabel}</dd>
+              </div>
+              <div className={styles.detailItem}>
+                <dt>Join Policy</dt>
+                <dd>{joinPolicy === 'open' ? 'Open to all' : joinPolicy === 'request' ? 'Approval required' : 'Invite only'}</dd>
+              </div>
+            </dl>
           </section>
         </aside>
       </div>
