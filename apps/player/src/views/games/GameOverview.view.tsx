@@ -3,8 +3,11 @@
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { Avatar } from '@tapestry/ui';
+import { useProfile } from '@tapestry/hooks';
 import { useCampaign } from '@/lib/campaign-hooks';
-import type { CampaignType, CampaignMember, CampaignRole } from '@tapestry/types';
+import { useMe } from '@/lib/auth-hooks';
+import { api } from '@/lib/api';
+import type { CampaignType, CampaignMember, CampaignRole, PlayerType } from '@tapestry/types';
 import JoinCampaignCard from '@/views/games/_components/joinCampaignCard/JoinCampaignCard.component';
 import styles from './GameOverview.module.scss';
 import Image from 'next/image';
@@ -51,6 +54,10 @@ export default function GameOverviewView({ gameId }: Props) {
 
   const { data, isLoading, isError } = useCampaign(gameId);
   const campaign = data?.payload as CampaignType | undefined;
+
+  // Get current user's profile to check membership
+  const { data: me } = useMe();
+  const { selectedProfile: profile } = useProfile<PlayerType>(api, me, 'player');
 
   // Compute derived values (must be before early returns to satisfy Rules of Hooks)
   const playerCount = campaign?.members?.length ?? 0;
@@ -225,7 +232,7 @@ export default function GameOverviewView({ gameId }: Props) {
         </main>
 
         <aside className={styles.sideColumn}>
-          <JoinCampaignCard gameId={gameId} joinPolicy={joinPolicy as 'open' | 'request' | 'invite-only'} />
+          <JoinCampaignCard gameId={gameId} joinPolicy={joinPolicy as 'open' | 'request' | 'invite-only'} members={campaign?.members || []} currentUserProfileId={profile?._id} />
 
           <section className={styles.panel}>
             <h2>Campaign Details</h2>

@@ -160,3 +160,63 @@
   border-radius: 50%;
   color: rgba(180, 255, 180, 0.98);
 }
+
+.boardButton {
+  margin-top: 0.75rem;
+  width: 100%;
+}
+
+// ==========================
+// Pending Request State
+// ==========================
+
+.pendingIcon {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: bold;
+  background: rgba(255, 200, 100, 0.15);
+  border-radius: 50%;
+  color: rgba(255, 220, 140, 0.98);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.requestMessage {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  text-align: left;
+}
+
+.messageLabel {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.messageText {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.85);
+  font-style: italic;
+}

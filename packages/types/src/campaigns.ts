@@ -20,6 +20,19 @@ export interface CampaignInvite {
   createdAt?: Date;
 }
 
+export type JoinRequestStatus = 'pending' | 'approved' | 'rejected';
+
+export interface JoinRequest {
+  _id: string;
+  campaign: string; // campaign ID
+  player: string; // player ID
+  role: CampaignRole;
+  message?: string;
+  status: JoinRequestStatus;
+  createdAt: Date;
+  updatedAt?: Date;
+}
+
 export interface DiscordConfig {
   mode: DiscordMode;
 

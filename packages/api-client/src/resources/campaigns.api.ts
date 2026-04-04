@@ -22,3 +22,11 @@ export async function getMyCampaigns<CampaignType>(api: AxiosInstance): Promise<
   const res = await api.get('/game/campaigns/mine');
   return res.data as ApiListResponse<CampaignType>;
 }
+
+/**
+ * Get all join requests for the authenticated user
+ */
+export async function getMyJoinRequests<JoinRequestType>(api: AxiosInstance): Promise<ApiListResponse<JoinRequestType>> {
+  const res = await api.get('/game/campaigns/join-requests/me');
+  return res.data as ApiListResponse<JoinRequestType>;
+}

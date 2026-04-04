@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from './api';
-import type { CampaignStatus, CampaignType } from '@tapestry/types';
-import { cleanParams, getCampaign, getCampaigns, getMyCampaigns, ListQueryParams } from '@tapestry/api-client';
+import type { CampaignStatus, CampaignType, JoinRequest } from '@tapestry/types';
+import { cleanParams, getCampaign, getCampaigns, getMyCampaigns, getMyJoinRequests, ListQueryParams } from '@tapestry/api-client';
 import { useMemo } from 'react';
 
 export type CreateCampaignInput = {
@@ -85,5 +85,18 @@ export function useMyCampaigns() {
     queryKey: ['my-campaigns'],
     queryFn: () => getMyCampaigns<CampaignType>(api),
     staleTime: 1000 * 60 * 5, // 5 minutes
+  });
+}
+
+/**
+ * Fetch all join requests for the authenticated user
+ * Used to check if user has pending requests for campaigns
+ */
+export function useMyJoinRequests(enabled: boolean = true) {
+  return useQuery({
+    queryKey: ['my-join-requests'],
+    queryFn: () => getMyJoinRequests<JoinRequest>(api),
+    enabled,
+    staleTime: 1000 * 60 * 2, // 2 minutes (more frequent than campaigns since status changes)
   });
 }

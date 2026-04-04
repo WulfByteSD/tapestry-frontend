@@ -1,22 +1,45 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { TextAreaField, SelectField } from '@tapestry/ui';
+import { TextAreaField, SelectField, Button } from '@tapestry/ui';
 import { api } from '@/lib/api';
+import { useMyJoinRequests } from '@/lib/campaign-hooks';
+import type { CampaignMember } from '@tapestry/types';
 import styles from './JoinCampaignCard.module.scss';
+import Link from 'next/link';
 
 type JoinPolicy = 'open' | 'request' | 'invite-only';
 
 type Props = {
   gameId: string;
   joinPolicy: JoinPolicy;
+  members: CampaignMember[];
+  currentUserProfileId?: string;
 };
 
-export default function JoinCampaignCard({ gameId, joinPolicy }: Props) {
+export default function JoinCampaignCard({ gameId, joinPolicy, members, currentUserProfileId }: Props) {
   const queryClient = useQueryClient();
   const [requestMessage, setRequestMessage] = useState('');
   const [preferredRole, setPreferredRole] = useState<'player' | 'observer'>('player');
+
+  // Check if user is already a member
+  const isMember = useMemo(() => {
+    if (!currentUserProfileId) return false;
+    return members.some((member) => (typeof member.player === 'string' ? member.player === currentUserProfileId : member.player._id === currentUserProfileId));
+  }, [members, currentUserProfileId]);
+
+  // Only fetch join requests if user is not already a member
+  const { data: joinRequestsResponse } = useMyJoinRequests(
+    !isMember && joinPolicy === 'request' // Only fetch if not a member and campaign requires approval
+  );
+  const joinRequests = joinRequestsResponse?.payload || [];
+
+  // Check if user has a pending join request for this campaign
+  const pendingRequest = useMemo(() => {
+    if (isMember) return null;
+    return joinRequests.find((req) => req.campaign === gameId && req.status === 'pending');
+  }, [joinRequests, gameId, isMember]);
 
   const joinMutation = useMutation({
     mutationFn: async () => {
@@ -43,8 +66,54 @@ export default function JoinCampaignCard({ gameId, joinPolicy }: Props) {
       // Invalidate queries to refresh campaign data and user's campaign list
       queryClient.invalidateQueries({ queryKey: ['campaign', gameId] });
       queryClient.invalidateQueries({ queryKey: ['my-campaigns'] });
+      queryClient.invalidateQueries({ queryKey: ['my-join-requests'] });
     },
   });
+
+  // User is already a member - show member status
+  if (isMember) {
+    const userMember = members.find((member) => (typeof member.player === 'string' ? member.player === currentUserProfileId : member.player._id === currentUserProfileId));
+
+    return (
+      <section className={styles.joinCard}>
+        <div className={styles.joinCardTop}>
+          <div className={styles.successIcon}>✓</div>
+          <h2>You're a Member</h2>
+          <p>
+            You joined this campaign as a{' '}
+            <strong>{userMember?.role === 'sw' ? 'Storyweaver' : userMember?.role === 'co-sw' ? 'Co-Storyweaver' : userMember?.role === 'observer' ? 'Observer' : 'Player'}</strong>
+            .
+          </p>
+          <Link href={`/games/${gameId}/board`}>
+            <Button variant="solid" tone="gold" className={styles.boardButton}>
+              Go to Game Board
+            </Button>
+          </Link>
+        </div>
+      </section>
+    );
+  }
+
+  // User has a pending join request
+  if (pendingRequest) {
+    return (
+      <section className={styles.joinCard}>
+        <div className={styles.joinCardTop}>
+          <div className={styles.pendingIcon}>⏳</div>
+          <h2>Request Pending</h2>
+          <p>
+            Your request to join as a <strong>{pendingRequest.role === 'observer' ? 'Observer' : 'Player'}</strong> is awaiting approval from the Storyweaver.
+          </p>
+          {pendingRequest.message && (
+            <div className={styles.requestMessage}>
+              <p className={styles.messageLabel}>Your message:</p>
+              <p className={styles.messageText}>"{pendingRequest.message}"</p>
+            </div>
+          )}
+        </div>
+      </section>
+    );
+  }
 
   // Invite-only campaigns cannot be joined
   if (joinPolicy === 'invite-only') {
