@@ -26,43 +26,6 @@ type Props = {
   gameId: string;
 };
 
-const MOCK_GAMES: GameDetail[] = [
-  {
-    id: "ashen-road",
-    name: "The Ashen Road",
-    storyweaverName: "Austin",
-    settingKey: "woven-realms",
-    toneModules: ["grim-journey", "mystery", "survival"],
-    playerCount: 3,
-    maxPlayers: 5,
-    pitch: "A dying trade road, strange ember storms, and a kingdom pretending everything is fine.",
-    tableExpectations:
-      "Heavy roleplay, meaningful travel, danger with consequences, and a tone that leans serious without becoming a melodrama swamp.",
-    summary:
-      "You begin on the road between fading settlements while rumors spread of a rupture in the old kingdom routes. Strange creatures, stranger politics, classic human disaster seasoning.",
-    joinPolicy: "approval",
-    status: "active",
-    requestStatus: "none",
-  },
-  {
-    id: "glass-sea",
-    name: "The Glass Sea",
-    storyweaverName: "Marrow Vale",
-    settingKey: "woven-realms",
-    toneModules: ["exploration", "wonder", "danger"],
-    playerCount: 2,
-    maxPlayers: 4,
-    pitch: "Sail fractured waters where memory and tide refuse to behave like respectable natural laws.",
-    tableExpectations:
-      "Open-world leaning, lore discovery, and player curiosity rewarded with both treasure and terrible consequences.",
-    summary:
-      "The sea reflects what should not exist, and islands appear where no cartographer would dare swear to them.",
-    joinPolicy: "open",
-    status: "active",
-    requestStatus: "none",
-  },
-];
-
 function normalizeGame(raw: any): GameDetail {
   return {
     id: String(raw?._id ?? raw?.id ?? "unknown"),
@@ -101,7 +64,7 @@ async function fetchGameDetail(gameId: string): Promise<GameDetail | null> {
     if (!payload) return null;
     return normalizeGame(payload);
   } catch {
-    return MOCK_GAMES.find((game) => game.id === gameId) ?? null;
+    return null;
   }
 }
 

@@ -1,22 +1,4 @@
 # Feature Candidates
-
----
-
-## 2) Admin Content CRUD Completion
-- **Status**: planned
-- **Category**: admin feature
-- **Value**: high
-- **Complexity**: medium
-- **Backend dependency**: yes
-- **Priority notes**:
-  - Foundational for the content library
-  - Unlocks better admin workflows and future custom-content features
-- **Vision**:
-  - Complete CRUD support for content library entities such as abilities, skills, items, and related definitions
-- **Open questions**:
-  - Which entities still lack full CRUD?
-  - Are there shared form/editor patterns that should be standardized?
-
 ---
 
 ## 3) Shared Module System

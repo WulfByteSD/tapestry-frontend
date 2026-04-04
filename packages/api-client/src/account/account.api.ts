@@ -41,7 +41,7 @@ export async function updatePlayerProfile(api: AxiosInstance, profileId: string,
 }
 
 export async function updateUserAccount(api: AxiosInstance, userId: string, input: UpdateUserAccountInput) {
-  const res = await api.put(`/user/${userId}`, input);
+  const res = await api.put(`/auth/users/${userId}`, input);
   return res.data.payload as AuthType;
 }
 
