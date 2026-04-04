@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import type { CampaignMember } from '@tapestry/types';
-import { Avatar, DropdownMenu } from '@tapestry/ui';
+import { Avatar, DropdownMenu, useAlert } from '@tapestry/ui';
 import type { DropdownMenuItem } from '@tapestry/ui';
 import { FaEllipsisV, FaEdit, FaPencilAlt, FaTrash, FaCrown, FaArchive } from 'react-icons/fa';
 import {
@@ -60,6 +60,7 @@ function getRoleLabel(role: string): string {
 }
 
 export function MemberCard({ member, isArchived, campaignId, currentUserRole, currentUserId }: Props) {
+  const { addAlert } = useAlert();
   const [roleModalOpen, setRoleModalOpen] = useState(false);
   const [nicknameModalOpen, setNicknameModalOpen] = useState(false);
 
@@ -94,6 +95,10 @@ export function MemberCard({ member, isArchived, campaignId, currentUserRole, cu
         {
           onSuccess: () => {
             setRoleModalOpen(false);
+          },
+          onError: (error: any) => {
+            const messageTxt = error.response && error.response.data.message ? error.response.data.message : error.message;
+            addAlert({ type: 'error', message: `Failed to update role: ${messageTxt}` });
           },
         }
       );
