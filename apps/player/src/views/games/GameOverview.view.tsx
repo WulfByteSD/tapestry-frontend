@@ -51,6 +51,8 @@ function groupMembersByRole(members: CampaignMember[]): MembersByRole {
 
 export default function GameOverviewView({ gameId }: Props) {
   const [notesExpanded, setNotesExpanded] = useState(false);
+  const [bioExpanded, setBioExpanded] = useState(false);
+  const [expectationsExpanded, setExpectationsExpanded] = useState(false);
 
   const { data, isLoading, isError } = useCampaign(gameId);
   const campaign = data?.payload as CampaignType | undefined;
@@ -78,6 +80,18 @@ export default function GameOverviewView({ gameId }: Props) {
     if (!text) return { truncated: 'No campaign pitch has been written yet.', isTruncated: false };
     return truncateWords(text, 50);
   }, [campaign?.notes]);
+
+  const bioContent = useMemo(() => {
+    const text = storyweaver?.bio ?? '';
+    if (!text) return { truncated: '', isTruncated: false };
+    return truncateWords(text, 35);
+  }, [storyweaver?.bio]);
+
+  const expectationsContent = useMemo(() => {
+    const text = campaign?.tableExpectations ?? '';
+    if (!text) return { truncated: '', isTruncated: false };
+    return truncateWords(text, 60);
+  }, [campaign?.tableExpectations]);
 
   if (isLoading) {
     return (
@@ -152,7 +166,16 @@ export default function GameOverviewView({ gameId }: Props) {
                 <Avatar src={storyweaver.avatar ?? null} name={storyweaver.displayName ?? 'Unknown'} size="lg" className={styles.storyweaverAvatar} />
                 <div className={styles.storyweaverInfo}>
                   <h3 className={styles.storyweaverName}>{storyweaver.displayName ?? 'Unknown Storyweaver'}</h3>
-                  {storyweaver.bio ? <p className={styles.storyweaverBio}>{storyweaver.bio}</p> : null}
+                  {storyweaver.bio ? (
+                    <>
+                      <p className={styles.storyweaverBio}>{bioExpanded ? storyweaver.bio : bioContent.truncated}</p>
+                      {bioContent.isTruncated ? (
+                        <button type="button" className={styles.expandButton} onClick={() => setBioExpanded(!bioExpanded)}>
+                          {bioExpanded ? 'Show less' : 'Read more'}
+                        </button>
+                      ) : null}
+                    </>
+                  ) : null}
                 </div>
               </div>
             </section>
@@ -210,8 +233,13 @@ export default function GameOverviewView({ gameId }: Props) {
                 <span className={styles.expectationsIcon}>📋</span>
               </div>
               <div className={styles.scrollableContent}>
-                <p className={styles.expectationsText}>{campaign.tableExpectations}</p>
+                <p className={styles.expectationsText}>{expectationsExpanded ? campaign.tableExpectations : expectationsContent.truncated}</p>
               </div>
+              {expectationsContent.isTruncated ? (
+                <button type="button" className={styles.expandButton} onClick={() => setExpectationsExpanded(!expectationsExpanded)}>
+                  {expectationsExpanded ? 'Show less' : 'Read more'}
+                </button>
+              ) : null}
             </section>
           ) : null}
 
