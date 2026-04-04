@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from './api';
-import type { CampaignStatus } from '@tapestry/types';
-import { cleanParams, getCampaign, getCampaigns, ListQueryParams } from '@tapestry/api-client';
+import type { CampaignStatus, CampaignType } from '@tapestry/types';
+import { cleanParams, getCampaign, getCampaigns, getMyCampaigns, ListQueryParams } from '@tapestry/api-client';
 import { useMemo } from 'react';
 
 export type CreateCampaignInput = {
@@ -34,9 +34,29 @@ export function useCreateCampaignMutation() {
 
 export function useJoinCampaignMutation() {
   const queryClient = useQueryClient();
-  // TODO: Implement join campaign API call and logic here
 
-  return undefined;
+  return useMutation({
+    mutationFn: async ({ campaignId, role, message, joinPolicy }: { campaignId: string; role: 'player' | 'observer'; message?: string; joinPolicy: 'open' | 'request' }) => {
+      if (joinPolicy === 'open') {
+        // Direct join for open campaigns
+        const res = await api.post(`/game/campaigns/${campaignId}/join`, { role });
+        return res.data;
+      } else {
+        // Request approval for 'request' policy
+        const payload: { role: string; message?: string } = { role };
+        if (message?.trim()) {
+          payload.message = message.trim();
+        }
+        const res = await api.post(`/game/campaigns/${campaignId}/join-requests`, payload);
+        return res.data;
+      }
+    },
+    onSuccess: (_, variables) => {
+      // Invalidate queries to refresh campaign data and user's campaign list
+      queryClient.invalidateQueries({ queryKey: ['campaign', variables.campaignId] });
+      queryClient.invalidateQueries({ queryKey: ['my-campaigns'] });
+    },
+  });
 }
 
 export function useCampaigns(params: ListQueryParams = {}) {
@@ -52,6 +72,18 @@ export function useCampaign(id: string | undefined) {
     queryKey: ['campaign', id],
     queryFn: () => getCampaign(api, id!),
     enabled: !!id,
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  });
+}
+
+/**
+ * Fetch campaigns where the authenticated user is a member
+ * Used for navigation and "My Campaigns" displays
+ */
+export function useMyCampaigns() {
+  return useQuery({
+    queryKey: ['my-campaigns'],
+    queryFn: () => getMyCampaigns<CampaignType>(api),
     staleTime: 1000 * 60 * 5, // 5 minutes
   });
 }

@@ -40,8 +40,9 @@ export default function JoinCampaignCard({ gameId, joinPolicy }: Props) {
       }
     },
     onSuccess: () => {
-      // TODO: Invalidate campaign query to refresh join status
+      // Invalidate queries to refresh campaign data and user's campaign list
       queryClient.invalidateQueries({ queryKey: ['campaign', gameId] });
+      queryClient.invalidateQueries({ queryKey: ['my-campaigns'] });
     },
   });
 

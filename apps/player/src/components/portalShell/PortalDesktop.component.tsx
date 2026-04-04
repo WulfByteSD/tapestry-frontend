@@ -1,15 +1,16 @@
-"use client";
+'use client';
 
-import { usePathname, useRouter } from "next/navigation";
-import Link from "next/link";
-import { AlertContainer, Header, Sidebar } from "@tapestry/ui";
-import { useProfile } from "@tapestry/hooks";
-import type { PlayerType } from "@tapestry/types";
-import Image from "next/image";
-import styles from "./PortalDesktop.module.scss";
-import { api } from "@/lib/api";
-import { useMe, useLogout } from "@/lib/auth-hooks";
-import { getSidebarLinks } from "@/data/sidebarLinks";
+import { usePathname, useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { AlertContainer, Header, Sidebar } from '@tapestry/ui';
+import { useProfile } from '@tapestry/hooks';
+import type { PlayerType } from '@tapestry/types';
+import Image from 'next/image';
+import styles from './PortalDesktop.module.scss';
+import { api } from '@/lib/api';
+import { useMe, useLogout } from '@/lib/auth-hooks';
+import { useMyCampaigns } from '@/lib/campaign-hooks';
+import { getSidebarLinks } from '@/data/sidebarLinks';
 
 type Props = {
   children: React.ReactNode;
@@ -19,10 +20,14 @@ export default function PortalDesktop({ children }: Props) {
   const pathname = usePathname();
   const router = useRouter();
   const { data: me } = useMe();
-  const { selectedProfile: profile } = useProfile<PlayerType>(api, me, "player");
+  const { selectedProfile: profile } = useProfile<PlayerType>(api, me, 'player');
+  const { data: myCampaignsResponse } = useMyCampaigns();
   const logout = useLogout();
 
-  const sidebarGroups = getSidebarLinks({ profile });
+  // Extract campaigns array from API response
+  const campaigns = myCampaignsResponse?.payload || [];
+
+  const sidebarGroups = getSidebarLinks({ profile, campaigns });
 
   const handleLogout = () => {
     logout();
@@ -46,8 +51,8 @@ export default function PortalDesktop({ children }: Props) {
         footer={
           <div>
             <div>
-              <p style={{ margin: 0, fontSize: "14px", fontWeight: "600" }}>Tapestry</p>
-              <p style={{ margin: 0, fontSize: "11px", opacity: 0.6 }}>v{process.env.NEXT_PUBLIC_VERSION}</p>
+              <p style={{ margin: 0, fontSize: '14px', fontWeight: '600' }}>Tapestry</p>
+              <p style={{ margin: 0, fontSize: '11px', opacity: 0.6 }}>v{process.env.NEXT_PUBLIC_VERSION}</p>
             </div>
           </div>
         }

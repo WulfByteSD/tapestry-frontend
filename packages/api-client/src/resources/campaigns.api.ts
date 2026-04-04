@@ -11,3 +11,14 @@ export async function getCampaign<CampaignType>(api: AxiosInstance, id: string):
   const res = await api.get(`/game/campaigns/${id}`);
   return res.data as ApiResponse<CampaignType>;
 }
+
+/**
+ * Get campaigns where the authenticated user is a member
+ * TODO: Confirm backend endpoint - may be /game/campaigns/mine or similar
+ */
+export async function getMyCampaigns<CampaignType>(api: AxiosInstance): Promise<ApiListResponse<CampaignType>> {
+  // TODO: Update endpoint once backend confirms the route
+  // Expected endpoint: GET /game/campaigns/mine or /game/campaigns?filter=member:me
+  const res = await api.get('/game/campaigns/mine');
+  return res.data as ApiListResponse<CampaignType>;
+}

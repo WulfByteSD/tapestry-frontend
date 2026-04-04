@@ -1,13 +1,15 @@
-"use client";
+'use client';
 
-import { useEffect } from "react";
-import Link from "next/link";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useMe, useLogout } from "@/lib/auth-hooks";
-import { usePlayerProfile } from "@/lib/settings-hooks";
-import styles from "./AccountDrawer.module.scss";
-import { Button } from "@tapestry/ui";
+import { useEffect } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { useMe, useLogout } from '@/lib/auth-hooks';
+import { usePlayerProfile } from '@/lib/settings-hooks';
+import { useMyCampaigns } from '@/lib/campaign-hooks';
+import styles from './AccountDrawer.module.scss';
+import { Button } from '@tapestry/ui';
+import { FiCompass } from 'react-icons/fi';
 
 type Props = {
   open: boolean;
@@ -18,14 +20,19 @@ export default function AccountDrawer({ open, onClose }: Props) {
   const router = useRouter();
   const { data: me } = useMe();
   const { data: profile } = usePlayerProfile(me?.profileRefs?.player);
+  const { data: myCampaignsResponse, isLoading: campaignsLoading } = useMyCampaigns();
   const logout = useLogout();
+
+  // Extract campaigns array from API response
+  const campaigns = myCampaignsResponse?.payload || [];
+  const activeCampaigns = campaigns.filter((c) => c.status === 'active').slice(0, 8);
 
   // ESC to close
   useEffect(() => {
     if (!open) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
   }, [open, onClose]);
 
   if (!open) return null;
@@ -49,9 +56,41 @@ export default function AccountDrawer({ open, onClose }: Props) {
               height={200}
               className={styles.logo}
             />
+            {activeCampaigns.length > 0 && (
+              <div className={styles.campaignsSection}>
+                <div className={styles.sectionHeader}>My Campaigns</div>
+                <nav className={styles.campaignsList}>
+                  {activeCampaigns.map((campaign) => (
+                    <Link key={campaign._id} className={styles.campaignLink} href={`/games/${campaign._id}/board`} onClick={onClose}>
+                      <FiCompass className={styles.campaignIcon} />
+                      <span className={styles.campaignName}>{campaign.name}</span>
+                    </Link>
+                  ))}
+                </nav>
+              </div>
+            )}
+
+            {campaignsLoading && (
+              <div className={styles.campaignsSection}>
+                <div className={styles.sectionHeader}>My Campaigns</div>
+                <div className={styles.loading}>Loading campaigns...</div>
+              </div>
+            )}
+
+            {!campaignsLoading && activeCampaigns.length === 0 && (
+              <div className={styles.campaignsSection}>
+                <div className={styles.sectionHeader}>My Campaigns</div>
+                <div className={styles.emptyCampaigns}>
+                  <p>No active campaigns yet.</p>
+                  <Link className={styles.browseLink} href="/games" onClick={onClose}>
+                    Browse Games
+                  </Link>
+                </div>
+              </div>
+            )}
           </div>
-          <div className={styles.name}>{profile?.displayName ?? "Adventurer"}</div>
-          <div className={styles.email}>{me?.email ?? ""}</div>
+          <div className={styles.name}>{profile?.displayName ?? 'Adventurer'}</div>
+          <div className={styles.email}>{me?.email ?? ''}</div>
         </div>
 
         <nav className={styles.nav}>
@@ -66,7 +105,7 @@ export default function AccountDrawer({ open, onClose }: Props) {
             onClick={() => {
               logout();
               onClose();
-              router.replace("/login");
+              router.replace('/login');
             }}
           >
             Log out
