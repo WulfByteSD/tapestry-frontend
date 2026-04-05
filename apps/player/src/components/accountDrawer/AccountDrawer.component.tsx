@@ -7,9 +7,10 @@ import { useRouter } from 'next/navigation';
 import { useMe, useLogout } from '@/lib/auth-hooks';
 import { usePlayerProfile } from '@/lib/settings-hooks';
 import { useMyCampaigns } from '@/lib/campaign-hooks';
+import { getNavigationLinks } from '@/data/sidebarLinks';
 import styles from './AccountDrawer.module.scss';
 import { Button } from '@tapestry/ui';
-import { FiCompass } from 'react-icons/fi';
+import type { SidebarLink } from '@tapestry/ui';
 
 type Props = {
   open: boolean;
@@ -25,7 +26,15 @@ export default function AccountDrawer({ open, onClose }: Props) {
 
   // Extract campaigns array from API response
   const campaigns = myCampaignsResponse?.payload || [];
-  const activeCampaigns = campaigns.filter((c) => c.status === 'active').slice(0, 8);
+  const navGroups = getNavigationLinks({ profile, campaigns });
+
+  // Filter groups to only show those with mobile-hidden links
+  const drawerGroups = navGroups
+    .map((group) => ({
+      ...group,
+      links: group.links.filter((link) => link.hideOnMobile),
+    }))
+    .filter((group) => group.links.length > 0);
 
   // ESC to close
   useEffect(() => {
@@ -56,47 +65,32 @@ export default function AccountDrawer({ open, onClose }: Props) {
               height={200}
               className={styles.logo}
             />
-            {activeCampaigns.length > 0 && (
-              <div className={styles.campaignsSection}>
-                <div className={styles.sectionHeader}>My Campaigns</div>
-                <nav className={styles.campaignsList}>
-                  {activeCampaigns.map((campaign) => (
-                    <Link key={campaign._id} className={styles.campaignLink} href={`/games/${campaign._id}/board`} onClick={onClose}>
-                      <FiCompass className={styles.campaignIcon} />
-                      <span className={styles.campaignName}>{campaign.name}</span>
-                    </Link>
-                  ))}
-                </nav>
-              </div>
-            )}
-
-            {campaignsLoading && (
-              <div className={styles.campaignsSection}>
-                <div className={styles.sectionHeader}>My Campaigns</div>
-                <div className={styles.loading}>Loading campaigns...</div>
-              </div>
-            )}
-
-            {!campaignsLoading && activeCampaigns.length === 0 && (
-              <div className={styles.campaignsSection}>
-                <div className={styles.sectionHeader}>My Campaigns</div>
-                <div className={styles.emptyCampaigns}>
-                  <p>No active campaigns yet.</p>
-                  <Link className={styles.browseLink} href="/games" onClick={onClose}>
-                    Browse Games
-                  </Link>
-                </div>
-              </div>
-            )}
           </div>
           <div className={styles.name}>{profile?.displayName ?? 'Adventurer'}</div>
           <div className={styles.email}>{me?.email ?? ''}</div>
         </div>
 
         <nav className={styles.nav}>
-          <Link className={styles.link} href="/settings" onClick={onClose}>
-            Settings
-          </Link>
+          {campaignsLoading && (
+            <div className={styles.loadingState}>
+              <div className={styles.loadingText}>Loading navigation...</div>
+            </div>
+          )}
+
+          {!campaignsLoading &&
+            drawerGroups.map((group) => (
+              <div key={group.title} className={styles.navGroup}>
+                <div className={styles.groupTitle}>{group.title}</div>
+                <div className={styles.groupLinks}>
+                  {group.links.map((link) => (
+                    <Link key={link.href} className={styles.link} href={link.href} onClick={onClose}>
+                      {link.icon && <span className={styles.linkIcon}>{link.icon}</span>}
+                      <span className={styles.linkLabel}>{link.label}</span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            ))}
         </nav>
 
         <div className={styles.footer}>

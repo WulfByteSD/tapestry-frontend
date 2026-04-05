@@ -10,7 +10,7 @@ import styles from './PortalDesktop.module.scss';
 import { api } from '@/lib/api';
 import { useMe, useLogout } from '@/lib/auth-hooks';
 import { useMyCampaigns } from '@/lib/campaign-hooks';
-import { getSidebarLinks } from '@/data/sidebarLinks';
+import { getNavigationLinks } from '@/data/sidebarLinks';
 
 type Props = {
   children: React.ReactNode;
@@ -27,7 +27,7 @@ export default function PortalDesktop({ children }: Props) {
   // Extract campaigns array from API response
   const campaigns = myCampaignsResponse?.payload || [];
 
-  const sidebarGroups = getSidebarLinks({ profile, campaigns });
+  const sidebarGroups = getNavigationLinks({ profile, campaigns });
 
   // Check if current route is a game board (full-bleed layout)
   const isGameBoard = pathname?.match(/^\/games\/[^/]+\/board$/);

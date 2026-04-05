@@ -18,6 +18,7 @@ import OverviewZone from '@/features/gameBoard/zones/campaign/OverviewZone';
 import RosterZone from '@/features/gameBoard/zones/campaign/RosterZone';
 import RequestsZone from '@/features/gameBoard/zones/campaign/RequestsZone';
 import InvitesZone from '@/features/gameBoard/zones/campaign/InvitesZone';
+import SettingsZone from '@/features/gameBoard/zones/SettingsZone';
 import styles from './GameBoard.module.scss';
 
 type Props = {
@@ -48,6 +49,8 @@ function MainZone({ zone, isSW, campaign, currentUserId }: { zone: BoardZone; is
       return <RequestsZone campaign={campaign} isSW={isSW} currentUserId={currentUserId} isArchived={isArchived} />;
     case 'invites':
       return <InvitesZone campaign={campaign} isSW={isSW} isArchived={isArchived} />;
+    case 'settings':
+      return <SettingsZone campaign={campaign} isSW={isSW} isArchived={isArchived} />;
   }
 }
 

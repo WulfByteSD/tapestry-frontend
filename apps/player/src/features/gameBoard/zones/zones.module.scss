@@ -195,3 +195,120 @@
   font-size: 0.9375rem;
   margin: 0;
 }
+
+/* Settings Zone */
+.settingsGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 800px;
+}
+
+.settingTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+  color: var(--text);
+}
+
+.dangerTitle {
+  color: var(--color-danger, #e63946);
+}
+
+.settingDescription {
+  font-size: 0.9375rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin: 0 0 1rem 0;
+}
+
+.comingSoon {
+  color: var(--text-muted);
+  font-style: italic;
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.dangerActions {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.dangerAction {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.dangerActionTitle {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  margin: 0 0 0.25rem 0;
+  color: var(--text);
+}
+
+.dangerActionDescription {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+  margin: 0;
+  max-width: 600px;
+}
+
+.divider {
+  height: 1px;
+  background: var(--border);
+  margin: 0;
+}
+
+.warningButton {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #fff;
+  background: color-mix(in srgb, var(--color-gold, #d4af37) 80%, #000);
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 0.625rem 1rem;
+  cursor: pointer;
+  transition: all 150ms ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+
+  &:hover:not(:disabled) {
+    background: var(--color-gold, #d4af37);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+    background: var(--border);
+    color: var(--text-muted);
+  }
+}
+
+.dangerButton {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #fff;
+  background: var(--color-danger, #e63946);
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 0.625rem 1rem;
+  cursor: pointer;
+  transition: all 150ms ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+
+  &:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--color-danger, #e63946) 85%, #000);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+    background: var(--border);
+    color: var(--text-muted);
+  }
+}

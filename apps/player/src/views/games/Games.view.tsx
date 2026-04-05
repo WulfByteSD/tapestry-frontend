@@ -30,7 +30,8 @@ export default function GamesView() {
     if (settingFilter !== 'all') {
       params.filterOptions = `settingKey;${settingFilter}`;
     }
-
+    // always add to filter exclude campaigns that are not discoverable, and not published
+    params.filterOptions = params.filterOptions ? `${params.filterOptions}|discoverable;true|status;active` : 'discoverable;true|status;active';
     return params;
   }, [search, settingFilter]);
 

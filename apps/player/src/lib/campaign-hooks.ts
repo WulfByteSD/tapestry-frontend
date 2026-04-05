@@ -16,6 +16,7 @@ import {
   updateCampaignMemberNickname,
   transferCampaignOwnership,
   archiveCampaignMember,
+  deleteCampaign,
   getSettings,
   ApiResponse,
   UpdatePayload,
@@ -329,6 +330,28 @@ export function useUpdateCampaignMutation(campaignId: string) {
       }, 2000);
 
       refetchTimers.set(campaignId, timer);
+    },
+  });
+}
+
+/**
+ * Permanently delete a campaign
+ * Only available to primary Storyweaver
+ */
+export function useDeleteCampaignMutation(campaignId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async () => {
+      await deleteCampaign(api, campaignId);
+    },
+    onSuccess: () => {
+      // Invalidate all campaign queries
+      queryClient.invalidateQueries({ queryKey: ['campaigns'] });
+      queryClient.invalidateQueries({ queryKey: ['my-campaigns'] });
+      queryClient.invalidateQueries({ queryKey: ['storyweaver-campaigns'] });
+      // Remove the specific campaign from cache
+      queryClient.removeQueries({ queryKey: ['campaign', campaignId] });
     },
   });
 }

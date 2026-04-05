@@ -1,10 +1,12 @@
 import { AxiosInstance } from 'axios';
-import { ApiListResponse, ListQueryParams } from '../list';
+import { ApiListResponse, cleanParams, ListQueryParams } from '../list';
 import { ApiResponse } from '../fetch';
 import { PostNoteInput } from '@tapestry/types';
 
 export async function getCampaigns<CampaignType>(api: AxiosInstance, params: ListQueryParams = {}): Promise<ApiListResponse<CampaignType>> {
-  const res = await api.get('/game/campaigns');
+  const res = await api.get('/game/campaigns', {
+    params: cleanParams(params),
+  });
   return res.data as ApiListResponse<CampaignType>;
 }
 
@@ -146,4 +148,13 @@ export async function getCampaignActivity<ActivityType>(api: AxiosInstance, camp
  */
 export async function postCampaignNote(api: AxiosInstance, campaignId: string, input: PostNoteInput): Promise<void> {
   await api.post(`/game/campaigns/${campaignId}/activity`, input);
+}
+
+/**
+ * Permanently delete a campaign
+ * @param api - Axios instance
+ * @param campaignId - Campaign ID to delete
+ */
+export async function deleteCampaign(api: AxiosInstance, campaignId: string): Promise<void> {
+  await api.delete(`/game/campaigns/${campaignId}`);
 }
