@@ -23,7 +23,7 @@ type Props = {
 function MainZone({ zone, isSW, campaign, currentUserId }: { zone: BoardZone; isSW: boolean; campaign: import('@tapestry/types').CampaignType; currentUserId: string }) {
   switch (zone) {
     case 'feed':
-      return <ActivityFeedZone isSW={isSW} />;
+      return <ActivityFeedZone campaignId={campaign._id} isSW={isSW} />;
     case 'encounters':
       return <EncounterZone isSW={isSW} />;
     case 'notes':

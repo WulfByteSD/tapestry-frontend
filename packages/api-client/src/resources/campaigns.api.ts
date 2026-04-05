@@ -121,3 +121,28 @@ export async function approveJoinRequest(api: AxiosInstance, campaignId: string,
 export async function rejectJoinRequest(api: AxiosInstance, campaignId: string, requestId: string): Promise<void> {
   await api.post(`/game/campaigns/${campaignId}/join-requests/${requestId}/deny`);
 }
+
+// ========================================
+// Campaign Activity API Methods
+// ========================================
+
+/**
+ * Get campaign activity feed with pagination
+ * @param api - Axios instance
+ * @param campaignId - Campaign ID
+ * @param params - Pagination params (pageNumber, pageLimit)
+ */
+export async function getCampaignActivity<ActivityType>(api: AxiosInstance, campaignId: string, params: ListQueryParams = {}): Promise<ApiListResponse<ActivityType>> {
+  const res = await api.get(`/game/campaigns/${campaignId}/activity`, { params });
+  return res.data as ApiListResponse<ActivityType>;
+}
+
+/**
+ * Post a storyweaver note to the activity feed
+ * @param api - Axios instance
+ * @param campaignId - Campaign ID
+ * @param content - Note content
+ */
+export async function postCampaignNote(api: AxiosInstance, campaignId: string, content: string): Promise<void> {
+  await api.post(`/game/campaigns/${campaignId}/activity`, { content });
+}

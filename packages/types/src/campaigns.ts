@@ -1,3 +1,4 @@
+import { CharacterSheet } from './characters';
 import { PlayerType } from './players';
 
 export type CampaignStatus = 'active' | 'archived';
@@ -103,3 +104,35 @@ export type CampaignType = {
   createdAt: Date;
   updatedAt: Date;
 };
+
+// ========================================
+// Campaign Activity Types
+// ========================================
+
+export type CampaignActivityType =
+  | 'roll.attack'
+  | 'roll.custom'
+  | 'campaign.member_joined'
+  | 'campaign.member_left'
+  | 'campaign.character_attached'
+  | 'campaign.character_detached'
+  | 'sw.note';
+
+export interface CampaignActivity {
+  _id: string;
+  campaign: string;
+  activityType: CampaignActivityType;
+  actor: {
+    player: PlayerType; // Could be populated PlayerType
+    playerNameSnapshot?: string;
+    character?: CharacterSheet; // Could be populated CharacterType
+    characterNameSnapshot?: string;
+  };
+  payload: Record<string, any>; // Type varies by activityType
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface PostNoteInput {
+  content: string;
+}

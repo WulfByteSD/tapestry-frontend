@@ -17,6 +17,7 @@
     "@tapestry/types": "workspace:^",
     "@tapestry/ui": "workspace:^",
     "axios": "^1.7.0",
+    "date-fns": "^4.1.0",
     "html-react-parser": "^5.2.17",
     "html2canvas": "^1.4.1",
     "next": "16.1.6",
