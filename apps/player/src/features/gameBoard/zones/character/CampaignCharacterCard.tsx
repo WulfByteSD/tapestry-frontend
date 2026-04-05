@@ -17,18 +17,7 @@ function Pips({ current, max, temp = 0 }: { current: number; max: number; temp?:
       {Array.from({ length: max }).map((_, i) => {
         const isTemp = i >= current && i < current + temp;
         const isFilled = i < current;
-        return (
-          <span
-            key={i}
-            className={[
-              styles.pip,
-              isFilled ? styles.filled : '',
-              isTemp ? styles.temp : '',
-            ]
-              .filter(Boolean)
-              .join(' ')}
-          />
-        );
+        return <span key={i} className={[styles.pip, isFilled ? styles.filled : '', isTemp ? styles.temp : ''].filter(Boolean).join(' ')} />;
       })}
     </div>
   );
@@ -44,11 +33,7 @@ export default function CampaignCharacterCard({ character, canDetach, onDetach, 
   return (
     <div className={styles.card}>
       <div className={styles.cardAvatar}>
-        <Avatar
-          src={avatarUrl ?? undefined}
-          alt={name}
-          size="md"
-        />
+        <Avatar src={avatarUrl ?? undefined} alt={name} size="md" />
       </div>
       <div className={styles.cardBody}>
         <p className={styles.cardName}>{name}</p>
@@ -68,13 +53,7 @@ export default function CampaignCharacterCard({ character, canDetach, onDetach, 
       </div>
       {canDetach && (
         <div className={styles.cardActions}>
-          <Button
-            size="sm"
-            variant="ghost"
-            tone="danger"
-            onClick={onDetach}
-            disabled={isDetaching}
-          >
+          <Button size="sm" variant="ghost" tone="danger" onClick={onDetach} disabled={isDetaching}>
             Detach
           </Button>
         </div>

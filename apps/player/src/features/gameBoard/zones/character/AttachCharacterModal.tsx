@@ -20,27 +20,17 @@ interface Props {
   playerId: string;
 }
 
-export default function AttachCharacterModal({
-  open,
-  onClose,
-  attachedIds,
-  onSubmit,
-  isSubmitting,
-  isDMPC,
-  playerId,
-}: Props) {
+export default function AttachCharacterModal({ open, onClose, attachedIds, onSubmit, isSubmitting, isDMPC, playerId }: Props) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [message, setMessage] = useState('');
 
   const { data: sheetsResponse, isLoading } = useCharacterSheetsQuery({
-    filterOptions: `playerId;${playerId}`
+    filterOptions: `playerId;${playerId}`,
   });
   const allSheets = (sheetsResponse?.payload ?? []) as CharacterSheet[];
 
   // Filter: unattached characters only (campaign is null/undefined)
-  const availableSheets = allSheets.filter(
-    (s) => !s.campaign && !attachedIds.includes(s._id),
-  );
+  const availableSheets = allSheets.filter((s) => !s.campaign && !attachedIds.includes(s._id));
 
   function handleOk() {
     if (!selectedId) return;
@@ -69,20 +59,14 @@ export default function AttachCharacterModal({
       {isLoading ? (
         <p className={styles.emptySheets}>Loading characters…</p>
       ) : availableSheets.length === 0 ? (
-        <p className={styles.emptySheets}>
-          {allSheets.length === 0
-            ? 'You have no character sheets yet.'
-            : 'All your characters are already attached to a campaign.'}
-        </p>
+        <p className={styles.emptySheets}>{allSheets.length === 0 ? 'You have no character sheets yet.' : 'All your characters are already attached to a campaign.'}</p>
       ) : (
         <div className={styles.sheetList}>
           {availableSheets.map((sheet) => (
             <button
               key={sheet._id}
               type="button"
-              className={[styles.sheetOption, selectedId === sheet._id ? styles.selected : '']
-                .filter(Boolean)
-                .join(' ')}
+              className={[styles.sheetOption, selectedId === sheet._id ? styles.selected : ''].filter(Boolean).join(' ')}
               onClick={() => setSelectedId(sheet._id)}
             >
               <Avatar src={sheet.avatarUrl ?? undefined} alt={sheet.name} size="sm" />

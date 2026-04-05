@@ -39,16 +39,12 @@ export default function CharacterZone({ campaign, isSW, currentUserId }: Props) 
   const isLoading = charsLoading || reqsLoading;
 
   // Characters that belong to the current player (non-SW)
-  const myCharacters = isSW
-    ? (characters as CharacterSheet[])
-    : (characters as CharacterSheet[]).filter((c) => c.player === currentUserId);
+  const myCharacters = isSW ? (characters as CharacterSheet[]) : (characters as CharacterSheet[]).filter((c) => c.player === currentUserId);
 
   // Pending requests — all for SW, own for player
   const pendingRequests = isSW
     ? (requests as CharacterRequest[]).filter((r) => r.status === 'pending')
-    : (requests as CharacterRequest[]).filter(
-        (r) => r.status === 'pending' && (typeof r.player === 'string' ? r.player : r.player._id) === currentUserId,
-      );
+    : (requests as CharacterRequest[]).filter((r) => r.status === 'pending' && (typeof r.player === 'string' ? r.player : r.player._id) === currentUserId);
 
   const attachedIds = (characters as CharacterSheet[]).map((c) => c._id);
 
@@ -64,12 +60,7 @@ export default function CharacterZone({ campaign, isSW, currentUserId }: Props) 
     <div className={styles.zone}>
       <div className={styles.zoneHeader}>
         <h2 className={styles.zoneTitle}>{isSW ? 'Campaign Characters' : 'Your Character'}</h2>
-        <Button
-          size="sm"
-          variant="outline"
-          tone="gold"
-          onClick={() => setModalOpen(true)}
-        >
+        <Button size="sm" variant="outline" tone="gold" onClick={() => setModalOpen(true)}>
           {isSW ? '+ Attach DMPC' : '+ Attach a Character'}
         </Button>
       </div>
@@ -126,17 +117,8 @@ export default function CharacterZone({ campaign, isSW, currentUserId }: Props) 
           ) : (
             pendingRequests.length === 0 && (
               <div style={{ textAlign: 'center', padding: '48px 0' }}>
-                <p className={styles.zoneDescription}>
-                  {isSW
-                    ? 'No characters attached to this campaign yet.'
-                    : "You haven't attached a character to this campaign yet."}
-                </p>
-                <Button
-                  variant="solid"
-                  tone="gold"
-                  onClick={() => setModalOpen(true)}
-                  style={{ marginTop: 12 }}
-                >
+                <p className={styles.zoneDescription}>{isSW ? 'No characters attached to this campaign yet.' : "You haven't attached a character to this campaign yet."}</p>
+                <Button variant="solid" tone="gold" onClick={() => setModalOpen(true)} style={{ marginTop: 12 }}>
                   {isSW ? 'Attach a DMPC' : 'Attach a Character'}
                 </Button>
               </div>
@@ -157,4 +139,3 @@ export default function CharacterZone({ campaign, isSW, currentUserId }: Props) 
     </div>
   );
 }
-

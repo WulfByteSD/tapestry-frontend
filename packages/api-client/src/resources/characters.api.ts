@@ -49,47 +49,27 @@ export async function getCampaignCharacterRequests(api: AxiosInstance, campaignI
   return res.data;
 }
 
-export async function requestCharacterAttachment(
-  api: AxiosInstance,
-  campaignId: string,
-  data: { characterId: string; message?: string },
-): Promise<CharacterRequest> {
+export async function requestCharacterAttachment(api: AxiosInstance, campaignId: string, data: { characterId: string; message?: string }): Promise<CharacterRequest> {
   const res = await api.post(`/game/campaigns/${campaignId}/character-requests`, data);
   return res.data;
 }
 
-export async function approveCharacterRequest(
-  api: AxiosInstance,
-  campaignId: string,
-  requestId: string,
-): Promise<CharacterRequest> {
+export async function approveCharacterRequest(api: AxiosInstance, campaignId: string, requestId: string): Promise<CharacterRequest> {
   const res = await api.post(`/game/campaigns/${campaignId}/character-requests/${requestId}/approve`);
   return res.data;
 }
 
-export async function rejectCharacterRequest(
-  api: AxiosInstance,
-  campaignId: string,
-  requestId: string,
-): Promise<CharacterRequest> {
+export async function rejectCharacterRequest(api: AxiosInstance, campaignId: string, requestId: string): Promise<CharacterRequest> {
   const res = await api.post(`/game/campaigns/${campaignId}/character-requests/${requestId}/reject`);
   return res.data;
 }
 
-export async function attachDMPC(
-  api: AxiosInstance,
-  campaignId: string,
-  data: { characterId: string },
-): Promise<CharacterSheet> {
+export async function attachDMPC(api: AxiosInstance, campaignId: string, data: { characterId: string }): Promise<CharacterSheet> {
   const res = await api.post(`/game/campaigns/${campaignId}/characters`, data);
   return res.data;
 }
 
-export async function detachCharacter(
-  api: AxiosInstance,
-  campaignId: string,
-  characterId: string,
-): Promise<{ _id: string }> {
+export async function detachCharacter(api: AxiosInstance, campaignId: string, characterId: string): Promise<{ _id: string }> {
   const res = await api.delete(`/game/campaigns/${campaignId}/characters/${characterId}`);
   return res.data;
 }

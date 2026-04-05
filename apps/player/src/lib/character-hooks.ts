@@ -1,7 +1,7 @@
-import { useMemo } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import type { CharacterSheet, CharacterRequest } from "@tapestry/types";
-import { api, tokenStore } from "@/lib/api";
+import { useMemo } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import type { CharacterSheet, CharacterRequest } from '@tapestry/types';
+import { api, tokenStore } from '@/lib/api';
 import {
   cleanParams,
   listCharacters,
@@ -13,19 +13,19 @@ import {
   attachDMPC,
   detachCharacter,
   type ListQueryParams,
-} from "@tapestry/api-client";
-import { useMe } from "./auth-hooks";
-import { useProfile } from "@tapestry/hooks/src/useProfile";
- 
+} from '@tapestry/api-client';
+import { useMe } from './auth-hooks';
+import { useProfile } from '@tapestry/hooks/src/useProfile';
+
 export function useCharacterSheetsQuery(params: ListQueryParams = {}) {
   const cleaned = useMemo(() => cleanParams(params), [params]);
   const { data: me } = useMe();
-  const { data: profile } = useProfile(api, me, "player");
+  const { data: profile } = useProfile(api, me, 'player');
 
   return useQuery({
-    queryKey: ["characters", cleaned],
+    queryKey: ['characters', cleaned],
     queryFn: () => listCharacters<CharacterSheet>(api, cleaned),
-    enabled: !!profile,          // don’t hammer 401s if user isn’t logged in
+    enabled: !!profile, // don’t hammer 401s if user isn’t logged in
     staleTime: 30_000,
     retry: 1,
   });
@@ -34,7 +34,7 @@ export function useCharacterSheetsQuery(params: ListQueryParams = {}) {
 
 export function useCampaignCharacters(campaignId: string) {
   return useQuery({
-    queryKey: ["campaign", campaignId, "characters"],
+    queryKey: ['campaign', campaignId, 'characters'],
     queryFn: () => getCampaignCharacters(api, campaignId),
     enabled: !!campaignId,
     staleTime: 30_000,
@@ -43,7 +43,7 @@ export function useCampaignCharacters(campaignId: string) {
 
 export function useCampaignCharacterRequests(campaignId: string) {
   return useQuery({
-    queryKey: ["campaign", campaignId, "character-requests"],
+    queryKey: ['campaign', campaignId, 'character-requests'],
     queryFn: () => getCampaignCharacterRequests(api, campaignId),
     enabled: !!campaignId,
     staleTime: 15_000,
@@ -55,11 +55,10 @@ export function useCampaignCharacterRequests(campaignId: string) {
 export function useRequestCharacterAttachmentMutation(campaignId: string) {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (data: { characterId: string; message?: string }) =>
-      requestCharacterAttachment(api, campaignId, data),
+    mutationFn: (data: { characterId: string; message?: string }) => requestCharacterAttachment(api, campaignId, data),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["campaign", campaignId, "characters"] });
-      qc.invalidateQueries({ queryKey: ["campaign", campaignId, "character-requests"] });
+      qc.invalidateQueries({ queryKey: ['campaign', campaignId, 'characters'] });
+      qc.invalidateQueries({ queryKey: ['campaign', campaignId, 'character-requests'] });
     },
   });
 }
@@ -69,8 +68,8 @@ export function useApproveCharacterRequestMutation(campaignId: string) {
   return useMutation({
     mutationFn: (requestId: string) => approveCharacterRequest(api, campaignId, requestId),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["campaign", campaignId, "characters"] });
-      qc.invalidateQueries({ queryKey: ["campaign", campaignId, "character-requests"] });
+      qc.invalidateQueries({ queryKey: ['campaign', campaignId, 'characters'] });
+      qc.invalidateQueries({ queryKey: ['campaign', campaignId, 'character-requests'] });
     },
   });
 }
@@ -80,7 +79,7 @@ export function useRejectCharacterRequestMutation(campaignId: string) {
   return useMutation({
     mutationFn: (requestId: string) => rejectCharacterRequest(api, campaignId, requestId),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["campaign", campaignId, "character-requests"] });
+      qc.invalidateQueries({ queryKey: ['campaign', campaignId, 'character-requests'] });
     },
   });
 }
@@ -90,7 +89,7 @@ export function useAttachDMPCMutation(campaignId: string) {
   return useMutation({
     mutationFn: (data: { characterId: string }) => attachDMPC(api, campaignId, data),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["campaign", campaignId, "characters"] });
+      qc.invalidateQueries({ queryKey: ['campaign', campaignId, 'characters'] });
     },
   });
 }
@@ -100,7 +99,7 @@ export function useDetachCharacterMutation(campaignId: string) {
   return useMutation({
     mutationFn: (characterId: string) => detachCharacter(api, campaignId, characterId),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["campaign", campaignId, "characters"] });
+      qc.invalidateQueries({ queryKey: ['campaign', campaignId, 'characters'] });
     },
   });
 }
