@@ -1,7 +1,14 @@
 'use client';
 
+import { useState } from 'react';
 import type { CampaignType } from '@tapestry/types';
 import { Avatar } from '@tapestry/ui';
+import { useMe } from '@/lib/auth-hooks';
+import { useProfile } from '@tapestry/hooks/src/useProfile';
+import { api } from '@/lib/api';
+import { useActiveCharacter } from '../useActiveCharacter';
+import CharacterSnapshot from '../components/CharacterSnapshot';
+import CharacterSelector from '../components/CharacterSelector';
 import styles from './BoardSidebar.module.scss';
 
 type Props = {
@@ -10,21 +17,22 @@ type Props = {
 };
 
 export default function BoardSidebar({ campaign, isSW }: Props) {
+  const [selectorOpen, setSelectorOpen] = useState(false);
+  const { data: currentUser } = useMe();
+  const { data: playerProfile } = useProfile(api, currentUser, 'player');
+
+  const currentUserId = playerProfile?.payload?._id;
+  const { activeCharacterId, activeCharacter, setActiveCharacter, isLoading, characters } = useActiveCharacter(campaign._id, currentUserId, isSW);
+
   const members = campaign.members.slice(0, 8);
+  const playerName = playerProfile?.payload?.displayName ?? 'Player';
 
   return (
     <div className={styles.sidebar}>
-      {/* Character Snapshot panel — stub */}
+      {/* Character Snapshot panel */}
       <section className={styles.panel}>
         <h3 className={styles.panelTitle}>Your Character</h3>
-        <div className={styles.skeleton}>
-          <div className={styles.skeletonAvatar} />
-          <div className={styles.skeletonLines}>
-            <div className={styles.skeletonLine} style={{ width: '70%' }} />
-            <div className={styles.skeletonLine} style={{ width: '50%' }} />
-          </div>
-        </div>
-        <p className={styles.placeholder}>Character snapshot coming soon</p>
+        <CharacterSnapshot activeCharacter={activeCharacter} playerName={playerName} isLoading={isLoading} onClick={() => setSelectorOpen(true)} />
       </section>
 
       {/* Party Members panel */}
@@ -55,6 +63,15 @@ export default function BoardSidebar({ campaign, isSW }: Props) {
           <div className={styles.actionStub}>📝 Quick Note</div>
         </div>
       </section>
+      {/* Character Selector Modal */}
+      <CharacterSelector
+        open={selectorOpen}
+        onClose={() => setSelectorOpen(false)}
+        characters={characters}
+        activeCharacterId={activeCharacterId}
+        onSelect={setActiveCharacter}
+        playerName={playerName}
+      />
     </div>
   );
 }

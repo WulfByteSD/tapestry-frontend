@@ -7,6 +7,7 @@ import {
   listCharacters,
   getCampaignCharacters,
   getCampaignCharacterRequests,
+  getMyCharacterRequests,
   requestCharacterAttachment,
   approveCharacterRequest,
   rejectCharacterRequest,
@@ -41,10 +42,19 @@ export function useCampaignCharacters(campaignId: string) {
   });
 }
 
-export function useCampaignCharacterRequests(campaignId: string) {
+export function useCampaignCharacterRequests(campaignId: string, isSW: boolean) {
   return useQuery({
     queryKey: ['campaign', campaignId, 'character-requests'],
     queryFn: () => getCampaignCharacterRequests(api, campaignId),
+    enabled: !!campaignId && isSW, // only SW needs all character requests
+    staleTime: 15_000,
+  });
+}
+
+export function useMyCharacterRequests(campaignId: string) {
+  return useQuery({
+    queryKey: ['campaign', campaignId, 'character-requests', 'me'],
+    queryFn: () => getMyCharacterRequests(api, campaignId),
     enabled: !!campaignId,
     staleTime: 15_000,
   });

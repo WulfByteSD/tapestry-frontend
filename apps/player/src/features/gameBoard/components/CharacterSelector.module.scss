@@ -1,0 +1,92 @@
+.selector {
+  padding: 0;
+}
+
+.description {
+  font-size: 0.875rem;
+  color: var(--text-secondary, #666);
+  margin: 0 0 16px 0;
+  line-height: 1.5;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px;
+  background: var(--surface-secondary, #f8f8f8);
+  border: 2px solid var(--border-subtle, #e5e5e5);
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s;
+
+  &:hover {
+    background: var(--surface-tertiary, #f0f0f0);
+    border-color: var(--border-medium, #ccc);
+  }
+
+  &.active {
+    background: var(--accent-surface, #fffbf0);
+    border-color: var(--accent-primary, #d4af37);
+  }
+}
+
+.optionAvatar {
+  flex-shrink: 0;
+}
+
+.optionInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.optionName {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--text-primary, #1a1a1a);
+  margin: 0 0 2px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.optionMeta {
+  font-size: 0.8125rem;
+  color: var(--text-secondary, #666);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.checkmark {
+  font-size: 1.25rem;
+  color: var(--accent-primary, #d4af37);
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.empty {
+  padding: 32px 16px;
+  text-align: center;
+}
+
+.emptyText {
+  font-size: 0.9375rem;
+  color: var(--text-secondary, #666);
+  margin: 0 0 8px 0;
+}
+
+.emptyHint {
+  font-size: 0.8125rem;
+  color: var(--text-tertiary, #999);
+  margin: 0;
+}

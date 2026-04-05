@@ -6,6 +6,7 @@ import type { CampaignType, CharacterSheet, CharacterRequest } from '@tapestry/t
 import {
   useCampaignCharacters,
   useCampaignCharacterRequests,
+  useMyCharacterRequests,
   useRequestCharacterAttachmentMutation,
   useApproveCharacterRequestMutation,
   useRejectCharacterRequestMutation,
@@ -28,7 +29,8 @@ export default function CharacterZone({ campaign, isSW, currentUserId }: Props) 
   const [modalOpen, setModalOpen] = useState(false);
 
   const { data: characters = [], isLoading: charsLoading } = useCampaignCharacters(campaignId);
-  const { data: requests = [], isLoading: reqsLoading } = useCampaignCharacterRequests(campaignId);
+  const { data: swRequests = [], isLoading: swReqsLoading } = useCampaignCharacterRequests(campaignId, isSW);
+  const { data: myRequests = [], isLoading: myReqsLoading } = useMyCharacterRequests(campaignId);
 
   const requestAttach = useRequestCharacterAttachmentMutation(campaignId);
   const approveMutation = useApproveCharacterRequestMutation(campaignId);
@@ -36,15 +38,15 @@ export default function CharacterZone({ campaign, isSW, currentUserId }: Props) 
   const attachDMPC = useAttachDMPCMutation(campaignId);
   const detach = useDetachCharacterMutation(campaignId);
 
-  const isLoading = charsLoading || reqsLoading;
+  const isLoading = charsLoading || (isSW ? swReqsLoading : myReqsLoading);
 
   // Characters that belong to the current player (non-SW)
   const myCharacters = isSW ? (characters as CharacterSheet[]) : (characters as CharacterSheet[]).filter((c) => c.player === currentUserId);
 
   // Pending requests — all for SW, own for player
   const pendingRequests = isSW
-    ? (requests as CharacterRequest[]).filter((r) => r.status === 'pending')
-    : (requests as CharacterRequest[]).filter((r) => r.status === 'pending' && (typeof r.player === 'string' ? r.player : r.player._id) === currentUserId);
+    ? (swRequests as CharacterRequest[]).filter((r) => r.status === 'pending')
+    : (myRequests as CharacterRequest[]).filter((r) => r.status === 'pending');
 
   const attachedIds = (characters as CharacterSheet[]).map((c) => c._id);
 

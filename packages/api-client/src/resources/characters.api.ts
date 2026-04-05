@@ -49,6 +49,11 @@ export async function getCampaignCharacterRequests(api: AxiosInstance, campaignI
   return res.data;
 }
 
+export async function getMyCharacterRequests(api: AxiosInstance, campaignId: string): Promise<CharacterRequest[]> {
+  const res = await api.get(`/game/campaigns/${campaignId}/character-requests/me`);
+  return res.data;
+}
+
 export async function requestCharacterAttachment(api: AxiosInstance, campaignId: string, data: { characterId: string; message?: string }): Promise<CharacterRequest> {
   const res = await api.post(`/game/campaigns/${campaignId}/character-requests`, data);
   return res.data;
