@@ -102,7 +102,7 @@ export default function JoinCampaignCard({ gameId, joinPolicy, members, currentU
           <div className={styles.pendingIcon}>⏳</div>
           <h2>Request Pending</h2>
           <p>
-            Your request to join as a <strong>{pendingRequest.role === 'observer' ? 'Observer' : 'Player'}</strong> is awaiting approval from the Storyweaver.
+            Your request to join as a <strong>{pendingRequest.preferredRole === 'observer' ? 'Observer' : 'Player'}</strong> is awaiting approval from the Storyweaver.
           </p>
           {pendingRequest.message && (
             <div className={styles.requestMessage}>

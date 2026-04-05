@@ -29,6 +29,9 @@ export default function PortalDesktop({ children }: Props) {
 
   const sidebarGroups = getSidebarLinks({ profile, campaigns });
 
+  // Check if current route is a game board (full-bleed layout)
+  const isGameBoard = pathname?.match(/^\/games\/[^/]+\/board$/);
+
   const handleLogout = () => {
     logout();
   };
@@ -72,7 +75,7 @@ export default function PortalDesktop({ children }: Props) {
           avatarSize="md"
           className={styles.header}
         />
-        <main className={styles.main}>
+        <main className={styles.main} data-fullbleed={isGameBoard ? 'true' : undefined}>
           <AlertContainer position="top-right" />
           {children}
           <div className={styles.watermark} />

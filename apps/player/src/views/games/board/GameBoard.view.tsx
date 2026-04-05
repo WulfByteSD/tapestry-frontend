@@ -1,77 +1,76 @@
 'use client';
 
 import Link from 'next/link';
-import { useCampaign } from '@/lib/campaign-hooks';
 import { Button } from '@tapestry/ui';
-import type { CampaignType } from '@tapestry/types';
+import { useGameBoard } from '@/features/gameBoard/useGameBoard';
+import type { BoardZone } from '@/features/gameBoard/useGameBoard';
+import BoardLayout from '@/features/gameBoard/layout/BoardLayout';
+import BoardHeader from '@/features/gameBoard/layout/BoardHeader';
+import BoardNav from '@/features/gameBoard/layout/BoardNav';
+import BoardSidebar from '@/features/gameBoard/layout/BoardSidebar';
+import ActivityFeedZone from '@/features/gameBoard/zones/ActivityFeedZone';
+import EncounterZone from '@/features/gameBoard/zones/EncounterZone';
+import NotesZone from '@/features/gameBoard/zones/NotesZone';
+import RollsZone from '@/features/gameBoard/zones/RollsZone';
+import PartyZone from '@/features/gameBoard/zones/PartyZone';
+import CharacterZone from '@/features/gameBoard/zones/CharacterZone';
 import styles from './GameBoard.module.scss';
 
 type Props = {
   campaignId: string;
 };
 
-export default function GameBoardView({ campaignId }: Props) {
-  const { data: campaignResponse, isLoading, isError } = useCampaign(campaignId);
+function MainZone({ zone, isSW, campaign }: { zone: BoardZone; isSW: boolean; campaign: import('@tapestry/types').CampaignType }) {
+  switch (zone) {
+    case 'feed':
+      return <ActivityFeedZone isSW={isSW} />;
+    case 'encounters':
+      return <EncounterZone isSW={isSW} />;
+    case 'notes':
+      return <NotesZone />;
+    case 'rolls':
+      return <RollsZone />;
+    case 'party':
+      return <PartyZone campaign={campaign} />;
+    case 'character':
+      return <CharacterZone />;
+  }
+}
 
-  // Extract campaign from API response
-  const campaign = campaignResponse?.payload as CampaignType | undefined;
+export default function GameBoardView({ campaignId }: Props) {
+  const { activeZone, setActiveZone, campaign, isSW, isLoading, isError } = useGameBoard(campaignId);
 
   if (isLoading) {
     return (
-      <div className={styles.container}>
-        <div className={styles.loading}>
-          <div className={styles.spinner} />
-          <p>Loading campaign...</p>
-        </div>
+      <div className={styles.centered}>
+        <div className={styles.spinner} />
+        <p>Loading campaign...</p>
       </div>
     );
   }
 
   if (isError || !campaign) {
     return (
-      <div className={styles.container}>
-        <div className={styles.error}>
-          <h1>Campaign Not Found</h1>
-          <p>The campaign you're looking for doesn't exist or you don't have access to it.</p>
-          <Link href="/games">
-            <Button variant="outline" tone="gold">
-              Browse Campaigns
-            </Button>
-          </Link>
-        </div>
+      <div className={styles.centered}>
+        <h1>Campaign Not Found</h1>
+        <p>The campaign you&apos;re looking for doesn&apos;t exist or you don&apos;t have access to it.</p>
+        <Link href="/games">
+          <Button variant="outline" tone="gold">
+            Browse Campaigns
+          </Button>
+        </Link>
       </div>
     );
   }
 
   return (
     <div className={styles.container}>
-      <header className={styles.header}>
-        <div className={styles.headerTop}>
-          <Link href={`/games/${campaignId}`} className={styles.backLink}>
-            ← Campaign Overview
-          </Link>
-        </div>
-        <h1 className={styles.campaignName}>{campaign.name}</h1>
-        {campaign.settingKey && <p className={styles.setting}>{campaign.settingKey.replace(/-/g, ' ')}</p>}
-      </header>
-
-      <main className={styles.main}>
-        <div className={styles.placeholder}>
-          <div className={styles.placeholderIcon}>⚔️</div>
-          <h2>Game Board Coming Soon</h2>
-          <p>This is where the adventure will unfold. The game board will include campaign updates, character actions, encounters, and interactive gameplay features.</p>
-          <div className={styles.futureFeatures}>
-            <h3>Planned Features</h3>
-            <ul>
-              <li>Campaign activity feed</li>
-              <li>Character action submissions</li>
-              <li>Encounter management</li>
-              <li>Shared notes and lore</li>
-              <li>Roll history</li>
-            </ul>
-          </div>
-        </div>
-      </main>
+      <BoardLayout
+        header={<BoardHeader campaign={campaign} campaignId={campaignId} isSW={isSW} />}
+        nav={<BoardNav activeZone={activeZone} onZoneChange={setActiveZone} isSW={isSW} />}
+        main={<MainZone zone={activeZone} isSW={isSW} campaign={campaign} />}
+        sidebar={<BoardSidebar campaign={campaign} isSW={isSW} />}
+      />
     </div>
   );
 }
