@@ -46,6 +46,28 @@
 .muted {
   opacity: 0.72;
 }
+
+.installStatus {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.successMessage {
+  color: var(--color-gold, #d4af37);
+  font-weight: 500;
+  margin: 0;
+}
+
+.installPrompt {
+  display: grid;
+  gap: 1rem;
+  
+  p {
+    margin: 0;
+    line-height: 1.5;
+  }
+}
+
 .preferenceList {
   display: grid;
   gap: 1rem;
