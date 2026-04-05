@@ -18,7 +18,7 @@ type CampaignCardProps = {
   eyebrow?: string;
   /** Action button text */
   actionLabel?: string;
-  /** Click handler override (if not provided, navigates to /storyweaver/campaigns/{id}) */
+  /** Click handler override (if not provided, navigates to /games/{id}/board) */
   onClick?: () => void;
 };
 
@@ -96,7 +96,7 @@ export default function CampaignCard({
     if (onClick) {
       onClick();
     } else {
-      router.push(`/storyweaver/campaigns/${id}`);
+      router.push(`/games/${id}/board`);
     }
   };
 

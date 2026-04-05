@@ -1,0 +1,159 @@
+/* InvitesZone.module.scss */
+.container {
+  display: grid;
+  gap: 1.5rem;
+  padding: 1rem 0;
+}
+
+.summary {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.permissionMessage {
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 3rem 1rem;
+  opacity: 0.7;
+
+  p {
+    margin: 0;
+    font-size: 0.95rem;
+  }
+}
+
+.empty {
+  display: grid;
+  gap: 0.5rem;
+  place-items: center;
+  text-align: center;
+  padding: 3rem 1rem;
+  opacity: 0.7;
+
+  h3 {
+    margin: 0;
+    font-size: 1.1rem;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.9rem;
+  }
+}
+
+.list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.inviteCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: background 120ms ease;
+  gap: 1rem;
+
+  &:hover:not(.disabled) {
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  &.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.inviteInfo {
+  display: grid;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.inviteCode {
+  font-family: 'Courier New', monospace;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--gold);
+}
+
+.inviteMeta {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  font-size: 0.85rem;
+  flex-wrap: wrap;
+}
+
+.badge,
+.badgeSW,
+.badgePlayer,
+.badgeObserver {
+  display: inline-flex;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.badgeSW {
+  background: rgba(142, 111, 255, 0.2);
+  color: rgb(162, 141, 255);
+  border: 1px solid rgba(142, 111, 255, 0.4);
+}
+
+.badgePlayer {
+  background: rgba(92, 196, 255, 0.2);
+  color: rgb(120, 210, 255);
+  border: 1px solid rgba(92, 196, 255, 0.4);
+}
+
+.badgeObserver {
+  background: rgba(150, 150, 150, 0.2);
+  color: rgb(180, 180, 180);
+  border: 1px solid rgba(150, 150, 150, 0.4);
+}
+
+.badge {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.metaItem {
+  opacity: 0.7;
+}
+
+.copyButton {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .inviteCard {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0.875rem 1rem;
+  }
+
+  .inviteCode {
+    font-size: 1rem;
+  }
+
+  .inviteMeta {
+    font-size: 0.8rem;
+  }
+
+  .copyButton {
+    width: 100%;
+    justify-content: center;
+  }
+}

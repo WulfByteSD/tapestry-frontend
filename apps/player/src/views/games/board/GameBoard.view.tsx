@@ -14,6 +14,10 @@ import NotesZone from '@/features/gameBoard/zones/NotesZone';
 import RollsZone from '@/features/gameBoard/zones/RollsZone';
 import PartyZone from '@/features/gameBoard/zones/PartyZone';
 import CharacterZone from '@/features/gameBoard/zones/CharacterZone';
+import OverviewZone from '@/features/gameBoard/zones/campaign/OverviewZone';
+import RosterZone from '@/features/gameBoard/zones/campaign/RosterZone';
+import RequestsZone from '@/features/gameBoard/zones/campaign/RequestsZone';
+import InvitesZone from '@/features/gameBoard/zones/campaign/InvitesZone';
 import styles from './GameBoard.module.scss';
 
 type Props = {
@@ -21,6 +25,8 @@ type Props = {
 };
 
 function MainZone({ zone, isSW, campaign, currentUserId }: { zone: BoardZone; isSW: boolean; campaign: import('@tapestry/types').CampaignType; currentUserId: string }) {
+  const isArchived = campaign.status === 'archived';
+  
   switch (zone) {
     case 'feed':
       return <ActivityFeedZone campaignId={campaign._id} isSW={isSW} />;
@@ -34,6 +40,14 @@ function MainZone({ zone, isSW, campaign, currentUserId }: { zone: BoardZone; is
       return <PartyZone campaign={campaign} />;
     case 'character':
       return <CharacterZone campaign={campaign} isSW={isSW} currentUserId={currentUserId} />;
+    case 'overview':
+      return <OverviewZone campaign={campaign} isSW={isSW} isArchived={isArchived} />;
+    case 'roster':
+      return <RosterZone campaign={campaign} isSW={isSW} currentUserId={currentUserId} isArchived={isArchived} />;
+    case 'requests':
+      return <RequestsZone campaign={campaign} isSW={isSW} currentUserId={currentUserId} isArchived={isArchived} />;
+    case 'invites':
+      return <InvitesZone campaign={campaign} isSW={isSW} isArchived={isArchived} />;
   }
 }
 

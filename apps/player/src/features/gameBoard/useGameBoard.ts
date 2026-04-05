@@ -7,7 +7,7 @@ import type { CampaignType, CampaignRole } from '@tapestry/types';
 import { api } from '@/lib/api';
 import { useProfile } from '@tapestry/hooks/src/useProfile';
 
-export type BoardZone = 'feed' | 'encounters' | 'notes' | 'rolls' | 'party' | 'character' | 'settings';
+export type BoardZone = 'feed' | 'encounters' | 'notes' | 'rolls' | 'party' | 'character' | 'settings' | 'overview' | 'roster' | 'requests' | 'invites';
 
 export interface UseGameBoardReturn {
   activeZone: BoardZone;

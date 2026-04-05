@@ -18,6 +18,10 @@ const NAV_ITEMS: NavItem[] = [
   { key: 'rolls', label: 'Rolls', icon: '🎲' },
   { key: 'party', label: 'Party', icon: '👥' },
   { key: 'character', label: 'Character', icon: '🧙' },
+  { key: 'overview', label: 'Overview', icon: '📊', swOnly: true },
+  { key: 'roster', label: 'Roster', icon: '📜' },
+  { key: 'requests', label: 'Requests', icon: '📥', swOnly: true },
+  { key: 'invites', label: 'Invites', icon: '🔗', swOnly: true },
   { key: 'settings', label: 'Settings', icon: '⚙️', swOnly: true },
 ];
 

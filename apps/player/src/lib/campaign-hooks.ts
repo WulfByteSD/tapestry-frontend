@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from './api';
-import type { CampaignStatus, CampaignType, JoinRequest } from '@tapestry/types';
+import type { CampaignStatus, CampaignType, JoinRequest, SettingDefinition } from '@tapestry/types';
 import {
   cleanParams,
   getCampaign,
@@ -16,8 +16,12 @@ import {
   updateCampaignMemberNickname,
   transferCampaignOwnership,
   archiveCampaignMember,
+  getSettings,
+  ApiResponse,
+  UpdatePayload,
 } from '@tapestry/api-client';
 import { useMemo } from 'react';
+import applyDotUpdates from '@/utils/applyDotUpdates';
 
 export type CreateCampaignInput = {
   name: string;
@@ -249,6 +253,82 @@ export function useRejectJoinRequestMutation(campaignId: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['campaign', campaignId, 'join-requests'] });
       queryClient.invalidateQueries({ queryKey: ['my-join-requests'] });
+    },
+  });
+}
+
+/**
+ * Fetch published settings (for campaign creation/configuration)
+ * Returns available setting definitions for table setup
+ */
+export function useSettingsQuery() {
+  return useQuery({
+    queryKey: ['content:settings'],
+    queryFn: async () => {
+      return await getSettings(api, {
+        pageLimit: 50,
+        sortOptions: 'name',
+        filterOptions: 'status;published',
+      });
+    },
+    staleTime: 60_000, // Settings don't change frequently
+    retry: 1,
+  });
+}
+
+// Timer map to debounce refetches after mutations settle
+const refetchTimers = new Map<string, number>();
+
+/**
+ * Update campaign fields with optimistic updates and debounced refetch
+ * Supports dot notation for nested updates
+ * Requires SW or Co-SW permissions
+ */
+export function useUpdateCampaignMutation(campaignId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationKey: ['campaign:update', campaignId],
+    mutationFn: async (updates: UpdatePayload) => {
+      const res = await api.put(`/game/campaigns/${campaignId}`, updates);
+      return res.data as ApiResponse<any>;
+    },
+    onMutate: async (updates) => {
+      await queryClient.cancelQueries({ queryKey: ['campaign', campaignId] });
+
+      const prev = queryClient.getQueryData<ApiResponse<any>>(['campaign', campaignId]);
+
+      if (prev?.payload) {
+        queryClient.setQueryData<ApiResponse<any>>(['campaign', campaignId], {
+          ...prev,
+          payload: applyDotUpdates(prev.payload, updates),
+        });
+      }
+
+      return { prev };
+    },
+    onError: (_err, _updates, ctx) => {
+      if (ctx?.prev) {
+        queryClient.setQueryData(['campaign', campaignId], ctx.prev);
+      }
+    },
+    onSuccess: (data) => {
+      queryClient.setQueryData(['campaign', campaignId], data);
+
+      // Clear any existing refetch timer
+      const existingTimer = refetchTimers.get(campaignId);
+      if (existingTimer) {
+        window.clearTimeout(existingTimer);
+      }
+
+      // Set a new timer to refetch after updates have settled (2000ms)
+      const timer = window.setTimeout(() => {
+        queryClient.invalidateQueries({ queryKey: ['campaign', campaignId] });
+        queryClient.invalidateQueries({ queryKey: ['my-campaigns'] });
+        refetchTimers.delete(campaignId);
+      }, 2000);
+
+      refetchTimers.set(campaignId, timer);
     },
   });
 }

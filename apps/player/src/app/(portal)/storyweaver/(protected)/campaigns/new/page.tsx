@@ -49,7 +49,7 @@ export default function NewCampaignPage() {
         }
 
         await queryClient.invalidateQueries({ queryKey: ["storyweaver-campaigns"] });
-        router.replace(`/storyweaver/campaigns/${id}`);
+        router.replace(`/games/${id}/board`);
       } catch (e: any) {
         const msg =
           e?.response?.data?.message || e?.response?.data?.error || e?.message || "Failed to create campaign.";

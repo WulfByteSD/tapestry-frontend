@@ -102,7 +102,7 @@ export default function CampaignCreateView() {
       const id = result?.payload?._id || result?._id;
 
       if (id) {
-        router.push(`/storyweaver/campaigns/${id}`);
+        router.push(`/games/${id}/board`);
         return;
       }
 
