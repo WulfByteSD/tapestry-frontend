@@ -7,6 +7,9 @@ import {
   getCampaigns,
   getMyCampaigns,
   getMyJoinRequests,
+  getCampaignJoinRequests,
+  approveJoinRequest,
+  rejectJoinRequest,
   ListQueryParams,
   removeCampaignMember,
   updateCampaignMemberRole,
@@ -196,6 +199,56 @@ export function useArchiveMemberMutation(campaignId: string) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['campaign', campaignId] });
+    },
+  });
+}
+
+/**
+ * Fetch all join requests for a specific campaign
+ * Used by Storyweavers to review pending requests
+ */
+export function useCampaignJoinRequests(campaignId: string | undefined) {
+  return useQuery({
+    queryKey: ['campaign', campaignId, 'join-requests'],
+    queryFn: () => getCampaignJoinRequests<JoinRequest>(api, campaignId!),
+    enabled: !!campaignId,
+    staleTime: 1000 * 60 * 2, // 2 minutes
+  });
+}
+
+/**
+ * Approve a join request and add the player to the campaign
+ * Requires SW or Co-SW permissions
+ */
+export function useApproveJoinRequestMutation(campaignId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ requestId }: { requestId: string }) => {
+      await approveJoinRequest(api, campaignId, requestId);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['campaign', campaignId, 'join-requests'] });
+      queryClient.invalidateQueries({ queryKey: ['campaign', campaignId] });
+      queryClient.invalidateQueries({ queryKey: ['my-join-requests'] });
+    },
+  });
+}
+
+/**
+ * Reject a join request
+ * Requires SW or Co-SW permissions
+ */
+export function useRejectJoinRequestMutation(campaignId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ requestId }: { requestId: string }) => {
+      await rejectJoinRequest(api, campaignId, requestId);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['campaign', campaignId, 'join-requests'] });
+      queryClient.invalidateQueries({ queryKey: ['my-join-requests'] });
     },
   });
 }

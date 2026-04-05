@@ -86,3 +86,38 @@ export async function transferCampaignOwnership(api: AxiosInstance, campaignId: 
 export async function archiveCampaignMember(api: AxiosInstance, campaignId: string, playerId: string): Promise<void> {
   await api.post(`/game/campaigns/${campaignId}/members/${playerId}/archive`);
 }
+
+// ========================================
+// Join Request Management API Methods
+// ========================================
+
+/**
+ * Get all join requests for a campaign
+ * Requires SW or Co-SW permissions
+ * @param api - Axios instance
+ * @param campaignId - Campaign ID
+ */
+export async function getCampaignJoinRequests<JoinRequestType>(api: AxiosInstance, campaignId: string): Promise<ApiListResponse<JoinRequestType>> {
+  const res = await api.get(`/game/campaigns/${campaignId}/join-requests`);
+  return res.data as ApiListResponse<JoinRequestType>;
+}
+
+/**
+ * Approve a join request and add the player to the campaign
+ * @param api - Axios instance
+ * @param campaignId - Campaign ID
+ * @param requestId - Join request ID
+ */
+export async function approveJoinRequest(api: AxiosInstance, campaignId: string, requestId: string): Promise<void> {
+  await api.post(`/game/campaigns/${campaignId}/join-requests/${requestId}/approve`);
+}
+
+/**
+ * Reject a join request
+ * @param api - Axios instance
+ * @param campaignId - Campaign ID
+ * @param requestId - Join request ID
+ */
+export async function rejectJoinRequest(api: AxiosInstance, campaignId: string, requestId: string): Promise<void> {
+  await api.post(`/game/campaigns/${campaignId}/join-requests/${requestId}/deny`);
+}

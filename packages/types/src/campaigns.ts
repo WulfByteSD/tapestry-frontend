@@ -25,8 +25,8 @@ export type JoinRequestStatus = 'pending' | 'approved' | 'rejected';
 export interface JoinRequest {
   _id: string;
   campaign: string; // campaign ID
-  player: string; // player ID
-  role: CampaignRole;
+  player: PlayerType; // player ID
+  preferredRole: CampaignRole;
   message?: string;
   status: JoinRequestStatus;
   createdAt: Date;
