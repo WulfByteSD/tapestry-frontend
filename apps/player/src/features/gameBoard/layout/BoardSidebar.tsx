@@ -66,7 +66,6 @@ export default function BoardSidebar({ campaign, isSW }: Props) {
                   <span className={styles.memberName}>{player?.displayName ?? 'Unknown'}</span>
                   <span className={styles.memberRole}>
                     {m.role}
-                    {online && <span className={styles.onlineIndicator}> ● Online</span>}
                   </span>
                 </div>
               </div>

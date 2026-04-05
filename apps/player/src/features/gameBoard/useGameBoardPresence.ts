@@ -22,14 +22,14 @@ export function useGameBoardPresence(campaignId?: string) {
       onUserJoined: (user: PresenceUser) => {
         setConnectedUsers((prev) => {
           // Avoid duplicates
-          if (prev.some((u) => u.userId === user.userId)) {
+          if (prev.some((u) => u.playerId === user.playerId)) {
             return prev;
           }
           return [...prev, user];
         });
       },
-      onUserLeft: (userId: string) => {
-        setConnectedUsers((prev) => prev.filter((u) => u.userId !== userId));
+      onUserLeft: (playerId: string) => {
+        setConnectedUsers((prev) => prev.filter((u) => u.playerId !== playerId));
       },
       onRoomState: (users: PresenceUser[]) => {
         setConnectedUsers(users);
@@ -45,8 +45,8 @@ export function useGameBoardPresence(campaignId?: string) {
   }, [socket, campaignId, state]);
 
   const isUserOnline = useCallback(
-    (userId: string) => {
-      return connectedUsers?.some((u) => u.userId === userId);
+    (playerId: string) => {
+      return connectedUsers?.some((u) => u.playerId === playerId);
     },
     [connectedUsers]
   );

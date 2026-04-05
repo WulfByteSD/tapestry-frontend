@@ -3,7 +3,7 @@ import type { PresenceUser } from '../types';
 
 export type PresenceEventHandlers = {
   onUserJoined?: (user: PresenceUser) => void;
-  onUserLeft?: (userId: string) => void;
+  onUserLeft?: (playerId: string) => void;
   onRoomState?: (users: PresenceUser[]) => void;
 };
 
@@ -29,12 +29,13 @@ export function subscribeToPresence(socket: TypedSocket, campaignId: string, han
   const { onUserJoined, onUserLeft, onRoomState } = handlers;
 
   // User joined handler
-  const handleUserJoined = (data: { userId: string; campaignId: string; displayName: string; avatar?: string }) => {
+  const handleUserJoined = (data: { userId: string; playerId: string; campaignId: string; displayName: string; avatar?: string }) => {
     if (data.campaignId !== campaignId) return;
 
     if (onUserJoined) {
       onUserJoined({
         userId: data.userId,
+        playerId: data.playerId,
         displayName: data.displayName,
         avatar: data.avatar,
         connectedAt: new Date().toISOString(),
@@ -43,10 +44,10 @@ export function subscribeToPresence(socket: TypedSocket, campaignId: string, han
   };
 
   // User left handler
-  const handleUserLeft = (data: { userId: string; campaignId: string }) => {
+  const handleUserLeft = (data: { userId: string; playerId: string; campaignId: string }) => {
     if (data.campaignId !== campaignId) return;
     if (onUserLeft) {
-      onUserLeft(data.userId);
+      onUserLeft(data.playerId);
     }
   };
 

@@ -2,6 +2,7 @@
 
 export type PresenceUser = {
   userId: string;
+  playerId: string;
   displayName: string;
   avatar?: string;
   connectedAt: string;
@@ -9,8 +10,8 @@ export type PresenceUser = {
 
 // Server → Client events
 export type ServerToClientEvents = {
-  'presence:user-joined': (data: { userId: string; campaignId: string; displayName: string; avatar?: string }) => void;
-  'presence:user-left': (data: { userId: string; campaignId: string }) => void;
+  'presence:user-joined': (data: { userId: string; playerId: string; campaignId: string; displayName: string; avatar?: string }) => void;
+  'presence:user-left': (data: { userId: string; playerId: string; campaignId: string }) => void;
   'presence:room-state': (data: { campaignId: string; users: PresenceUser[] }) => void;
   // Future events
   'activity:new-post': (data: { campaignId: string; activity: any }) => void;
