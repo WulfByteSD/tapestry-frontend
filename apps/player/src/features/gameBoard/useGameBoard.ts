@@ -5,7 +5,7 @@ import { useCampaign } from '@/lib/campaign-hooks';
 import { useMe } from '@/lib/auth-hooks';
 import type { CampaignType, CampaignRole } from '@tapestry/types';
 
-export type BoardZone = 'feed' | 'encounters' | 'notes' | 'rolls' | 'party' | 'character';
+export type BoardZone = 'feed' | 'encounters' | 'notes' | 'rolls' | 'party' | 'character' | 'settings';
 
 export interface UseGameBoardReturn {
   activeZone: BoardZone;

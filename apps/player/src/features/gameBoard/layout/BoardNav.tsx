@@ -1,5 +1,6 @@
 'use client';
 
+import { Tooltip } from '@tapestry/ui';
 import type { BoardZone } from '../useGameBoard';
 import styles from './BoardNav.module.scss';
 
@@ -17,6 +18,7 @@ const NAV_ITEMS: NavItem[] = [
   { key: 'rolls', label: 'Rolls', icon: '🎲' },
   { key: 'party', label: 'Party', icon: '👥' },
   { key: 'character', label: 'Character', icon: '🧙' },
+  { key: 'settings', label: 'Settings', icon: '⚙️', swOnly: true },
 ];
 
 type Props = {
@@ -31,17 +33,16 @@ export default function BoardNav({ activeZone, onZoneChange, isSW }: Props) {
   return (
     <div className={styles.nav}>
       {items.map((item) => (
-        <button
-          key={item.key}
-          className={`${styles.item} ${activeZone === item.key ? styles.active : ''}`}
-          onClick={() => onZoneChange(item.key)}
-          title={item.label}
-          aria-label={item.label}
-          aria-current={activeZone === item.key ? 'page' : undefined}
-        >
-          <span className={styles.icon}>{item.icon}</span>
-          <span className={styles.label}>{item.label}</span>
-        </button>
+        <Tooltip key={item.key} title={item.label} placement="right">
+          <button
+            className={`${styles.item} ${activeZone === item.key ? styles.active : ''}`}
+            onClick={() => onZoneChange(item.key)}
+            aria-label={item.label}
+            aria-current={activeZone === item.key ? 'page' : undefined}
+          >
+            <span className={styles.icon}>{item.icon}</span>
+          </button>
+        </Tooltip>
       ))}
     </div>
   );
