@@ -18,7 +18,7 @@ export default function PendingRequestRow({ request, isSW, onCancel, onApprove, 
   const character = request.character as CharacterSheet;
   const player = request.player as PlayerType;
   const charName = typeof request.character === 'string' ? request.character : character.name;
-  const archetype = typeof request.character === 'string' ? '' : (character.sheet.archetypeKey ?? 'Unknown Archetype');
+  const archetype = typeof request.character === 'string' ? '' : (character.sheet?.archetypeKey ?? 'Unknown Archetype');
   const playerName = typeof request.player === 'string' ? request.player : (player.displayName ?? 'Unknown Player');
 
   return (

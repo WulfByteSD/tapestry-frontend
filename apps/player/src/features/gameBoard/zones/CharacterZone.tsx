@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Button } from '@tapestry/ui';
+import { Button, Loader } from '@tapestry/ui';
 import type { CampaignType, CharacterSheet, CharacterRequest } from '@tapestry/types';
 import {
   useCampaignCharacters,
@@ -66,10 +66,9 @@ export default function CharacterZone({ campaign, isSW, currentUserId }: Props) 
       </div>
 
       {isLoading ? (
-        <div className={styles.skeletonBody}>
-          <div className={styles.skeletonLine} style={{ width: '60%' }} />
-          <div className={styles.skeletonLine} style={{ width: '40%' }} />
-        </div>
+        <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, marginTop: 24 }}>
+          <Loader label="Loading characters..." caption="Please wait while we fetch the characters." />
+        </span>
       ) : (
         <>
           {/* Pending approval queue */}

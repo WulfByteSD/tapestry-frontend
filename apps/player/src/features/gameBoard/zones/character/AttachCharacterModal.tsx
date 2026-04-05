@@ -25,7 +25,7 @@ export default function AttachCharacterModal({ open, onClose, attachedIds, onSub
   const [message, setMessage] = useState('');
 
   const { data: sheetsResponse, isLoading } = useCharacterSheetsQuery({
-    filterOptions: `playerId;${playerId}`,
+    filterOptions: `player;${playerId}`,
   });
   const allSheets = (sheetsResponse?.payload ?? []) as CharacterSheet[];
 

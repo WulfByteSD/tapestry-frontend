@@ -4,6 +4,8 @@ import { useState, useMemo } from 'react';
 import { useCampaign } from '@/lib/campaign-hooks';
 import { useMe } from '@/lib/auth-hooks';
 import type { CampaignType, CampaignRole } from '@tapestry/types';
+import { api } from '@/lib/api';
+import { useProfile } from '@tapestry/hooks/src/useProfile';
 
 export type BoardZone = 'feed' | 'encounters' | 'notes' | 'rolls' | 'party' | 'character' | 'settings';
 
@@ -23,17 +25,18 @@ export function useGameBoard(campaignId: string): UseGameBoardReturn {
 
   const { data: campaignResponse, isLoading: campaignLoading, isError } = useCampaign(campaignId);
   const { data: currentUser } = useMe();
+  const { data: playerProfile } = useProfile(api, currentUser, 'player');
 
   const campaign = campaignResponse?.payload as CampaignType | undefined;
 
   const userRole = useMemo<CampaignRole | undefined>(() => {
-    if (!campaign || !currentUser?._id) return undefined;
+    if (!campaign || !playerProfile?.payload._id) return undefined;
     const member = campaign.members.find((m) => {
       const playerId = typeof m.player === 'object' ? m.player._id : m.player;
-      return playerId === currentUser._id;
+      return playerId === playerProfile?.payload._id;
     });
     return member?.role;
-  }, [campaign, currentUser]);
+  }, [campaign, playerProfile]);
 
   const isSW = userRole === 'sw' || userRole === 'co-sw';
 
@@ -43,7 +46,7 @@ export function useGameBoard(campaignId: string): UseGameBoardReturn {
     campaign,
     userRole,
     isSW,
-    currentUserId: currentUser?._id,
+    currentUserId: playerProfile?.payload._id,
     isLoading: campaignLoading,
     isError,
   };
