@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { useMe } from "@/lib/auth-hooks";
-import ProfileDetailsSection from "./ProfileDetailsSection.component";
-import styles from "./AccountDetails.module.scss";
-import PasswordSection from "./PasswordSection.component";
-import AccountSection from "./AccountSection.component";
-import NotificationPreferencesSection from "./NotificationPreferencesSection.component";
-import AppSection from "./AppSection.component";
+import { useMe } from '@/lib/auth-hooks';
+import ProfileDetailsSection from './ProfileDetailsSection.component';
+import styles from './AccountDetails.module.scss';
+import PasswordSection from './PasswordSection.component';
+import AccountSection from './AccountSection.component';
+import NotificationPreferencesSection from './NotificationPreferencesSection.component';
+import AppSection from './AppSection.component';
 
 export default function Settings() {
   const { data: me, isLoading } = useMe();
