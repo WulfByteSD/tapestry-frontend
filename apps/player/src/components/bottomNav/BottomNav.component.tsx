@@ -1,13 +1,15 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import styles from "./BottomNav.module.scss";
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { BiHome } from 'react-icons/bi';
+import { GiDiceTarget } from 'react-icons/gi';
+import styles from './BottomNav.module.scss';
 
-const tabs = [
-  { href: "/", label: "Sheet" },
-  { href: "/rolls", label: "Rolls" },
-  { href: "/settings", label: "Settings" }
+// Core mobile navigation - only the most essential items
+const coreNavItems = [
+  { href: '/', label: 'Home', icon: <BiHome /> },
+  { href: '/games', label: 'Games', icon: <GiDiceTarget /> },
 ];
 
 export default function BottomNav() {
@@ -16,15 +18,12 @@ export default function BottomNav() {
   return (
     <nav className={styles.nav}>
       <div className={styles.inner}>
-        {tabs.map((t) => {
-          const active = pathname === t.href;
+        {coreNavItems.map((link) => {
+          const active = pathname === link.href;
           return (
-            <Link
-              key={t.href}
-              href={t.href}
-              className={`${styles.link} ${active ? styles.active : ""}`}
-            >
-              {t.label}
+            <Link key={link.href} href={link.href} className={`${styles.link} ${active ? styles.active : ''}`}>
+              <span className={styles.icon}>{link.icon}</span>
+              <span className={styles.label}>{link.label}</span>
             </Link>
           );
         })}

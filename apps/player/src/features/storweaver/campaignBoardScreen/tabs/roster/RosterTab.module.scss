@@ -184,3 +184,148 @@
     flex-wrap: wrap;
   }
 }
+
+/* Modal Styles */
+.modalContent {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.modalDescription {
+  margin: 0;
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+/* Role Selection Modal */
+.roleOptions {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.roleOption {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  cursor: pointer;
+  transition: all 150ms ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  input[type='radio'] {
+    margin-top: 0.2rem;
+    cursor: pointer;
+    accent-color: var(--accent);
+  }
+}
+
+.roleInfo {
+  display: grid;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.roleLabel {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.roleDesc {
+  font-size: 0.85rem;
+  opacity: 0.7;
+}
+
+.warningBox {
+  padding: 1rem;
+  border-radius: 8px;
+  background: rgba(255, 192, 87, 0.12);
+  border: 1px solid rgba(255, 192, 87, 0.3);
+  color: rgb(255, 210, 120);
+
+  strong {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.85rem;
+    opacity: 0.9;
+  }
+}
+
+/* Nickname Edit Modal */
+.inputGroup {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.inputLabel {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.inputWrapper {
+  position: relative;
+}
+
+.textInput {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  padding-right: 2.5rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: inherit;
+  font-size: 0.95rem;
+  font-family: inherit;
+  transition: all 150ms ease;
+
+  &:focus {
+    outline: none;
+    border-color: var(--accent);
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  &::placeholder {
+    opacity: 0.5;
+  }
+}
+
+.clearButton {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.08);
+  border: none;
+  color: inherit;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 4px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: all 150ms ease;
+  font-size: 0.9rem;
+
+  &:hover {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.12);
+  }
+}
+
+.inputHint {
+  font-size: 0.8rem;
+  opacity: 0.6;
+  text-align: right;
+}

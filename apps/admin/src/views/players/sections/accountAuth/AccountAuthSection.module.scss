@@ -1,0 +1,216 @@
+// Auth Section Container
+.authSectionContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+// Card Styles
+.authCard {
+  background: var(--color-surface);
+
+  h2 {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+  }
+}
+
+.cardHeaderContent {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.headerIcon {
+  font-size: 1.25rem;
+  color: var(--color-purple);
+}
+
+// Info Grid and Rows
+.infoGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.infoRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--color-border-dim);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.copyField {
+  flex: 1;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+// Form Styles
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.formRow {
+  display: flex;
+  flex-direction: column;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--color-border-dim);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--color-border-dim);
+}
+
+.errorMessage {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background: var(--color-danger-dim);
+  color: var(--color-danger);
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+// Switcher Field
+.switcherField {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.switcherLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-weight: 600;
+  color: var(--color-text);
+  font-size: 0.875rem;
+  flex: 1;
+}
+
+.fieldHint {
+  font-weight: 400;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+// Password Management
+.passwordManagement {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.passwordInfo {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--color-surface-dim);
+  border-radius: 0.5rem;
+  border: 1px solid var(--color-border-dim);
+}
+
+.infoIcon {
+  font-size: 1.5rem;
+  color: var(--color-purple);
+  flex-shrink: 0;
+  margin-top: 0.25rem;
+}
+
+.infoText {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+
+  h4 {
+    margin: 0;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--color-text);
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+  }
+}
+
+.passwordActions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+// Modal Styles
+.modalTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+
+  svg {
+    font-size: 1.25rem;
+  }
+}
+
+.modalContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem 0;
+}
+
+.confirmText {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--color-text);
+  line-height: 1.5;
+
+  strong {
+    color: var(--color-purple);
+  }
+}
+
+.warningText {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+.modalFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.passwordModalForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem 0;
+}

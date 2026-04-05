@@ -9,8 +9,7 @@ import { Alert, AlertContainer } from "@tapestry/ui";
 export default function PublicGate({ children }: { children: ReactNode }) {
   const router = useRouter();
   const params = useSearchParams();
-  const { data: user, isLoading } = useMe();
-  console.log("PublicGate user", user, "isLoading", isLoading);
+  const { data: user, isLoading } = useMe(); 
 
   useEffect(() => {
     if (isLoading) return;

@@ -17,7 +17,7 @@ export function TagInputField<T = string>({ id, label, hint, helpText, error, cl
   const displayHint = helpText ?? hint;
   const hasError = Boolean(error) || Boolean(tagInputProps.hasError);
   const [isFocused, setIsFocused] = useState(false);
-  const hasValue = tagInputProps.value && tagInputProps.value.length > 0;
+  const hasValue = tagInputProps.value && Array.isArray(tagInputProps.value) && tagInputProps.value.length > 0;
   const isFloating = isFocused || hasValue;
 
   const handleFocus = (event: React.FocusEvent<HTMLDivElement>) => {

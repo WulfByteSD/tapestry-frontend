@@ -1,9 +1,10 @@
-import { PlayerType } from "./players";
+import { CharacterSheet } from './characters';
+import { PlayerType } from './players';
 
-export type CampaignStatus = "active" | "archived";
-export type CampaignRole = "sw" | "co-sw" | "player" | "observer";
+export type CampaignStatus = 'active' | 'archived';
+export type CampaignRole = 'sw' | 'co-sw' | 'player' | 'observer';
 
-export type DiscordMode = "none" | "webhook" | "bot";
+export type DiscordMode = 'none' | 'webhook' | 'bot';
 
 export interface CampaignMember {
   player: PlayerType; // ref Player
@@ -20,6 +21,19 @@ export interface CampaignInvite {
   createdAt?: Date;
 }
 
+export type JoinRequestStatus = 'pending' | 'approved' | 'rejected';
+
+export interface JoinRequest {
+  _id: string;
+  campaign: string; // campaign ID
+  player: PlayerType; // player ID
+  preferredRole: CampaignRole;
+  message?: string;
+  status: JoinRequestStatus;
+  createdAt: Date;
+  updatedAt?: Date;
+}
+
 export interface DiscordConfig {
   mode: DiscordMode;
 
@@ -33,7 +47,7 @@ export interface DiscordConfig {
   // Formatting / behavior
   postRolls?: boolean;
   postToThread?: boolean;
-  messageStyle?: "compact" | "detailed";
+  messageStyle?: 'compact' | 'detailed';
 }
 
 export interface CampaignDisplayConfig {
@@ -85,7 +99,43 @@ export type CampaignType = {
   // Meta
   rulesetVersion: number;
   notes?: string;
+  tableExpectations?: string;
 
   createdAt: Date;
   updatedAt: Date;
 };
+
+// ========================================
+// Campaign Activity Types
+// ========================================
+
+export type CampaignActivityType =
+  | 'roll.attack'
+  | 'roll.custom'
+  | 'campaign.member_joined'
+  | 'campaign.member_left'
+  | 'campaign.character_attached'
+  | 'campaign.character_detached'
+  | 'sw.note';
+
+export interface CampaignActivity {
+  _id: string;
+  campaign: string;
+  activityType: CampaignActivityType;
+  actor: {
+    player: PlayerType; // Could be populated PlayerType
+    playerNameSnapshot?: string;
+    character?: CharacterSheet; // Could be populated CharacterType
+    characterNameSnapshot?: string;
+  };
+  payload: Record<string, any>; // Type varies by activityType
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export type NotePostType = 'campaign-update' | 'session-recap' | 'lore-drop' | 'player-spotlight' | 'announcement' | 'behind-the-scenes';
+
+export interface PostNoteInput {
+  content: string;
+  postType?: NotePostType;
+}

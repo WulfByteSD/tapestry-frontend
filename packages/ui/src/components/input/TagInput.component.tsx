@@ -1,12 +1,12 @@
 'use client';
 
-import React, { useState, useRef, KeyboardEvent, FocusEvent, ChangeEvent } from 'react';
+import React, { useState, useRef, KeyboardEvent, FocusEvent, ChangeEvent, useMemo } from 'react';
 import clsx from 'clsx';
 import styles from './TagInput.module.scss';
 
 export type TagInputProps<T = string> = {
   id?: string;
-  value: T[];
+  value: T[] | T | string;
   onChange: (value: T[]) => void;
   onBlur?: (event: FocusEvent<HTMLDivElement>) => void;
   onFocus?: (event: FocusEvent<HTMLDivElement>) => void;
@@ -26,9 +26,52 @@ export type TagInputProps<T = string> = {
   className?: string;
 };
 
+/**
+ * Normalizes the incoming value to an array of tags
+ */
+function normalizeValue<T>(value: T[] | T | string | null | undefined, parseTag?: (input: string) => T): T[] {
+  // Handle null/undefined
+  if (value == null) {
+    return [];
+  }
+
+  // Already an array
+  if (Array.isArray(value)) {
+    return value;
+  }
+
+  // String value - try to split by commas
+  if (typeof value === 'string') {
+    const trimmed = value.trim();
+    if (!trimmed) {
+      return [];
+    }
+
+    // Split by comma and parse each part
+    const parts = trimmed
+      .split(',')
+      .map((part) => part.trim())
+      .filter(Boolean);
+
+    if (parseTag) {
+      try {
+        return parts.map(parseTag);
+      } catch (error) {
+        console.warn('Failed to parse string value as tags:', error);
+        return [];
+      }
+    }
+
+    return parts as T[];
+  }
+
+  // Single non-string, non-array value - wrap in array
+  return [value];
+}
+
 export function TagInput<T = string>({
   id,
-  value = [],
+  value: rawValue,
   onChange,
   onBlur,
   onFocus,
@@ -55,6 +98,9 @@ export function TagInput<T = string>({
   const actualParseTag = parseTag ?? defaultParseTag;
   const actualGetTagLabel = getTagLabel ?? defaultGetTagLabel;
   const actualGetTagKey = getTagKey ?? defaultGetTagKey;
+
+  // Normalize the value to always be an array
+  const value = useMemo(() => normalizeValue(rawValue, parseTag), [rawValue, parseTag]);
 
   const addTag = (input: string) => {
     const trimmedInput = input.trim();
@@ -143,7 +189,7 @@ export function TagInput<T = string>({
       tabIndex={-1}
     >
       <div className={styles.tagsContainer}>
-        {value.map((tag, index) => (
+        {value?.map((tag, index) => (
           <div key={actualGetTagKey(tag, index)} className={styles.tag}>
             <span className={styles.tagLabel}>{actualGetTagLabel(tag)}</span>
             {!disabled && (

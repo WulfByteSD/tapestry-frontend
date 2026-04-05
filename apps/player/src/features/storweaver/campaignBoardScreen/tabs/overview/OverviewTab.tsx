@@ -136,7 +136,7 @@ export function OverviewTab({ campaign, updateMutation, settingsQuery, isArchive
             disabled={isArchived}
           >
             <option value="open">Open - Anyone can join</option>
-            <option value="request">Request - Requires approval</option>
+            <option value="approval">Request - Requires approval</option>
             <option value="invite-only">Invite Only</option>
           </SelectField>
         </section>

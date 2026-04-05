@@ -1,13 +1,16 @@
-"use client";
+'use client';
 
-import { useEffect } from "react";
-import Link from "next/link";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useMe, useLogout } from "@/lib/auth-hooks";
-import { usePlayerProfile } from "@/lib/settings-hooks";
-import styles from "./AccountDrawer.module.scss";
-import { Button } from "@tapestry/ui";
+import { useEffect } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { useMe, useLogout } from '@/lib/auth-hooks';
+import { usePlayerProfile } from '@/lib/settings-hooks';
+import { useMyCampaigns } from '@/lib/campaign-hooks';
+import { getNavigationLinks } from '@/data/sidebarLinks';
+import styles from './AccountDrawer.module.scss';
+import { Button } from '@tapestry/ui';
+import type { SidebarLink } from '@tapestry/ui';
 
 type Props = {
   open: boolean;
@@ -18,14 +21,27 @@ export default function AccountDrawer({ open, onClose }: Props) {
   const router = useRouter();
   const { data: me } = useMe();
   const { data: profile } = usePlayerProfile(me?.profileRefs?.player);
+  const { data: myCampaignsResponse, isLoading: campaignsLoading } = useMyCampaigns();
   const logout = useLogout();
+
+  // Extract campaigns array from API response
+  const campaigns = myCampaignsResponse?.payload || [];
+  const navGroups = getNavigationLinks({ profile, campaigns });
+
+  // Filter groups to only show those with mobile-hidden links
+  const drawerGroups = navGroups
+    .map((group) => ({
+      ...group,
+      links: group.links.filter((link) => link.hideOnMobile),
+    }))
+    .filter((group) => group.links.length > 0);
 
   // ESC to close
   useEffect(() => {
     if (!open) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
   }, [open, onClose]);
 
   if (!open) return null;
@@ -50,14 +66,31 @@ export default function AccountDrawer({ open, onClose }: Props) {
               className={styles.logo}
             />
           </div>
-          <div className={styles.name}>{profile?.displayName ?? "Adventurer"}</div>
-          <div className={styles.email}>{me?.email ?? ""}</div>
+          <div className={styles.name}>{profile?.displayName ?? 'Adventurer'}</div>
+          <div className={styles.email}>{me?.email ?? ''}</div>
         </div>
 
         <nav className={styles.nav}>
-          <Link className={styles.link} href="/settings" onClick={onClose}>
-            Settings
-          </Link>
+          {campaignsLoading && (
+            <div className={styles.loadingState}>
+              <div className={styles.loadingText}>Loading navigation...</div>
+            </div>
+          )}
+
+          {!campaignsLoading &&
+            drawerGroups.map((group) => (
+              <div key={group.title} className={styles.navGroup}>
+                <div className={styles.groupTitle}>{group.title}</div>
+                <div className={styles.groupLinks}>
+                  {group.links.map((link) => (
+                    <Link key={link.href} className={styles.link} href={link.href} onClick={onClose}>
+                      {link.icon && <span className={styles.linkIcon}>{link.icon}</span>}
+                      <span className={styles.linkLabel}>{link.label}</span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            ))}
         </nav>
 
         <div className={styles.footer}>
@@ -66,7 +99,7 @@ export default function AccountDrawer({ open, onClose }: Props) {
             onClick={() => {
               logout();
               onClose();
-              router.replace("/login");
+              router.replace('/login');
             }}
           >
             Log out

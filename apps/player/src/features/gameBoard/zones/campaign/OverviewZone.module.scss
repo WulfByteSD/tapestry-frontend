@@ -1,0 +1,46 @@
+/* OverviewZone.module.scss */
+.grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(0, 1.6fr) minmax(320px, 0.95fr);
+  margin-top: 1rem;
+}
+
+// .mainPanel,
+.sidePanel,
+.editBlock {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.mainPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  flex: 1;
+}
+
+.tokenRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.token {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2rem;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.empty {
+  opacity: 0.6;
+}
+
+@media (max-width: 960px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

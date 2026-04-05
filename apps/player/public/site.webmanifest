@@ -7,5 +7,7 @@
   ],
   "theme_color": "#D4AF37",
   "background_color": "#14002B",
-  "display": "standalone"
+  "display": "standalone",
+  "start_url": "/",
+  "scope": "/"
 }

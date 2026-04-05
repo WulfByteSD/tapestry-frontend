@@ -60,18 +60,77 @@
 }
 
 .nav {
-  padding: 12px 8px;
+  padding: 0;
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.navGroup {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.groupTitle {
+  padding: 0 16px 8px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+.groupLinks {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .link {
-  display: block;
-  padding: 10px 12px;
-  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
   color: var(--text);
+  text-decoration: none;
+  font-size: 0.9375rem;
+  transition: background 120ms ease;
 
   &:hover {
     background: color-mix(in srgb, var(--gold) 10%, transparent);
   }
+}
+
+.linkIcon {
+  flex-shrink: 0;
+  font-size: 1.125rem;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+}
+
+.linkLabel {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.loadingState {
+  padding: 16px;
+  text-align: center;
+}
+
+.loadingText {
+  font-size: 0.875rem;
+  color: var(--text-muted);
 }
 
 .footer {

@@ -1,0 +1,222 @@
+// ==========================
+// Join Campaign Card Component
+// ==========================
+
+.joinCard {
+  padding: 1.75rem;
+  border-radius: 18px;
+  background: radial-gradient(circle at bottom left, rgba(142, 111, 255, 0.12), transparent 60%), rgba(15, 18, 28, 0.95);
+  border: 2px solid rgba(142, 111, 255, 0.18);
+  display: grid;
+  gap: 1.5rem;
+
+  &:hover {
+    border-color: rgba(142, 111, 255, 0.25);
+  }
+
+  @media (max-width: 768px) {
+    padding: 1.5rem;
+    gap: 1.25rem;
+  }
+}
+
+.joinCardTop {
+  display: grid;
+  gap: 0.5rem;
+
+  h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.98);
+  }
+
+  p {
+    margin: 0;
+    line-height: 1.6;
+    opacity: 0.88;
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.8);
+  }
+}
+
+.joinButton {
+  min-height: 3.25rem;
+  border: 0;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(111, 89, 255, 0.98), rgba(148, 118, 255, 0.98));
+  color: white;
+  font: inherit;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0.9rem 1.25rem;
+  cursor: pointer;
+  transition: all 200ms ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  box-shadow: 0 4px 12px rgba(111, 89, 255, 0.3);
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(111, 89, 255, 0.4);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba(142, 111, 255, 0.6);
+    outline-offset: 3px;
+  }
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.errorMessage {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: rgba(255, 80, 80, 0.1);
+  border: 1px solid rgba(255, 80, 80, 0.25);
+  border-radius: 12px;
+
+  p {
+    margin: 0;
+    line-height: 1.5;
+    color: rgba(255, 168, 168, 0.98);
+    font-size: 0.95rem;
+  }
+}
+
+.errorIcon {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+// ==========================
+// Success Card
+// ==========================
+
+.successCard {
+  padding: 1.75rem;
+  border-radius: 18px;
+  background: radial-gradient(circle at center, rgba(120, 220, 120, 0.12), transparent 70%), rgba(15, 18, 28, 0.95);
+  border: 2px solid rgba(120, 220, 120, 0.25);
+  display: grid;
+  gap: 1rem;
+  text-align: center;
+
+  h2 {
+    margin: 0.5rem 0 0 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: rgba(180, 255, 180, 0.95);
+  }
+
+  p {
+    margin: 0.5rem 0 0 0;
+    line-height: 1.6;
+    opacity: 0.9;
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  @media (max-width: 768px) {
+    padding: 1.5rem;
+  }
+}
+
+.successIcon {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: bold;
+  background: rgba(120, 220, 120, 0.2);
+  border-radius: 50%;
+  color: rgba(180, 255, 180, 0.98);
+}
+
+.boardButton {
+  margin-top: 0.75rem;
+  width: 100%;
+}
+
+// ==========================
+// Pending Request State
+// ==========================
+
+.pendingIcon {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: bold;
+  background: rgba(255, 200, 100, 0.15);
+  border-radius: 50%;
+  color: rgba(255, 220, 140, 0.98);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.requestMessage {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  text-align: left;
+}
+
+.messageLabel {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.messageText {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.85);
+  font-style: italic;
+}

@@ -1,24 +1,24 @@
-"use client";
+'use client';
 
-import { useRouter } from "next/navigation";
-import { Button, Card, CardBody, CardHeader } from "@tapestry/ui";
-import styles from "./CampaignCard.module.scss";
-import { CampaignType } from "@tapestry/types";
-import Image from "next/image";
+import { useRouter } from 'next/navigation';
+import { Button, Card, CardBody, CardHeader } from '@tapestry/ui';
+import styles from './CampaignCard.module.scss';
+import { CampaignType } from '@tapestry/types';
+import Image from 'next/image';
 
 type CampaignCardProps = {
   campaign: CampaignType;
   /** Optional storyweaver name for public discovery views */
   storyweaverName?: string;
   /** Optional join policy for public discovery views */
-  joinPolicy?: "open" | "approval" | "invite-only";
+  joinPolicy?: 'open' | 'approval' | 'invite-only';
   /** Optional max players for public discovery views */
   maxPlayers?: number | null;
   /** Context label (e.g., "Campaign", "Public Game") */
   eyebrow?: string;
   /** Action button text */
   actionLabel?: string;
-  /** Click handler override (if not provided, navigates to /storyweaver/campaigns/{id}) */
+  /** Click handler override (if not provided, navigates to /games/{id}/board) */
   onClick?: () => void;
 };
 
@@ -27,76 +27,56 @@ function formatRelativeDate(value: string) {
   const diff = Date.now() - date.getTime();
   const days = Math.floor(diff / (1000 * 60 * 60 * 24));
 
-  if (days <= 0) return "Today";
-  if (days === 1) return "1 day ago";
+  if (days <= 0) return 'Today';
+  if (days === 1) return '1 day ago';
   if (days < 30) return `${days} days ago`;
 
   const months = Math.floor(days / 30);
-  if (months === 1) return "1 month ago";
+  if (months === 1) return '1 month ago';
   if (months < 12) return `${months} months ago`;
 
   const years = Math.floor(months / 12);
-  return years === 1 ? "1 year ago" : `${years} years ago`;
+  return years === 1 ? '1 year ago' : `${years} years ago`;
 }
 
 function getInitials(name?: string) {
-  if (!name) return "?";
+  if (!name) return '?';
 
   const parts = name.trim().split(/\s+/).filter(Boolean);
   if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
 
-  return `${parts[0][0] ?? ""}${parts[1][0] ?? ""}`.toUpperCase();
+  return `${parts[0][0] ?? ''}${parts[1][0] ?? ''}`.toUpperCase();
 }
 
 function humanizeKey(value?: string | null) {
-  if (!value) return "";
+  if (!value) return '';
 
   return value
     .split(/[-_]/g)
     .filter(Boolean)
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(" ");
+    .join(' ');
 }
 
 function getJoinPolicyLabel(policy?: string) {
-  if (policy === "open") return "Open Join";
-  if (policy === "approval") return "Request Required";
-  return "Invite Only";
+  if (policy === 'open') return 'Open Join';
+  if (policy === 'approval') return 'Request Required';
+  return 'Invite Only';
 }
 
-export default function CampaignCard({
-  campaign,
-  storyweaverName,
-  joinPolicy,
-  maxPlayers,
-  eyebrow = "Campaign",
-  actionLabel = "Open Campaign",
-  onClick,
-}: CampaignCardProps) {
+export default function CampaignCard({ campaign, storyweaverName, joinPolicy, maxPlayers, eyebrow = 'Campaign', actionLabel = 'Open Campaign', onClick }: CampaignCardProps) {
   const router = useRouter();
-  const {
-    _id: id,
-    name,
-    status,
-    members,
-    invites,
-    settingKey,
-    toneModules,
-    sources,
-    notes,
-    updatedAt,
-    avatar,
-  } = campaign;
+  const { _id: id, name, status, members, invites, settingKey, toneModules, sources, notes, updatedAt, avatar } = campaign;
 
-  const settingLabel = humanizeKey(settingKey) || "No Setting";
-  const truncatedNotes = notes?.trim() ? notes.trim().slice(0, 100) + "..." : "No campaign pitch yet";
+  const settingLabel = humanizeKey(settingKey) || 'No Setting';
+  const truncatedNotes = notes?.trim() ? notes.trim().slice(0, 100) + '...' : 'No campaign pitch yet';
   const playerCount = members?.length ?? 0;
 
   const handleClick = () => {
     if (onClick) {
       onClick();
     } else {
-      router.push(`/storyweaver/campaigns/${id}`);
+      router.push(`/games/${id}/board`);
     }
   };
 
@@ -146,10 +126,10 @@ export default function CampaignCard({
       <CardBody className={styles.cardBody}>
         <div className={styles.statGrid}>
           <div className={styles.statTile}>
-            <span className={styles.statLabel}>{maxPlayers !== undefined ? "Players" : "Members"}</span>
+            <span className={styles.statLabel}>{maxPlayers !== undefined ? 'Players' : 'Members'}</span>
             <span className={styles.statValue}>
               {playerCount}
-              {maxPlayers ? ` / ${maxPlayers}` : ""}
+              {maxPlayers ? ` / ${maxPlayers}` : ''}
             </span>
           </div>
 

@@ -1,39 +1,4 @@
 # Feature Candidates
-
-## 1) Admin User Management
-- **Status**: idea
-- **Category**: admin feature
-- **Value**: medium
-- **Complexity**: medium
-- **Backend dependency**: yes
-- **Priority notes**:
-  - Needed for platform operations and account-level support
-  - Useful for visibility into user resources and account ownership
-- **Vision**:
-  - Admin can update a user’s email/password at a high level
-  - Admin can inspect resources tied to a user account
-- **Open questions**:
-  - What admin permissions are required?
-  - What is editable directly versus requiring reset flows?
-  - How deep should resource visibility go?
-
----
-
-## 2) Admin Content CRUD Completion
-- **Status**: planned
-- **Category**: admin feature
-- **Value**: high
-- **Complexity**: medium
-- **Backend dependency**: yes
-- **Priority notes**:
-  - Foundational for the content library
-  - Unlocks better admin workflows and future custom-content features
-- **Vision**:
-  - Complete CRUD support for content library entities such as abilities, skills, items, and related definitions
-- **Open questions**:
-  - Which entities still lack full CRUD?
-  - Are there shared form/editor patterns that should be standardized?
-
 ---
 
 ## 3) Shared Module System

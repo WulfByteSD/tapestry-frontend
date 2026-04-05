@@ -5,10 +5,8 @@ type PageProps = {
 };
 
 export async function generateMetadata({ params }: PageProps) {
-  const { id } = await params;
-
   return {
-    title: `Game ${id} | Tapestry TTRPG`,
+    title: `Game | Tapestry TTRPG`,
     description: "Campaign overview and join request page.",
   };
 }

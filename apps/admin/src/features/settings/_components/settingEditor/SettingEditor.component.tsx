@@ -19,7 +19,7 @@ type SettingDraft = {
   name: string;
   description: string;
   status: "draft" | "published" | "archived";
-  tagsText: string;
+  tagsText: string[];
   rulesetVersion: number;
   modules: {
     items: boolean;
@@ -34,7 +34,7 @@ const toDraft = (setting: SettingDefinition): SettingDraft => ({
   name: setting.name || "",
   description: setting.description || "",
   status: setting.status || "draft",
-  tagsText: (setting.tags || []).join(", "),
+  tagsText: setting.tags || [],
   rulesetVersion: setting.rulesetVersion || 1,
   modules: {
     items: setting.modules?.items ?? false,
@@ -50,10 +50,7 @@ const toPayload = (draft: SettingDraft) => {
     name: draft.name.trim(),
     description: draft.description.trim(),
     status: draft.status,
-    tags: draft.tagsText
-      .split(",")
-      .map((tag) => tag.trim())
-      .filter(Boolean),
+    tags: draft.tagsText,
     rulesetVersion: draft.rulesetVersion,
     modules: draft.modules,
   };
@@ -94,7 +91,6 @@ export function SettingEditor({ settingId }: Props) {
     onSuccess: async () => {
       addAlert({ type: "success", message: "Setting updated successfully." });
       await qc.invalidateQueries({ queryKey: ["admin-content", "settings"] });
-      router.push("/settings-admin");
     },
     onError: (error: any) => {
       const messageTxt = error.response && error.response.data.message ? error.response.data.message : error.message;

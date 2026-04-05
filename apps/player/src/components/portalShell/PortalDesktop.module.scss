@@ -1,7 +1,7 @@
 .shell {
   display: grid;
   grid-template-columns: auto 1fr;
-  grid-template-areas: "sidebar content";
+  grid-template-areas: 'sidebar content';
   height: 100vh;
 
   --sidebar-width: 280px;
@@ -29,7 +29,7 @@
   left: var(--sidebar-width, 280px);
   right: 0;
   bottom: 0;
-  background-image: url("https://res.cloudinary.com/dmc7wmarf/image/upload/v1771775270/ChatGPT_Image_Jan_10_2026_11_32_39_AM_-_Copy_bcpc4f.png");
+  background-image: url('https://res.cloudinary.com/dmc7wmarf/image/upload/v1771775270/ChatGPT_Image_Jan_10_2026_11_32_39_AM_-_Copy_bcpc4f.png');
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
@@ -43,4 +43,8 @@
   padding: 24px 32px;
   height: 100%;
   overflow-y: auto;
+
+  &[data-fullbleed='true'] {
+    padding: 0;
+  }
 }

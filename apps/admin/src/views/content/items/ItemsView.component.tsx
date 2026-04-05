@@ -6,6 +6,7 @@ import { Button, Card, CardBody, CardHeader, Input, Loader, Modal, SelectField, 
 import type { TableColumn, TableRowAction } from '@tapestry/ui';
 import type { ItemDefinition, SettingDefinition } from '@tapestry/types';
 import { useDeleteItem, useItems } from '@/lib/content-admin';
+import { ImportCsvModal } from '@/features/content/_components/importCsvModal';
 import styles from './ItemsView.module.scss';
 
 const PAGE_SIZE = 10;
@@ -39,6 +40,7 @@ export default function ItemsListView({ selectedSetting }: ItemsListPageProps) {
   const [page, setPage] = useState(1);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<ItemDefinition | null>(null);
+  const [importModalOpen, setImportModalOpen] = useState(false);
 
   const filterOptions = useMemo(() => {
     let filterOptions = '';
@@ -163,6 +165,9 @@ export default function ItemsListView({ selectedSetting }: ItemsListPageProps) {
         </div>
 
         <div className={styles.headerActions}>
+          <Button variant="ghost" tone="neutral" onClick={() => setImportModalOpen(true)}>
+            Import CSV
+          </Button>
           <Button variant="outline" tone="neutral" onClick={() => router.push('/items/new')}>
             New Item
           </Button>
@@ -266,6 +271,8 @@ export default function ItemsListView({ selectedSetting }: ItemsListPageProps) {
         </p>
         <p>This action cannot be undone.</p>
       </Modal>
+
+      <ImportCsvModal open={importModalOpen} onClose={() => setImportModalOpen(false)} resource="items" />
     </div>
   );
 }

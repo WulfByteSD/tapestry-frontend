@@ -27,7 +27,7 @@ export function createStudioTabs(props: { activeTab: TabKey; selectedSetting: St
     {
       key: 'abilities',
       label: 'Abilities',
-      children: activeTab === 'abilities' ? <AbilitiesView selectedSetting={selectedSetting} /> : <div style={{ minHeight: 640 }} />,
+      children: activeTab === 'abilities' ? <AbilitiesView selectedSetting={selectedSetting as any} /> : <div style={{ minHeight: 640 }} />,
     },
     {
       key: 'skills',
