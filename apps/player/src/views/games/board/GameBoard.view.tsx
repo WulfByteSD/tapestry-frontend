@@ -26,7 +26,7 @@ type Props = {
 
 function MainZone({ zone, isSW, campaign, currentUserId }: { zone: BoardZone; isSW: boolean; campaign: import('@tapestry/types').CampaignType; currentUserId: string }) {
   const isArchived = campaign.status === 'archived';
-  
+
   switch (zone) {
     case 'feed':
       return <ActivityFeedZone campaignId={campaign._id} isSW={isSW} />;

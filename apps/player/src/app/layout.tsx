@@ -1,11 +1,12 @@
-import "./globals.css";
-import QueryProvider from "./QueryProvider";
-import { AuthProviderWrapper } from "./AuthProviderWrapper";
-import { Metadata } from "next";
+import './globals.css';
+import QueryProvider from './QueryProvider';
+import { AuthProviderWrapper } from './AuthProviderWrapper';
+import { SocketProviderWrapper } from './SocketProviderWrapper';
+import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: "Tapestry Player Portal",
-  description: "Access your stories, products, and tables on the go",
+  title: 'Tapestry Player Portal',
+  description: 'Access your stories, products, and tables on the go',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -13,7 +14,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body>
         <QueryProvider>
-          <AuthProviderWrapper>{children}</AuthProviderWrapper>
+          <AuthProviderWrapper>
+            <SocketProviderWrapper>{children}</SocketProviderWrapper>
+          </AuthProviderWrapper>
         </QueryProvider>
       </body>
     </html>

@@ -14,6 +14,7 @@
     "@tapestry/api-client": "workspace:^",
     "@tapestry/hooks": "workspace:^",
     "@tapestry/rules": "workspace:^",
+    "@tapestry/socket": "workspace:^",
     "@tapestry/types": "workspace:^",
     "@tapestry/ui": "workspace:^",
     "axios": "^1.7.0",

@@ -69,6 +69,22 @@
   gap: 0.5rem;
 }
 
+.avatarWrapper {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.onlineDot {
+  position: absolute;
+  bottom: -1px;
+  right: -1px;
+  width: 8px;
+  height: 8px;
+  background: var(--success);
+  border: 2px solid var(--surface);
+  border-radius: 50%;
+}
+
 .memberInfo {
   display: flex;
   flex-direction: column;
@@ -87,6 +103,12 @@
   font-size: 0.6875rem;
   color: var(--text-muted);
   text-transform: capitalize;
+}
+
+.onlineIndicator {
+  color: var(--success);
+  font-weight: 600;
+  text-transform: none;
 }
 
 /* Quick actions */

@@ -90,12 +90,7 @@ export default function OverviewZone({ campaign, isSW, isArchived }: Props) {
         </section>
 
         <section className={styles.editBlock}>
-          <Switcher
-            label="Discoverable"
-            onChange={(value) => updateMutation.mutate({ discoverable: value })}
-            checked={campaign.discoverable ?? false}
-            disabled={isArchived}
-          />
+          <Switcher label="Discoverable" onChange={(value) => updateMutation.mutate({ discoverable: value })} checked={campaign.discoverable ?? false} disabled={isArchived} />
         </section>
       </section>
 

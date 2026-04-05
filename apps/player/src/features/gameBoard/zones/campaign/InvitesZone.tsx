@@ -99,13 +99,7 @@ export default function InvitesZone({ campaign, isSW, isArchived }: Props) {
                   )}
                 </div>
               </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => handleCopy(invite.code)}
-                className={styles.copyButton}
-                disabled={isArchived}
-              >
+              <Button variant="outline" size="sm" onClick={() => handleCopy(invite.code)} className={styles.copyButton} disabled={isArchived}>
                 {isCopied ? (
                   <>
                     <FaCheck /> Copied

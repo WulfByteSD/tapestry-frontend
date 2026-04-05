@@ -7,6 +7,7 @@ import { useMe } from '@/lib/auth-hooks';
 import { useProfile } from '@tapestry/hooks/src/useProfile';
 import { api } from '@/lib/api';
 import { useActiveCharacter } from '../useActiveCharacter';
+import { useGameBoardPresence } from '../useGameBoardPresence';
 import CharacterSnapshot from '../components/CharacterSnapshot';
 import CharacterSelector from '../components/CharacterSelector';
 import styles from './BoardSidebar.module.scss';
@@ -23,8 +24,21 @@ export default function BoardSidebar({ campaign, isSW }: Props) {
 
   const currentUserId = playerProfile?.payload?._id;
   const { activeCharacterId, activeCharacter, setActiveCharacter, isLoading, characters } = useActiveCharacter(campaign._id, currentUserId, isSW);
+  const { isUserOnline } = useGameBoardPresence(campaign._id);
 
-  const members = campaign.members.slice(0, 8);
+  // Sort members: online first
+  const sortedMembers = [...campaign.members].sort((a, b) => {
+    const aPlayer = typeof a.player === 'object' ? a.player : null;
+    const bPlayer = typeof b.player === 'object' ? b.player : null;
+    const aOnline = aPlayer?._id ? isUserOnline(aPlayer._id) : false;
+    const bOnline = bPlayer?._id ? isUserOnline(bPlayer._id) : false;
+
+    if (aOnline && !bOnline) return -1;
+    if (!aOnline && bOnline) return 1;
+    return 0;
+  });
+
+  const members = sortedMembers.slice(0, 8);
   const playerName = playerProfile?.payload?.displayName ?? 'Player';
 
   return (
@@ -41,12 +55,19 @@ export default function BoardSidebar({ campaign, isSW }: Props) {
         <div className={styles.memberList}>
           {members.map((m, i) => {
             const player = typeof m.player === 'object' ? m.player : null;
+            const online = player?._id ? isUserOnline(player._id) : false;
             return (
               <div className={styles.memberRow} key={player?._id ?? i}>
-                <Avatar src={player?.avatar ?? undefined} alt={player?.displayName ?? 'Member'} name={player?.displayName ?? undefined} size="sm" />
+                <div className={styles.avatarWrapper}>
+                  <Avatar src={player?.avatar ?? undefined} alt={player?.displayName ?? 'Member'} name={player?.displayName ?? undefined} size="sm" />
+                  {online && <span className={styles.onlineDot} />}
+                </div>
                 <div className={styles.memberInfo}>
                   <span className={styles.memberName}>{player?.displayName ?? 'Unknown'}</span>
-                  <span className={styles.memberRole}>{m.role}</span>
+                  <span className={styles.memberRole}>
+                    {m.role}
+                    {online && <span className={styles.onlineIndicator}> ● Online</span>}
+                  </span>
                 </div>
               </div>
             );
