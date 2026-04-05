@@ -1,7 +1,7 @@
 import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { getCampaignActivity, postCampaignNote } from '@tapestry/api-client';
-import type { CampaignActivity } from '@tapestry/types';
+import type { CampaignActivity, PostNoteInput } from '@tapestry/types';
 
 const PAGE_SIZE = 2; // Activities per page
 
@@ -27,8 +27,8 @@ export function usePostNoteMutation(campaignId: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (content: string) => {
-      await postCampaignNote(api, campaignId, content);
+    mutationFn: async (input: PostNoteInput) => {
+      await postCampaignNote(api, campaignId, input);
     },
     onSuccess: () => {
       // Invalidate to refetch - new note appears at bottom

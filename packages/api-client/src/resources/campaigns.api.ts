@@ -1,6 +1,7 @@
 import { AxiosInstance } from 'axios';
 import { ApiListResponse, ListQueryParams } from '../list';
 import { ApiResponse } from '../fetch';
+import { PostNoteInput } from '@tapestry/types';
 
 export async function getCampaigns<CampaignType>(api: AxiosInstance, params: ListQueryParams = {}): Promise<ApiListResponse<CampaignType>> {
   const res = await api.get('/game/campaigns');
@@ -141,8 +142,8 @@ export async function getCampaignActivity<ActivityType>(api: AxiosInstance, camp
  * Post a storyweaver note to the activity feed
  * @param api - Axios instance
  * @param campaignId - Campaign ID
- * @param content - Note content
+ * @param input - Note input (content and optional postType)
  */
-export async function postCampaignNote(api: AxiosInstance, campaignId: string, content: string): Promise<void> {
-  await api.post(`/game/campaigns/${campaignId}/activity`, { content });
+export async function postCampaignNote(api: AxiosInstance, campaignId: string, input: PostNoteInput): Promise<void> {
+  await api.post(`/game/campaigns/${campaignId}/activity`, input);
 }

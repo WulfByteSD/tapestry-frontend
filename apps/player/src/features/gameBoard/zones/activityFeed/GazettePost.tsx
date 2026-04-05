@@ -2,13 +2,33 @@
 
 import { useState } from 'react';
 import { Avatar, Card, CardBody, Modal } from '@tapestry/ui';
-import type { CampaignActivity } from '@tapestry/types';
+import type { CampaignActivity, NotePostType } from '@tapestry/types';
 import { formatDistanceToNow } from 'date-fns';
+import { MarkdownContent } from './MarkdownContent';
 import styles from './GazettePost.module.scss';
 
 type Props = {
   activity: CampaignActivity;
 };
+
+function getPostTypeDisplay(postType: NotePostType): { icon: string; label: string } {
+  switch (postType) {
+    case 'campaign-update':
+      return { icon: '📰', label: 'Campaign Update' };
+    case 'session-recap':
+      return { icon: '⚔️', label: 'Session Recap' };
+    case 'lore-drop':
+      return { icon: '📜', label: 'Lore Drop' };
+    case 'player-spotlight':
+      return { icon: '⭐', label: 'Player Spotlight' };
+    case 'announcement':
+      return { icon: '📢', label: 'Announcement' };
+    case 'behind-the-scenes':
+      return { icon: '🎬', label: 'Behind the Scenes' };
+    default:
+      return { icon: '📰', label: 'Campaign Update' };
+  }
+}
 
 export function GazettePost({ activity }: Props) {
   const [showFullModal, setShowFullModal] = useState(false);
@@ -19,8 +39,11 @@ export function GazettePost({ activity }: Props) {
   });
 
   const content = activity.payload.content || '';
+  const postType = (activity.payload.postType || 'campaign-update') as NotePostType;
+  const { icon, label } = getPostTypeDisplay(postType);
+
   const needsTruncation = content.length > 300;
-  const displayContent = needsTruncation ? content.slice(0, 300) + '...' : content;
+  const truncatedContent = needsTruncation ? content.slice(0, 300) + '...' : content;
 
   return (
     <>
@@ -36,10 +59,12 @@ export function GazettePost({ activity }: Props) {
         <Card tone="surface" inlay className={styles.gazetteCard}>
           <CardBody>
             <div className={styles.gazetteLabel}>
-              <span>📰</span>
-              <span>Campaign Update</span>
+              <span>{icon}</span>
+              <span>{label}</span>
             </div>
-            <div className={styles.gazetteContent}>{displayContent}</div>
+            <div className={styles.gazetteContent}>
+              <MarkdownContent content={truncatedContent} />
+            </div>
             {needsTruncation && (
               <button className={styles.readMoreButton} onClick={() => setShowFullModal(true)}>
                 Read Full Post →
@@ -59,7 +84,9 @@ export function GazettePost({ activity }: Props) {
           </div>
         }
       >
-        <div className={styles.modalContent}>{content}</div>
+        <div className={styles.modalContent}>
+          <MarkdownContent content={content} />
+        </div>
       </Modal>
     </>
   );

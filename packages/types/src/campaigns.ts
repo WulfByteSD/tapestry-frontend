@@ -133,6 +133,9 @@ export interface CampaignActivity {
   updatedAt: Date;
 }
 
+export type NotePostType = 'campaign-update' | 'session-recap' | 'lore-drop' | 'player-spotlight' | 'announcement' | 'behind-the-scenes';
+
 export interface PostNoteInput {
   content: string;
+  postType?: NotePostType;
 }
