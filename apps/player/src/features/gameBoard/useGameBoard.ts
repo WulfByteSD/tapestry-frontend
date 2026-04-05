@@ -13,6 +13,7 @@ export interface UseGameBoardReturn {
   campaign: CampaignType | undefined;
   userRole: CampaignRole | undefined;
   isSW: boolean;
+  currentUserId: string | undefined;
   isLoading: boolean;
   isError: boolean;
 }
@@ -42,6 +43,7 @@ export function useGameBoard(campaignId: string): UseGameBoardReturn {
     campaign,
     userRole,
     isSW,
+    currentUserId: currentUser?._id,
     isLoading: campaignLoading,
     isError,
   };

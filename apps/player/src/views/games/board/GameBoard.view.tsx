@@ -20,7 +20,7 @@ type Props = {
   campaignId: string;
 };
 
-function MainZone({ zone, isSW, campaign }: { zone: BoardZone; isSW: boolean; campaign: import('@tapestry/types').CampaignType }) {
+function MainZone({ zone, isSW, campaign, currentUserId }: { zone: BoardZone; isSW: boolean; campaign: import('@tapestry/types').CampaignType; currentUserId: string }) {
   switch (zone) {
     case 'feed':
       return <ActivityFeedZone isSW={isSW} />;
@@ -33,12 +33,12 @@ function MainZone({ zone, isSW, campaign }: { zone: BoardZone; isSW: boolean; ca
     case 'party':
       return <PartyZone campaign={campaign} />;
     case 'character':
-      return <CharacterZone />;
+      return <CharacterZone campaign={campaign} isSW={isSW} currentUserId={currentUserId} />;
   }
 }
 
 export default function GameBoardView({ campaignId }: Props) {
-  const { activeZone, setActiveZone, campaign, isSW, isLoading, isError } = useGameBoard(campaignId);
+  const { activeZone, setActiveZone, campaign, isSW, currentUserId, isLoading, isError } = useGameBoard(campaignId);
 
   if (isLoading) {
     return (
@@ -68,7 +68,7 @@ export default function GameBoardView({ campaignId }: Props) {
       <BoardLayout
         header={<BoardHeader campaign={campaign} campaignId={campaignId} isSW={isSW} />}
         nav={<BoardNav activeZone={activeZone} onZoneChange={setActiveZone} isSW={isSW} />}
-        main={<MainZone zone={activeZone} isSW={isSW} campaign={campaign} />}
+        main={<MainZone zone={activeZone} isSW={isSW} campaign={campaign} currentUserId={currentUserId ?? ''} />}
         sidebar={<BoardSidebar campaign={campaign} isSW={isSW} />}
       />
     </div>

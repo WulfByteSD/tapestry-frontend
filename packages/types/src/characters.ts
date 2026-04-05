@@ -138,3 +138,16 @@ export type CharacterSheet = {
   createdAt: string;
   updatedAt: string;
 };
+
+export type CharacterRequestStatus = 'pending' | 'approved' | 'rejected';
+
+export interface CharacterRequest {
+  _id: string;
+  campaign: string;
+  character: CharacterSheet | string;
+  player: import('./players').PlayerType | string;
+  status: CharacterRequestStatus;
+  message?: string;
+  requestedAt: string;
+  resolvedAt?: string;
+}
