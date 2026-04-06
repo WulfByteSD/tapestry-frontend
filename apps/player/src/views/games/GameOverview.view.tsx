@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
-import { Avatar } from '@tapestry/ui';
+import { Avatar, Loader } from '@tapestry/ui';
 import { useProfile } from '@tapestry/hooks';
 import { useCampaign } from '@/lib/campaign-hooks';
 import { useMe } from '@/lib/auth-hooks';
@@ -96,8 +96,7 @@ export default function GameOverviewView({ gameId }: Props) {
   if (isLoading) {
     return (
       <div className={styles.stateCard}>
-        <h1>Loading game...</h1>
-        <p>Pulling the campaign overview together.</p>
+        <Loader size="lg" tone="gold" label="Loading game..." caption="Pulling the campaign overview together." />
       </div>
     );
   }

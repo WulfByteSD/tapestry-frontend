@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Button } from '@tapestry/ui';
+import { Button, Loader } from '@tapestry/ui';
 import { useGameBoard } from '@/features/gameBoard/useGameBoard';
 import type { BoardZone } from '@/features/gameBoard/useGameBoard';
 import BoardLayout from '@/features/gameBoard/layout/BoardLayout';
@@ -60,8 +60,7 @@ export default function GameBoardView({ campaignId }: Props) {
   if (isLoading) {
     return (
       <div className={styles.centered}>
-        <div className={styles.spinner} />
-        <p>Loading campaign...</p>
+        <Loader size="lg" tone="gold" label="Loading campaign..." />
       </div>
     );
   }
