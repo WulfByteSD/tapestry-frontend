@@ -9,7 +9,7 @@ import { usePlayerProfile } from '@/lib/settings-hooks';
 import { useMyCampaigns } from '@/lib/campaign-hooks';
 import { getNavigationLinks } from '@/data/sidebarLinks';
 import styles from './AccountDrawer.module.scss';
-import { Button } from '@tapestry/ui';
+import { Button, Loader } from '@tapestry/ui';
 import type { SidebarLink } from '@tapestry/ui';
 
 type Props = {
@@ -73,7 +73,7 @@ export default function AccountDrawer({ open, onClose }: Props) {
         <nav className={styles.nav}>
           {campaignsLoading && (
             <div className={styles.loadingState}>
-              <div className={styles.loadingText}>Loading navigation...</div>
+              <Loader size="sm" tone="gold" label="Loading navigation..." />
             </div>
           )}
 

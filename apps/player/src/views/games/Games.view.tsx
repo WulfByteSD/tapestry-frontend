@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import CampaignCard from '@/components/campaignCard';
+import { Loader } from '@tapestry/ui';
 import styles from './Games.module.scss';
 import { useCampaigns } from '@/lib/campaign-hooks';
 import { useSettings } from '@tapestry/hooks';
@@ -85,8 +86,7 @@ export default function GamesView() {
 
       {isLoading ? (
         <div className={styles.stateCard}>
-          <h2>Loading games...</h2>
-          <p>Pulling threads and seeing what tables are alive.</p>
+          <Loader size="lg" tone="gold" label="Loading games..." caption="Pulling threads and seeing what tables are alive." />
         </div>
       ) : null}
 

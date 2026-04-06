@@ -1,32 +1,32 @@
 ﻿// apps/player/src/features/characters/CharacterSheetScreen/CharacterSheetScreen.tsx
-"use client";
+'use client';
 
-import { useDebouncedCallback } from "@/lib/useDebouncedCallback";
-import { useUpdateCharacterSheetMutation } from "./characterSheet.mutations";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
-import styles from "./CharacterSheet.module.scss";
-import { Button, Card, CardBody, CardHeader, Tabs, Tooltip } from "@tapestry/ui";
-import { useCharacterSheetQuery } from "./characterSheet.queries";
-import { CharacterSheet, NoteCard } from "@tapestry/types";
-import { createTabs, type TabKey } from "./tabs";
-import { CharacterDetailsModal } from "./CharacterDetails.modal";
-import Image from "next/image";
-import { FaCog } from "react-icons/fa";
+import { useDebouncedCallback } from '@/lib/useDebouncedCallback';
+import { useUpdateCharacterSheetMutation } from './characterSheet.mutations';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { motion } from 'framer-motion';
+import styles from './CharacterSheet.module.scss';
+import { Button, Card, CardBody, CardHeader, Loader, Tabs, Tooltip } from '@tapestry/ui';
+import { useCharacterSheetQuery } from './characterSheet.queries';
+import { CharacterSheet, NoteCard } from '@tapestry/types';
+import { createTabs, type TabKey } from './tabs';
+import { CharacterDetailsModal } from './CharacterDetails.modal';
+import Image from 'next/image';
+import { FaCog } from 'react-icons/fa';
 
-type Props = { characterId: string; mode: "build" | "play" };
+type Props = { characterId: string; mode: 'build' | 'play' };
 function titleCaseFromKey(value?: string | null) {
-  if (!value) return "";
+  if (!value) return '';
 
   return value
-    .replace(/[_-]+/g, " ")
+    .replace(/[_-]+/g, ' ')
     .replace(/\b\w/g, (m) => m.toUpperCase())
     .trim();
 }
 
 function truncateText(value?: string | null, max = 140) {
-  if (!value) return "";
+  if (!value) return '';
   if (value.length <= max) return value;
   return `${value.slice(0, max).trim()}…`;
 }
@@ -37,18 +37,18 @@ export default function CharacterSheetScreen({ characterId, mode }: Props) {
   const sheet = data?.payload;
   const updateMutation = useUpdateCharacterSheetMutation<CharacterSheet>(characterId);
   const profile = sheet?.sheet?.profile ?? {};
-  const heroTitle = profile.title?.trim() || "";
+  const heroTitle = profile.title?.trim() || '';
   const heroBio = truncateText(profile.bio?.trim(), 120);
 
-  const settingBadgeLabel = sheet?.settingKey ? titleCaseFromKey(sheet.settingKey) : "No Setting";
+  const settingBadgeLabel = sheet?.settingKey ? titleCaseFromKey(sheet.settingKey) : 'No Setting';
 
-  const campaignBadgeLabel = sheet?.campaign ? "Campaign Linked" : "No Campaign";
+  const campaignBadgeLabel = sheet?.campaign ? 'Campaign Linked' : 'No Campaign';
 
   const statusBadgeLabel = titleCaseFromKey(sheet?.status);
-  const [nameDraft, setNameDraft] = useState("");
+  const [nameDraft, setNameDraft] = useState('');
   const [editingName, setEditingName] = useState(false);
 
-  const [saveBadge, setSaveBadge] = useState<null | "saving" | "saved" | "error">(null);
+  const [saveBadge, setSaveBadge] = useState<null | 'saving' | 'saved' | 'error'>(null);
   const savedTimerRef = useRef<number | null>(null);
 
   const [detailsOpen, setDetailsOpen] = useState(false);
@@ -65,14 +65,14 @@ export default function CharacterSheetScreen({ characterId, mode }: Props) {
 
   useEffect(() => {
     if (!sheet) return;
-    if (!editingName) setNameDraft(sheet.name ?? "");
+    if (!editingName) setNameDraft(sheet.name ?? '');
   }, [sheet?._id, sheet?.name, editingName]);
 
   useEffect(() => {
-    if (updateMutation.isPending) setSaveBadge("saving");
-    else if (updateMutation.isError) setSaveBadge("error");
+    if (updateMutation.isPending) setSaveBadge('saving');
+    else if (updateMutation.isError) setSaveBadge('error');
     else if (updateMutation.isSuccess) {
-      setSaveBadge("saved");
+      setSaveBadge('saved');
       if (savedTimerRef.current) window.clearTimeout(savedTimerRef.current);
       savedTimerRef.current = window.setTimeout(() => setSaveBadge(null), 1400);
     }
@@ -83,7 +83,7 @@ export default function CharacterSheetScreen({ characterId, mode }: Props) {
   }, 450);
 
   function handleSaveNotes(noteCards: NoteCard[]) {
-    updateMutation.mutate({ "sheet.noteCards": noteCards });
+    updateMutation.mutate({ 'sheet.noteCards': noteCards });
   }
 
   function commitNameNow() {
@@ -93,16 +93,13 @@ export default function CharacterSheetScreen({ characterId, mode }: Props) {
   function cancelNameEdit() {
     debouncedSaveName.cancel();
     setEditingName(false);
-    setNameDraft(sheet?.name ?? "");
+    setNameDraft(sheet?.name ?? '');
   }
 
-  const [activeTab, setActiveTab] = useState<TabKey>("overview");
-  const [currentMode, setCurrentMode] = useState<"build" | "play">(mode);
+  const [activeTab, setActiveTab] = useState<TabKey>('overview');
+  const [currentMode, setCurrentMode] = useState<'build' | 'play'>(mode);
 
-  const baseTabs = useMemo(
-    () => createTabs({ sheet, onSaveNotes: handleSaveNotes, mode: currentMode }),
-    [sheet, currentMode],
-  );
+  const baseTabs = useMemo(() => createTabs({ sheet, onSaveNotes: handleSaveNotes, mode: currentMode }), [sheet, currentMode]);
 
   // Wrap each tab's content with motion.div for smooth transitions
   const tabs = useMemo(
@@ -110,29 +107,24 @@ export default function CharacterSheetScreen({ characterId, mode }: Props) {
       baseTabs.map((tab) => ({
         ...tab,
         children: (
-          <motion.div
-            key={tab.key}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.25, ease: "easeInOut" }}
-          >
+          <motion.div key={tab.key} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25, ease: 'easeInOut' }}>
             {tab.children}
           </motion.div>
         ),
       })),
-    [baseTabs],
+    [baseTabs]
   );
 
-  if (isLoading) return <LoadingState onBack={() => router.replace("/")} />;
+  if (isLoading) return <LoadingState onBack={() => router.replace('/')} />;
   if (isError || !sheet) {
-    const msg = (error as any)?.response?.data?.message || (error as any)?.message || "Could not load character.";
-    return <ErrorState message={msg} onBack={() => router.replace("/")} onRetry={() => router.refresh()} />;
+    const msg = (error as any)?.response?.data?.message || (error as any)?.message || 'Could not load character.';
+    return <ErrorState message={msg} onBack={() => router.replace('/')} onRetry={() => router.refresh()} />;
   }
 
   return (
     <div className={styles.page}>
       <div className={styles.topBar}>
-        <Button tone="purple" variant="outline" size="sm" onClick={() => router.replace("/")}>
+        <Button tone="purple" variant="outline" size="sm" onClick={() => router.replace('/')}>
           Back
         </Button>
         <div className={styles.topTitle}>Character</div>
@@ -146,7 +138,7 @@ export default function CharacterSheetScreen({ characterId, mode }: Props) {
           {sheet.avatarUrl ? (
             <Image src={sheet.avatarUrl} alt={sheet.name} width={72} height={72} className={styles.avatar} />
           ) : (
-            <div className={styles.avatarFallback}>{sheet.name?.[0]?.toUpperCase() ?? "?"}</div>
+            <div className={styles.avatarFallback}>{sheet.name?.[0]?.toUpperCase() ?? '?'}</div>
           )}
 
           <div className={styles.heroMain}>
@@ -164,19 +156,14 @@ export default function CharacterSheetScreen({ characterId, mode }: Props) {
                   setEditingName(false);
                 }}
                 onKeyDown={(e) => {
-                  if (e.key === "Enter") (e.target as HTMLInputElement).blur();
-                  if (e.key === "Escape") cancelNameEdit();
+                  if (e.key === 'Enter') (e.target as HTMLInputElement).blur();
+                  if (e.key === 'Escape') cancelNameEdit();
                 }}
                 autoFocus
                 maxLength={60}
               />
             ) : (
-              <button
-                type="button"
-                className={styles.nameButton}
-                onClick={() => setEditingName(true)}
-                title="Edit name"
-              >
+              <button type="button" className={styles.nameButton} onClick={() => setEditingName(true)} title="Edit name">
                 {sheet.name} <span className={styles.editGlyph}>✎</span>
               </button>
             )}
@@ -198,18 +185,10 @@ export default function CharacterSheetScreen({ characterId, mode }: Props) {
 
           <div className={styles.heroActions}>
             <div className={styles.modeToggle}>
-              <button
-                type="button"
-                className={currentMode === "play" ? styles.modeButtonActive : styles.modeButton}
-                onClick={() => setCurrentMode("play")}
-              >
+              <button type="button" className={currentMode === 'play' ? styles.modeButtonActive : styles.modeButton} onClick={() => setCurrentMode('play')}>
                 Play
               </button>
-              <button
-                type="button"
-                className={currentMode === "build" ? styles.modeButtonActive : styles.modeButton}
-                onClick={() => setCurrentMode("build")}
-              >
+              <button type="button" className={currentMode === 'build' ? styles.modeButtonActive : styles.modeButton} onClick={() => setCurrentMode('build')}>
                 Build
               </button>
             </div>
@@ -221,13 +200,7 @@ export default function CharacterSheetScreen({ characterId, mode }: Props) {
       </div>
       {/* </CardBody>
       </Card> */}
-      <CharacterDetailsModal
-        open={detailsOpen}
-        sheet={sheet}
-        onClose={() => setDetailsOpen(false)}
-        onSave={handleSaveDetails}
-        isSaving={updateMutation.isPending}
-      />
+      <CharacterDetailsModal open={detailsOpen} sheet={sheet} onClose={() => setDetailsOpen(false)} onSave={handleSaveDetails} isSaving={updateMutation.isPending} />
       <Tabs
         items={tabs}
         activeKey={activeTab}
@@ -249,7 +222,9 @@ function LoadingState({ onBack }: { onBack: () => void }) {
         <Button tone="purple" variant="outline" size="sm" onClick={onBack}>
           Back
         </Button>
-        <div className={styles.topTitle}>Loadingâ€¦</div>
+        <div className={styles.topTitle}>
+          <Loader size="sm" tone="gold" layout="inline" />
+        </div>
         <div className={styles.topSpacer} />
       </div>
 

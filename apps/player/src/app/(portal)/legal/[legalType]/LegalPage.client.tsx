@@ -1,9 +1,10 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import Legal from "@/views/legal/Legal.view";
-import { api } from "@/lib/api";
-import { getLegalPolicyByType } from "@tapestry/api-client";
+import { useEffect, useState } from 'react';
+import Legal from '@/views/legal/Legal.view';
+import { api } from '@/lib/api';
+import { getLegalPolicyByType } from '@tapestry/api-client';
+import { Loader } from '@tapestry/ui';
 
 interface LegalPageClientProps {
   legalType: string;
@@ -17,7 +18,7 @@ export default function LegalPageClient({ legalType }: LegalPageClientProps) {
   useEffect(() => {
     async function fetchContent() {
       if (!legalType) {
-        setError("Legal document type not specified.");
+        setError('Legal document type not specified.');
         setLoading(false);
         return;
       }
@@ -28,8 +29,8 @@ export default function LegalPageClient({ legalType }: LegalPageClientProps) {
         setContent(data);
         setError(null);
       } catch (err) {
-        console.error("Error fetching legal content:", err);
-        setError("Error loading legal document. Please try again later.");
+        console.error('Error fetching legal content:', err);
+        setError('Error loading legal document. Please try again later.');
       } finally {
         setLoading(false);
       }
@@ -39,7 +40,11 @@ export default function LegalPageClient({ legalType }: LegalPageClientProps) {
   }, [legalType]);
 
   if (loading) {
-    return <div>Loading legal document...</div>;
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '400px' }}>
+        <Loader size="lg" tone="gold" label="Loading legal document..." />
+      </div>
+    );
   }
 
   if (error) {

@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { useEffect, useMemo, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { Modal, Button, Select, TextField } from "@tapestry/ui";
-import { api } from "@/lib/api";
-import { buildFilterString, getItems, getSettings } from "@tapestry/api-client";
-import type { CharacterSheet, ItemDefinition, SettingDefinition } from "@tapestry/types";
-import styles from "./ContentLibraryModal.module.scss";
+import { useEffect, useMemo, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { Modal, Button, Select, TextField, Loader } from '@tapestry/ui';
+import { api } from '@/lib/api';
+import { buildFilterString, getItems, getSettings } from '@tapestry/api-client';
+import type { CharacterSheet, ItemDefinition, SettingDefinition } from '@tapestry/types';
+import styles from './ContentLibraryModal.module.scss';
 
 type Props = {
   open: boolean;
@@ -16,15 +16,15 @@ type Props = {
 };
 
 export function ContentLibraryModal({ open, onClose, sheet, onAddItem }: Props) {
-  const [selectedSettingKey, setSelectedSettingKey] = useState(sheet.settingKey ?? "");
-  const [search, setSearch] = useState("");
+  const [selectedSettingKey, setSelectedSettingKey] = useState(sheet.settingKey ?? '');
+  const [search, setSearch] = useState('');
 
   const settingsQuery = useQuery({
-    queryKey: ["content:settings"],
+    queryKey: ['content:settings'],
     queryFn: () =>
       getSettings(api, {
         pageLimit: 50,
-        sortOptions: "name",
+        sortOptions: 'name',
       }),
   });
 
@@ -41,18 +41,18 @@ export function ContentLibraryModal({ open, onClose, sheet, onAddItem }: Props) 
     }
   }, [sheet.settingKey, selectedSettingKey, settings]);
 
-  const effectiveSettingKey = sheet.settingKey || selectedSettingKey || settings[0]?.key || "";
+  const effectiveSettingKey = sheet.settingKey || selectedSettingKey || settings[0]?.key || '';
 
   const itemsQuery = useQuery({
-    queryKey: ["content:items", effectiveSettingKey],
+    queryKey: ['content:items', effectiveSettingKey],
     enabled: open && !!effectiveSettingKey,
     queryFn: () =>
       getItems(api, {
         filterOptions: buildFilterString({
           settingKeys: [effectiveSettingKey],
-          status: "published",
+          status: 'published',
         }),
-        sortOptions: "category;name",
+        sortOptions: 'category;name',
         pageLimit: 100,
       }),
   });
@@ -64,9 +64,7 @@ export function ContentLibraryModal({ open, onClose, sheet, onAddItem }: Props) 
     if (!q) return items;
 
     return items.filter((item) => {
-      const haystack = [item.name, item.key, item.category, item.notes ?? "", ...(item.tags ?? [])]
-        .join(" ")
-        .toLowerCase();
+      const haystack = [item.name, item.key, item.category, item.notes ?? '', ...(item.tags ?? [])].join(' ').toLowerCase();
 
       return haystack.includes(q);
     });
@@ -78,11 +76,7 @@ export function ContentLibraryModal({ open, onClose, sheet, onAddItem }: Props) 
         <div className={styles.controls}>
           <div>
             <label className={styles.label}>Setting</label>
-            <Select
-              value={effectiveSettingKey}
-              onChange={(e) => setSelectedSettingKey(e.target.value)}
-              disabled={!!sheet.settingKey || settingsQuery.isLoading}
-            >
+            <Select value={effectiveSettingKey} onChange={(e) => setSelectedSettingKey(e.target.value)} disabled={!!sheet.settingKey || settingsQuery.isLoading}>
               {settings.map((setting: SettingDefinition) => (
                 <option key={setting.key} value={setting.key}>
                   {setting.name}
@@ -91,16 +85,13 @@ export function ContentLibraryModal({ open, onClose, sheet, onAddItem }: Props) 
             </Select>
           </div>
 
-          <TextField
-            label="Search"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Shortsword, potion, armor..."
-          />
+          <TextField label="Search" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Shortsword, potion, armor..." />
         </div>
 
         {itemsQuery.isLoading ? (
-          <div className={styles.empty}>Loading items...</div>
+          <div className={styles.empty}>
+            <Loader size="md" tone="gold" label="Loading items..." />
+          </div>
         ) : filteredItems.length === 0 ? (
           <div className={styles.empty}>No items matched your search.</div>
         ) : (

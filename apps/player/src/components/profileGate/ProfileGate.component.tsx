@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { ReactNode } from "react";
-import { usePlayerProfile } from "@tapestry/hooks";
-import { alertManager } from "@tapestry/ui";
-import { api } from "@/lib/api";
-import { useMe } from "@/lib/auth-hooks";
-import styles from "./ProfileGate.module.scss";
+import { ReactNode } from 'react';
+import { usePlayerProfile } from '@tapestry/hooks';
+import { alertManager, Loader } from '@tapestry/ui';
+import { api } from '@/lib/api';
+import { useMe } from '@/lib/auth-hooks';
+import styles from './ProfileGate.module.scss';
 
 export default function ProfileGate({ children }: { children: ReactNode }) {
   const { data: user, isLoading: userLoading } = useMe();
@@ -15,8 +15,7 @@ export default function ProfileGate({ children }: { children: ReactNode }) {
   if (userLoading || profileLoading) {
     return (
       <div className={styles.state}>
-        <div className={styles.spinner} />
-        <p>Loading your profile...</p>
+        <Loader size="lg" tone="gold" label="Loading your profile..." />
       </div>
     );
   }
@@ -31,7 +30,7 @@ export default function ProfileGate({ children }: { children: ReactNode }) {
           <button
             className={styles.createButton}
             onClick={() => {
-              alertManager.addAlert("Create profile form will be implemented here", "info");
+              alertManager.addAlert('Create profile form will be implemented here', 'info');
               // TODO: Navigate to profile creation flow or show modal
             }}
           >

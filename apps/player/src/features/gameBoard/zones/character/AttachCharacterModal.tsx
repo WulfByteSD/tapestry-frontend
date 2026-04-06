@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Modal, Avatar } from '@tapestry/ui';
+import { Modal, Avatar, Loader } from '@tapestry/ui';
 import type { CharacterSheet } from '@tapestry/types';
 import { useCharacterSheetsQuery } from '@/lib/character-hooks';
 import styles from './character.module.scss';
@@ -57,7 +57,9 @@ export default function AttachCharacterModal({ open, onClose, attachedIds, onSub
       destroyOnClose
     >
       {isLoading ? (
-        <p className={styles.emptySheets}>Loading characters…</p>
+        <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}>
+          <Loader size="md" tone="gold" label="Loading characters…" />
+        </div>
       ) : availableSheets.length === 0 ? (
         <p className={styles.emptySheets}>{allSheets.length === 0 ? 'You have no character sheets yet.' : 'All your characters are already attached to a campaign.'}</p>
       ) : (

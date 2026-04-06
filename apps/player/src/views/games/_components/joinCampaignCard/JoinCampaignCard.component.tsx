@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { TextAreaField, SelectField, Button } from '@tapestry/ui';
+import { TextAreaField, SelectField, Button, Loader } from '@tapestry/ui';
 import { api } from '@/lib/api';
 import { useMyJoinRequests } from '@/lib/campaign-hooks';
 import type { CampaignMember } from '@tapestry/types';
@@ -169,7 +169,7 @@ export default function JoinCampaignCard({ gameId, joinPolicy, members, currentU
         <button type="button" className={styles.joinButton} onClick={() => joinMutation.mutate()} disabled={joinMutation.isPending}>
           {joinMutation.isPending ? (
             <>
-              <span className={styles.spinner}></span>
+              <Loader size="sm" tone="neutral" layout="inline" />
               {isOpen ? 'Joining...' : 'Submitting...'}
             </>
           ) : (

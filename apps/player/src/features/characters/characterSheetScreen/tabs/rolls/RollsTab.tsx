@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { api } from "@/lib/api";
-import { getRolls } from "@tapestry/api-client";
-import { RollResultCard, type RollResultData } from "@/components/rollResultCard/RollResultCard.component";
-import { RollListItem } from "./RollListItem.component";
-import { Button } from "@tapestry/ui";
-import styles from "./RollsTab.module.scss";
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { api } from '@/lib/api';
+import { getRolls } from '@tapestry/api-client';
+import { RollResultCard, type RollResultData } from '@/components/rollResultCard/RollResultCard.component';
+import { RollListItem } from './RollListItem.component';
+import { Button, Loader } from '@tapestry/ui';
+import styles from './RollsTab.module.scss';
 
 interface Props {
   sheet: any;
@@ -17,12 +17,12 @@ export function RollsTab({ sheet }: Props) {
   const [selectedRoll, setSelectedRoll] = useState<RollResultData | null>(null);
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ["rolls", sheet._id],
+    queryKey: ['rolls', sheet._id],
     queryFn: () =>
       getRolls(api, {
         filterOptions: `character;${sheet._id}`,
         pageLimit: 20,
-        sortOptions: "-createdAt",
+        sortOptions: '-createdAt',
       }),
     enabled: !!sheet._id,
   });
@@ -30,7 +30,9 @@ export function RollsTab({ sheet }: Props) {
   if (isLoading) {
     return (
       <div className={styles.container}>
-        <div className={styles.emptyState}>Loading rolls...</div>
+        <div className={styles.emptyState}>
+          <Loader size="md" tone="gold" label="Loading rolls..." />
+        </div>
       </div>
     );
   }

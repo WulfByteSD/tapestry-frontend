@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { Button, Form, FormField, Select, TextField, useForm } from '@tapestry/ui';
+import { Button, Form, FormField, Loader, Select, TextField, useForm } from '@tapestry/ui';
 import { usePlayerProfile, useUpdatePlayerProfile } from '@/lib/settings-hooks';
 import { TIMEZONES } from '@tapestry/types';
 import styles from './AccountDetails.module.scss';
@@ -76,7 +76,7 @@ export default function ProfileDetailsSection({ profileId }: Props) {
       </div>
 
       {isLoading ? (
-        <p className={styles.muted}>Loading profile…</p>
+        <Loader size="md" tone="gold" label="Loading profile…" />
       ) : (
         <Form form={form} className={styles.formStack}>
           <FormField name="avatar">

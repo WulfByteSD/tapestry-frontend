@@ -1,14 +1,14 @@
 // apps/player/src/features/characters/characterSheetScreen/tabs/abilities/AbilityLibrary.modal.tsx
-"use client";
+'use client';
 
-import { useEffect, useMemo, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { Button, Modal, Select, TextField } from "@tapestry/ui";
-import { api } from "@/lib/api";
-import { getAbilitiesForSetting, getSettings } from "@tapestry/api-client";
-import type { AbilityDefinition, CharacterSheet, SettingDefinition } from "@tapestry/types";
-import { formatAbilityMeta } from "./abilities.functions";
-import styles from "./AbilityLibraryModal.module.scss";
+import { useEffect, useMemo, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { Button, Modal, Select, TextField, Loader } from '@tapestry/ui';
+import { api } from '@/lib/api';
+import { getAbilitiesForSetting, getSettings } from '@tapestry/api-client';
+import type { AbilityDefinition, CharacterSheet, SettingDefinition } from '@tapestry/types';
+import { formatAbilityMeta } from './abilities.functions';
+import styles from './AbilityLibraryModal.module.scss';
 
 type Props = {
   open: boolean;
@@ -19,15 +19,15 @@ type Props = {
 };
 
 export function AbilityLibraryModal({ open, onClose, sheet, knownAbilityKeys, onAddAbility }: Props) {
-  const [selectedSettingKey, setSelectedSettingKey] = useState(sheet.settingKey ?? "");
-  const [search, setSearch] = useState("");
+  const [selectedSettingKey, setSelectedSettingKey] = useState(sheet.settingKey ?? '');
+  const [search, setSearch] = useState('');
 
   const settingsQuery = useQuery({
-    queryKey: ["content:settings"],
+    queryKey: ['content:settings'],
     queryFn: () =>
       getSettings(api, {
         pageLimit: 50,
-        sortOptions: "name",
+        sortOptions: 'name',
       }),
   });
 
@@ -44,10 +44,10 @@ export function AbilityLibraryModal({ open, onClose, sheet, knownAbilityKeys, on
     }
   }, [sheet.settingKey, selectedSettingKey, settings]);
 
-  const effectiveSettingKey = sheet.settingKey || selectedSettingKey || settings[0]?.key || "";
+  const effectiveSettingKey = sheet.settingKey || selectedSettingKey || settings[0]?.key || '';
 
   const abilitiesQuery = useQuery({
-    queryKey: ["content:abilities", effectiveSettingKey],
+    queryKey: ['content:abilities', effectiveSettingKey],
     enabled: open && !!effectiveSettingKey,
     queryFn: () => getAbilitiesForSetting(api, effectiveSettingKey),
   });
@@ -64,15 +64,15 @@ export function AbilityLibraryModal({ open, onClose, sheet, knownAbilityKeys, on
       const haystack = [
         ability.name,
         ability.key,
-        ability.category ?? "",
-        ability.sourceType ?? "",
-        ability.activation ?? "",
-        ability.usageModel ?? "",
-        ability.summary ?? "",
-        ability.effectText ?? "",
+        ability.category ?? '',
+        ability.sourceType ?? '',
+        ability.activation ?? '',
+        ability.usageModel ?? '',
+        ability.summary ?? '',
+        ability.effectText ?? '',
         ...(ability.tags ?? []),
       ]
-        .join(" ")
+        .join(' ')
         .toLowerCase();
 
       return haystack.includes(q);
@@ -85,11 +85,7 @@ export function AbilityLibraryModal({ open, onClose, sheet, knownAbilityKeys, on
         <div className={styles.controls}>
           <label className={styles.field}>
             <span className={styles.label}>Setting</span>
-            <Select
-              value={selectedSettingKey}
-              onChange={(e) => setSelectedSettingKey(e.target.value)}
-              disabled={!!sheet.settingKey || settingsQuery.isLoading}
-            >
+            <Select value={selectedSettingKey} onChange={(e) => setSelectedSettingKey(e.target.value)} disabled={!!sheet.settingKey || settingsQuery.isLoading}>
               {settings.map((setting: SettingDefinition) => (
                 <option key={setting.key} value={setting.key}>
                   {setting.name}
@@ -100,16 +96,14 @@ export function AbilityLibraryModal({ open, onClose, sheet, knownAbilityKeys, on
 
           <label className={styles.field}>
             <span className={styles.label}>Search</span>
-            <TextField
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Fireball, ember step, cloak field..."
-            />
+            <TextField value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Fireball, ember step, cloak field..." />
           </label>
         </div>
 
         {abilitiesQuery.isLoading ? (
-          <div className={styles.emptyState}>Loading abilities...</div>
+          <div className={styles.emptyState}>
+            <Loader size="md" tone="gold" label="Loading abilities..." />
+          </div>
         ) : filteredAbilities.length === 0 ? (
           <div className={styles.emptyState}>No abilities matched your search.</div>
         ) : (
@@ -120,8 +114,8 @@ export function AbilityLibraryModal({ open, onClose, sheet, knownAbilityKeys, on
                   <div>
                     <div className={styles.abilityName}>{ability.name}</div>
                     <div className={styles.abilityMeta}>
-                      {ability.category ?? "other"}
-                      {formatAbilityMeta(ability) ? ` • ${formatAbilityMeta(ability)}` : ""}
+                      {ability.category ?? 'other'}
+                      {formatAbilityMeta(ability) ? ` • ${formatAbilityMeta(ability)}` : ''}
                     </div>
                   </div>
 

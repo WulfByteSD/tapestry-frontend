@@ -1,6 +1,7 @@
 'use client';
 
 import { useMe } from '@/lib/auth-hooks';
+import { Loader } from '@tapestry/ui';
 import ProfileDetailsSection from './ProfileDetailsSection.component';
 import styles from './AccountDetails.module.scss';
 import PasswordSection from './PasswordSection.component';
@@ -12,7 +13,11 @@ export default function Settings() {
   const { data: me, isLoading } = useMe();
 
   if (isLoading) {
-    return <div className={styles.page}>Loading settings…</div>;
+    return (
+      <div className={styles.page}>
+        <Loader size="lg" tone="gold" label="Loading settings…" />
+      </div>
+    );
   }
 
   if (!me) {

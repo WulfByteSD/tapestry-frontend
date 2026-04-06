@@ -1,26 +1,23 @@
 // apps/player/src/features/storyweaver/campaignBoardScreen/CampaignBoardScreen.tsx
-"use client";
+'use client';
 
-import { useEffect, useMemo, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
-import { Button, Card, CardBody, Tabs } from "@tapestry/ui";
-import { useCampaignQuery, useSettingsQuery } from "./campaignBoard.queries";
-import { useUpdateCampaignMutation } from "./campaignBoard.mutations";
-import { useDebouncedCallback } from "@/lib/useDebouncedCallback";
-import { createTabs, TabKey } from "./tabs";
-import type { CampaignType } from "@tapestry/types";
-import styles from "./CampaignBoardScreen.module.scss";
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { Button, Card, CardBody, Loader, Tabs } from '@tapestry/ui';
+import { useCampaignQuery, useSettingsQuery } from './campaignBoard.queries';
+import { useUpdateCampaignMutation } from './campaignBoard.mutations';
+import { useDebouncedCallback } from '@/lib/useDebouncedCallback';
+import { createTabs, TabKey } from './tabs';
+import type { CampaignType } from '@tapestry/types';
+import styles from './CampaignBoardScreen.module.scss';
 
 type Props = {
   campaignId: string;
 };
 
-function getUserRole(
-  campaign: CampaignType & { _id: string },
-  userId?: string,
-): "owner" | "sw" | "co-sw" | "player" | "observer" | null {
+function getUserRole(campaign: CampaignType & { _id: string }, userId?: string): 'owner' | 'sw' | 'co-sw' | 'player' | 'observer' | null {
   if (!userId) return null;
-  if (campaign.owner === userId) return "owner";
+  if (campaign.owner === userId) return 'owner';
   const member = campaign.members?.find((m) => m.player._id === userId);
   return member?.role || null;
 }
@@ -33,22 +30,22 @@ export default function CampaignBoardScreen({ campaignId }: Props) {
 
   const campaign = data?.payload;
 
-  const [activeTab, setActiveTab] = useState<TabKey>("overview");
-  const [nameDraft, setNameDraft] = useState("");
+  const [activeTab, setActiveTab] = useState<TabKey>('overview');
+  const [nameDraft, setNameDraft] = useState('');
 
-  const [saveBadge, setSaveBadge] = useState<"saving" | "saved" | "error" | null>(null);
+  const [saveBadge, setSaveBadge] = useState<'saving' | 'saved' | 'error' | null>(null);
   const timerRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (!campaign) return;
-    setNameDraft(campaign.name ?? "");
+    setNameDraft(campaign.name ?? '');
   }, [campaign?._id, campaign?.name]);
 
   useEffect(() => {
-    if (updateMutation.isPending) setSaveBadge("saving");
-    else if (updateMutation.isError) setSaveBadge("error");
+    if (updateMutation.isPending) setSaveBadge('saving');
+    else if (updateMutation.isError) setSaveBadge('error');
     else if (updateMutation.isSuccess) {
-      setSaveBadge("saved");
+      setSaveBadge('saved');
       if (timerRef.current) window.clearTimeout(timerRef.current);
       timerRef.current = window.setTimeout(() => setSaveBadge(null), 1400);
     }
@@ -75,17 +72,21 @@ export default function CampaignBoardScreen({ campaignId }: Props) {
   }, [campaign, updateMutation, settingsQuery, userRole]);
 
   if (isLoading) {
-    return <div className={styles.state}>Loading campaign board...</div>;
+    return (
+      <div className={styles.state}>
+        <Loader size="lg" tone="gold" label="Loading campaign board..." />
+      </div>
+    );
   }
 
   if (isError || !campaign) {
-    const msg = (error as any)?.response?.data?.message || (error as any)?.message || "Could not load campaign.";
+    const msg = (error as any)?.response?.data?.message || (error as any)?.message || 'Could not load campaign.';
 
     return (
       <div className={styles.state}>
         <h1>Couldn’t load campaign</h1>
         <p>{msg}</p>
-        <Button onClick={() => router.replace("/storyweaver")}>Back</Button>
+        <Button onClick={() => router.replace('/storyweaver')}>Back</Button>
       </div>
     );
   }
@@ -93,14 +94,14 @@ export default function CampaignBoardScreen({ campaignId }: Props) {
   return (
     <div className={styles.page}>
       <div className={styles.topbar}>
-        <Button variant="ghost" onClick={() => router.replace("/storyweaver/campaigns")}>
+        <Button variant="ghost" onClick={() => router.replace('/storyweaver/campaigns')}>
           Back
         </Button>
 
         <div className={styles.saveBadge}>
-          {saveBadge === "saving" && "Saving"}
-          {saveBadge === "saved" && "Saved"}
-          {saveBadge === "error" && "Error"}
+          {saveBadge === 'saving' && 'Saving'}
+          {saveBadge === 'saved' && 'Saved'}
+          {saveBadge === 'error' && 'Error'}
         </div>
       </div>
 
@@ -110,11 +111,9 @@ export default function CampaignBoardScreen({ campaignId }: Props) {
           <div
             className={styles.heroContent}
             style={{
-              backgroundImage: campaign.avatar
-                ? `linear-gradient(rgba(15, 18, 28, 0.85), rgba(15, 18, 28, 0.85)), url(${campaign.avatar})`
-                : undefined,
+              backgroundImage: campaign.avatar ? `linear-gradient(rgba(15, 18, 28, 0.85), rgba(15, 18, 28, 0.85)), url(${campaign.avatar})` : undefined,
             }}
-            data-has-image={campaign.avatar ? "true" : "false"}
+            data-has-image={campaign.avatar ? 'true' : 'false'}
           >
             <div className={styles.heroHeaderRow}>
               <div className={styles.heroMain}>
@@ -129,14 +128,10 @@ export default function CampaignBoardScreen({ campaignId }: Props) {
                     onBlur={() => debouncedSaveName.flush()}
                     placeholder="New Campaign"
                     maxLength={80}
-                    disabled={campaign.status === "archived"}
+                    disabled={campaign.status === 'archived'}
                   />
                   <div className={styles.heroPitch}>
-                    {campaign.notes ? (
-                      <p className={styles.pitchPreview}>{campaign.notes}</p>
-                    ) : (
-                      <p className={styles.pitchEmpty}>No pitch yet...</p>
-                    )}
+                    {campaign.notes ? <p className={styles.pitchPreview}>{campaign.notes}</p> : <p className={styles.pitchEmpty}>No pitch yet...</p>}
                   </div>
                 </div>
               </div>
@@ -151,9 +146,7 @@ export default function CampaignBoardScreen({ campaignId }: Props) {
           </div>
 
           {/* Archived Banner */}
-          {campaign.status === "archived" && (
-            <div className={styles.archivedBanner}>This campaign is archived and read-only.</div>
-          )}
+          {campaign.status === 'archived' && <div className={styles.archivedBanner}>This campaign is archived and read-only.</div>}
 
           {/* Tabs */}
           <div className={styles.tabsContainer}>
