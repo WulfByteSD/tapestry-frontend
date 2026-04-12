@@ -1,0 +1,104 @@
+.callout {
+  padding: 12px 16px;
+  border-left: 3px solid var(--gold);
+  background: color-mix(in srgb, var(--gold) 8%, transparent);
+  border-radius: var(--radius-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  p {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text-muted);
+  }
+
+  strong {
+    color: var(--gold);
+    font-weight: 600;
+  }
+}
+
+.calloutTitle {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gold);
+  opacity: 0.8;
+}
+
+.budgetRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: color-mix(in srgb, var(--contrast) 4%, transparent);
+  border: 1px solid color-mix(in srgb, var(--contrast) 12%, transparent);
+  border-radius: var(--radius-sm);
+}
+
+.budgetLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.budgetValue {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--gold);
+  min-width: 28px;
+  text-align: right;
+  transition: color 0.2s;
+}
+
+.budgetValue_empty {
+  color: var(--text-muted);
+  opacity: 0.5;
+}
+
+.blocks {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+
+  @media (max-width: 560px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.blockTitle {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  opacity: 0.7;
+  padding-bottom: 6px;
+  border-bottom: 1px solid color-mix(in srgb, var(--contrast) 10%, transparent);
+  margin-bottom: 4px;
+}
+
+.rowWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.aspectHint {
+  font-size: 11px;
+  color: var(--text-muted);
+  opacity: 0.6;
+  padding-left: 4px;
+  line-height: 1.4;
+}
