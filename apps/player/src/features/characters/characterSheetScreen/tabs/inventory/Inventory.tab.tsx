@@ -8,7 +8,7 @@ import { addInventoryItemFromDefinition, removeInventoryItem, toggleInventoryEqu
 import styles from './InventoryTab.module.scss';
 import { ContentLibraryModal } from './ContentLibrary.modal';
 import { InventoryItemCard } from './InventoryItemCard';
-import { EquippedSection } from './EquippedSection';
+import { EquippedSection, resolveSlotKey } from './EquippedSection';
 
 type Props = {
   sheet: CharacterSheet;
@@ -21,12 +21,19 @@ export function InventoryTab({ sheet }: Props) {
 
   const inventory = sheet?.sheet?.inventory ?? [];
 
-  const { stats, equippedItems, backpackItems } = useMemo(() => {
+  const { stats, equippedItems, backpackItems, overflowItems } = useMemo(() => {
     const equipped = inventory.filter((item) => item.equipped);
     const backpack = inventory.filter((item) => !item.equipped);
+
+    const overflow = equipped.filter((item) => {
+      const key = resolveSlotKey(item);
+      return key === 'consumable' || key === 'other';
+    });
+
     return {
       equippedItems: equipped,
       backpackItems: backpack,
+      overflowItems: overflow,
       stats: {
         total: inventory.length,
         equipped: equipped.length,
@@ -100,6 +107,26 @@ export function InventoryTab({ sheet }: Props) {
                     <span className={styles.sectionCount}>{equippedItems.length}</span>
                   </div>
                   <EquippedSection equippedItems={equippedItems} onToggleEquipped={handleToggleEquipped} onRemove={handleRemove} />
+                </div>
+              )}
+
+              {overflowItems.length > 0 && (
+                <div>
+                  <div className={styles.sectionHeader}>
+                    <span className={styles.sectionLabel}>Additional Equipped Items</span>
+                    <span className={styles.sectionCount}>{overflowItems.length}</span>
+                  </div>
+                  <div className={styles.list}>
+                    {overflowItems.map((item) => (
+                      <InventoryItemCard
+                        key={item.instanceId}
+                        item={item}
+                        onRemove={handleRemove}
+                        onToggleEquipped={handleToggleEquipped}
+                        onQuantityChange={handleQuantityChange}
+                      />
+                    ))}
+                  </div>
                 </div>
               )}
 

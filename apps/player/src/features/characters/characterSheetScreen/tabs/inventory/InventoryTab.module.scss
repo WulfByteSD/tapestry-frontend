@@ -50,6 +50,7 @@
   background: rgba(255, 255, 255, 0.02);
   overflow: hidden;
   transition: all 0.2s ease;
+  max-width: 360px;
 
   &:hover {
     border-color: rgba(255, 255, 255, 0.16);
@@ -271,57 +272,109 @@
   border-radius: 12px;
 }
 
-.slotGrid {
+.equippedLayout {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-  gap: 0.65rem;
+  grid-template-columns: minmax(280px, 260px) minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
 }
 
-.slotTile,
-.slotTileEmpty {
+.diagramPanel,
+.equippedInspector,
+.overflowSection {
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.diagramPanel {
+  padding: 1rem;
+}
+
+.diagramHeader {
+  margin-bottom: 0.75rem;
+}
+
+.diagramTitle {
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.diagramSubtle {
+  margin-top: 0.2rem;
+  font-size: 0.8rem;
+  opacity: 0.65;
+}
+
+.equipmentSvg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.equippedInspector {
+  padding: 1rem;
+  min-height: 100%;
   display: flex;
   flex-direction: column;
-  gap: 0.45rem;
-  padding: 0.7rem 0.75rem;
-  border-radius: 10px;
-  min-height: 80px;
 }
 
-.slotTile {
-  border: 1px solid rgba(139, 92, 246, 0.35);
-  background: rgba(139, 92, 246, 0.08);
+.inspectorHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.85rem;
 }
 
-.slotTileEmpty {
-  border: 1px dashed rgba(255, 255, 255, 0.1);
-  background: rgba(255, 255, 255, 0.01);
-}
-
-.slotLabel {
-  font-size: 0.65rem;
+.inspectorSlotLabel {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(212, 175, 55, 0.12);
+  border: 1px solid rgba(212, 175, 55, 0.22);
+  font-size: 0.72rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.07em;
-  opacity: 0.5;
 }
 
-.slotEmpty {
-  font-size: 0.8rem;
-  opacity: 0.25;
-}
-
-// ── InventoryItemCard — slot variant ────────────────────────────
-
-.slotItemContent {
+.inspectorList {
   display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  flex: 1;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+
+  & > * {
+    flex: 1 0 360px;
+    min-width: 0;
+  }
 }
 
-.slotItemName {
-  font-size: 0.82rem;
-  font-weight: 600;
-  line-height: 1.3;
-  word-break: break-word;
+.inspectorEmpty {
+  padding: 1rem;
+  border-radius: 10px;
+  border: 1px dashed rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.02);
+  font-size: 0.88rem;
+  opacity: 0.7;
+}
+
+.overflowSection {
+  margin-top: 1rem;
+  padding: 1rem;
+}
+
+@media (max-width: 900px) {
+  .equippedLayout {
+    grid-template-columns: 1fr;
+  }
+
+  .diagramPanel {
+    order: 1;
+  }
+
+  .equippedInspector {
+    order: 2;
+  }
 }
