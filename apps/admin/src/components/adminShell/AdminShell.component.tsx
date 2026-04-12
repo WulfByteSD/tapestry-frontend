@@ -60,7 +60,7 @@ function LoadingState({ message }: { message: string }) {
   return (
     <div className={styles.stateWrap}>
       <div className={styles.stateCard}>
-        <Loader caption={message} />;
+        <Loader caption={message} />
       </div>
     </div>
   );

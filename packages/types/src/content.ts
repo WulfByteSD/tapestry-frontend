@@ -35,6 +35,7 @@ export type ItemDefinition = {
   protection?: number;
   category: InventoryCategory;
   status: ContentStatus;
+  imageUrl?: string;
   tags?: string[];
   equippable?: boolean;
   slot?: ItemSlot | null;
