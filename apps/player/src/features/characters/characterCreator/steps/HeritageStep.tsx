@@ -1,6 +1,6 @@
 'use client';
 
-import { TextField, TextAreaField } from '@tapestry/ui';
+import { TextField, TextAreaField, SelectField } from '@tapestry/ui';
 import type { CharacterDraft } from '../characterCreator.types';
 import styles from './steps.module.scss';
 
@@ -26,7 +26,18 @@ export function HeritageStep({ draft, setField }: Props) {
       <div className={styles.grid2}>
         <TextField label="Race / Ancestry" floatingLabel hint="Your character's ancestry or species in this setting." {...bind('race')} />
         <TextField label="Nationality" floatingLabel hint="Where your character is from." {...bind('nationality')} />
-        <TextField label="Sex" floatingLabel {...bind('sex')} />
+        <SelectField
+          label="Sex"
+          floatingLabel
+          value={draft.sex as string}
+          onChange={(e) => setField('sex', e.target.value as any)}
+          options={[
+            { value: '', label: '—' },
+            { value: 'male', label: 'Male' },
+            { value: 'female', label: 'Female' },
+            { value: 'other', label: 'Other' },
+          ]}
+        />
         <TextField label="Age" floatingLabel {...bind('age')} />
         <TextField label="Height" floatingLabel {...bind('height')} />
         <TextField label="Weight" floatingLabel {...bind('weight')} />
