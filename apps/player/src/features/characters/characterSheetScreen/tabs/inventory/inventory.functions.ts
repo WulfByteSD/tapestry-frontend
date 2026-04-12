@@ -53,6 +53,7 @@ export function mapItemDefinitionToInventoryItem(item: ItemDefinition): Inventor
     protection: item.protection,
     itemKey: item.key,
     sourceId: item._id,
+    imageUrl: item.imageUrl,
     name: item.name,
     qty: 1,
     tags: item.tags ?? [],

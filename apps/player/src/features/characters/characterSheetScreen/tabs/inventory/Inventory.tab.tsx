@@ -1,9 +1,10 @@
-"use client";
+'use client';
 
-import { useMemo, useState } from "react";
-import { Button, Card, CardBody, CardHeader } from "@tapestry/ui";
-import type { CharacterSheet, ItemDefinition } from "@tapestry/types";
-import { useUpdateCharacterSheetMutation } from "../../characterSheet.mutations";
+import { useMemo, useState } from 'react';
+import Image from 'next/image';
+import { Button, Card, CardBody, CardHeader } from '@tapestry/ui';
+import type { CharacterSheet, ItemDefinition } from '@tapestry/types';
+import { useUpdateCharacterSheetMutation } from '../../characterSheet.mutations';
 import {
   addInventoryItemFromDefinition,
   getInventoryDisplayName,
@@ -12,13 +13,13 @@ import {
   removeInventoryItem,
   toggleInventoryEquipped,
   updateInventoryQuantity,
-} from "./inventory.functions";
-import styles from "./InventoryTab.module.scss";
-import { ContentLibraryModal } from "./ContentLibrary.modal";
+} from './inventory.functions';
+import styles from './InventoryTab.module.scss';
+import { ContentLibraryModal } from './ContentLibrary.modal';
 
 type Props = {
   sheet: CharacterSheet;
-  mode: "build" | "play";
+  mode: 'build' | 'play';
 };
 
 export function InventoryTab({ sheet }: Props) {
@@ -31,13 +32,13 @@ export function InventoryTab({ sheet }: Props) {
     return {
       total: inventory.length,
       equipped: inventory.filter((item) => item.equipped).length,
-      weapons: inventory.filter((item) => item.category === "weapon").length,
+      weapons: inventory.filter((item) => item.category === 'weapon').length,
     };
   }, [inventory]);
 
   function persistInventory(nextInventory: typeof inventory, settingKey?: string) {
     const payload: Record<string, unknown> = {
-      "sheet.inventory": nextInventory,
+      'sheet.inventory': nextInventory,
     };
 
     if (!sheet.settingKey && settingKey) {
@@ -48,7 +49,7 @@ export function InventoryTab({ sheet }: Props) {
   }
 
   function handleAddItem(item: ItemDefinition, settingKey: string) {
-    const nextInventory = addInventoryItemFromDefinition(inventory, {...item, activeSettingKey: settingKey});
+    const nextInventory = addInventoryItemFromDefinition(inventory, { ...item, activeSettingKey: settingKey });
     persistInventory(nextInventory, settingKey);
   }
 
@@ -101,12 +102,13 @@ export function InventoryTab({ sheet }: Props) {
                 return (
                   <div key={item.instanceId} className={styles.itemCard}>
                     <div className={styles.itemImageArea}>
-                      {/* Future: item.imageUrl will go here */}
-                      <div className={styles.imagePlaceholder}>
-                        <span className={styles.placeholderIcon}>
-                          {item.category === "weapon" ? "⚔️" : item.category === "armor" ? "🛡️" : "📦"}
-                        </span>
-                      </div>
+                      {item.imageUrl ? (
+                        <Image src={item.imageUrl} alt={getInventoryDisplayName(item)} fill style={{ objectFit: 'contain' }} unoptimized />
+                      ) : (
+                        <div className={styles.imagePlaceholder}>
+                          <span className={styles.placeholderIcon}>{item.category === 'weapon' ? '⚔️' : item.category === 'armor' ? '🛡️' : '📦'}</span>
+                        </div>
+                      )}
                     </div>
 
                     <div className={styles.cardContent}>
@@ -143,18 +145,13 @@ export function InventoryTab({ sheet }: Props) {
                         {item.stackable && (
                           <label className={styles.qtyField}>
                             <span>Qty</span>
-                            <input
-                              type="number"
-                              min={1}
-                              value={item.qty}
-                              onChange={(e) => handleQuantityChange(item.instanceId, Number(e.target.value))}
-                            />
+                            <input type="number" min={1} value={item.qty} onChange={(e) => handleQuantityChange(item.instanceId, Number(e.target.value))} />
                           </label>
                         )}
 
-                        {(item.category === "weapon" || item.slot) && (
-                          <Button variant={item.equipped ? "outline" : "solid"} onClick={() => handleToggleEquipped(item.instanceId)}>
-                            {item.equipped ? "Unequip" : "Equip"}
+                        {(item.category === 'weapon' || item.slot) && (
+                          <Button variant={item.equipped ? 'outline' : 'solid'} onClick={() => handleToggleEquipped(item.instanceId)}>
+                            {item.equipped ? 'Unequip' : 'Equip'}
                           </Button>
                         )}
 
@@ -171,12 +168,7 @@ export function InventoryTab({ sheet }: Props) {
         </CardBody>
       </Card>
 
-      <ContentLibraryModal
-        open={libraryOpen}
-        onClose={() => setLibraryOpen(false)}
-        sheet={sheet}
-        onAddItem={handleAddItem}
-      />
+      <ContentLibraryModal open={libraryOpen} onClose={() => setLibraryOpen(false)} sheet={sheet} onAddItem={handleAddItem} />
     </>
   );
 }
