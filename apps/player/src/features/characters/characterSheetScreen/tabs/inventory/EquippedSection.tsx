@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react';
 import type { InventoryItem } from '@tapestry/types';
 import { InventoryItemCard } from './InventoryItemCard';
-import { MaleBodySilhouette, type BodySlotKey } from '@tapestry/ui';
+import { MaleBodySilhouette, FemaleBodySilhouette, type BodySlotKey } from '@tapestry/ui';
 import styles from './InventoryTab.module.scss';
 
 type OverflowSlotKey = 'consumable' | 'other';
@@ -71,9 +71,11 @@ type Props = {
   equippedItems: InventoryItem[];
   onToggleEquipped: (instanceId?: string) => void;
   onRemove: (instanceId?: string) => void;
+  characterSex?: string;
 };
 
-export function EquippedSection({ equippedItems, onToggleEquipped, onRemove }: Props) {
+export function EquippedSection({ equippedItems, onToggleEquipped, onRemove, characterSex }: Props) {
+  const BodySilhouette = characterSex?.toLowerCase() === 'female' ? FemaleBodySilhouette : MaleBodySilhouette;
   const bySlot = useMemo(() => {
     const map = new Map<SlotKey, InventoryItem[]>();
 
@@ -108,7 +110,7 @@ export function EquippedSection({ equippedItems, onToggleEquipped, onRemove }: P
             </div>
           </div>
 
-          <MaleBodySilhouette slotStates={slotStates} onSlotClick={setSelectedSlot} className={styles.equipmentSvg} />
+          <BodySilhouette slotStates={slotStates} onSlotClick={setSelectedSlot} className={styles.equipmentSvg} />
         </div>
 
         <div className={styles.equippedInspector}>

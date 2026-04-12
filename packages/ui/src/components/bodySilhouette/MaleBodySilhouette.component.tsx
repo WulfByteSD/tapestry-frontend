@@ -3,11 +3,8 @@
 // NOTE: Human male anatomy. Swap this component for female variant in future.
 
 import type { KeyboardEvent } from 'react';
+import type { BodySlotKey, SlotState } from './bodySilhouette.types';
 import styles from './MaleBodySilhouette.module.scss';
-
-export type BodySlotKey = 'head' | 'body' | 'hands' | 'legs' | 'feet' | 'weapon' | 'shield' | 'accessory';
-
-type SlotState = 'empty' | 'filled' | 'active';
 
 type Props = {
   slotStates: Partial<Record<BodySlotKey, SlotState>>;
@@ -34,7 +31,7 @@ function makeKeyDown(slot: BodySlotKey, onSlotClick: (s: BodySlotKey) => void) {
 export function MaleBodySilhouette({ slotStates, onSlotClick, className }: Props) {
   return (
     <svg
-      viewBox="465.596 99.243 135.88 301.513"
+      viewBox="455.596 99.243 155.88 301.513"
       xmlns="http://www.w3.org/2000/svg"
       className={[styles.svg, className].filter(Boolean).join(' ')}
       role="img"

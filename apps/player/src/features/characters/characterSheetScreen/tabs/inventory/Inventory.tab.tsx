@@ -106,7 +106,7 @@ export function InventoryTab({ sheet }: Props) {
                     <span className={styles.sectionLabel}>Equipped</span>
                     <span className={styles.sectionCount}>{equippedItems.length}</span>
                   </div>
-                  <EquippedSection equippedItems={equippedItems} onToggleEquipped={handleToggleEquipped} onRemove={handleRemove} />
+                  <EquippedSection equippedItems={equippedItems} onToggleEquipped={handleToggleEquipped} onRemove={handleRemove} characterSex={sheet.sheet.profile?.sex} />
                 </div>
               )}
 
