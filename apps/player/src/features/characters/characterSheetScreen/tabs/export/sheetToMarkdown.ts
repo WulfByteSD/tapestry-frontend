@@ -102,9 +102,7 @@ export function sheetToMarkdown(sheet: CharacterSheet): string {
   if (s.learnedAbilities?.length) {
     lines.push('## Learned Abilities');
     for (const ability of s.learnedAbilities) {
-      const label = ability.displayName ?? ability.abilityKey ?? 'Unknown';
-      const rank = ability.rank ? ` (rank ${ability.rank})` : '';
-      lines.push(`- **${label}**${rank}`);
+      const label = ability.abilityKey ?? 'Unknown';
     }
     lines.push('');
   }
