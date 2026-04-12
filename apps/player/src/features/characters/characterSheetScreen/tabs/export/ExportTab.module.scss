@@ -1,0 +1,56 @@
+.grid {
+  display: grid;
+  gap: 12px;
+}
+
+.card {
+  display: grid;
+  gap: 10px;
+}
+
+.cardHeader {
+  display: grid;
+  gap: 3px;
+}
+
+.cardTitle {
+  font-weight: 800;
+  font-size: 14px;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.cardIcon {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.cardHint {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.cardAction {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.feedbackLabel {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.sectionLabel {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding-bottom: 2px;
+  border-bottom: 1px solid color-mix(in srgb, var(--contrast) 10%, transparent);
+  margin-bottom: 4px;
+}
