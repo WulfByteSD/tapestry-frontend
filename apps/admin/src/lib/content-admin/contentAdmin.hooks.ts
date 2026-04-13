@@ -268,10 +268,11 @@ export function useImportAbilitiesCsv() {
   };
 }
 
-export function useExportCount(resource: ContentAdminResource, filterOptions?: string) {
+export function useExportCount(resource: ContentAdminResource, filterOptions?: string, enabled: boolean = true) {
   return useQuery<ContentExportCountResponse>({
     queryKey: ['content:export:count', resource, filterOptions ?? ''],
     queryFn: () => getExportCount(resource, filterOptions),
+    enabled: enabled,
   });
 }
 

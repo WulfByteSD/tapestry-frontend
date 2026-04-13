@@ -98,7 +98,7 @@ export default function ExportCsvModal({ open, onClose, resource, initialSetting
 
   const filterOptions = useMemo(() => buildExportFilterString(settingKey, categories, status), [settingKey, categories, status]);
 
-  const countQuery = useExportCount(resource, filterOptions);
+  const countQuery = useExportCount(resource, filterOptions, open);
   const count = countQuery.data?.payload?.count ?? null;
 
   // ── Category toggle ────────────────────────────────────────────────────
