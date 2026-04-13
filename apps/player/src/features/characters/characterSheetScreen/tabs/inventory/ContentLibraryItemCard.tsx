@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { Button } from '@tapestry/ui';
 import type { ItemDefinition } from '@tapestry/types';
 import { ContentLibraryItemPreview } from './ContentLibraryItemPreview';
+import { getCategoryIconUrl } from './inventoryIcons';
 import styles from './ContentLibraryModal.module.scss';
 
 type Props = {
@@ -26,11 +27,7 @@ export function ContentLibraryItemCard({ item, onAdd }: Props) {
     <>
       <div className={styles.itemCard}>
         <div className={styles.cardThumb}>
-          {item.imageUrl ? (
-            <Image src={item.imageUrl} alt={item.name} fill style={{ objectFit: 'contain' }} unoptimized />
-          ) : (
-            <span className={styles.cardThumbIcon}>{item.category === 'weapon' ? '⚔️' : item.category === 'armor' ? '🛡️' : '📦'}</span>
-          )}
+          <Image src={item.imageUrl ?? getCategoryIconUrl(item.category)} alt={item.name} fill style={{ objectFit: 'contain' }} unoptimized />
         </div>
 
         <div className={styles.cardMeta}>
