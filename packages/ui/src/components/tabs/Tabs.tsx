@@ -189,7 +189,7 @@ export function Tabs({
             );
           })
         ) : (
-          <div role="tabpanel" id={`tabpanel-${currentKey}`} aria-labelledby={`tab-${currentKey}`} className={styles.panel}>
+          <div key={currentKey} role="tabpanel" id={`tabpanel-${currentKey}`} aria-labelledby={`tab-${currentKey}`} className={styles.panel}>
             {activeItem?.children}
           </div>
         )}
