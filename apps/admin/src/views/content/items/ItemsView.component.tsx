@@ -7,6 +7,7 @@ import type { TableColumn, TableRowAction } from '@tapestry/ui';
 import type { ItemDefinition, SettingDefinition } from '@tapestry/types';
 import { useDeleteItem, useItems } from '@/lib/content-admin';
 import { ImportCsvModal } from '@/features/content/_components/importCsvModal';
+import { ExportCsvModal } from '@/features/content/_components/exportCsvModal';
 import styles from './ItemsView.module.scss';
 
 const PAGE_SIZE = 10;
@@ -41,6 +42,7 @@ export default function ItemsListView({ selectedSetting }: ItemsListPageProps) {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<ItemDefinition | null>(null);
   const [importModalOpen, setImportModalOpen] = useState(false);
+  const [exportModalOpen, setExportModalOpen] = useState(false);
 
   const filterOptions = useMemo(() => {
     let filterOptions = '';
@@ -168,6 +170,9 @@ export default function ItemsListView({ selectedSetting }: ItemsListPageProps) {
           <Button variant="ghost" tone="neutral" onClick={() => setImportModalOpen(true)}>
             Import CSV
           </Button>
+          <Button variant="ghost" tone="neutral" onClick={() => setExportModalOpen(true)}>
+            Export CSV
+          </Button>
           <Button variant="outline" tone="neutral" onClick={() => router.push('/content/items/new')}>
             New Item
           </Button>
@@ -273,6 +278,7 @@ export default function ItemsListView({ selectedSetting }: ItemsListPageProps) {
       </Modal>
 
       <ImportCsvModal open={importModalOpen} onClose={() => setImportModalOpen(false)} resource="items" />
+      <ExportCsvModal open={exportModalOpen} onClose={() => setExportModalOpen(false)} resource="items" initialSettingKey={selectedSetting?.key} />
     </div>
   );
 }
