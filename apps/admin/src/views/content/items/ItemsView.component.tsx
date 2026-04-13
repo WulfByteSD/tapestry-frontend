@@ -29,9 +29,13 @@ function formatDate(value?: string) {
 
 type ItemsListPageProps = {
   selectedSetting?: SettingDefinition;
+  /** Called when the user clicks a row. When absent, falls back to router navigation. */
+  onRowClick?: (id: string, name: string) => void;
+  /** Called when the user clicks "New Item". When absent, falls back to router navigation. */
+  onNewItem?: () => void;
 };
 
-export default function ItemsListView({ selectedSetting }: ItemsListPageProps) {
+export default function ItemsListView({ selectedSetting, onRowClick, onNewItem }: ItemsListPageProps) {
   const router = useRouter();
   const deleteItem = useDeleteItem();
 
@@ -173,7 +177,7 @@ export default function ItemsListView({ selectedSetting }: ItemsListPageProps) {
           <Button variant="ghost" tone="neutral" onClick={() => setExportModalOpen(true)}>
             Export CSV
           </Button>
-          <Button variant="outline" tone="neutral" onClick={() => router.push('/content/items/new')}>
+          <Button variant="outline" tone="neutral" onClick={() => (onNewItem ? onNewItem() : router.push('/content/items/new'))}>
             New Item
           </Button>
         </div>
@@ -239,7 +243,7 @@ export default function ItemsListView({ selectedSetting }: ItemsListPageProps) {
             rowKey="_id"
             loading={itemsQuery.isLoading || itemsQuery.isFetching}
             loadingComponent={<Loader label="Loading items" />}
-            onRowClick={(row) => router.push(`/content/items/${row._id}`)}
+            onRowClick={(row) => (onRowClick ? onRowClick(row._id, row.name) : router.push(`/content/items/${row._id}`))}
             rowActions={rowActions}
             emptyTitle="No items found"
             emptyMessage="Try adjusting your filters or create a new item."

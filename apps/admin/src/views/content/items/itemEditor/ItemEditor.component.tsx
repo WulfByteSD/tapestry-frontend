@@ -19,9 +19,17 @@ import styles from './ItemEditor.module.scss';
 
 type ItemEditorProps = {
   id?: string;
+  /** Called after a new item is successfully created. Receives the new id and name. */
+  onCreated?: (id: string, name: string) => void;
+  /** Called after the item is successfully deleted. */
+  onDeleted?: () => void;
+  /** Called when the user cancels / navigates back without saving. */
+  onCancel?: () => void;
+  /** Called whenever the form dirty state changes. */
+  onDirtyChange?: (isDirty: boolean) => void;
 };
 
-const ItemEditor = ({ id }: ItemEditorProps) => {
+const ItemEditor = ({ id, onCreated, onDeleted, onCancel, onDirtyChange }: ItemEditorProps) => {
   const router = useRouter();
   const { addAlert } = useAlert();
 
@@ -70,6 +78,12 @@ const ItemEditor = ({ id }: ItemEditorProps) => {
   const grantedAbilities = form.values.grantedAbilities ?? [];
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
+  // Propagate dirty state to parent workspace (if hosted in tabbed workspace).
+  useEffect(() => {
+    onDirtyChange?.(form.isDirty);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [form.isDirty]);
+
   const abilitiesLookup = useMemo(() => {
     const map = new Map();
     (abilitiesQuery.data?.payload ?? []).forEach((ability) => {
@@ -103,7 +117,11 @@ const ItemEditor = ({ id }: ItemEditorProps) => {
           message: 'Item created',
           description: 'The item has been created successfully.',
         });
-        router.push(`/content/items/${result.payload}`);
+        if (onCreated) {
+          onCreated(result.payload, form.values.name);
+        } else {
+          router.push(`/content/items/${result.payload}`);
+        }
       } else {
         await updateItem.mutateAsync(id!, nextValues);
         form.replaceValues(nextValues);
@@ -139,7 +157,11 @@ const ItemEditor = ({ id }: ItemEditorProps) => {
       });
 
       setIsDeleteModalOpen(false);
-      router.push('/content/items');
+      if (onDeleted) {
+        onDeleted();
+      } else {
+        router.push('/content/items');
+      }
     } catch (error) {
       addAlert({
         type: 'error',
@@ -197,7 +219,7 @@ const ItemEditor = ({ id }: ItemEditorProps) => {
         </div>
 
         <div className={styles.headerActions}>
-          <Button variant="ghost" tone="neutral" onClick={() => router.push('/content/items')}>
+          <Button variant="ghost" tone="neutral" onClick={() => (onCancel ? onCancel() : router.push('/content/items'))}>
             Back to Items
           </Button>
         </div>

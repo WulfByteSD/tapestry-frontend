@@ -1,5 +1,4 @@
 @import "tailwindcss";
-
 :root {
   /* Brand palette (from WP frontend) */
   --base: #14002B;
@@ -22,7 +21,8 @@
 
   --text: var(--contrast);
   --text-muted: var(--contrast-2);
-
+  --danger: #FF4D4F;
+  --success: #52C41A;
   --border: color-mix(in srgb, var(--contrast-2) 18%, transparent);
   --border-strong: color-mix(in srgb, var(--contrast-2) 30%, transparent);
 
@@ -71,7 +71,7 @@ a {
 }
 
 a:hover {
-  text-decoration: underline;
+  /* text-decoration: underline; */
 }
 
 ::selection {
@@ -89,4 +89,20 @@ textarea,
 select {
   font: inherit;
   color: inherit;
+}
+
+
+/* === Scrollbar Styling === */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--accent-3);
+  border-radius: var(--radius-sm);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--accent-4);
 }

@@ -1,13 +1,15 @@
-import type { ReactNode } from "react";
+import type { ReactNode } from 'react';
 
-export type TabsVariant = "pills" | "underline";
-export type TabsFit = "equal" | "content";
+export type TabsVariant = 'pills' | 'underline';
+export type TabsFit = 'equal' | 'content';
 
 export interface TabsItem {
   key: string;
   label: ReactNode;
   icon?: ReactNode;
   disabled?: boolean;
+  /** When true, renders a close button on the tab. Wire `onRemove` on `TabsProps` to handle removal. */
+  closable?: boolean;
   children: ReactNode;
 }
 
@@ -33,4 +35,6 @@ export interface TabsProps {
   contentClassName?: string;
 
   ariaLabel?: string;
+  /** Called when the user closes a tab (close button click or Delete/Backspace on focused closable tab). */
+  onRemove?: (key: string) => void;
 }

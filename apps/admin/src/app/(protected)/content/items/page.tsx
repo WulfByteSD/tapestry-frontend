@@ -1,5 +1,5 @@
 import { createAdminPageMetadata } from '@/app/pageMetadata';
-import ItemsListView from '@/views/content/items/ItemsView.component';
+import ItemsWorkspace from '@/views/content/items/ItemsWorkspace.component';
 
 export const metadata = createAdminPageMetadata({
   title: 'Items',
@@ -7,5 +7,5 @@ export const metadata = createAdminPageMetadata({
 });
 
 export default async function ContentPage() {
-  return <ItemsListView />;
+  return <ItemsWorkspace />;
 }
