@@ -8,6 +8,7 @@ import type {
   ContentAdminListResponse,
   ContentAdminPayload,
   ContentAdminRecord,
+  ContentExportCountResponse,
   ContentAdminResource,
   ContentImportMode,
   ContentImportResponse,
@@ -75,6 +76,32 @@ export async function importContentCsv<K extends ContentAdminResource>(
   return res.data;
 }
 
+export async function getExportCount<K extends ContentAdminResource>(resource: K, filterOptions?: string): Promise<ContentExportCountResponse> {
+  const res = await api.get(`${getBasePath(resource)}/export/count`, {
+    params: cleanParams({ filterOptions }),
+  });
+  return res.data;
+}
+
+export async function exportContentCsv<K extends ContentAdminResource>(resource: K, filterOptions?: string): Promise<void> {
+  const date = new Date().toISOString().split('T')[0];
+  const filename = `${resource}-export-${date}.csv`;
+
+  const res = await api.get(`${getBasePath(resource)}/export`, {
+    params: cleanParams({ filterOptions }),
+    responseType: 'blob',
+  });
+
+  const url = URL.createObjectURL(new Blob([res.data], { type: 'text/csv' }));
+  const anchor = document.createElement('a');
+  anchor.href = url;
+  anchor.download = filename;
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
+  URL.revokeObjectURL(url);
+}
+
 // Convenience resource-specific exports
 
 export const listItems = (params?: ContentAdminListParams) => listContent('items', params);
@@ -83,6 +110,8 @@ export const createItem = (payload: ContentAdminPayload<'items'>) => createConte
 export const updateItem = (id: string, payload: ContentAdminPayload<'items'>) => updateContent('items', id, payload);
 export const deleteItem = (id: string) => deleteContent('items', id);
 export const importItemsCsv = (file: File | Blob, mode?: ContentImportMode, filename?: string) => importContentCsv('items', file, mode, filename);
+export const getItemsExportCount = (filterOptions?: string) => getExportCount('items', filterOptions);
+export const exportItemsCsv = (filterOptions?: string) => exportContentCsv('items', filterOptions);
 
 export const listSkills = (params?: ContentAdminListParams) => listContent('skills', params);
 export const getSkill = (id: string) => getContent('skills', id);

@@ -1,13 +1,14 @@
 'use client';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { createContent, deleteContent, getContent, importContentCsv, listContent, updateContent } from './contentAdmin.api';
+import { createContent, deleteContent, getContent, getExportCount, importContentCsv, listContent, updateContent } from './contentAdmin.api';
 import type {
   ContentAdminCreateResponse,
   ContentAdminDeleteResponse,
   ContentAdminDetailResponse,
   ContentAdminListParams,
   ContentAdminResource,
+  ContentExportCountResponse,
   ContentImportResponse,
   CreateContentVariables,
   DeleteContentVariables,
@@ -98,7 +99,6 @@ export function useDeleteContentEntry() {
       queryClient.cancelQueries({
         queryKey: contentAdminQueryKeys.detail(variables.resource, variables.id),
       });
-
     },
   });
 }
@@ -266,4 +266,15 @@ export function useImportAbilitiesCsv() {
     mutateAsync: (file: File | Blob, mode?: ImportContentVariables<'abilities'>['mode'], filename?: string) =>
       mutation.mutateAsync({ resource: 'abilities', file, mode, filename } as any),
   };
+}
+
+export function useExportCount(resource: ContentAdminResource, filterOptions?: string) {
+  return useQuery<ContentExportCountResponse>({
+    queryKey: ['content:export:count', resource, filterOptions ?? ''],
+    queryFn: () => getExportCount(resource, filterOptions),
+  });
+}
+
+export function useItemsExportCount(filterOptions?: string) {
+  return useExportCount('items', filterOptions);
 }

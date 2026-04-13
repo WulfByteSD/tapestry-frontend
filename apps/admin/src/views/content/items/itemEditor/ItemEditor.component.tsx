@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useMemo, useState } from 'react';
-import { useAbilities, useDeleteItem, useItem, useUpdateItem } from '@/lib/content-admin';
+import { useAbilities, useCreateItem, useDeleteItem, useItem, useUpdateItem } from '@/lib/content-admin';
 import { AttackProfile, GrantedAbilityRef } from '@tapestry/types';
 import { Button, Card, CardBody, Loader, Modal, useAlert, useForm } from '@tapestry/ui';
 import { useRouter } from 'next/navigation';
@@ -25,8 +25,11 @@ const ItemEditor = ({ id }: ItemEditorProps) => {
   const router = useRouter();
   const { addAlert } = useAlert();
 
+  const isNew = !id;
+
   const itemQuery = useItem(id);
   const abilitiesQuery = useAbilities({ pageNumber: 1, pageLimit: 500, sortOptions: 'name' });
+  const createItem = useCreateItem();
   const updateItem = useUpdateItem();
   const deleteItem = useDeleteItem();
 
@@ -62,7 +65,7 @@ const ItemEditor = ({ id }: ItemEditorProps) => {
     replaceFormValues: form.replaceValues,
   });
 
-  const itemTitle = form.values.name || 'Item Editor';
+  const itemTitle = form.values.name || (isNew ? 'New Item' : 'Item Editor');
   const attackProfiles = form.values.attackProfiles ?? [];
   const grantedAbilities = form.values.grantedAbilities ?? [];
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -85,7 +88,7 @@ const ItemEditor = ({ id }: ItemEditorProps) => {
   }, [itemQuery.data?.payload]);
 
   const handleSave = async () => {
-    if (!id || !form.isValid) return;
+    if (!form.isValid) return;
 
     const nextValues: ItemEditorFormValues = {
       ...form.values,
@@ -93,19 +96,28 @@ const ItemEditor = ({ id }: ItemEditorProps) => {
     };
 
     try {
-      await updateItem.mutateAsync(id, nextValues);
-      form.replaceValues(nextValues);
-
-      addAlert({
-        type: 'success',
-        message: 'Item saved',
-        description: 'Your changes have been saved successfully.',
-      });
+      if (isNew) {
+        const result = await createItem.mutateAsync(nextValues);
+        addAlert({
+          type: 'success',
+          message: 'Item created',
+          description: 'The item has been created successfully.',
+        });
+        router.push(`/content/items/${result.payload}`);
+      } else {
+        await updateItem.mutateAsync(id!, nextValues);
+        form.replaceValues(nextValues);
+        addAlert({
+          type: 'success',
+          message: 'Item saved',
+          description: 'Your changes have been saved successfully.',
+        });
+      }
     } catch (error) {
       addAlert({
         type: 'error',
-        message: 'Save failed',
-        description: 'Failed to save item. Please try again.',
+        message: isNew ? 'Create failed' : 'Save failed',
+        description: isNew ? 'Failed to create item. Please try again.' : 'Failed to save item. Please try again.',
       });
     }
   };
@@ -141,7 +153,7 @@ const ItemEditor = ({ id }: ItemEditorProps) => {
     setIsDeleteModalOpen(false);
   };
 
-  if (itemQuery.isLoading) {
+  if (!isNew && itemQuery.isLoading) {
     return (
       <div className={styles.page}>
         <Card>
@@ -153,7 +165,7 @@ const ItemEditor = ({ id }: ItemEditorProps) => {
     );
   }
 
-  if (itemQuery.isError || !itemQuery.data?.payload) {
+  if (!isNew && (itemQuery.isError || !itemQuery.data?.payload)) {
     return (
       <div className={styles.page}>
         <Card>
@@ -161,7 +173,7 @@ const ItemEditor = ({ id }: ItemEditorProps) => {
             <div className={styles.stateTitle}>Item not found</div>
             <p className={styles.stateText}>This item could not be loaded. It may have been removed or the id is invalid.</p>
             <div className={styles.stateActions}>
-              <Button variant="outline" tone="neutral" onClick={() => router.push('/items')}>
+              <Button variant="outline" tone="neutral" onClick={() => router.push('/content/items')}>
                 Back to Items
               </Button>
             </div>
@@ -177,7 +189,11 @@ const ItemEditor = ({ id }: ItemEditorProps) => {
         <div className={styles.headerCopy}>
           <p className={styles.eyebrow}>Content Admin</p>
           <h1 className={styles.title}>{itemTitle}</h1>
-          <p className={styles.subtitle}>Edit the item definition, then save your changes back to the content library.</p>
+          <p className={styles.subtitle}>
+            {isNew
+              ? 'Fill in the details below, then save to add the item to the content library.'
+              : 'Edit the item definition, then save your changes back to the content library.'}
+          </p>
         </div>
 
         <div className={styles.headerActions}>
@@ -187,9 +203,9 @@ const ItemEditor = ({ id }: ItemEditorProps) => {
         </div>
       </div>
 
-      <CoreDetailsSection form={form} disabled={updateItem.isPending} />
+      <CoreDetailsSection form={form} disabled={updateItem.isPending || createItem.isPending} />
 
-      <ImageSection form={form} disabled={updateItem.isPending} />
+      <ImageSection form={form} disabled={updateItem.isPending || createItem.isPending} />
 
       <AttackProfilesSection
         attackProfiles={attackProfiles}
@@ -208,18 +224,20 @@ const ItemEditor = ({ id }: ItemEditorProps) => {
 
       <div className={styles.footer}>
         <div className={styles.footerActions}>
-          <Button variant="solid" tone="gold" onClick={handleSave} disabled={updateItem.isPending || !form.isValid}>
-            {updateItem.isPending ? 'Saving...' : 'Save Changes'}
+          <Button variant="solid" tone="gold" onClick={handleSave} disabled={updateItem.isPending || createItem.isPending || !form.isValid}>
+            {createItem.isPending ? 'Creating...' : updateItem.isPending ? 'Saving...' : isNew ? 'Create Item' : 'Save Changes'}
           </Button>
-          <Button variant="outline" tone="neutral" onClick={() => form.reset()} disabled={updateItem.isPending}>
+          <Button variant="outline" tone="neutral" onClick={() => form.reset()} disabled={updateItem.isPending || createItem.isPending}>
             Reset
           </Button>
         </div>
-        <div className={styles.footerDanger}>
-          <Button variant="outline" tone="danger" onClick={handleDeleteClick} disabled={deleteItem.isPending}>
-            Delete Item
-          </Button>
-        </div>
+        {!isNew && (
+          <div className={styles.footerDanger}>
+            <Button variant="outline" tone="danger" onClick={handleDeleteClick} disabled={deleteItem.isPending}>
+              Delete Item
+            </Button>
+          </div>
+        )}
       </div>
 
       <AttackProfileModal attackProfileEditor={attackProfileEditor} currentSettingKeys={form.values.settingKeys ?? []} />

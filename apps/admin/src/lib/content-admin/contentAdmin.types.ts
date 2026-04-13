@@ -96,3 +96,14 @@ export const CONTENT_ADMIN_RESOURCE_PATHS: Record<ContentAdminResource, string> 
   skills: '/game/content/skills',
   abilities: '/game/content/abilities',
 };
+
+export type ContentExportCountResult = {
+  count: number;
+};
+
+export type ContentExportCountResponse = ApiResponse<ContentExportCountResult>;
+
+export type ExportContentVariables<K extends ContentAdminResource = ContentAdminResource> = {
+  resource: K;
+  filterOptions?: string;
+};
