@@ -54,8 +54,8 @@ export default function ItemsWorkspace() {
         onChange={setActiveKey}
         onRemove={closeWindow}
         variant="underline"
-        fit="content"
-        keepMounted={false}
+        keepMounted
+        fit="content" 
         ariaLabel="Item workspace"
       />
 
