@@ -50,6 +50,7 @@
   background: rgba(255, 255, 255, 0.02);
   overflow: hidden;
   transition: all 0.2s ease;
+  max-width: 360px;
 
   &:hover {
     border-color: rgba(255, 255, 255, 0.16);
@@ -213,5 +214,167 @@
 
   .list {
     grid-template-columns: 1fr;
+  }
+
+  .slotGrid {
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  }
+}
+
+// ── Section layout ─────────────────────────────────────────────
+
+.sections {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-bottom: 0.85rem;
+}
+
+.sectionLabel {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  opacity: 0.65;
+}
+
+.sectionCount {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  background: rgba(255, 255, 255, 0.08);
+  opacity: 0.75;
+}
+
+.sectionEmpty {
+  padding: 0.75rem 1rem;
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  font-size: 0.85rem;
+  opacity: 0.5;
+  text-align: center;
+}
+
+// ── Equipped section panel ──────────────────────────────────────
+
+.equippedSection {
+  padding: 1rem;
+  background: rgba(99, 102, 241, 0.04);
+  border: 1px solid rgba(99, 102, 241, 0.18);
+  border-radius: 12px;
+}
+
+.equippedLayout {
+  display: grid;
+  grid-template-columns: minmax(280px, 260px) minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.diagramPanel,
+.equippedInspector,
+.overflowSection {
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.diagramPanel {
+  padding: 1rem;
+}
+
+.diagramHeader {
+  margin-bottom: 0.75rem;
+}
+
+.diagramTitle {
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.diagramSubtle {
+  margin-top: 0.2rem;
+  font-size: 0.8rem;
+  opacity: 0.65;
+}
+
+.equipmentSvg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.equippedInspector {
+  padding: 1rem;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.inspectorHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.85rem;
+}
+
+.inspectorSlotLabel {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(212, 175, 55, 0.12);
+  border: 1px solid rgba(212, 175, 55, 0.22);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.inspectorList {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+
+  & > * {
+    flex: 1 0 360px;
+    min-width: 0;
+  }
+}
+
+.inspectorEmpty {
+  padding: 1rem;
+  border-radius: 10px;
+  border: 1px dashed rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.02);
+  font-size: 0.88rem;
+  opacity: 0.7;
+}
+
+.overflowSection {
+  margin-top: 1rem;
+  padding: 1rem;
+}
+
+@media (max-width: 900px) {
+  .equippedLayout {
+    grid-template-columns: 1fr;
+  }
+
+  .diagramPanel {
+    order: 1;
+  }
+
+  .equippedInspector {
+    order: 2;
   }
 }

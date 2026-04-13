@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { Button, Input, Modal, Select } from "@tapestry/ui";
-import type { CharacterSheet } from "@tapestry/types";
-import styles from "./CharacterDetails.module.scss";
-import { useQuery } from "@tanstack/react-query";
-import { api } from "@/lib/api";
-import { getSettings } from "@tapestry/api-client";
-import type { SettingDefinition } from "@tapestry/types";
+import { useEffect, useState } from 'react';
+import { Button, Input, Modal, Select, SelectField } from '@tapestry/ui';
+import type { CharacterSheet } from '@tapestry/types';
+import styles from './CharacterDetails.module.scss';
+import { useQuery } from '@tanstack/react-query';
+import { api } from '@/lib/api';
+import { getSettings } from '@tapestry/api-client';
+import type { SettingDefinition } from '@tapestry/types';
 
 type Props = {
   open: boolean;
@@ -40,32 +40,32 @@ function makeDraft(sheet: CharacterSheet): DraftState {
   const profile = sheet.sheet.profile ?? {};
 
   return {
-    avatarUrl: sheet.avatarUrl ?? "",
-    settingKey: sheet.settingKey ?? "",
-    archetypeKey: sheet.sheet.archetypeKey ?? "",
+    avatarUrl: sheet.avatarUrl ?? '',
+    settingKey: sheet.settingKey ?? '',
+    archetypeKey: sheet.sheet.archetypeKey ?? '',
     weaveLevel: sheet.sheet.weaveLevel ?? 1,
-    title: profile.title ?? "",
-    bio: profile.bio ?? "",
-    race: profile.race ?? "",
-    nationality: profile.nationality ?? "",
-    religion: profile.religion ?? "",
-    sex: profile.sex ?? "",
-    height: profile.height ?? "",
-    weight: profile.weight ?? "",
-    eyes: profile.eyes ?? "",
-    hair: profile.hair ?? "",
-    ethnicity: profile.ethnicity ?? "",
-    age: profile.age != null ? String(profile.age) : "",
+    title: profile.title ?? '',
+    bio: profile.bio ?? '',
+    race: profile.race ?? '',
+    nationality: profile.nationality ?? '',
+    religion: profile.religion ?? '',
+    sex: profile.sex ?? '',
+    height: profile.height ?? '',
+    weight: profile.weight ?? '',
+    eyes: profile.eyes ?? '',
+    hair: profile.hair ?? '',
+    ethnicity: profile.ethnicity ?? '',
+    age: profile.age != null ? String(profile.age) : '',
   };
 }
 export function CharacterDetailsModal({ open, sheet, onClose, onSave, isSaving = false }: Props) {
   const [draft, setDraft] = useState<DraftState>(() => makeDraft(sheet));
   const settingsQuery = useQuery({
-    queryKey: ["content:settings"],
+    queryKey: ['content:settings'],
     queryFn: () =>
       getSettings(api, {
         pageLimit: 50,
-        sortOptions: "name",
+        sortOptions: 'name',
       }),
   });
 
@@ -86,9 +86,9 @@ export function CharacterDetailsModal({ open, sheet, onClose, onSave, isSaving =
     onSave({
       avatarUrl: draft.avatarUrl.trim() || null,
       settingKey: draft.settingKey.trim() || null,
-      "sheet.archetypeKey": draft.archetypeKey.trim() || null,
-      "sheet.weaveLevel": normalizedWeaveLevel,
-      "sheet.profile": {
+      'sheet.archetypeKey': draft.archetypeKey.trim() || null,
+      'sheet.weaveLevel': normalizedWeaveLevel,
+      'sheet.profile': {
         title: draft.title.trim() || undefined,
         bio: draft.bio.trim() || undefined,
         race: draft.race.trim() || undefined,
@@ -116,7 +116,7 @@ export function CharacterDetailsModal({ open, sheet, onClose, onSave, isSaving =
             Cancel
           </Button>
           <Button onClick={handleSave} disabled={isSaving}>
-            {isSaving ? "Saving..." : "Save"}
+            {isSaving ? 'Saving...' : 'Save'}
           </Button>
         </>
       }
@@ -124,7 +124,7 @@ export function CharacterDetailsModal({ open, sheet, onClose, onSave, isSaving =
       destroyOnClose
     >
       <div className={styles.root}>
-        <Select value={draft.settingKey} onChange={(e) => setField("settingKey", e.target.value)}>
+        <Select value={draft.settingKey} onChange={(e) => setField('settingKey', e.target.value)}>
           <option value="">No Setting</option>
           {settings.map((setting: SettingDefinition) => (
             <option key={setting.key} value={setting.key}>
@@ -133,55 +133,39 @@ export function CharacterDetailsModal({ open, sheet, onClose, onSave, isSaving =
           ))}
         </Select>
         <p className={styles.settingHint}>
-          Changing a setting does not automatically remove old items, skills, or notes. Forking is usually the cleaner
-          option when porting a character into another world.
+          Changing a setting does not automatically remove old items, skills, or notes. Forking is usually the cleaner option when porting a character into another world.
         </p>
         <div className={styles.grid}>
-          <Input
-            label="Avatar URL"
-            value={draft.avatarUrl}
-            onChange={(e) => setField("avatarUrl", e.target.value)}
-            placeholder="https://example.com/avatar.png"
-          />
+          <Input label="Avatar URL" value={draft.avatarUrl} onChange={(e) => setField('avatarUrl', e.target.value)} placeholder="https://example.com/avatar.png" />
 
-          <Input
-            label="Archetype"
-            value={draft.archetypeKey}
-            onChange={(e) => setField("archetypeKey", e.target.value)}
-            placeholder="bard, warden, striker..."
-          />
+          <Input label="Archetype" value={draft.archetypeKey} onChange={(e) => setField('archetypeKey', e.target.value)} placeholder="bard, warden, striker..." />
 
-          <Input
-            label="Weave Level"
-            type="number"
-            min={1}
-            value={draft.weaveLevel}
-            onChange={(e) => setField("weaveLevel", e.target.value)}
-          />
+          <Input label="Weave Level" type="number" min={1} value={draft.weaveLevel} onChange={(e) => setField('weaveLevel', e.target.value)} />
 
-          <Input
-            label="Title"
-            value={draft.title}
-            onChange={(e) => setField("title", e.target.value)}
-            placeholder="The Ashen Blade, Court Singer..."
-          />
+          <Input label="Title" value={draft.title} onChange={(e) => setField('title', e.target.value)} placeholder="The Ashen Blade, Court Singer..." />
         </div>
 
         <div className={styles.grid}>
-          <Input label="Race" value={draft.race} onChange={(e) => setField("race", e.target.value)} />
-          <Input
-            label="Nationality"
-            value={draft.nationality}
-            onChange={(e) => setField("nationality", e.target.value)}
+          <Input label="Race" value={draft.race} onChange={(e) => setField('race', e.target.value)} />
+          <Input label="Nationality" value={draft.nationality} onChange={(e) => setField('nationality', e.target.value)} />
+          <Input label="Religion" value={draft.religion} onChange={(e) => setField('religion', e.target.value)} />
+          <SelectField
+            label="Sex"
+            value={draft.sex}
+            onChange={(e) => setField('sex', e.target.value)}
+            options={[
+              { value: '', label: '—' },
+              { value: 'male', label: 'Male' },
+              { value: 'female', label: 'Female' },
+              { value: 'other', label: 'Other' },
+            ]}
           />
-          <Input label="Religion" value={draft.religion} onChange={(e) => setField("religion", e.target.value)} />
-          <Input label="Sex" value={draft.sex} onChange={(e) => setField("sex", e.target.value)} />
-          <Input label="Height" value={draft.height} onChange={(e) => setField("height", e.target.value)} />
-          <Input label="Weight" value={draft.weight} onChange={(e) => setField("weight", e.target.value)} />
-          <Input label="Eyes" value={draft.eyes} onChange={(e) => setField("eyes", e.target.value)} />
-          <Input label="Hair" value={draft.hair} onChange={(e) => setField("hair", e.target.value)} />
-          <Input label="Ethnicity" value={draft.ethnicity} onChange={(e) => setField("ethnicity", e.target.value)} />
-          <Input label="Age" value={draft.age} onChange={(e) => setField("age", e.target.value)} />
+          <Input label="Height" value={draft.height} onChange={(e) => setField('height', e.target.value)} />
+          <Input label="Weight" value={draft.weight} onChange={(e) => setField('weight', e.target.value)} />
+          <Input label="Eyes" value={draft.eyes} onChange={(e) => setField('eyes', e.target.value)} />
+          <Input label="Hair" value={draft.hair} onChange={(e) => setField('hair', e.target.value)} />
+          <Input label="Ethnicity" value={draft.ethnicity} onChange={(e) => setField('ethnicity', e.target.value)} />
+          <Input label="Age" value={draft.age} onChange={(e) => setField('age', e.target.value)} />
         </div>
 
         <label className={styles.bioBlock}>
@@ -189,7 +173,7 @@ export function CharacterDetailsModal({ open, sheet, onClose, onSave, isSaving =
           <textarea
             className={styles.bioInput}
             value={draft.bio}
-            onChange={(e) => setField("bio", e.target.value)}
+            onChange={(e) => setField('bio', e.target.value)}
             placeholder="Who are they, what shaped them, and why are they here?"
             rows={8}
           />

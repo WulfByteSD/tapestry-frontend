@@ -1,0 +1,52 @@
+.svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.zone {
+  cursor: pointer;
+  outline: none;
+}
+
+.zoneEmpty {
+  fill: rgba(255, 255, 255, 0.06);
+  stroke: rgba(255, 255, 255, 0.15);
+  stroke-width: 1;
+  transition:
+    fill 0.15s ease,
+    stroke 0.15s ease;
+
+  &:hover {
+    fill: rgba(255, 255, 255, 0.14);
+    stroke: rgba(255, 255, 255, 0.3);
+  }
+}
+
+.zoneFilled {
+  fill: rgba(139, 92, 246, 0.22);
+  stroke: rgba(139, 92, 246, 0.55);
+  stroke-width: 1.5;
+  transition:
+    fill 0.15s ease,
+    stroke 0.15s ease;
+
+  &:hover {
+    fill: rgba(139, 92, 246, 0.32);
+    stroke: rgba(139, 92, 246, 0.8);
+  }
+}
+
+.zoneActive {
+  fill: rgba(212, 175, 55, 0.22);
+  stroke: rgba(212, 175, 55, 0.9);
+  stroke-width: 2;
+  transition:
+    fill 0.15s ease,
+    stroke 0.15s ease;
+
+  &:hover {
+    fill: rgba(212, 175, 55, 0.35);
+    stroke: rgba(212, 175, 55, 1);
+  }
+}

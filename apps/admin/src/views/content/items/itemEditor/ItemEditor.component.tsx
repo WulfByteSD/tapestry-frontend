@@ -11,6 +11,7 @@ import { AttackProfileModal } from './AttackProfileModal';
 import { useGrantedAbilityEditor } from './useGrantedAbilityEditor';
 import { GrantedAbilityModal } from './GrantedAbilityModal';
 import { CoreDetailsSection } from './CoreDetailsSection';
+import { ImageSection } from './ImageSection';
 import { AttackProfilesSection } from './AttackProfilesSection';
 import { GrantedAbilitiesSection } from './GrantedAbilitiesSection';
 
@@ -36,6 +37,7 @@ const ItemEditor = ({ id }: ItemEditorProps) => {
       category: 'other',
       status: 'draft',
       settingKeys: [],
+      imageUrl: '',
       tags: [],
       equippable: false,
       stackable: false,
@@ -186,6 +188,8 @@ const ItemEditor = ({ id }: ItemEditorProps) => {
       </div>
 
       <CoreDetailsSection form={form} disabled={updateItem.isPending} />
+
+      <ImageSection form={form} disabled={updateItem.isPending} />
 
       <AttackProfilesSection
         attackProfiles={attackProfiles}

@@ -49,6 +49,7 @@ export type InventoryItem = {
   itemKey?: string;
   sourceId?: string;
   name?: string;
+  imageUrl?: string;
   protection?: number;
   addedFromSettingKey?: string;
   qty: number;

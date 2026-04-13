@@ -1,24 +1,18 @@
-"use client";
+'use client';
 
-import { useMemo, useState } from "react";
-import { Button, Card, CardBody, CardHeader } from "@tapestry/ui";
-import type { CharacterSheet, ItemDefinition } from "@tapestry/types";
-import { useUpdateCharacterSheetMutation } from "../../characterSheet.mutations";
-import {
-  addInventoryItemFromDefinition,
-  getInventoryDisplayName,
-  getInventoryProtection,
-  getInventoryHarm,
-  removeInventoryItem,
-  toggleInventoryEquipped,
-  updateInventoryQuantity,
-} from "./inventory.functions";
-import styles from "./InventoryTab.module.scss";
-import { ContentLibraryModal } from "./ContentLibrary.modal";
+import { useMemo, useState } from 'react';
+import { Button, Card, CardBody, CardHeader } from '@tapestry/ui';
+import type { CharacterSheet, ItemDefinition } from '@tapestry/types';
+import { useUpdateCharacterSheetMutation } from '../../characterSheet.mutations';
+import { addInventoryItemFromDefinition, removeInventoryItem, toggleInventoryEquipped, updateInventoryQuantity } from './inventory.functions';
+import styles from './InventoryTab.module.scss';
+import { ContentLibraryModal } from './ContentLibrary.modal';
+import { InventoryItemCard } from './InventoryItemCard';
+import { EquippedSection, resolveSlotKey } from './EquippedSection';
 
 type Props = {
   sheet: CharacterSheet;
-  mode: "build" | "play";
+  mode: 'build' | 'play';
 };
 
 export function InventoryTab({ sheet }: Props) {
@@ -27,17 +21,30 @@ export function InventoryTab({ sheet }: Props) {
 
   const inventory = sheet?.sheet?.inventory ?? [];
 
-  const stats = useMemo(() => {
+  const { stats, equippedItems, backpackItems, overflowItems } = useMemo(() => {
+    const equipped = inventory.filter((item) => item.equipped);
+    const backpack = inventory.filter((item) => !item.equipped);
+
+    const overflow = equipped.filter((item) => {
+      const key = resolveSlotKey(item);
+      return key === 'consumable' || key === 'other';
+    });
+
     return {
-      total: inventory.length,
-      equipped: inventory.filter((item) => item.equipped).length,
-      weapons: inventory.filter((item) => item.category === "weapon").length,
+      equippedItems: equipped,
+      backpackItems: backpack,
+      overflowItems: overflow,
+      stats: {
+        total: inventory.length,
+        equipped: equipped.length,
+        weapons: inventory.filter((item) => item.category === 'weapon').length,
+      },
     };
   }, [inventory]);
 
   function persistInventory(nextInventory: typeof inventory, settingKey?: string) {
     const payload: Record<string, unknown> = {
-      "sheet.inventory": nextInventory,
+      'sheet.inventory': nextInventory,
     };
 
     if (!sheet.settingKey && settingKey) {
@@ -48,7 +55,7 @@ export function InventoryTab({ sheet }: Props) {
   }
 
   function handleAddItem(item: ItemDefinition, settingKey: string) {
-    const nextInventory = addInventoryItemFromDefinition(inventory, {...item, activeSettingKey: settingKey});
+    const nextInventory = addInventoryItemFromDefinition(inventory, { ...item, activeSettingKey: settingKey });
     persistInventory(nextInventory, settingKey);
   }
 
@@ -92,91 +99,64 @@ export function InventoryTab({ sheet }: Props) {
               Nothing in inventory yet. Click <strong>Add</strong> to open the content library.
             </div>
           ) : (
-            <div className={styles.list}>
-              {inventory.map((item) => {
-                const protection = getInventoryProtection(item);
-                const harm = getInventoryHarm(item);
-                const hasSpecialProps = protection !== null || harm !== null;
-
-                return (
-                  <div key={item.instanceId} className={styles.itemCard}>
-                    <div className={styles.itemImageArea}>
-                      {/* Future: item.imageUrl will go here */}
-                      <div className={styles.imagePlaceholder}>
-                        <span className={styles.placeholderIcon}>
-                          {item.category === "weapon" ? "⚔️" : item.category === "armor" ? "🛡️" : "📦"}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className={styles.cardContent}>
-                      <div className={styles.cardHeader}>
-                        <div className={styles.itemTitle}>{getInventoryDisplayName(item)}</div>
-                        <div className={styles.badges}>
-                          {item.category ? <span className={styles.badge}>{item.category}</span> : null}
-                          {item.equipped ? <span className={styles.badgeActive}>Equipped</span> : null}
-                        </div>
-                      </div>
-
-                      {hasSpecialProps ? (
-                        <div className={styles.itemStats}>
-                          {protection !== null && (
-                            <div className={styles.statBox}>
-                              <div className={styles.statLabel}>Protection</div>
-                              <div className={styles.statValue}>+{protection}</div>
-                            </div>
-                          )}
-                          {harm !== null && (
-                            <div className={styles.statBox}>
-                              <div className={styles.statLabel}>Harm</div>
-                              <div className={styles.statValue}>{harm}</div>
-                            </div>
-                          )}
-                        </div>
-                      ) : (
-                        <div className={styles.divider} />
-                      )}
-
-                      {/* <div className={styles.itemKey}>{item.itemKey || item.definition?.itemKey || "custom-item"}</div> */}
-
-                      <div className={styles.actions}>
-                        {item.stackable && (
-                          <label className={styles.qtyField}>
-                            <span>Qty</span>
-                            <input
-                              type="number"
-                              min={1}
-                              value={item.qty}
-                              onChange={(e) => handleQuantityChange(item.instanceId, Number(e.target.value))}
-                            />
-                          </label>
-                        )}
-
-                        {(item.category === "weapon" || item.slot) && (
-                          <Button variant={item.equipped ? "outline" : "solid"} onClick={() => handleToggleEquipped(item.instanceId)}>
-                            {item.equipped ? "Unequip" : "Equip"}
-                          </Button>
-                        )}
-
-                        <Button variant="outline" onClick={() => handleRemove(item.instanceId)}>
-                          Remove
-                        </Button>
-                      </div>
-                    </div>
+            <div className={styles.sections}>
+              {equippedItems.length > 0 && (
+                <div>
+                  <div className={styles.sectionHeader}>
+                    <span className={styles.sectionLabel}>Equipped</span>
+                    <span className={styles.sectionCount}>{equippedItems.length}</span>
                   </div>
-                );
-              })}
+                  <EquippedSection equippedItems={equippedItems} onToggleEquipped={handleToggleEquipped} onRemove={handleRemove} characterSex={sheet.sheet.profile?.sex} />
+                </div>
+              )}
+
+              {overflowItems.length > 0 && (
+                <div>
+                  <div className={styles.sectionHeader}>
+                    <span className={styles.sectionLabel}>Additional Equipped Items</span>
+                    <span className={styles.sectionCount}>{overflowItems.length}</span>
+                  </div>
+                  <div className={styles.list}>
+                    {overflowItems.map((item) => (
+                      <InventoryItemCard
+                        key={item.instanceId}
+                        item={item}
+                        onRemove={handleRemove}
+                        onToggleEquipped={handleToggleEquipped}
+                        onQuantityChange={handleQuantityChange}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div>
+                <div className={styles.sectionHeader}>
+                  <span className={styles.sectionLabel}>Backpack</span>
+                  <span className={styles.sectionCount}>{backpackItems.length}</span>
+                </div>
+                {backpackItems.length === 0 ? (
+                  <div className={styles.sectionEmpty}>All items are currently equipped.</div>
+                ) : (
+                  <div className={styles.list}>
+                    {backpackItems.map((item) => (
+                      <InventoryItemCard
+                        key={item.instanceId}
+                        item={item}
+                        onRemove={handleRemove}
+                        onToggleEquipped={handleToggleEquipped}
+                        onQuantityChange={handleQuantityChange}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           )}
         </CardBody>
       </Card>
 
-      <ContentLibraryModal
-        open={libraryOpen}
-        onClose={() => setLibraryOpen(false)}
-        sheet={sheet}
-        onAddItem={handleAddItem}
-      />
+      <ContentLibraryModal open={libraryOpen} onClose={() => setLibraryOpen(false)} sheet={sheet} onAddItem={handleAddItem} />
     </>
   );
 }

@@ -8,7 +8,7 @@ export type AttackProfileDraft = {
   attackKind: AttackProfile['attackKind'] | '';
   defaultAspect: string;
   allowedSkillKeys: string[];
-  modifier?: number;
+  modifier?: number; 
   harm?: number;
   rangeLabel: string;
   tags: string[];
