@@ -1,5 +1,6 @@
 import { createAdminPageMetadata } from "@/app/pageMetadata";
 import NodeWorkspace from "@/features/content/_components/nodeWorkspace/NodeWorkspace.component";
+import ItemEditor from "@/views/content/items/itemEditor/ItemEditor.component";
 
 export const metadata = createAdminPageMetadata({
   title: "New Item",
@@ -12,5 +13,5 @@ type PageProps = {
 
 export default async function ContentNodePage({ params }: PageProps) {
   const { id } = await params;
-  return <NodeWorkspace nodeId={id} />;
+  return <ItemEditor id={id} />;
 }

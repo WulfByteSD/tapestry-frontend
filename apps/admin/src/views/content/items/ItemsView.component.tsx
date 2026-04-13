@@ -168,7 +168,7 @@ export default function ItemsListView({ selectedSetting }: ItemsListPageProps) {
           <Button variant="ghost" tone="neutral" onClick={() => setImportModalOpen(true)}>
             Import CSV
           </Button>
-          <Button variant="outline" tone="neutral" onClick={() => router.push('/items/new')}>
+          <Button variant="outline" tone="neutral" onClick={() => router.push('/content/items/new')}>
             New Item
           </Button>
         </div>
