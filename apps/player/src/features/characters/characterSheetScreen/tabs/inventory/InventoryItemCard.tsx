@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { getCategoryIconUrl } from './inventoryIcons';
 import { Button } from '@tapestry/ui';
 import type { InventoryItem } from '@tapestry/types';
 import styles from './InventoryTab.module.scss';
@@ -64,13 +65,7 @@ export function InventoryItemCard({ item, variant = 'card', onRemove, onToggleEq
   return (
     <div className={styles.itemCard}>
       <div className={styles.itemImageArea}>
-        {item.imageUrl ? (
-          <Image src={item.imageUrl} alt={displayName} fill style={{ objectFit: 'contain' }} unoptimized />
-        ) : (
-          <div className={styles.imagePlaceholder}>
-            <span className={styles.placeholderIcon}>{item.category === 'weapon' ? '⚔️' : item.category === 'armor' ? '🛡️' : '📦'}</span>
-          </div>
-        )}
+        <Image src={item.imageUrl ?? getCategoryIconUrl(item.category)} alt={displayName} fill style={{ objectFit: 'contain' }} unoptimized />
       </div>
 
       <div className={styles.cardContent}>
