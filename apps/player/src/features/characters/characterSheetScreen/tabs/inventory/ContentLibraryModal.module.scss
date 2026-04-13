@@ -4,31 +4,12 @@
   gap: 1rem;
 }
 
+// ── Legacy classes kept for reference ─────────────────────────────────────
+
 .controls {
   display: grid;
   grid-template-columns: 220px 1fr;
   gap: 0.9rem;
-}
-
-.label {
-  display: block;
-  margin-bottom: 0.35rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-}
-
-.empty {
-  padding: 1rem;
-  border: 1px dashed rgba(255, 255, 255, 0.14);
-  border-radius: 10px;
-}
-
-.list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  max-height: 420px;
-  overflow: auto;
 }
 
 .row {
@@ -60,6 +41,23 @@
   word-break: break-word;
 }
 
+// ── Shared primitives ──────────────────────────────────────────────────────
+
+.label {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.empty {
+  padding: 1.25rem;
+  border: 1px dashed rgba(255, 255, 255, 0.14);
+  border-radius: 10px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.55);
+}
+
 .badge,
 .tag {
   display: inline-flex;
@@ -67,6 +65,7 @@
   padding: 0.18rem 0.45rem;
   border-radius: 999px;
   font-size: 0.72rem;
+  text-transform: capitalize;
 }
 
 .badge {
@@ -84,12 +83,244 @@
   background: rgba(255, 255, 255, 0.06);
 }
 
-@media (max-width: 720px) {
-  .controls {
+// ── Filter bar ─────────────────────────────────────────────────────────────
+
+.filters {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.filterRow {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 0.9rem;
+  align-items: end;
+}
+
+.filterGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+// ── Range mode toggle (segmented buttons) ──────────────────────────────────
+
+.rangeToggle {
+  display: flex;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.rangeSegment {
+  flex: 1;
+  padding: 0.45rem 0.6rem;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    color 0.15s;
+
+  & + & {
+    border-left: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  &:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.85);
+  }
+}
+
+.rangeSegmentActive {
+  background: rgba(200, 160, 80, 0.2);
+  color: #c8a050;
+  font-weight: 600;
+
+  &:hover {
+    background: rgba(200, 160, 80, 0.25);
+  }
+}
+
+// ── Range inputs ───────────────────────────────────────────────────────────
+
+.rangeInputs {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.rangeSep {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.45);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+// ── Item list ──────────────────────────────────────────────────────────────
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  max-height: 400px;
+  overflow: auto;
+  padding-right: 0.25rem; // space for scrollbar
+}
+
+// ── Library browse card ────────────────────────────────────────────────────
+
+.itemCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 0.8rem 1rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
+  transition:
+    border-color 0.15s,
+    background 0.15s;
+
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.04);
+  }
+}
+
+.cardThumb {
+  flex-shrink: 0;
+  position: relative;
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cardThumbIcon {
+  font-size: 1.4rem;
+  line-height: 1;
+  user-select: none;
+}
+
+.cardMeta {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.cardTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.cardName {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.slotBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.18rem 0.45rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  text-transform: capitalize;
+  background: rgba(160, 100, 200, 0.15);
+  border: 1px solid rgba(160, 100, 200, 0.3);
+  color: rgba(200, 160, 240, 0.9);
+}
+
+.cardStats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.statPillProtection,
+.statPillHarm {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+.statPillProtection {
+  background: rgba(59, 130, 246, 0.15);
+  border: 1px solid rgba(59, 130, 246, 0.35);
+  color: rgba(147, 197, 253, 0.95);
+}
+
+.statPillHarm {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: rgba(252, 165, 165, 0.95);
+}
+
+.cardNotes {
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.55);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cardAction {
+  flex-shrink: 0;
+  padding-top: 0.1rem; // slight optical alignment with title
+}
+
+// ── Pagination bar ─────────────────────────────────────────────────────────
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.pageInfo {
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+// ── Responsive ─────────────────────────────────────────────────────────────
+
+@media (max-width: 680px) {
+  .filterRow {
     grid-template-columns: 1fr;
   }
 
-  .row {
+  .itemCard {
     flex-direction: column;
+  }
+
+  .cardAction {
+    width: 100%;
+
+    button {
+      width: 100%;
+    }
   }
 }
