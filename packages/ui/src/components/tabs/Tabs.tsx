@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import styles from "./Tabs.module.scss";
-import type { TabsProps, TabsItem } from "./tabs.types";
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import styles from './Tabs.module.scss';
+import type { TabsProps, TabsItem } from './tabs.types';
 
 function cx(...parts: Array<string | false | undefined | null>) {
-  return parts.filter(Boolean).join(" ");
+  return parts.filter(Boolean).join(' ');
 }
 
 function firstEnabledKey(items: TabsItem[]) {
-  return items.find((i) => !i.disabled)?.key ?? items[0]?.key ?? "";
+  return items.find((i) => !i.disabled)?.key ?? items[0]?.key ?? '';
 }
 
 export function Tabs({
@@ -17,8 +17,8 @@ export function Tabs({
   activeKey,
   onChange,
   defaultActiveKey,
-  variant = "pills",
-  fit = "equal",
+  variant = 'pills',
+  fit = 'equal',
   keepMounted = true,
   hideTabList = false,
   className,
@@ -26,7 +26,8 @@ export function Tabs({
   tabClassName,
   activeTabClassName,
   contentClassName,
-  ariaLabel = "Tabs",
+  ariaLabel = 'Tabs',
+  onRemove,
 }: TabsProps) {
   const isControlled = activeKey !== undefined;
   const [internalKey, setInternalKey] = useState(defaultActiveKey ?? firstEnabledKey(items));
@@ -74,21 +75,21 @@ export function Tabs({
   const onKeyDown = (e: React.KeyboardEvent) => {
     if (!items.length) return;
 
-    if (e.key === "ArrowRight") {
+    if (e.key === 'ArrowRight') {
       e.preventDefault();
       const ni = nextEnabledIndex(currentIndex, 1);
       setKey(items[ni].key);
       focusTab(ni);
     }
 
-    if (e.key === "ArrowLeft") {
+    if (e.key === 'ArrowLeft') {
       e.preventDefault();
       const ni = nextEnabledIndex(currentIndex, -1);
       setKey(items[ni].key);
       focusTab(ni);
     }
 
-    if (e.key === "Home") {
+    if (e.key === 'Home') {
       e.preventDefault();
       const ni = items.findIndex((i) => !i.disabled);
       if (ni >= 0) {
@@ -97,7 +98,7 @@ export function Tabs({
       }
     }
 
-    if (e.key === "End") {
+    if (e.key === 'End') {
       e.preventDefault();
       for (let ni = items.length - 1; ni >= 0; ni--) {
         if (!items[ni].disabled) {
@@ -106,6 +107,11 @@ export function Tabs({
           break;
         }
       }
+    }
+
+    if ((e.key === 'Delete' || e.key === 'Backspace') && items[currentIndex]?.closable) {
+      e.preventDefault();
+      onRemove?.(items[currentIndex].key);
     }
   };
 
@@ -119,9 +125,9 @@ export function Tabs({
           aria-label={ariaLabel}
           className={cx(
             styles.tabList,
-            variant === "pills" ? styles.variantPills : styles.variantUnderline,
-            fit === "equal" ? styles.fitEqual : styles.fitContent,
-            tabListClassName,
+            variant === 'pills' ? styles.variantPills : styles.variantUnderline,
+            fit === 'equal' ? styles.fitEqual : styles.fitContent,
+            tabListClassName
           )}
           onKeyDown={onKeyDown}
         >
@@ -140,17 +146,32 @@ export function Tabs({
                 tabIndex={isActive ? 0 : -1}
                 type="button"
                 disabled={t.disabled}
-                className={cx(
-                  styles.tab,
-                  isActive && styles.tabActive,
-                  t.disabled && styles.tabDisabled,
-                  tabClassName,
-                  isActive && activeTabClassName,
-                )}
+                className={cx(styles.tab, isActive && styles.tabActive, t.disabled && styles.tabDisabled, tabClassName, isActive && activeTabClassName)}
                 onClick={() => !t.disabled && setKey(t.key)}
               >
                 {t.icon ? <span className={styles.icon}>{t.icon}</span> : null}
                 <span className={styles.label}>{t.label}</span>
+                {t.closable && (
+                  <span
+                    role="button"
+                    aria-label={`Close ${typeof t.label === 'string' ? t.label : ''} tab`}
+                    className={styles.closeBtn}
+                    tabIndex={-1}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onRemove?.(t.key);
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        onRemove?.(t.key);
+                      }
+                    }}
+                  >
+                    ×
+                  </span>
+                )}
               </button>
             );
           })}
@@ -162,25 +183,13 @@ export function Tabs({
           items.map((t) => {
             const isActive = t.key === currentKey;
             return (
-              <div
-                key={t.key}
-                role="tabpanel"
-                id={`tabpanel-${t.key}`}
-                aria-labelledby={`tab-${t.key}`}
-                hidden={!isActive}
-                className={styles.panel}
-              >
+              <div key={t.key} role="tabpanel" id={`tabpanel-${t.key}`} aria-labelledby={`tab-${t.key}`} hidden={!isActive} className={styles.panel}>
                 {t.children}
               </div>
             );
           })
         ) : (
-          <div
-            role="tabpanel"
-            id={`tabpanel-${currentKey}`}
-            aria-labelledby={`tab-${currentKey}`}
-            className={styles.panel}
-          >
+          <div role="tabpanel" id={`tabpanel-${currentKey}`} aria-labelledby={`tab-${currentKey}`} className={styles.panel}>
             {activeItem?.children}
           </div>
         )}
