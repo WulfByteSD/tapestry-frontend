@@ -98,7 +98,7 @@ export function useItemWindows() {
   const setWindowDirty = useCallback((key: string, isDirty: boolean) => {
     setWindows((prev) =>
       prev.map((w): ItemWindowEntry => {
-        if (w.key === key && w.key !== 'list') return { ...w, isDirty };
+        if (w.key === key && w.key !== 'list') return { ...w, isDirty } as any;
         return w;
       })
     );
