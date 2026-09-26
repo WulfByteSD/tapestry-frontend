@@ -9,6 +9,7 @@ import { BiCopy, BiTrash } from "react-icons/bi";
 import DuplicateModal from "./modals/DuplicateModal/DuplicateModal.component";
 import DeleteModal from "./modals/DeleteModal/DeleteModal.component";
 import styles from "./SheetCard.module.scss";
+import { PublicCharacterLink } from "@/components/publicCharacterLink/PublicCharacterLink";
 
 type Props = {
   character: CharacterSheet;
@@ -201,6 +202,7 @@ export default function SheetCard({ character: c }: Props) {
               <BiTrash />
             </Button>
           </div>
+          <PublicCharacterLink characterId={c._id} characterName={c.name} fullWidth />
         </CardBody>
       </Card>
 

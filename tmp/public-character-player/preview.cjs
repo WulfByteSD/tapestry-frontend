@@ -1,0 +1,22 @@
+const path = require('node:path');
+const { createRequire } = require('node:module');
+const apiRequire = createRequire(path.resolve('../tapestry-api/package.json'));
+apiRequire('ts-node').register({ transpileOnly: true, project: path.resolve('../tapestry-api/tsconfig.json') });
+const express = apiRequire('express');
+const cors = apiRequire('cors');
+const fixture = require('./fixture.json');
+const model = apiRequire(path.resolve('../tapestry-api/src/modules/game/characters/model/CharacterModel.ts')).default;
+model.findOne = ({ _id }) => ({ lean: async () => _id === fixture._id ? fixture : null });
+const { getPublicCharacter } = apiRequire(path.resolve('../tapestry-api/src/modules/game/characters/handlers/PublicCharacter.handler.ts'));
+const app = express();
+app.use(cors({ origin: 'http://localhost:3101' }));
+app.use(express.json());
+app.use((req, res, next) => {
+  console.log(req.method, req.path, 'auth=' + !!req.headers.authorization, 'cookie=' + !!req.headers.cookie);
+  next();
+});
+app.get('/api/v1/game/characters/:id/public', getPublicCharacter);
+app.post('/api/v1/auth/login', (_req, res) => res.json({ token: 'local-fixture-session-only' }));
+app.get('/api/v1/auth/me', (_req, res) => res.json({ payload: { _id: 'local-fixture-user', email: 'qa@example.test', roles: ['player'] } }));
+const server = app.listen(5107, '127.0.0.1', () => console.log('Local-only fixture API on port 5107'));
+new (apiRequire('socket.io').Server)(server, { cors: { origin: 'http://localhost:3101' } });

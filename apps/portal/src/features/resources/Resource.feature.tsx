@@ -1,5 +1,5 @@
 import styles from './Resources.module.scss';
-import { RunTheGameSection, StartPlayingSection } from './sections';
+import { BuildAdversariesSection, ExploreDialsSection, ExploreWorldsSection, RunTheGameSection, StartPlayingSection } from './sections';
 
 export function ResourcesFeature() {
   return (
@@ -7,6 +7,9 @@ export function ResourcesFeature() {
       <div className={styles.stack}>
         <StartPlayingSection />
         <RunTheGameSection />
+        <BuildAdversariesSection />
+        <ExploreDialsSection />
+        <ExploreWorldsSection />
       </div>
     </main>
   );

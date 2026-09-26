@@ -3,6 +3,7 @@
 import { Avatar, Button } from '@tapestry/ui';
 import type { CharacterSheet } from '@tapestry/types';
 import styles from './character.module.scss';
+import { PublicCharacterLink } from '@/components/publicCharacterLink/PublicCharacterLink';
 
 interface Props {
   character: CharacterSheet;
@@ -51,13 +52,14 @@ export default function CampaignCharacterCard({ character, canDetach, onDetach, 
           </div>
         </div>
       </div>
-      {canDetach && (
-        <div className={styles.cardActions}>
+      <div className={styles.cardActions}>
+        <PublicCharacterLink characterId={character._id} characterName={name} />
+        {canDetach && (
           <Button size="sm" variant="ghost" tone="danger" onClick={onDetach} disabled={isDetaching}>
             Detach
           </Button>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }

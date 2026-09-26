@@ -1,0 +1,373 @@
+.page {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  padding: clamp(3rem, 7vw, 5.5rem) 0 clamp(4rem, 9vw, 7rem);
+}
+
+.page::before {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background:
+    radial-gradient(circle at 12% 10%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 30rem),
+    radial-gradient(circle at 88% 32%, color-mix(in srgb, var(--accent-3) 14%, transparent), transparent 32rem);
+  content: '';
+  pointer-events: none;
+}
+
+.page::after {
+  position: absolute;
+  inset: auto auto 4rem -8rem;
+  z-index: -1;
+  width: min(30rem, 48vw);
+  aspect-ratio: 1;
+  border: 1px solid color-mix(in srgb, var(--accent-2) 18%, transparent);
+  border-radius: 999px;
+  box-shadow:
+    0 0 0 3.5rem color-mix(in srgb, var(--accent-2) 3%, transparent),
+    0 0 0 7rem color-mix(in srgb, var(--accent-3) 2%, transparent);
+  content: '';
+  opacity: 0.72;
+  pointer-events: none;
+}
+
+.stack {
+  display: grid;
+  gap: clamp(3rem, 6vw, 5rem);
+}
+
+.hero,
+.archiveSection,
+.dossierSection,
+.entrySection,
+.sourcebookSection {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.06fr) minmax(20rem, 0.74fr);
+  gap: clamp(1.25rem, 3vw, 2rem);
+  align-items: stretch;
+}
+
+.heroCopy,
+.heroNote,
+.dossierCard,
+.settingCard,
+.entryCard,
+.sourcebookCard {
+  border: 1px solid color-mix(in srgb, var(--paper) 10%, transparent);
+  box-shadow: 0 1.2rem 3rem color-mix(in srgb, black 18%, transparent);
+}
+
+.heroCopy,
+.heroNote,
+.dossierCard {
+  border-radius: 2rem;
+}
+
+.heroCopy {
+  padding: clamp(1.5rem, 3vw, 2.25rem);
+  background:
+    linear-gradient(145deg, color-mix(in srgb, var(--paper) 7%, transparent), transparent 40%),
+    radial-gradient(circle at 16% 12%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 36%),
+    color-mix(in srgb, var(--base-2) 84%, transparent);
+}
+
+.heroCopy h1,
+.sectionHeading h2,
+.dossierIntro h3,
+.settingCard h3,
+.entryCard h3,
+.sourcebookCard h3 {
+  margin: 0;
+  color: var(--paper);
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+}
+
+.heroCopy h1 {
+  margin-top: 0.95rem;
+  font-size: clamp(2.1rem, 4vw, 3.7rem);
+}
+
+.kicker,
+.sectionLabel,
+.badge,
+.heroNote span,
+.settingHeader p,
+.entryCard > p,
+.sourcebookHeader p {
+  margin: 0;
+  color: var(--accent-2);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.description,
+.sectionHeading > p,
+.settingBody,
+.entryCard > p + h3 + p,
+.sourcebookCard p {
+  color: var(--contrast-2);
+  line-height: 1.65;
+}
+
+.description {
+  max-width: 44rem;
+  margin: 1rem 0 0;
+  font-size: clamp(1rem, 2vw, 1.12rem);
+}
+
+.heroNote {
+  display: grid;
+  align-content: start;
+  gap: 0.7rem;
+  padding: clamp(1.35rem, 2.8vw, 1.8rem);
+  background:
+    linear-gradient(160deg, color-mix(in srgb, var(--accent-3) 16%, transparent), transparent 48%),
+    color-mix(in srgb, var(--ink) 78%, transparent);
+}
+
+.heroNote strong {
+  color: var(--paper);
+  font-size: clamp(1.2rem, 2.2vw, 1.55rem);
+  line-height: 1.2;
+}
+
+.heroNote p,
+.sectionHeading > p,
+.settingBody,
+.entryCard > p + h3 + p,
+.sourcebookCard p {
+  margin: 0;
+}
+
+.sectionHeading {
+  display: grid;
+  gap: 0.8rem;
+  max-width: 52rem;
+  margin-bottom: clamp(1.25rem, 2.5vw, 1.8rem);
+}
+
+.sectionHeading h2 {
+  font-size: clamp(1.8rem, 3.4vw, 3rem);
+}
+
+.settingsGrid,
+.entryGrid,
+.sourcebookGrid {
+  display: grid;
+  gap: 1rem;
+}
+
+.settingsGrid {
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+}
+
+.settingCard,
+.entryCard,
+.sourcebookCard {
+  display: grid;
+  gap: 1rem;
+  padding: clamp(1.15rem, 2.2vw, 1.45rem);
+  border-radius: 1.55rem;
+  background:
+    linear-gradient(160deg, color-mix(in srgb, var(--accent-3) 14%, transparent), transparent 42%),
+    color-mix(in srgb, var(--base-2) 82%, transparent);
+}
+
+.settingHeader,
+.sourcebookHeader {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 0.9rem;
+}
+
+.settingHeader h3,
+.entryCard h3,
+.sourcebookCard h3 {
+  margin-top: 0.5rem;
+  font-size: 1.35rem;
+}
+
+.settingHeader > span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2rem;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid color-mix(in srgb, var(--accent-2) 18%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--paper) 4%, transparent);
+  color: var(--contrast-2);
+  font-size: 0.74rem;
+  font-weight: 800;
+}
+
+.tagList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tagList li,
+.tagList span,
+.moduleRow span,
+.badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2rem;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid color-mix(in srgb, var(--accent-2) 18%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--paper) 5%, transparent);
+  color: var(--contrast-2);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+.moduleRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.moduleRow span {
+  gap: 0.4rem;
+}
+
+.dossierCard {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(18rem, 1.1fr);
+  gap: 1rem;
+  padding: clamp(1.3rem, 2.7vw, 1.8rem);
+  background:
+    linear-gradient(145deg, color-mix(in srgb, var(--accent) 12%, transparent), transparent 38%),
+    linear-gradient(160deg, color-mix(in srgb, var(--accent-3) 14%, transparent), transparent 55%),
+    color-mix(in srgb, var(--ink) 78%, transparent);
+}
+
+.badge {
+  width: fit-content;
+  color: var(--paper);
+}
+
+.dossierIntro p:last-child {
+  margin: 1rem 0 0;
+  color: var(--contrast-2);
+  line-height: 1.68;
+}
+
+.highlightList,
+.sourcebookBullets {
+  display: grid;
+  gap: 0.8rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.highlightList li,
+.sourcebookBullets li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.7rem;
+  align-items: start;
+  padding: 0.9rem 1rem;
+  border: 1px solid color-mix(in srgb, var(--paper) 10%, transparent);
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--base) 54%, transparent);
+  color: var(--paper);
+  line-height: 1.55;
+}
+
+.highlightList svg {
+  margin-top: 0.1rem;
+  color: var(--accent-2);
+}
+
+.entryGrid {
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+}
+
+.entryCard {
+  align-content: start;
+}
+
+.entryIcon,
+.sourcebookIcon {
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  aspect-ratio: 1;
+  border: 1px solid color-mix(in srgb, var(--accent-2) 20%, transparent);
+  border-radius: 0.95rem;
+  background: color-mix(in srgb, var(--base) 58%, transparent);
+  color: var(--accent-2);
+  font-size: 1.2rem;
+}
+
+.entryCard > p + h3 + p {
+  margin-top: 0.2rem;
+}
+
+.sourcebookGrid {
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+}
+
+.sourcebookHeader {
+  justify-content: start;
+}
+
+.sourcebookHeader > div:last-child {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.sourcebookFooter {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.sourcebookFooter > span {
+  color: var(--accent-2);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+@media (max-width: 920px) {
+  .hero,
+  .dossierCard {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding-top: 2.4rem;
+  }
+
+  .hero,
+  .archiveSection,
+  .dossierSection,
+  .entrySection,
+  .sourcebookSection {
+    width: min(100%, calc(100% - 24px));
+  }
+
+  .settingHeader,
+  .sourcebookHeader {
+    flex-direction: column;
+  }
+}
