@@ -1,0 +1,17 @@
+{
+  "name": "@tapestry/styles",
+  "version": "0.0.0",
+  "private": true,
+  "exports": {
+    "./index.scss": "./src/index.scss",
+    "./tokens": "./src/tokens.scss",
+    "./reset": "./src/reset.scss",
+    "./base": "./src/base.scss",
+    "./layout": "./src/layout.scss",
+    "./utilities": "./src/utilities.scss",
+    "./themes/portal": "./src/themes/portal.scss",
+    "./themes/public": "./src/themes/public.scss",
+    "./ui-tokens": "./src/ui-tokens.scss",
+    "./prose": "./src/prose.scss"
+  }
+}

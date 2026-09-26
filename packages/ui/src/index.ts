@@ -19,3 +19,4 @@ export * from './components/table';
 export * from './components/loader';
 export * from './components/upload';
 export * from './components/bodySilhouette';
+export * from './components/interactiveBook';

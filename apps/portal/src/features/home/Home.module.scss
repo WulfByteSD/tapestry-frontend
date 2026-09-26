@@ -1,0 +1,54 @@
+.page {
+  position: relative;
+  overflow: clip;
+  padding-bottom: clamp(4rem, 8vw, 6rem);
+  isolation: isolate;
+}
+
+.page::before {
+  content: '';
+  position: fixed;
+  inset: auto -10vw -25vh 45vw;
+  z-index: -1;
+  height: 70vh;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--accent) 35%, transparent), transparent 62%),
+    linear-gradient(45deg, color-mix(in srgb, var(--paper) 18%, transparent), transparent 58%);
+  clip-path: polygon(18% 0, 100% 20%, 78% 100%, 0 72%);
+  opacity: 0.72;
+}
+
+.page::after {
+  content: '';
+  position: absolute;
+  inset: 4rem auto auto -8vw;
+  z-index: -1;
+  width: min(32rem, 46vw);
+  aspect-ratio: 1;
+  border-radius: 999px;
+  background: radial-gradient(circle, color-mix(in srgb, var(--accent-3) 28%, transparent) 0, transparent 72%);
+  filter: blur(10px);
+  opacity: 0.8;
+}
+
+.stack {
+  display: grid;
+  gap: clamp(1rem, 7vw, 3.5rem); 
+}
+
+@media (max-width: 900px) {
+  .stack {
+    gap: clamp(2.5rem, 8vw, 4rem);
+  }
+}
+
+@media (max-width: 640px) {
+  .page::before {
+    inset: auto -18vw -18vh 30vw;
+  }
+
+  .page::after {
+    inset: 8rem auto auto -18vw;
+    width: 70vw;
+  }
+}

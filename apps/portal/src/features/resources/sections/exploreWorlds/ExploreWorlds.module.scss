@@ -1,0 +1,178 @@
+.section {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+  scroll-margin-top: 6.25rem;
+}
+
+.header {
+  display: grid;
+  grid-template-columns: minmax(0, 0.96fr) minmax(20rem, 0.72fr);
+  gap: clamp(1.2rem, 3vw, 2rem);
+  align-items: end;
+  margin-bottom: clamp(1.2rem, 3vw, 2rem);
+}
+
+.kicker,
+.cardHeader p,
+.ctaLabel {
+  margin: 0;
+  color: var(--accent-2);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.header h2,
+.worldCard h3,
+.ctaCard h3 {
+  margin: 0;
+  color: var(--paper);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+}
+
+.header h2 {
+  margin-top: 0.9rem;
+  font-size: clamp(1.95rem, 3.8vw, 3.25rem);
+}
+
+.description,
+.worldBody,
+.ctaCard p:not(.ctaLabel) {
+  margin: 0;
+  color: var(--contrast-2);
+  line-height: 1.65;
+}
+
+.tensionRail,
+.worldGrid {
+  display: grid;
+  gap: 1rem;
+}
+
+.tensionRail {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-bottom: 1rem;
+}
+
+.tensionRail span,
+.tagList li {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.2rem;
+  padding: 0.45rem 0.75rem;
+  border: 1px solid color-mix(in srgb, var(--accent-2) 16%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--paper) 5%, transparent);
+  color: var(--paper);
+  font-size: 0.82rem;
+  font-weight: 800;
+  text-align: center;
+}
+
+.worldGrid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.worldCard,
+.ctaCard {
+  border: 1px solid color-mix(in srgb, var(--paper) 10%, transparent);
+  border-radius: 1.6rem;
+  box-shadow: 0 1.2rem 3rem color-mix(in srgb, black 18%, transparent);
+}
+
+.worldCard {
+  display: grid;
+  gap: 1rem;
+  padding: clamp(1.15rem, 2.2vw, 1.45rem);
+  background:
+    linear-gradient(155deg, color-mix(in srgb, var(--accent) 10%, transparent), transparent 46%),
+    linear-gradient(160deg, color-mix(in srgb, var(--accent-3) 14%, transparent), transparent 60%),
+    color-mix(in srgb, var(--ink) 78%, transparent);
+}
+
+.cardHeader,
+.ctaCopy {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.95rem;
+  align-items: start;
+}
+
+.iconBadge {
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  aspect-ratio: 1;
+  border: 1px solid color-mix(in srgb, var(--accent-2) 20%, transparent);
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--base) 58%, transparent);
+  color: var(--accent-2);
+  font-size: 1.2rem;
+}
+
+.worldCard h3,
+.ctaCard h3 {
+  margin-top: 0.45rem;
+  font-size: 1.34rem;
+}
+
+.tagList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tagList li {
+  justify-content: flex-start;
+  color: var(--contrast-2);
+}
+
+.ctaCard {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1rem;
+  align-items: center;
+  margin-top: 1rem;
+  padding: clamp(1.15rem, 2.2vw, 1.45rem);
+  background:
+    linear-gradient(145deg, color-mix(in srgb, var(--paper) 5%, transparent), transparent 42%),
+    color-mix(in srgb, var(--base-2) 84%, transparent);
+}
+
+.primaryAction {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 2.85rem;
+  padding: 0.75rem 1rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--accent-2), color-mix(in srgb, var(--accent) 72%, white));
+  color: var(--ink);
+  font-weight: 900;
+}
+
+@media (max-width: 920px) {
+  .header,
+  .tensionRail,
+  .worldGrid,
+  .ctaCard {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .section {
+    width: min(100%, calc(100% - 24px));
+  }
+
+  .cardHeader,
+  .ctaCopy {
+    grid-template-columns: 1fr;
+  }
+}

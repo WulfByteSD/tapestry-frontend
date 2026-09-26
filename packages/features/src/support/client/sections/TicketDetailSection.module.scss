@@ -1,0 +1,32 @@
+.layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1.5rem;
+  align-items: start;
+
+  @media (max-width: 860px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.thread {
+  min-width: 0;
+}
+
+.meta {
+  position: sticky;
+  top: 1rem;
+}
+
+.state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+}
+
+.error {
+  font-size: 0.875rem;
+  color: var(--color-danger, #f04438);
+  text-align: center;
+}

@@ -1,0 +1,113 @@
+.step {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg, 24px);
+}
+
+.stepHeader {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs, 4px);
+}
+
+.stepTitle {
+  margin: 0;
+  font-size: var(--font-size-lg, 1.125rem);
+  font-weight: var(--font-weight-bold, 700);
+  color: var(--ui-text, #e2eaf2);
+}
+
+.stepDesc {
+  margin: 0;
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--ui-text-muted, #7a92a8);
+}
+
+/* ── Shared field wrapper ─────────────────────── */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: 12px;
+  font-weight: var(--font-weight-bold, 700);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ui-text-muted, #7a92a8);
+}
+
+.input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px var(--spacing-md, 16px);
+  background: var(--ui-surface, rgba(11, 20, 40, 0.78));
+  border: 1px solid var(--ui-border, rgba(122, 205, 242, 0.1));
+  border-radius: var(--radius-md, 8px);
+  color: var(--ui-text, #e2eaf2);
+  font-size: var(--font-size-sm, 0.875rem);
+  font-family: inherit;
+  transition: border-color 0.2s ease;
+  outline: none;
+
+  &::placeholder {
+    color: var(--ui-text-muted, #7a92a8);
+    opacity: 0.6;
+  }
+
+  &:focus {
+    border-color: var(--ui-accent, #8fffd8);
+  }
+}
+
+/* ── Stripe card element ──────────────────────── */
+.cardElement {
+  padding: 13px var(--spacing-md, 16px);
+  background: var(--ui-surface, rgba(11, 20, 40, 0.78));
+  border: 1px solid var(--ui-border, rgba(122, 205, 242, 0.1));
+  border-radius: var(--radius-md, 8px);
+  transition: border-color 0.2s ease;
+
+  &:focus-within {
+    border-color: var(--ui-accent, #8fffd8);
+  }
+}
+
+/* ── Two-column row ──────────────────────────── */
+.fieldRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-md, 16px);
+}
+
+/* ── Billing address section ─────────────────── */
+.addressSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md, 16px);
+  padding-top: var(--spacing-sm, 8px);
+  border-top: 1px solid var(--ui-border, rgba(122, 205, 242, 0.1));
+}
+
+.addressSectionTitle {
+  margin: 0;
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: var(--font-weight-bold, 700);
+  color: var(--ui-text, #e2eaf2);
+}
+
+/* ── Error ───────────────────────────────────── */
+.error {
+  margin: 0;
+  font-size: var(--font-size-sm, 0.875rem);
+  color: #ef4444;
+}
+
+/* ── Footer ──────────────────────────────────── */
+.footer {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--spacing-md, 16px);
+  padding-top: var(--spacing-sm, 8px);
+}

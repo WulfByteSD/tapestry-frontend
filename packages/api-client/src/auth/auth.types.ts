@@ -16,6 +16,14 @@ export type MeResponse = {
   };
 };
 
+export type ForgotPasswordResponse = {
+  message: string;
+};
+
+export type ResetPasswordResponse = {
+  message: string;
+};
+
 export type RegisterInput = {
   auth: {
     email: string;

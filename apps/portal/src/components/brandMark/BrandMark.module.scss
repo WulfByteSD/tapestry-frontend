@@ -1,0 +1,70 @@
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85rem;
+  min-width: 0;
+}
+
+.sigil {
+  display: inline-flex;
+  width: 200px;
+  // flex: 0 0 4.25rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.logoImage {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.copy {
+  display: grid;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.title {
+  color: var(--paper);
+  font-size: 1.05rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.tagline {
+  max-width: 24rem;
+  color: var(--contrast-2);
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+.compact .sigil {
+  width: 3rem;
+  flex-basis: 3rem;
+}
+
+.compact .tagline {
+  display: none;
+}
+
+.preserveTaglineOnMobile .tagline {
+  display: block;
+}
+
+@media (max-width: 640px) {
+  .tagline {
+    display: none;
+  }
+
+  .preserveTaglineOnMobile .tagline {
+    display: block;
+  }
+
+  .compact .tagline,
+  .compact.preserveTaglineOnMobile .tagline {
+    display: none;
+  }
+}

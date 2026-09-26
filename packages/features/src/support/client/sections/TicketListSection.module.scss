@@ -1,0 +1,73 @@
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.subject {
+  font-weight: 500;
+  color: var(--ui-text-primary, #e8f4fd);
+  cursor: pointer;
+}
+
+.meta {
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
+/* ── Status / Priority badges ─────────────────────────────────────────────── */
+
+.badge {
+  display: inline-block;
+  padding: 0.2em 0.6em;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Status */
+.status_new {
+  background: rgba(122, 205, 242, 0.12);
+  color: #7acdf2;
+}
+.status_open {
+  background: rgba(52, 199, 89, 0.12);
+  color: #34c759;
+}
+.status_pending {
+  background: rgba(255, 204, 0, 0.12);
+  color: #ffcc00;
+}
+.status_on_hold {
+  background: rgba(255, 149, 0, 0.12);
+  color: #ff9500;
+}
+.status_solved {
+  background: rgba(52, 199, 89, 0.08);
+  color: #34c759;
+  opacity: 0.7;
+}
+.status_closed {
+  background: rgba(142, 142, 147, 0.12);
+  color: #8e8e93;
+}
+
+/* Priority */
+.priority_low {
+  background: rgba(142, 142, 147, 0.12);
+  color: #8e8e93;
+}
+.priority_normal {
+  background: rgba(122, 205, 242, 0.12);
+  color: #7acdf2;
+}
+.priority_high {
+  background: rgba(255, 149, 0, 0.12);
+  color: #ff9500;
+}
+.priority_urgent {
+  background: rgba(255, 59, 48, 0.12);
+  color: #ff3b30;
+}

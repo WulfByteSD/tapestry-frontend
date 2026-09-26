@@ -1,0 +1,75 @@
+.section {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+  scroll-margin-top: 6.25rem;
+}
+
+.panel {
+  padding: clamp(1.6rem, 4vw, 2.4rem);
+  border: 1px solid color-mix(in srgb, var(--accent) 12%, transparent);
+  border-radius: 2rem;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--base-2) 86%, transparent), color-mix(in srgb, var(--ink) 90%, transparent)),
+    color-mix(in srgb, var(--paper) 4%, transparent);
+  box-shadow: 0 1rem 2.4rem color-mix(in srgb, black 14%, transparent);
+}
+
+.header {
+  max-width: 44rem;
+  margin-bottom: 1.5rem;
+}
+
+.kicker {
+  margin: 0 0 0.85rem;
+  color: var(--accent-2);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.header h2 {
+  margin: 0;
+  color: var(--paper);
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.02;
+}
+
+.description {
+  margin: 1rem 0 0;
+  color: var(--contrast-2);
+  font-size: clamp(1rem, 2vw, 1.14rem);
+  line-height: 1.65;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.noteCard {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1.3rem;
+  border-radius: 1.5rem;
+  background: color-mix(in srgb, var(--paper) 5%, transparent);
+}
+
+.noteCard h3 {
+  margin: 0;
+  color: var(--paper);
+  font-size: 1.06rem;
+}
+
+.noteCard p {
+  margin: 0;
+  color: var(--contrast-2);
+  line-height: 1.6;
+}
+
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

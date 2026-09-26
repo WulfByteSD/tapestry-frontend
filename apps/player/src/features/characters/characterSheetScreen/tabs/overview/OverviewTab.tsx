@@ -210,6 +210,10 @@ export function OverviewTab({ sheet, mode }: Props) {
               <div className={styles.statLabel}>Conditions</div>
               <div className={styles.statValue}>{sheet?.sheet?.conditions?.length ?? 0}</div>
             </div>
+            <div className={styles.statCard}>
+              <div className={styles.statLabel}>Defense TN</div>
+              <div className={styles.statValue}>{sheet?.sheet?.dtn ?? "—"}</div>
+            </div>
           </div>
         </CardBody>
       </Card>

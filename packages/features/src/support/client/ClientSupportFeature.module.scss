@@ -1,0 +1,26 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.detailContainer {
+  padding: 0;
+}
+
+.detailHeader {
+  margin-bottom: 0.75rem;
+}
+
+.state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 240px;
+}
+
+.error {
+  font-size: 0.875rem;
+  color: var(--color-danger, #f04438);
+  text-align: center;
+}

@@ -5,23 +5,29 @@
   "scripts": {
     "dev:player": "pnpm --filter @tapestry/player dev",
     "dev:admin": "pnpm --filter @tapestry/admin dev",
+    "dev:portal": "pnpm --filter @tapestry/portal dev",
     "dev": "pnpm -r --parallel dev",
     "build:player": "pnpm --filter @tapestry/player build",
     "build:admin": "pnpm --filter @tapestry/admin build",
+    "build:portal": "pnpm --filter @tapestry/portal build",
     "lint": "pnpm -r lint",
     "build": "pnpm -r build"
   },
   "devDependencies": {
     "@types/react": "^19",
-    "sass": "^1.97.3"
+    "sass": "^1.97.3",
+    "@tanstack/react-query-devtools": "^5.91.3"
   },
   "dependencies": {
     "clsx": "^2.1.1",
     "framer-motion": "^12.35.1",
     "moment": "^2.30.1",
+    "motion": "^12.40.0",
     "nextjs-toploader": "^3.9.17",
     "react-icons": "^5.5.0",
     "react-markdown": "^10.1.0",
-    "socket.io-client": "^4.8.0"
+    "socket.io-client": "^4.8.0",
+    "@tanstack/react-query": "^5.90.21",
+    "axios": "^1.7.0"
   }
 }

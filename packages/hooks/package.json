@@ -8,6 +8,8 @@
     "@tanstack/react-query": "^5.90.21",
     "@tapestry/api-client": "workspace:^",
     "@tapestry/types": "workspace:^",
+    "@tapestry/utils": "workspace:^",
+    "@tapestry/ui": "workspace:^",
     "axios": "^1.7.0"
   },
   "peerDependencies": {

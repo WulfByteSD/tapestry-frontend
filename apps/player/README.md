@@ -1,5 +1,22 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Public character links
+
+Character cards on Sheets and the campaign board have a **Public link** action to
+copy or open a read-only sheet at `/share/characters/:id` on the player app's own
+domain. It works for anonymous and signed-in visitors, outside the `(portal)` and
+`(public)` route guards. `/characters/:id` remains the authenticated editor.
+
+This route duplicates the portal viewer while `apps/portal` is not deployed. It
+uses the same anonymous `GET /api/v1/game/characters/:id/public` API endpoint,
+without forwarding cookies or saved authentication tokens. Deploy that API
+endpoint with the player app changes; no portal deployment is needed.
+
+Public sheets exclude account/campaign references and journal cards, support
+character IDs (slug lookup is not yet available), and refresh every 30 seconds.
+Keep this app-local viewer and the portal viewer in sync when changing their
+display or public response handling.
+
 ## Getting Started
 
 First, run the development server:

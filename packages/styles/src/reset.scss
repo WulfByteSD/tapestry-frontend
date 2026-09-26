@@ -1,0 +1,11 @@
+/* === Reset ==================================================================
+ * Minimal box-model and margin reset. Apps can add to this via :root {}.
+ * ========================================================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}

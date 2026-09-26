@@ -3,7 +3,7 @@
 import { ReactNode, useCallback, useEffect, useMemo, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { BiCog, BiFile, BiHome, BiLibrary, BiShoppingBag, BiTable, BiUser } from 'react-icons/bi';
+import { BiBook, BiCog, BiFile, BiHome, BiLibrary, BiShoppingBag, BiTable, BiUser } from 'react-icons/bi';
 import { useAdminProfile } from '@tapestry/hooks';
 import { AlertContainer, Header, Loader, Sidebar, type SidebarGroup } from '@tapestry/ui';
 import { api } from '@/lib/api';
@@ -42,6 +42,7 @@ const sidebarGroups: SidebarGroup[] = [
         ],
       },
       { href: '/products', label: 'Products', icon: <BiShoppingBag /> },
+      { href: '/resources', label: 'Resources', icon: <BiBook /> },
       { href: '/tables', label: 'Tables', icon: <BiTable /> },
       { href: '/settings-admin', label: 'Settings', icon: <BiFile /> },
     ],

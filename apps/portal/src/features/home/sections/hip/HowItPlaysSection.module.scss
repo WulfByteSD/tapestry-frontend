@@ -1,0 +1,465 @@
+.section {
+  position: relative;
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+  scroll-margin-top: 6.25rem;
+}
+
+.section::before {
+  content: '';
+  position: absolute;
+  top: 7rem;
+  left: 50%;
+  z-index: -1;
+  width: min(56rem, 86vw);
+  height: min(56rem, 86vw);
+  border-radius: 999px;
+  background:
+    radial-gradient(circle, color-mix(in srgb, var(--accent-2) 14%, transparent), transparent 62%),
+    radial-gradient(circle at 70% 35%, color-mix(in srgb, var(--accent-3) 12%, transparent), transparent 56%);
+  filter: blur(18px);
+  transform: translateX(-50%);
+  opacity: 0.9;
+}
+
+.header {
+  margin-bottom: clamp(2rem, 4vw, 3.2rem);
+}
+
+.kicker {
+  margin: 0 0 0.85rem;
+  color: var(--accent-2);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.headingRow {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(20rem, 0.72fr);
+  gap: clamp(1.4rem, 4vw, 4rem);
+  align-items: end;
+}
+
+.headingRow h2 {
+  max-width: 44rem;
+  margin: 0;
+  color: var(--paper);
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  line-height: 1.02;
+  letter-spacing: -0.045em;
+}
+
+.description {
+  margin: 0;
+  color: var(--contrast-2);
+  font-size: clamp(1rem, 2vw, 1.14rem);
+  line-height: 1.65;
+}
+
+.loopShell {
+  display: grid;
+  grid-template-columns: minmax(18rem, 0.9fr) minmax(0, 1.2fr);
+  gap: clamp(1.25rem, 3vw, 2.4rem);
+  align-items: start;
+}
+
+.scenePanel {
+  position: sticky;
+  top: 6.5rem;
+  overflow: hidden;
+  padding: clamp(1.2rem, 2.5vw, 1.75rem);
+  border: 1px solid color-mix(in srgb, var(--accent-3) 20%, transparent);
+  border-radius: 2rem;
+  background:
+    linear-gradient(145deg, color-mix(in srgb, var(--paper) 7%, transparent), transparent 42%),
+    radial-gradient(circle at 20% 10%, color-mix(in srgb, var(--accent-2) 16%, transparent), transparent 34%),
+    color-mix(in srgb, var(--base-2) 82%, transparent);
+  box-shadow: 0 1.4rem 3.4rem color-mix(in srgb, black 22%, transparent);
+}
+
+.scenePanel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, transparent, color-mix(in srgb, var(--accent-2) 10%, transparent), transparent),
+    repeating-linear-gradient(
+      115deg,
+      transparent 0 14px,
+      color-mix(in srgb, var(--paper) 4%, transparent) 14px 15px,
+      transparent 15px 30px
+    );
+  opacity: 0.42;
+}
+
+.scenePanel > * {
+  position: relative;
+  z-index: 1;
+}
+
+.panelChrome {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0 0 1.25rem;
+  color: var(--contrast-2);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.panelChrome span:last-child {
+  color: var(--accent-2);
+}
+
+.sceneEyebrow {
+  margin: 0 0 0.7rem;
+  color: var(--accent-2);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.scenePanel h3 {
+  margin: 0;
+  color: var(--paper);
+  font-size: clamp(1.5rem, 3vw, 2.18rem);
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+}
+
+.scenePanel p:not(.sceneEyebrow) {
+  margin: 1rem 0 0;
+  color: var(--contrast-2);
+  line-height: 1.65;
+}
+
+.rollFormula {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  align-items: center;
+  margin: 1.4rem 0;
+  padding: 0.8rem;
+  border: 1px solid color-mix(in srgb, var(--accent-2) 22%, transparent);
+  border-radius: 1.1rem;
+  background: color-mix(in srgb, var(--base) 60%, transparent);
+}
+
+.rollFormula span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2rem;
+  padding: 0.35rem 0.62rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--paper) 6%, transparent);
+  color: var(--paper);
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+.rollFormula span:nth-child(2),
+.rollFormula span:nth-child(4) {
+  min-height: auto;
+  padding: 0;
+  background: transparent;
+  color: var(--accent-2);
+}
+
+.rollFormula span:last-child {
+  background: color-mix(in srgb, var(--accent-2) 16%, transparent);
+  color: var(--paper);
+}
+
+.outcomeRail {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.outcomeItem {
+  display: grid;
+  gap: 0.4rem;
+  padding: 0.85rem;
+  border: 1px solid color-mix(in srgb, var(--paper) 8%, transparent);
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--base) 52%, transparent);
+}
+
+.outcomeItem div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: baseline;
+}
+
+.outcomeItem strong {
+  color: var(--paper);
+  font-size: 0.94rem;
+}
+
+.outcomeItem span {
+  color: var(--accent-2);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+}
+
+.outcomeItem p {
+  margin: 0;
+  color: var(--contrast-2);
+  font-size: 0.91rem;
+  line-height: 1.45;
+}
+
+.stepsList {
+  position: relative;
+  display: grid;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stepsList::before {
+  content: '';
+  position: absolute;
+  top: 2.15rem;
+  bottom: 2.15rem;
+  left: 2rem;
+  width: 1px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--accent-2) 4%, transparent),
+    color-mix(in srgb, var(--accent-2) 55%, transparent),
+    color-mix(in srgb, var(--accent-3) 36%, transparent),
+    color-mix(in srgb, var(--accent-2) 4%, transparent)
+  );
+}
+
+.stepItem {
+  position: relative;
+  display: grid;
+  grid-template-columns: 4rem minmax(0, 1fr);
+  gap: 1rem;
+}
+
+.stepMarker {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  padding-top: 1.35rem;
+}
+
+.stepMarker span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.9rem;
+  height: 2.9rem;
+  border: 1px solid color-mix(in srgb, var(--accent-2) 36%, transparent);
+  border-radius: 999px;
+  background:
+    radial-gradient(circle, color-mix(in srgb, var(--accent-2) 16%, transparent), transparent 64%),
+    color-mix(in srgb, var(--base) 92%, transparent);
+  color: var(--paper);
+  font-size: 0.9rem;
+  font-weight: 900;
+  box-shadow: 0 0 0 0.5rem color-mix(in srgb, var(--base) 74%, transparent);
+}
+
+.stepCard {
+  overflow: hidden;
+  padding: clamp(1.15rem, 2.4vw, 1.55rem);
+  border: 1px solid color-mix(in srgb, var(--accent-3) 17%, transparent);
+  border-radius: 1.55rem;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--paper) 5%, transparent), transparent 62%),
+    color-mix(in srgb, var(--base-2) 72%, transparent);
+  box-shadow: 0 1rem 2.35rem color-mix(in srgb, black 14%, transparent);
+}
+
+.stepKicker {
+  margin: 0 0 0.6rem;
+  color: var(--accent-2);
+  font-size: 0.76rem;
+  font-weight: 900;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.stepCard h3 {
+  max-width: 38rem;
+  margin: 0;
+  color: var(--paper);
+  font-size: clamp(1.18rem, 2vw, 1.55rem);
+  line-height: 1.18;
+  letter-spacing: -0.025em;
+}
+
+.stepCard p {
+  margin: 0.85rem 0 0;
+  color: var(--contrast-2);
+  line-height: 1.65;
+}
+
+.tableCue {
+  padding: 0.85rem 0 0 1rem;
+  border-left: 2px solid color-mix(in srgb, var(--accent-2) 46%, transparent);
+  color: var(--contrast) !important;
+  font-size: 0.95rem;
+}
+
+.tableCue span {
+  display: block;
+  margin-bottom: 0.28rem;
+  color: var(--accent-2);
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.tagList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tagList li {
+  padding: 0.42rem 0.62rem;
+  border: 1px solid color-mix(in srgb, var(--accent-3) 16%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--base) 48%, transparent);
+  color: var(--contrast);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.loopSummary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.8rem;
+  margin-top: clamp(1.35rem, 3vw, 2rem);
+}
+
+.summaryCard {
+  min-height: 9.5rem;
+  padding: 1.1rem;
+  border: 1px solid color-mix(in srgb, var(--accent-3) 16%, transparent);
+  border-radius: 1.3rem;
+  background: color-mix(in srgb, var(--base-2) 64%, transparent);
+}
+
+.summaryCard p,
+.summaryCard span {
+  margin: 0;
+  color: var(--contrast-2);
+  line-height: 1.5;
+}
+
+.summaryCard p {
+  color: var(--accent-2);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.summaryCard strong {
+  display: block;
+  margin: 0.55rem 0 0.4rem;
+  color: var(--paper);
+  font-size: clamp(1.45rem, 3vw, 2.15rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.summaryCard span {
+  font-size: 0.93rem;
+}
+
+@media (max-width: 1040px) {
+  .headingRow,
+  .loopShell {
+    grid-template-columns: 1fr;
+  }
+
+  .description {
+    max-width: 44rem;
+  }
+
+  .scenePanel {
+    position: relative;
+    top: auto;
+  }
+
+  .outcomeRail,
+  .loopSummary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 680px) {
+  .section {
+    width: min(100% - 24px, 1180px);
+  }
+
+  .scenePanel {
+    border-radius: 1.45rem;
+  }
+
+  .outcomeRail,
+  .loopSummary {
+    grid-template-columns: 1fr;
+  }
+
+  .stepsList::before {
+    left: 1.38rem;
+  }
+
+  .stepItem {
+    grid-template-columns: 2.75rem minmax(0, 1fr);
+    gap: 0.7rem;
+  }
+
+  .stepMarker {
+    padding-top: 1.2rem;
+  }
+
+  .stepMarker span {
+    width: 2.35rem;
+    height: 2.35rem;
+    font-size: 0.78rem;
+    box-shadow: 0 0 0 0.35rem color-mix(in srgb, var(--base) 74%, transparent);
+  }
+
+  .rollFormula {
+    align-items: stretch;
+  }
+
+  .rollFormula span {
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+
+  .rollFormula span:nth-child(2),
+  .rollFormula span:nth-child(4) {
+    flex: 0 0 auto;
+    align-self: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .section::before {
+    filter: blur(18px);
+  }
+}

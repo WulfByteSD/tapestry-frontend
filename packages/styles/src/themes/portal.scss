@@ -1,0 +1,65 @@
+/* === Portal theme ==========================================================
+ * Metallic-blue palette used by: player, admin, team.
+ * Import this then override specific vars in your app's :root {} block.
+ *
+ * Scrollbar thumb defaults to --color-metallic-blue (consumed by base.scss).
+ * ========================================================================= */
+@forward '../ui-tokens';
+:root {
+  /* ── Core palette ───────────────────────────────── */
+  --color-black: #0a0a0a;
+  --color-silver: #c0c0c0;
+  --color-silver-dark: #979595;
+  --color-metallic-blue: #7acdf2;
+  --color-metallic-blue-dark: #4ba7d6;
+  --color-metallic-blue-light: #b3e6fc;
+
+  /* ── Status colors ──────────────────────────────── */
+  --color-success-green: #28a745;
+  --color-error-red: #dc3545;
+  --color-warning-yellow: #ffc107;
+  --color-info-blue: #17a2b8;
+
+  /* ── Semantic aliases ───────────────────────────── */
+  --primary: rgb(22, 30, 42);
+  --primary-light: var(--color-metallic-blue-light);
+  --primary-dark: var(--color-black);
+
+  --secondary: var(--color-silver);
+  --secondary-dark: var(--color-silver-dark);
+
+  --disabled: var(--color-silver-dark);
+
+  --success: var(--color-success-green);
+  --success-hover: color-mix(in srgb, var(--success), transparent 20%);
+
+  --warn: var(--color-warning-yellow);
+  --warn-hover: color-mix(in srgb, var(--warn), transparent 20%);
+
+  --error: var(--color-error-red);
+  --error-hover: color-mix(in srgb, var(--error), transparent 20%);
+
+  --info: var(--color-info-blue);
+  --info-hover: color-mix(in srgb, var(--info), transparent 20%);
+
+  --color-accent: var(--color-metallic-blue);
+  --accent: var(--color-accent);
+
+  /* ── Layout ─────────────────────────────────────── */
+  --color-bg-dark: var(--color-black);
+  --color-bg-gradient: linear-gradient(120deg, var(--color-black) 0%, var(--color-metallic-blue-dark) 100%);
+  --color-text-primary: var(--color-black);
+
+  --bg-color: var(--color-bg-dark);
+  --bg-gradient: var(--color-bg-gradient);
+  --text-color: var(--color-text-primary);
+
+  /* ── Font families ──────────────────────────────── */
+  --font-family-primary: system-ui, sans-serif;
+  --font-family-secondary: system-ui, sans-serif;
+
+  /* ── Scrollbar (consumed by base.scss) ──────────── */
+  --color-scrollbar-thumb: var(--color-metallic-blue);
+  --color-scrollbar-thumb-hover: var(--color-metallic-blue-dark);
+}
+

@@ -1,0 +1,375 @@
+.section {
+  width: min(1280px, calc(100% - 32px));
+  margin: 0 auto;
+  scroll-margin-top: 6rem;
+}
+
+.header {
+  display: grid;
+  grid-template-columns: minmax(0, 1.65fr) minmax(18rem, 0.65fr);
+  gap: clamp(1.5rem, 5vw, 4rem);
+  align-items: end;
+  margin-bottom: clamp(2rem, 5vw, 3.5rem);
+}
+
+.headerCopy { max-width: 52rem; }
+
+.kicker,
+.stepLabel,
+.optionEyebrow {
+  margin: 0;
+  color: var(--accent-2);
+  font-size: 0.78rem;
+  font-weight: 850;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.header h1 {
+  max-width: 11ch;
+  margin: 0.35rem 0 0;
+  color: var(--paper);
+  font-size: clamp(3rem, 7vw, 6rem);
+  line-height: 0.9;
+  letter-spacing: -0.06em;
+}
+
+.description {
+  max-width: 43rem;
+  margin: 1.25rem 0 0;
+  color: var(--contrast-2);
+  font-size: clamp(1.05rem, 2vw, 1.25rem);
+  line-height: 1.7;
+}
+
+.startNote {
+  position: relative;
+  overflow: hidden;
+  padding: 1.4rem;
+  border: 1px solid color-mix(in srgb, var(--accent-2) 24%, transparent);
+  border-radius: 1.5rem;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--accent-2) 12%, transparent), transparent 45%),
+    color-mix(in srgb, var(--base-2) 82%, transparent);
+  box-shadow: 0 1.25rem 3rem color-mix(in srgb, black 20%, transparent);
+}
+
+.startNote::after {
+  position: absolute;
+  right: -3.5rem;
+  bottom: -4rem;
+  width: 10rem;
+  aspect-ratio: 1;
+  border: 1px solid color-mix(in srgb, var(--accent-2) 18%, transparent);
+  border-radius: 999px;
+  content: '';
+}
+
+.startNote span {
+  color: var(--accent-2);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.startNote strong {
+  display: block;
+  margin-top: 0.7rem;
+  color: var(--paper);
+  font-size: 1.35rem;
+  line-height: 1.1;
+}
+
+.startNote p {
+  margin: 0.75rem 0 0;
+  color: var(--contrast-2);
+  line-height: 1.55;
+}
+
+.quickstartCard {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(16rem, 0.72fr) minmax(0, 1.28fr);
+  gap: clamp(2rem, 6vw, 5rem);
+  align-items: center;
+  min-height: 34rem;
+  overflow: hidden;
+  padding: clamp(1.5rem, 5vw, 3.5rem);
+  border: 1px solid color-mix(in srgb, var(--accent-2) 26%, transparent);
+  border-radius: clamp(1.6rem, 4vw, 2.4rem);
+  background:
+    linear-gradient(120deg, color-mix(in srgb, var(--accent-3) 22%, transparent), transparent 45%),
+    linear-gradient(180deg, color-mix(in srgb, var(--base-2) 86%, transparent), color-mix(in srgb, var(--ink) 94%, transparent));
+  box-shadow: 0 2rem 5rem color-mix(in srgb, black 28%, transparent);
+}
+
+.quickstartCard::before {
+  position: absolute;
+  inset: 1rem;
+  border: 1px solid color-mix(in srgb, var(--accent-2) 10%, transparent);
+  border-radius: calc(clamp(1.6rem, 4vw, 2.4rem) - 0.55rem);
+  content: '';
+  pointer-events: none;
+}
+
+.quickstartCard::after {
+  position: absolute;
+  top: -10rem;
+  right: -7rem;
+  width: 27rem;
+  aspect-ratio: 1;
+  border-radius: 999px;
+  background: radial-gradient(circle, color-mix(in srgb, var(--accent) 15%, transparent), transparent 70%);
+  content: '';
+  pointer-events: none;
+}
+
+.bookStage,
+.quickstartCopy { position: relative; z-index: 1; }
+
+.bookStage {
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  min-height: 29rem;
+}
+
+.quickstartCopy {
+  display: grid;
+  gap: 1.15rem;
+  align-content: center;
+}
+
+.quickstartCopy h2,
+.sectionHeading h2,
+.guideCopy h2 {
+  margin: 0;
+  color: var(--paper);
+  font-size: clamp(2rem, 4.5vw, 4.1rem);
+  line-height: 0.98;
+  letter-spacing: -0.05em;
+}
+
+.resourceDescription,
+.sectionHeading > p,
+.guideCopy > p {
+  max-width: 46rem;
+  margin: 0;
+  color: var(--contrast-2);
+  font-size: clamp(1rem, 1.8vw, 1.15rem);
+  line-height: 1.7;
+}
+
+.factList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 0.4rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.factList li {
+  display: inline-flex;
+  gap: 0.45rem;
+  align-items: center;
+  padding: 0.62rem 0.78rem;
+  border: 1px solid color-mix(in srgb, var(--contrast-2) 15%, transparent);
+  border-radius: 999px;
+  color: var(--contrast-2);
+  background: color-mix(in srgb, var(--paper) 4%, transparent);
+  font-size: 0.8rem;
+  font-weight: 750;
+}
+
+.factList svg { color: var(--accent-2); }
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.primaryAction,
+.secondaryAction,
+.pendingAction {
+  display: inline-flex;
+  gap: 0.55rem;
+  align-items: center;
+  justify-content: center;
+  min-height: 3rem;
+  padding: 0.75rem 1rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 850;
+  line-height: 1;
+  transition: transform 160ms ease, border-color 160ms ease, background 160ms ease, color 160ms ease;
+}
+
+.primaryAction {
+  border: 1px solid color-mix(in srgb, var(--accent-2) 62%, transparent);
+  color: var(--ink);
+  background: linear-gradient(135deg, var(--accent-2), var(--accent));
+  box-shadow: 0 0.75rem 1.8rem color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+.secondaryAction {
+  border: 1px solid color-mix(in srgb, var(--contrast-2) 24%, transparent);
+  color: var(--paper);
+  background: color-mix(in srgb, var(--paper) 5%, transparent);
+}
+
+.primaryAction:hover,
+.secondaryAction:hover { transform: translateY(-2px); }
+
+.secondaryAction:hover {
+  border-color: color-mix(in srgb, var(--accent-2) 48%, transparent);
+  background: color-mix(in srgb, var(--accent-2) 8%, transparent);
+}
+
+.characterSection { padding: clamp(4rem, 9vw, 7rem) 0; }
+
+.sectionHeading {
+  display: grid;
+  gap: 0.9rem;
+  max-width: 52rem;
+  margin-bottom: clamp(1.75rem, 4vw, 2.8rem);
+}
+
+.sectionHeading h2 { max-width: 15ch; }
+
+.characterGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.optionCard {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 1.5rem;
+  min-height: 25rem;
+  overflow: hidden;
+  padding: clamp(1.35rem, 3vw, 2rem);
+  border: 1px solid color-mix(in srgb, var(--contrast-2) 14%, transparent);
+  border-radius: 1.7rem;
+  background:
+    linear-gradient(145deg, color-mix(in srgb, var(--accent-3) 12%, transparent), transparent 50%),
+    color-mix(in srgb, var(--base-2) 82%, transparent);
+  box-shadow: 0 1.25rem 3rem color-mix(in srgb, black 20%, transparent);
+}
+
+.optionCard::after {
+  position: absolute;
+  right: -5rem;
+  bottom: -6rem;
+  width: 16rem;
+  aspect-ratio: 1;
+  border: 1px solid color-mix(in srgb, var(--accent-2) 13%, transparent);
+  border-radius: 999px;
+  content: '';
+}
+
+.paperCard {
+  background:
+    linear-gradient(145deg, color-mix(in srgb, var(--accent) 10%, transparent), transparent 50%),
+    color-mix(in srgb, var(--base-2) 82%, transparent);
+}
+
+.optionIcon {
+  display: grid;
+  place-items: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  border: 1px solid color-mix(in srgb, var(--accent-2) 28%, transparent);
+  border-radius: 1.1rem;
+  color: var(--accent-2);
+  background: color-mix(in srgb, var(--ink) 54%, transparent);
+  font-size: 1.45rem;
+}
+
+.optionCard h3 {
+  margin: 0.55rem 0 0;
+  color: var(--paper);
+  font-size: clamp(1.6rem, 3vw, 2.35rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.optionCard p:not(.optionEyebrow) {
+  max-width: 39rem;
+  margin: 0.9rem 0 0;
+  color: var(--contrast-2);
+  line-height: 1.65;
+}
+
+.optionFooter {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 0.7rem;
+  justify-items: start;
+}
+
+.optionFooter > span:last-child {
+  color: var(--contrast-2);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.pendingAction {
+  border: 1px dashed color-mix(in srgb, var(--contrast-2) 25%, transparent);
+  color: var(--contrast-2);
+  background: color-mix(in srgb, var(--paper) 3%, transparent);
+  cursor: not-allowed;
+}
+
+.guideCard {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(13rem, 0.65fr);
+  gap: clamp(1.5rem, 5vw, 4rem);
+  align-items: center;
+  overflow: hidden;
+  padding: clamp(1.5rem, 5vw, 3.25rem);
+  border: 1px solid color-mix(in srgb, var(--accent-2) 18%, transparent);
+  border-radius: 1.9rem;
+  background:
+    linear-gradient(110deg, color-mix(in srgb, var(--accent-2) 10%, transparent), transparent 48%),
+    color-mix(in srgb, var(--ink) 78%, transparent);
+  box-shadow: 0 1.5rem 3.8rem color-mix(in srgb, black 23%, transparent);
+}
+
+.guideCopy { display: grid; gap: 1rem; }
+.guideCopy h2 { max-width: 15ch; }
+.guideBook { display: grid; place-items: center; min-height: 22rem; }
+
+@media (max-width: 960px) {
+  .header,
+  .quickstartCard,
+  .guideCard { grid-template-columns: 1fr; }
+  .header { align-items: start; }
+  .bookStage { min-height: 27rem; }
+  .quickstartCopy { max-width: 48rem; }
+  .guideBook { grid-row: 1; }
+}
+
+@media (max-width: 720px) {
+  .section { width: min(100% - 24px, 1280px); }
+  .characterGrid { grid-template-columns: 1fr; }
+  .quickstartCard { padding: 1.25rem; }
+  .bookStage { min-height: 24rem; transform: scale(0.92); }
+  .actions,
+  .primaryAction,
+  .secondaryAction { width: 100%; }
+  .optionCard { min-height: 22rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .primaryAction,
+  .secondaryAction { transition: none; }
+  .primaryAction:hover,
+  .secondaryAction:hover { transform: none; }
+}

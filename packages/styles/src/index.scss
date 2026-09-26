@@ -1,0 +1,15 @@
+/* === @tapestry/styles — full import barrel ============================
+ * Imports all layers in cascade order. Apps can import this barrel or pick
+ * individual files (e.g. only layout.scss for breakpoint mixins).
+ *
+ * Override any CSS variable after importing:
+ *
+ *   @import '@tapestry/styles/src/index';
+ *   :root { --color-accent: #f00; }
+ * ========================================================================= */
+
+@forward 'reset';
+@forward 'tokens';
+@forward 'base';
+@forward 'utilities';
+@forward 'prose';

@@ -1,0 +1,42 @@
+/* === Breakpoint mixins ======================================================
+ * CSS custom properties cannot be used inside @media queries — breakpoint
+ * values must stay as SCSS constants. These canonical values match the
+ * majority of apps. Apps that need a different breakpoint write a local
+ * @media rule directly rather than configuring this file.
+ *
+ * Usage in component SCSS files:
+ *
+ *   @use '@tapestry/styles/layout' as *;
+ *
+ *   .myComponent {
+ *     padding: 2rem;
+ *     @include mobile { padding: 1rem; }
+ *   }
+ * ========================================================================= */
+
+$_mobile-width: 480px;
+$_tablet-width: 768px;
+$_desktop-width: 1250px;
+
+// Animation shorthand vars — shared across all portal apps
+$header-height: 4.4rem;
+$animation: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
+$simple-animation: all 0.2s ease-in-out;
+
+@mixin mobile {
+  @media (max-width: #{$_mobile-width}) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (max-width: #{$_tablet-width}) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: #{$_desktop-width}) {
+    @content;
+  }
+}

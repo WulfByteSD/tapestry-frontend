@@ -1,0 +1,35 @@
+/* === Utility classes ========================================================
+ * Lightweight, non-app-specific helpers. Keep this list short.
+ * Apps add their own utilities locally.
+ * ========================================================================= */
+
+.text-center {
+  text-align: center;
+}
+.text-left {
+  text-align: left;
+}
+.text-right {
+  text-align: right;
+}
+
+.text-accent {
+  color: var(--color-accent);
+}
+
+.bg-accent {
+  background-color: var(--color-accent);
+  color: #000;
+}
+
+.bold {
+  font-weight: var(--font-weight-bold, 700);
+}
+
+.shadow {
+  box-shadow: var(--shadow-default);
+}
+
+.shadow-hover:hover {
+  box-shadow: var(--shadow-hover);
+}

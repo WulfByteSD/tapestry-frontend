@@ -1,5 +1,7 @@
 export * from './characters.api';
 export * from './rolls.api';
+export * from './commerce.api';
 export * from './content.api';
+export * from './library.api';
 export * from './players.api';
 export * from './campaigns.api';

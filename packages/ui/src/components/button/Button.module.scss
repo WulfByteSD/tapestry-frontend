@@ -1,9 +1,9 @@
 .button {
   height: 42px;
   border-radius: var(--radius-sm);
-  border: 1px solid var(--border-strong);
+  border: 1px solid var(--ui-border-strong, rgba(122, 205, 242, 0.22));
   background: transparent;
-  color: var(--text);
+  color: var(--ui-text, #e2eaf2);
   cursor: pointer;
 
   display: inline-flex;
@@ -32,7 +32,7 @@
   }
 
   &:focus-visible {
-    outline: 2px solid color-mix(in srgb, var(--accent-2) 70%, transparent);
+    outline: 2px solid color-mix(in srgb, var(--ui-accent-2, #4ba7d6) 70%, transparent);
     outline-offset: 2px;
   }
 }
@@ -71,30 +71,26 @@
   font-size: 15px;
 }
 
-/* Tones (map to your palette tokens) */
+/* Tones */
 .tone_gold {
-  --btnSolidBg: linear-gradient(135deg, color-mix(in srgb, var(--accent) 92%, white), var(--accent-2));
-  --btnSolidText: var(--base);
-  --btnBorder: color-mix(in srgb, var(--accent) 55%, transparent);
-  --btnHoverBg: color-mix(in srgb, var(--accent) 10%, transparent);
+  --btnSolidBg: linear-gradient(135deg, color-mix(in srgb, var(--ui-accent, #d4af37) 92%, white), var(--ui-accent-2, #f2d06b));
+  --btnSolidText: var(--ui-base, #0a0a0a);
+  --btnBorder: color-mix(in srgb, var(--ui-accent, #d4af37) 55%, transparent);
+  --btnHoverBg: color-mix(in srgb, var(--ui-accent, #d4af37) 10%, transparent);
 }
 
 .tone_purple {
-  --btnSolidBg: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--accent-4) 92%, white),
-    color-mix(in srgb, var(--accent-3) 60%, transparent)
-  );
-  --btnSolidText: var(--contrast);
-  --btnBorder: color-mix(in srgb, var(--accent-4) 55%, transparent);
-  --btnHoverBg: color-mix(in srgb, var(--accent-4) 12%, transparent);
+  --btnSolidBg: linear-gradient(135deg, color-mix(in srgb, var(--ui-accent-4, #7c6bcf) 92%, white), color-mix(in srgb, var(--ui-accent-3, #9b8fe8) 60%, transparent));
+  --btnSolidText: var(--ui-contrast, #ffffff);
+  --btnBorder: color-mix(in srgb, var(--ui-accent-4, #7c6bcf) 55%, transparent);
+  --btnHoverBg: color-mix(in srgb, var(--ui-accent-4, #7c6bcf) 12%, transparent);
 }
 
 .tone_neutral {
-  --btnSolidBg: color-mix(in srgb, var(--contrast-3) 70%, var(--surface));
-  --btnSolidText: var(--contrast);
-  --btnBorder: var(--border-strong);
-  --btnHoverBg: color-mix(in srgb, var(--contrast) 6%, transparent);
+  --btnSolidBg: color-mix(in srgb, var(--ui-contrast-3, rgba(255,255,255,0.20)) 70%, var(--ui-surface, rgb(22,30,42)));
+  --btnSolidText: var(--ui-contrast, #ffffff);
+  --btnBorder: var(--ui-border-strong, rgba(122, 205, 242, 0.22));
+  --btnHoverBg: color-mix(in srgb, var(--ui-contrast, #ffffff) 6%, transparent);
 }
 
 .tone_danger {
@@ -118,7 +114,7 @@
 .variant_outline {
   background: transparent;
   border-color: var(--btnBorder);
-  color: var(--text);
+  color: var(--ui-text, #e2eaf2);
 
   &:hover:not(:disabled) {
     background: var(--btnHoverBg);
@@ -128,7 +124,7 @@
 .variant_ghost {
   background: transparent;
   border-color: transparent;
-  color: var(--text);
+  color: var(--ui-text, #e2eaf2);
 
   &:hover:not(:disabled) {
     background: var(--btnHoverBg);

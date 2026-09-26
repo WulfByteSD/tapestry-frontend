@@ -1,0 +1,8 @@
+{
+  "name": "Tapestry",
+  "short_name": "Tapestry",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#14002B",
+  "theme_color": "#D4AF37"
+}

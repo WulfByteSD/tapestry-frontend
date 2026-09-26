@@ -1,0 +1,133 @@
+.footer {
+  border-top: 1px solid color-mix(in srgb, var(--contrast-2) 12%, transparent);
+  background: color-mix(in srgb, var(--ink) 80%, transparent);
+}
+
+.inner {
+  display: grid;
+  gap: 2rem;
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: clamp(2.5rem, 6vw, 4rem) 0 2rem;
+}
+
+.topRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: clamp(2rem, 6vw, 4rem);
+}
+
+.summary {
+  display: grid;
+  gap: 1rem;
+}
+
+.blurb {
+  max-width: 36rem;
+  margin: 0;
+  color: var(--contrast-2);
+  line-height: 1.6;
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  min-height: 2.9rem;
+  padding: 0 1.15rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 54%, transparent);
+  border-radius: 999px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--accent-2) 28%, var(--paper)), color-mix(in srgb, var(--accent) 22%, var(--paper)));
+  color: var(--ink);
+  font-weight: 800;
+}
+
+.linkColumns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+
+.group {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.groupTitle {
+  margin: 0;
+  color: var(--accent-2);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.groupLinks {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.groupLink {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.groupLinkLabel {
+  color: var(--paper);
+  font-size: 0.96rem;
+  font-weight: 800;
+}
+
+.groupLinkDescription {
+  color: var(--contrast-2);
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+
+.bottomRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid color-mix(in srgb, var(--contrast-2) 10%, transparent);
+}
+
+.legalCopy {
+  margin: 0;
+  color: var(--contrast-2);
+  font-size: 0.9rem;
+}
+
+.legalLinks {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.legalLink {
+  color: var(--paper);
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+@media (max-width: 860px) {
+  .topRow {
+    grid-template-columns: 1fr;
+  }
+
+  .linkColumns {
+    grid-template-columns: 1fr;
+  }
+
+  .cta {
+    width: 100%;
+  }
+
+  .bottomRow {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

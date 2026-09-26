@@ -1,0 +1,156 @@
+.wrapper {
+  border: 1px solid var(--ui-border-strong, rgba(122, 205, 242, 0.22));
+  border-radius: var(--radius-sm);
+  background: var(--ui-surface, rgb(22, 30, 42));
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: border-color 0.15s ease;
+
+  &:focus-within {
+    border-color: color-mix(in srgb, var(--ui-accent, #7acdf2) 60%, transparent);
+  }
+
+  &.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+}
+
+/* ── Toolbar ── */
+.toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--ui-border-strong, rgba(122, 205, 242, 0.12));
+  background: var(--ui-surface-2, color-mix(in srgb, var(--ui-surface, rgb(22, 30, 42)) 80%, #000));
+}
+
+.toolbarBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 6px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--ui-text-muted, #7a92a8);
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  transition:
+    background 0.1s ease,
+    color 0.1s ease;
+
+  &:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--ui-accent, #7acdf2) 12%, transparent);
+    color: var(--ui-text, #e2eaf2);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+.toolbarBtnActive {
+  background: color-mix(in srgb, var(--ui-accent, #7acdf2) 18%, transparent);
+  color: var(--ui-accent, #7acdf2);
+}
+
+.toolbarDivider {
+  width: 1px;
+  height: 18px;
+  background: var(--ui-border-strong, rgba(122, 205, 242, 0.18));
+  margin: 0 4px;
+  flex-shrink: 0;
+}
+
+/* ── Editor content area ── */
+.editorContent {
+  flex: 1;
+  padding: 12px 14px;
+  color: var(--ui-text, #e2eaf2);
+  font-size: 14px;
+  line-height: 1.6;
+
+  /* ProseMirror element itself */
+  :global(.ProseMirror) {
+    outline: none;
+    min-height: var(--rte-min-height, 200px);
+
+    /* Placeholder */
+    p.is-editor-empty:first-child::before {
+      content: attr(data-placeholder);
+      color: color-mix(in srgb, var(--ui-text-muted, #7a92a8) 70%, transparent);
+      pointer-events: none;
+      float: left;
+      height: 0;
+    }
+
+    /* Basic prose */
+    p {
+      margin: 0 0 0.5em;
+    }
+    p:last-child {
+      margin-bottom: 0;
+    }
+
+    h2 {
+      font-size: 1.25em;
+      font-weight: 600;
+      margin: 0.75em 0 0.4em;
+      color: var(--ui-text, #e2eaf2);
+    }
+
+    h3 {
+      font-size: 1.1em;
+      font-weight: 600;
+      margin: 0.6em 0 0.35em;
+      color: var(--ui-text, #e2eaf2);
+    }
+
+    ul,
+    ol {
+      padding-left: 1.4em;
+      margin: 0.4em 0;
+    }
+
+    li {
+      margin: 0.15em 0;
+    }
+
+    blockquote {
+      border-left: 3px solid var(--ui-accent, #7acdf2);
+      margin: 0.5em 0;
+      padding: 0.25em 0.75em;
+      color: var(--ui-text-muted, #7a92a8);
+      font-style: italic;
+    }
+
+    a {
+      color: var(--ui-accent, #7acdf2);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+
+      &:hover {
+        opacity: 0.8;
+      }
+    }
+
+    strong {
+      font-weight: 700;
+    }
+    em {
+      font-style: italic;
+    }
+    u {
+      text-decoration: underline;
+    }
+  }
+}

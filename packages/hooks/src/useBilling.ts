@@ -48,7 +48,7 @@ export interface UseBillingOptions {
  * }
  * ```
  */
-export const useBilling = (api: AxiosInstance, user: BillingUser | null | undefined, options?: UseBillingOptions) => {
+export const useBilling = (api: AxiosInstance, user: string, options?: UseBillingOptions) => {
   const {
     enabled = true,
     refetchOnWindowFocus = false,
@@ -59,9 +59,9 @@ export const useBilling = (api: AxiosInstance, user: BillingUser | null | undefi
   } = options || {};
 
   return useQuery({
-    queryKey: ["billing", user?._id],
-    queryFn: () => fetchBillingData(api, user!._id),
-    enabled: enabled && !!user?._id,
+    queryKey: ["billing", user],
+    queryFn: () => fetchBillingData(api, user),
+    enabled: enabled && !!user,
     refetchOnWindowFocus,
     staleTime,
     gcTime,
@@ -98,7 +98,7 @@ export const useBilling = (api: AxiosInstance, user: BillingUser | null | undefi
  */
 export const useBillingInfo = (
   api: AxiosInstance,
-  user: BillingUser | null | undefined,
+  user: string,
   options?: UseBillingOptions,
 ) => {
   const billingQuery = useBilling(api, user, options);

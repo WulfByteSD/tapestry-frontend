@@ -1,0 +1,49 @@
+/* === UI Token Bridge =========================================================
+ * Maps --ui-* namespace from app token conventions with hard-coded fallbacks.
+ *
+ * packages/ui components use --ui-* exclusively. These vars resolve in order:
+ *   1. App-level :root override (Phase 4 in each app's globals)
+ *   2. var(--conventional-name) — picked up from portal/public theme if defined
+ *   3. Hard-coded fallback (dark/portal palette) — zero-config standalone use
+ *
+ * This mirrors the existing --loader-* pattern in Loader.module.scss.
+ * =========================================================================== */
+
+:root {
+  /* ── Surfaces ───────────────────────────────────── */
+  --ui-surface: var(--surface, rgb(22, 30, 42));
+  --ui-surface-2: var(--surface-2, rgb(28, 38, 54));
+
+  /* ── Borders ────────────────────────────────────── */
+  --ui-border: var(--border, rgba(122, 205, 242, 0.1));
+  --ui-border-strong: var(--border-strong, rgba(122, 205, 242, 0.22));
+
+  /* ── Text ───────────────────────────────────────── */
+  --ui-text: var(--text, #e2eaf2);
+  --ui-text-muted: var(--text-muted, #7a92a8);
+
+  /* ── Accents ────────────────────────────────────── */
+  --ui-accent: var(--accent, #7acdf2);
+  --ui-accent-2: var(--accent-2, #4ba7d6);
+  --ui-accent-3: var(--accent-3, #9b8fe8);
+  --ui-accent-4: var(--accent-4, #7c6bcf);
+
+  /* ── Base / Contrast ────────────────────────────── */
+  --ui-base: var(--base, #0a0a0a);
+  --ui-base-2: var(--base-2, #10141c);
+  --ui-contrast: var(--contrast, #ffffff);
+  --ui-contrast-3: var(--contrast-3, rgba(255, 255, 255, 0.2));
+
+  /* ── Highlight ──────────────────────────────────── */
+  --ui-gold: var(--gold, #faad14);
+
+  /* ── Shadow ─────────────────────────────────────── */
+  --ui-shadow-1: var(--shadow-1, 0 2px 8px rgba(0, 0, 0, 0.45));
+
+  /* ── Radius ─────────────────────────────────────── */
+  --ui-radius: var(--radius, var(--radius-md, 8px));
+
+  /* ── Component backgrounds (overridable per-app) ── */
+  --ui-bottom-nav-bg: var(--bottom-nav-bg, color-mix(in srgb, var(--ui-surface) 88%, transparent));
+  --ui-drawer-bg: var(--drawer-bg, var(--ui-surface));
+}

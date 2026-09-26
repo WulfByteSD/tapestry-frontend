@@ -1,0 +1,89 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  gap: var(--spacing-lg);
+  max-width: 1280px;
+}
+
+.loaderWrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: var(--spacing-xl);
+}
+
+/* Card header row */
+.cardHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+}
+
+/* Section headings */
+.sectionTitle {
+  margin: 0;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary, inherit);
+}
+
+.subTitle {
+  margin: 0 0 var(--spacing-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-secondary, inherit);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* Notification toggles */
+.notificationSection {
+  margin-top: var(--spacing-lg);
+}
+
+.toggleList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.toggleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-sm) 0;
+  border-bottom: 1px solid var(--border, rgba(255, 255, 255, 0.06));
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.toggleLabel {
+  font-size: var(--font-size-sm);
+  color: var(--text-primary, inherit);
+}
+
+/* Action row */
+.actions {
+  display: flex;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-lg);
+}
+
+/* Danger Zone */
+.dangerZone {
+  border: 2px solid var(--color-danger, #e53e3e) !important;
+}
+
+.dangerTitle {
+  color: var(--color-danger, #e53e3e);
+}
+
+.dangerDescription {
+  margin: 0 0 var(--spacing-md);
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary, inherit);
+}

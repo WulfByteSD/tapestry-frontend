@@ -1,0 +1,82 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+
+.drawer {
+  position: fixed;
+  top: 0;
+  height: 100%;
+  z-index: 41;
+  background: var(--ui-drawer-bg, var(--ui-surface));
+  display: flex;
+  flex-direction: column;
+  will-change: transform;
+  overflow: hidden;
+
+  &.left {
+    left: 0;
+    border-right: 1px solid var(--ui-border);
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.4);
+  }
+
+  &.right {
+    right: 0;
+    border-left: 1px solid var(--ui-border);
+    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.4);
+  }
+}
+
+.drawerHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  height: 56px;
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--ui-border);
+}
+
+.drawerTitle {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--ui-text);
+  letter-spacing: 0.01em;
+}
+
+.closeBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-sm, 4px);
+  border: 1px solid var(--ui-border-strong);
+  background: transparent;
+  color: var(--ui-text-muted);
+  cursor: pointer;
+  transition:
+    background 120ms ease,
+    color 120ms ease,
+    border-color 120ms ease;
+
+  &:hover {
+    background: color-mix(in srgb, var(--ui-accent) 10%, transparent);
+    color: var(--ui-accent);
+    border-color: var(--ui-accent);
+  }
+
+  &:active {
+    transform: scale(0.92);
+  }
+}
+
+.drawerContent {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}

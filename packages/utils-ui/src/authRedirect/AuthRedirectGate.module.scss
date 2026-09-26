@@ -1,0 +1,89 @@
+.wrapper {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  background: var(--base);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 400px;
+  padding: 2.5rem 2rem;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  box-shadow:
+    0 16px 48px rgba(0, 0, 0, 0.35),
+    0 4px 16px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.heading {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text);
+  font-family: var(--font-heading, inherit);
+  letter-spacing: -0.01em;
+}
+
+.subtitle {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-secondary, rgba(255, 255, 255, 0.65));
+  line-height: 1.5;
+}
+
+.loginLink {
+  display: block;
+  width: 100%;
+  text-decoration: none;
+}
+
+.processingText {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--text-secondary, rgba(255, 255, 255, 0.65));
+}
+
+.errorText {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--color-danger, #ff6b6b);
+  line-height: 1.5;
+}
+
+/* Spinner — reuse the same keyframe pattern as Button */
+.spinner {
+  display: block;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  border: 3px solid color-mix(in srgb, var(--accent) 25%, transparent);
+  border-top-color: var(--accent);
+  animation: spin 700ms linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

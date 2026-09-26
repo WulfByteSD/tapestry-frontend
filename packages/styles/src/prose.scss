@@ -1,0 +1,108 @@
+/* === Prose mixin ============================================================
+ * Styles for HTML rendered from html-react-parser or any rich text source.
+ * Usage in a SCSS Module:
+ *
+ *   @use '@tapestry/styles/src/prose' as *;
+ *
+ *   .body { @include prose; }
+ *   .compact { @include prose(0.875rem, 1.5); }
+ * ========================================================================= */
+
+@mixin prose($font-size: 0.9375rem, $line-height: 1.7) {
+  font-size: $font-size;
+  line-height: $line-height;
+  color: var(--color-foreground, #111827);
+
+  p {
+    margin: 0 0 0.75em;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  strong,
+  b {
+    font-weight: 600;
+    color: inherit;
+  }
+
+  em,
+  i {
+    font-style: italic;
+  }
+
+  ul,
+  ol {
+    margin: 0 0 0.75em;
+    padding-left: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35em;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  li {
+    line-height: $line-height;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin: 1em 0 0.375em;
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--color-foreground, #111827);
+
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+
+  h1 {
+    font-size: 1.5em;
+  }
+  h2 {
+    font-size: 1.25em;
+  }
+  h3 {
+    font-size: 1.1em;
+  }
+  h4,
+  h5,
+  h6 {
+    font-size: 1em;
+  }
+
+  blockquote {
+    margin: 0.75em 0;
+    padding: 0.5em 0 0.5em 1em;
+    border-left: 3px solid var(--color-border, rgba(0, 0, 0, 0.12));
+    color: var(--color-muted, #6b7280);
+    font-style: italic;
+  }
+
+  a {
+    color: var(--color-accent, currentColor);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  code {
+    font-family: monospace;
+    font-size: 0.875em;
+    background: var(--color-surface-subtle, rgba(0, 0, 0, 0.05));
+    padding: 0.1em 0.35em;
+    border-radius: 3px;
+  }
+}

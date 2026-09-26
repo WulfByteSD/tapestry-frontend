@@ -1,0 +1,263 @@
+.book {
+  --book-width: 17rem;
+  --book-height: 21rem;
+  --spine-width: 3.25rem;
+  --spine-edge-width: 1.08rem;
+  --cover-fit: cover;
+  --cover-position: center;
+  --spine-fit: cover;
+  --spine-color: #a9822b;
+  --book-radius: 0.72rem;
+  --page-edge: 0.42rem;
+  --cover-width: calc(var(--book-width) - var(--spine-edge-width) - var(--page-edge));
+  --cover-height: calc(var(--book-height) - var(--page-edge));
+
+  position: relative;
+  z-index: 0;
+  display: grid;
+  grid-template-rows: var(--book-height) auto;
+  gap: 1rem;
+  flex: 0 0 auto;
+  inline-size: auto;
+  min-inline-size: var(--spine-width);
+  max-inline-size: var(--book-width);
+  color: var(--paper);
+  outline: none;
+  isolation: isolate;
+}
+
+.isOpen {
+  z-index: 5;
+}
+
+.book:focus-visible .stage {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-2) 72%, transparent);
+}
+
+.disabled {
+  pointer-events: none;
+  opacity: 0.72;
+}
+
+.stage {
+  position: relative;
+  inline-size: var(--spine-width);
+  block-size: var(--book-height);
+  overflow: hidden;
+  border-radius: var(--book-radius);
+}
+
+.bookShell {
+  position: relative;
+  inline-size: var(--book-width);
+  block-size: var(--book-height);
+  transform: translate3d(0, 0, 0);
+}
+
+.pageBlock,
+.cover,
+.spine {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+}
+
+.pageBlock {
+  inset-inline-start: var(--spine-edge-width);
+  inline-size: calc(var(--book-width) - var(--spine-edge-width));
+  block-size: var(--book-height);
+  border-radius: 0 var(--book-radius) var(--book-radius) 0;
+  background:
+    linear-gradient(90deg, color-mix(in srgb, #b28b42 28%, transparent), transparent 0.58rem),
+    repeating-linear-gradient(90deg, #f7efd9 0 0.13rem, #ddcda7 0.13rem 0.17rem, #fff8e8 0.17rem 0.32rem);
+  box-shadow:
+    inset 0.45rem 0 0.65rem color-mix(in srgb, black 12%, transparent),
+    inset -0.32rem 0 0.62rem color-mix(in srgb, black 18%, transparent),
+    inset 0 -0.18rem 0.35rem color-mix(in srgb, black 16%, transparent);
+  z-index: 0;
+}
+
+.cover {
+  inset-inline-start: var(--spine-edge-width);
+  display: grid;
+  place-items: center;
+  inline-size: var(--cover-width);
+  block-size: var(--cover-height);
+  border-radius: 0 calc(var(--book-radius) - 0.1rem) calc(var(--book-radius) - 0.1rem) 0;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 34% 18%, color-mix(in srgb, var(--accent-3) 44%, transparent), transparent 39%),
+    linear-gradient(155deg, color-mix(in srgb, var(--accent-3) 48%, transparent), color-mix(in srgb, var(--base) 84%, black));
+  box-shadow:
+    inset 0.42rem 0 0.75rem color-mix(in srgb, black 20%, transparent),
+    inset -0.2rem 0 0.44rem color-mix(in srgb, white 12%, transparent),
+    0.22rem 0.24rem 0.28rem color-mix(in srgb, black 18%, transparent);
+  z-index: 1;
+}
+
+.coverImage,
+.spineImage {
+  position: absolute;
+  inset: 0;
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  user-select: none;
+}
+
+.coverImage {
+  object-fit: var(--cover-fit);
+  object-position: var(--cover-position);
+}
+
+.spineImage {
+  object-fit: var(--spine-fit);
+  object-position: center;
+}
+
+.coverFrame {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, white 18%, transparent),
+    inset 0.55rem 0 0.7rem color-mix(in srgb, black 22%, transparent),
+    inset -0.18rem 0 0.35rem color-mix(in srgb, black 18%, transparent);
+  pointer-events: none;
+}
+
+.coverShine {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 0 35%, color-mix(in srgb, white 16%, transparent) 46%, transparent 57% 100%);
+  mix-blend-mode: screen;
+  opacity: 0.46;
+  pointer-events: none;
+}
+
+.fallbackSigil {
+  position: relative;
+  z-index: 1;
+  color: var(--paper);
+  font-size: clamp(4rem, 8vw, 6rem);
+  font-weight: 900;
+  text-transform: uppercase;
+  text-shadow: 0 0.35rem 0.9rem color-mix(in srgb, black 42%, transparent);
+}
+
+.spine {
+  display: grid;
+  place-items: center;
+  inline-size: var(--spine-width);
+  block-size: var(--book-height);
+  border-radius: var(--book-radius) 0 0 var(--book-radius);
+  overflow: hidden;
+  background:
+    linear-gradient(90deg, color-mix(in srgb, black 35%, transparent), transparent 32%, color-mix(in srgb, white 15%, transparent) 58%, color-mix(in srgb, black 28%, transparent)),
+    linear-gradient(180deg, color-mix(in srgb, var(--spine-color) 86%, white), color-mix(in srgb, var(--spine-color) 72%, black));
+  box-shadow:
+    inset 0.24rem 0 0.48rem color-mix(in srgb, black 38%, transparent),
+    inset -0.18rem 0 0.3rem color-mix(in srgb, white 16%, transparent);
+  z-index: 2;
+}
+
+.spineDepth {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, black 38%, transparent),
+    transparent 34%,
+    color-mix(in srgb, white 16%, transparent) 58%,
+    color-mix(in srgb, black 24%, transparent)
+  );
+  pointer-events: none;
+}
+
+.spineEdgeLines {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0.26rem;
+  inline-size: 0.35rem;
+  opacity: 0.72;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, white 38%, transparent) 0 1px,
+    transparent 1px 0.14rem,
+    color-mix(in srgb, black 42%, transparent) 0.14rem 0.2rem,
+    transparent 0.2rem 100%
+  );
+  pointer-events: none;
+}
+
+.spineText {
+  position: relative;
+  z-index: 1;
+  display: block;
+  max-block-size: calc(var(--book-height) - 2rem);
+  color: var(--paper);
+  font-size: 0.76rem;
+  font-weight: 900;
+  letter-spacing: 0.13em;
+  line-height: 1.15;
+  text-align: center;
+  text-transform: uppercase;
+  text-shadow: 0 0.12rem 0.3rem color-mix(in srgb, black 56%, transparent);
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+
+.copy { 
+  min-height: 6.65rem; 
+  padding: 0.85rem 0.95rem 0.9rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 13%, transparent);
+  border-radius: 1rem;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--paper) 7%, transparent), transparent),
+    color-mix(in srgb, var(--ink) 72%, transparent);
+  text-align: center;
+  box-shadow: 0 0.85rem 1.85rem rgba(0, 0, 0, 0.18);
+}
+
+.isOpen .copy {
+  pointer-events: auto;
+}
+
+.eyebrow {
+  margin: 0 0 0.35rem;
+  color: var(--accent-2);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.copy h3 {
+  margin: 0;
+  color: var(--paper);
+  font-size: 1.1rem;
+}
+
+.copy p:last-child {
+  margin: 0.45rem 0 0;
+  color: var(--contrast-2);
+  line-height: 1.55;
+}
+
+.srOnly {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bookShell {
+    transform: none;
+  }
+}

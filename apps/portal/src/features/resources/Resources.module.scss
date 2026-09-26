@@ -1,0 +1,38 @@
+.page {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  padding: clamp(3rem, 7vw, 5.5rem) 0 clamp(4rem, 9vw, 7rem);
+}
+
+.page::before {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background:
+    radial-gradient(circle at 14% 8%, color-mix(in srgb, var(--accent-3) 24%, transparent), transparent 34rem),
+    radial-gradient(circle at 86% 48%, color-mix(in srgb, var(--accent) 12%, transparent), transparent 30rem);
+  content: '';
+  pointer-events: none;
+}
+
+.page::after {
+  position: absolute;
+  inset: 7rem -12vw auto auto;
+  z-index: -1;
+  width: min(34rem, 55vw);
+  aspect-ratio: 1;
+  border: 1px solid color-mix(in srgb, var(--accent-2) 12%, transparent);
+  border-radius: 999px;
+  box-shadow:
+    0 0 0 4rem color-mix(in srgb, var(--accent-2) 3%, transparent),
+    0 0 0 8rem color-mix(in srgb, var(--accent-3) 2%, transparent);
+  content: '';
+  opacity: 0.75;
+  pointer-events: none;
+}
+
+.stack {
+  display: grid;
+  gap: clamp(4rem, 9vw, 7rem);
+}

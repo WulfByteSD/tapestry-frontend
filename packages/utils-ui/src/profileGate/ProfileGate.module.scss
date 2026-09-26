@@ -1,0 +1,67 @@
+/* === ProfileGate ============================================================
+ * Mirrors the card/wrapper pattern from AuthRedirectGate.module.scss exactly.
+ * CSS vars: --base, --surface, --border-strong, --text, --text-secondary,
+ *           --radius, --accent (all provided by the portal theme).
+ * ========================================================================= */
+
+.wrapper {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  background: var(--base);
+}
+
+/* ── Mismatch / error card ─────────────────────────────────────────────────── */
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 440px;
+  padding: 2.5rem 2rem;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius, var(--radius-lg, 12px));
+  box-shadow:
+    0 16px 48px rgba(0, 0, 0, 0.35),
+    0 4px 16px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.heading {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: var(--text);
+  font-family: var(--font-heading, inherit);
+  letter-spacing: -0.01em;
+}
+
+.subtitle {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-secondary, rgba(255, 255, 255, 0.65));
+  line-height: 1.6;
+}
+
+.ctaLink {
+  display: block;
+  width: 100%;
+  text-decoration: none;
+}

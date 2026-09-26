@@ -1,0 +1,23 @@
+/* === Public theme ==========================================================
+ * Dark blue-green palette used by: professional.
+ * Import this then override specific vars in your app's :root {} block.
+ * ========================================================================= */
+@forward '../ui-tokens';
+:root {
+  /* ── Core palette ───────────────────────────────── */
+  --color-background: #f5f7fa;
+  --color-background-glow: #dce6f0;
+  --color-surface: rgba(255, 255, 255, 0.9);
+  --color-foreground: #111827;
+  --color-muted: #6b7280;
+  --color-accent: #2563eb;
+  --color-accent-strong: #1d4ed8;
+
+  /* ── Typography ─────────────────────────────────── */
+  --font-body: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-heading: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  /* ── Scrollbar (consumed by base.scss) ──────────── */
+  --color-scrollbar-thumb: var(--color-accent);
+  --color-scrollbar-thumb-hover: var(--color-accent-strong);
+}
