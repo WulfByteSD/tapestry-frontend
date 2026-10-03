@@ -1,5 +1,7 @@
-// tabs/notes/list/NoteListScreen.tsx
 "use client";
+
+// tabs/notes/list/NoteListScreen.tsx
+
 
 import { useDeferredValue, useMemo } from "react";
 import { motion } from "framer-motion";

@@ -1,0 +1,8 @@
+// Shared presentation for the sheet's content sections, scoped to this feature.
+@mixin section {
+  min-height: 0; border: 0; border-radius: 0; padding: 0; box-shadow: none; background: transparent;
+  &::before { display: none; }
+}
+@mixin title { font: 600 26px/1.25 Georgia, serif; color: var(--text); }
+@mixin empty { padding: 24px 0; border: 0; border-radius: 0; background: transparent; text-align: left; color: var(--text-muted); font-size: 13px; line-height: 1.6; }
+@mixin entry { border: 0; border-bottom: 1px solid var(--sheet-divider); border-radius: 0; background: transparent; padding: 18px 0; box-shadow: none; }

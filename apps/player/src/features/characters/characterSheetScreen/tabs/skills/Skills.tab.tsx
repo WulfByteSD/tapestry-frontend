@@ -1,5 +1,7 @@
-// apps/player/src/features/characters/characterSheetScreen/tabs/skills/Skills.tab.tsx
 "use client";
+
+// apps/player/src/features/characters/characterSheetScreen/tabs/skills/Skills.tab.tsx
+
 
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";

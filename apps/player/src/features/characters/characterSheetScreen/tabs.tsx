@@ -2,26 +2,24 @@ import type { TabsItem } from '@tapestry/ui';
 import { OverviewTab } from './tabs/overview/OverviewTab';
 import { NotesTab } from './tabs/notes/NotesTab';
 import { RollsTab } from './tabs/rolls/RollsTab';
-import { PlaceholderTab } from './tabs/PlaceholderTab';
 import { InventoryTab } from './tabs/inventory/Inventory.tab';
 import { SkillsTab } from './tabs/skills/Skills.tab';
 import { ConditionsTab } from './tabs/conditions/Conditions.tab';
 import { AbilitiesTab } from './tabs/abilities/Abilities.tab';
 import { ExportTab } from './tabs/export/ExportTab';
 
-type TabKey = 'overview' | 'rolls' | 'abilities' | 'skills' | 'inventory' | 'conditions' | 'notes' | 'export';
+import type { SheetTabsProps } from './CharacterSheet.types';
+export type { TabKey } from './CharacterSheet.types';
 
-export type { TabKey };
-
-export function createTabs(props: { sheet: any; onSaveNotes: (noteCards: any[]) => void; mode: 'build' | 'play' }): TabsItem[] {
-  const { sheet, onSaveNotes, mode } = props;
+export function createTabs(props: SheetTabsProps): TabsItem[] {
+  const { sheet, onSaveNotes, mode, onAction, onNavigate } = props;
 
   return [
     {
       key: 'overview',
       label: 'Overview',
       icon: undefined,
-      children: <OverviewTab sheet={sheet} mode={mode} />,
+      children: <OverviewTab sheet={sheet} mode={mode} onAction={onAction} onNavigate={onNavigate} />,
     },
     {
       key: 'rolls',

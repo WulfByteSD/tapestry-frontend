@@ -1,7 +1,8 @@
+import { SheetModal } from '../../SheetModal.component';
 import { useMemo, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { ASPECT_BLOCKS, type AspectGroup, type AspectKey } from "@tapestry/types";
-import { Button, Modal, Input, SelectField } from "@tapestry/ui";
+import { Button, Input, SelectField } from "@tapestry/ui";
 import { createRoll, getSkillsForSetting, type CreateRollData } from "@tapestry/api-client";
 import { useMe } from "@/lib/auth-hooks";
 import { RollResultCard } from "@/components/rollResultCard/RollResultCard.component";
@@ -199,7 +200,7 @@ export function RollModal({ sheet, initialAspect, rollType = "approach", onClose
   );
 
   return (
-    <Modal open onCancel={onClose} title={modalTitle} footer={footer}>
+    <SheetModal open onCancel={onClose} title={modalTitle} footer={footer}>
       {rollResult ? (
         <RollResultCard result={rollResult} />
       ) : (
@@ -331,6 +332,6 @@ export function RollModal({ sheet, initialAspect, rollType = "approach", onClose
           )}
         </>
       )}
-    </Modal>
+    </SheetModal>
   );
 }

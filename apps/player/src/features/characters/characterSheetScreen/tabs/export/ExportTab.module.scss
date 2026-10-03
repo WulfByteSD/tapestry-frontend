@@ -1,3 +1,4 @@
+@use '../../CharacterTab.styles' as sheet;
 .grid {
   display: grid;
   gap: 12px;
@@ -54,3 +55,11 @@
   border-bottom: 1px solid color-mix(in srgb, var(--contrast) 10%, transparent);
   margin-bottom: 4px;
 }
+
+.screenCard.screenCard { @include sheet.section; border-bottom: 1px solid var(--sheet-divider); padding: 20px 0; }
+.grid { gap: 0; }
+.cardTitle { font: 600 23px Georgia, serif; }
+.cardHint { font-size: 13px; max-width: 62ch; }
+.cardAction { flex-wrap: wrap; min-height: 44px; }
+.cardIcon { display: none; }
+.sectionLabel { font-size: 12px; padding-bottom: 12px; }

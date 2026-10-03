@@ -1,3 +1,4 @@
+@use '../../CharacterTab.styles' as sheet;
 /* apps/player/src/features/characters/characterSheetScreen/tabs/abilities/AbilitiesTab.module.scss */
 
 .screenCard {
@@ -172,3 +173,18 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
+
+.screenCard.screenCard { @include sheet.section; }
+.title { @include sheet.title; }
+.subtitle { font-size: 13px; line-height: 1.6; }
+.emptyState { @include sheet.empty; }
+.section { gap: 0; }
+.sectionHeader { margin: 16px 0 0; }
+.sectionTitle { font-size: 16px; }
+.sectionHint { font-size: 12px; margin-top: 5px; }
+.abilityGrid { grid-template-columns: 1fr; gap: 0; }
+.abilityCard { @include sheet.entry; gap: 8px; }
+.abilityName { font-size: 17px; }
+.abilitySummary, .abilityEffect { font-size: 13px; line-height: 1.6; }
+.tag, .sourceChip { border: 0; border-radius: 0; background: transparent; padding: 0 12px 0 0; font-weight: 500; }
+.abilityCardUnavailable { border-style: dashed; }

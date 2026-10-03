@@ -28,3 +28,6 @@
 .backButton {
   align-self: flex-start;
 }
+.container { padding: 0; }
+.rollsList, .expandedView { max-width: none; margin: 0; }
+.emptyState { text-align: left; padding: 24px 0; color: var(--text-muted); font-size: 14px; line-height: 1.6; }

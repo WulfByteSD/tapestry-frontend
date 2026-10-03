@@ -36,7 +36,7 @@ export function ExportTab({ sheet }: Props) {
       <div className={styles.sectionLabel}>Export Character Sheet</div>
 
       {/* JSON */}
-      <Card inlay>
+      <Card className={styles.screenCard}>
         <CardBody className={styles.card}>
           <CardHeader className={styles.cardHeader}>
             <div className={styles.cardTitle}>
@@ -55,7 +55,7 @@ export function ExportTab({ sheet }: Props) {
       </Card>
 
       {/* Markdown */}
-      <Card inlay>
+      <Card className={styles.screenCard}>
         <CardBody className={styles.card}>
           <CardHeader className={styles.cardHeader}>
             <div className={styles.cardTitle}>

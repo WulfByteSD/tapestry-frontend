@@ -1,9 +1,11 @@
 "use client";
 
+import { SheetModal } from '../../SheetModal.component';
+
 import { useEffect, useMemo, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { ASPECT_BLOCKS, type AspectGroup, type AspectKey } from "@tapestry/types";
-import { Button, Modal, Input, SelectField, TextField } from "@tapestry/ui";
+import { Button, Input, SelectField, TextField } from "@tapestry/ui";
 import { createRoll, type CreateRollData } from "@tapestry/api-client";
 import { useMe } from "@/lib/auth-hooks";
 import { api } from "@/lib/api";
@@ -253,16 +255,16 @@ export function AttackModal({ sheet, onClose }: Props) {
 
   if (!equippedWeapons.length) {
     return (
-      <Modal open onCancel={onClose} title="Attack" footer={footer}>
+      <SheetModal open onCancel={onClose} title="Attack" footer={footer}>
         <div className={styles.emptyState ?? styles.previewBox}>
           No equipped weapons found. Equip a weapon in Inventory first.
         </div>
-      </Modal>
+      </SheetModal>
     );
   }
 
   return (
-    <Modal open onCancel={onClose} title="Attack" footer={footer}>
+    <SheetModal open onCancel={onClose} title="Attack" footer={footer}>
       {rollResult ? (
         <>
           <RollResultCard result={rollResult} />
@@ -456,6 +458,6 @@ export function AttackModal({ sheet, onClose }: Props) {
           )}
         </div>
       )}
-    </Modal>
+    </SheetModal>
   );
 }

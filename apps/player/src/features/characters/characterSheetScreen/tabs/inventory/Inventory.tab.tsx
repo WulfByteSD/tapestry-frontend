@@ -73,7 +73,7 @@ export function InventoryTab({ sheet }: Props) {
 
   return (
     <>
-      <Card>
+      <Card className={styles.screenCard}>
         <CardHeader>
           <div className={styles.headerRow}>
             <div>
