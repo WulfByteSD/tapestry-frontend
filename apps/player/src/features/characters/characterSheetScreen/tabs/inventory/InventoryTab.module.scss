@@ -1,3 +1,4 @@
+@use '../../CharacterTab.styles' as sheet;
 .headerRow {
   display: flex;
   justify-content: space-between;
@@ -378,3 +379,31 @@
     order: 2;
   }
 }
+
+.screenCard.screenCard { @include sheet.section; }
+.title { @include sheet.title; }
+.headerRow, .headerActions { flex-wrap: wrap; }
+.subtle { font-size: 13px; opacity: 1; color: var(--text-muted); }
+.empty, .sectionEmpty { @include sheet.empty; }
+.list { grid-template-columns: 1fr; gap: 0; }
+.itemCard { @include sheet.entry; max-width: none; display: grid; grid-template-columns: 76px minmax(0, 1fr); gap: 18px; overflow: visible; }
+.itemCard:hover { background: transparent; border-color: var(--sheet-divider); transform: none; box-shadow: none; }
+.itemImageArea { width: 76px; height: 88px; aspect-ratio: auto; background: var(--surface-2); border: 0; border-radius: 6px; }
+.imagePlaceholder { background: var(--surface-2); }
+.cardContent { padding: 0; gap: 12px; }
+.itemTitle { font-size: 16px; }
+.actions { flex-direction: row; flex-wrap: wrap; align-items: center; }
+.itemStats { justify-content: flex-start; gap: 24px; }
+.statBox { background: transparent; border: 0; border-radius: 0; min-width: 0; max-width: none; flex: initial; padding: 0; align-items: flex-start; }
+.statValue { color: var(--gold-soft); }
+.badge, .badgeActive { background: transparent; border-radius: 0; padding: 0; color: var(--text-muted); }
+.badgeActive { color: var(--gold-soft); }
+.equippedSection { border: 0; border-radius: 0; background: transparent; padding: 0; }
+.equippedLayout { grid-template-columns: minmax(200px, 240px) minmax(0, 1fr); }
+.diagramPanel { border-radius: 6px; background: var(--surface); }
+.equippedInspector, .overflowSection { border: 0; border-radius: 0; background: transparent; padding: 0; }
+.inspectorList > * { flex: 1 1 100%; }
+.inspectorSlotLabel { background: transparent; border: 0; padding: 0; color: var(--gold-soft); }
+.sectionCount { background: transparent; border-radius: 0; }
+@media (max-width: 1100px) { .equippedLayout { grid-template-columns: 1fr; } }
+@media (max-width: 600px) { .itemCard { grid-template-columns: 56px minmax(0, 1fr); gap: 12px; } .itemImageArea { width: 56px; height: 68px; } }

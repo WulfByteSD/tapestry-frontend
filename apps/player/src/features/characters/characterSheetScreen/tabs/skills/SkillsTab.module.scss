@@ -1,3 +1,4 @@
+@use '../../CharacterTab.styles' as sheet;
 .screenCard {
   min-height: 420px;
 }
@@ -132,3 +133,14 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
+
+.screenCard.screenCard { @include sheet.section; }
+.title { @include sheet.title; }
+.subtitle { font-size: 13px; line-height: 1.6; }
+.emptyState { @include sheet.empty; }
+.skillGrid { grid-template-columns: 1fr; gap: 0; }
+.skillCard { @include sheet.entry; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 18px; }
+.skillName { font-size: 16px; }
+.skillNotes { font-size: 13px; }
+.skillActions { justify-content: flex-end; }
+@media (max-width: 600px) { .skillCard { grid-template-columns: 1fr; gap: 12px; } .skillActions { justify-content: flex-start; } }

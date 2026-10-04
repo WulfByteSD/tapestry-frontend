@@ -1,3 +1,4 @@
+@use '../../../CharacterTab.styles' as sheet;
 .screenCard {
   min-height: 420px;
 }
@@ -90,3 +91,9 @@
   resize: vertical;
   min-height: 280px;
 }
+
+.screenCard.screenCard { @include sheet.section; }
+.headerTitle { @include sheet.title; }
+.header { flex-wrap: wrap; }
+.headerRow { min-width: 0; }
+.textInput, .selectInput, .textarea { border-radius: 6px; background: var(--surface); font-size: 14px; }

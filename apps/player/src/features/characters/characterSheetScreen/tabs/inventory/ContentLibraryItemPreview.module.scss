@@ -1,241 +1,184 @@
-// ContentLibraryItemPreview.module.scss
-
 .root {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 24px;
 }
-
-// ── Hero image ─────────────────────────────────────────────────────────────
 
 .hero {
   position: relative;
   width: 100%;
   height: 200px;
-  border-radius: 10px;
   overflow: hidden;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--surface-2);
 }
 
-// ── Badge row ──────────────────────────────────────────────────────────────
-
-.badgeRow {
+.badgeRow,
+.tagRow {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.45rem;
+  gap: 6px 16px;
 }
 
 .badge,
-.tag {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.2rem 0.55rem;
-  border-radius: 999px;
-  font-size: 0.75rem;
+.tag,
+.slotBadge,
+.traitBadge,
+.kindBadge {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-muted);
   text-transform: capitalize;
+  overflow-wrap: anywhere;
 }
-
-.badge {
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.slotBadge {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.2rem 0.55rem;
-  border-radius: 999px;
-  font-size: 0.75rem;
-  text-transform: capitalize;
-  background: rgba(160, 100, 200, 0.15);
-  border: 1px solid rgba(160, 100, 200, 0.3);
-  color: rgba(200, 160, 240, 0.9);
-}
-
-.traitBadge {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.2rem 0.55rem;
-  border-radius: 999px;
-  font-size: 0.75rem;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.55);
-}
-
-// ── Sections ───────────────────────────────────────────────────────────────
 
 .section {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 12px;
+}
+
+.section + .section {
+  padding-top: 20px;
+  border-top: 1px solid var(--sheet-divider);
 }
 
 .sectionTitle {
   margin: 0;
-  font-size: 0.78rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: rgba(255, 255, 255, 0.4);
+  font:
+    600 18px/1.3 Georgia,
+    serif;
+  color: var(--text);
 }
 
 .none {
   margin: 0;
-  font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.35);
-  font-style: italic;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-muted);
 }
 
 .notes {
   margin: 0;
-  font-size: 0.88rem;
-  line-height: 1.6;
-  color: rgba(255, 255, 255, 0.78);
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text);
   white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
-
-// ── Stat grid ──────────────────────────────────────────────────────────────
 
 .statGrid {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
+  gap: 24px;
 }
 
 .statBlock {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 0.15rem;
-  min-width: 56px;
-  padding: 0.5rem 0.75rem;
-  border-radius: 8px;
-  background: rgba(59, 130, 246, 0.12);
-  border: 1px solid rgba(59, 130, 246, 0.3);
+  gap: 4px;
 }
 
 .statVal {
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: rgba(147, 197, 253, 0.95);
-  line-height: 1;
+  font-size: 28px;
+  line-height: 1.2;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
 }
 
 .statLbl {
-  font-size: 0.68rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: rgba(147, 197, 253, 0.6);
+  font-size: 12px;
+  color: var(--text-muted);
 }
 
-// ── Detail rows ────────────────────────────────────────────────────────────
-
 .detailRow {
-  display: flex;
-  gap: 0.5rem;
-  font-size: 0.85rem;
-  line-height: 1.4;
+  display: grid;
+  grid-template-columns: 80px minmax(0, 1fr);
+  gap: 12px;
+  font-size: 13px;
+  line-height: 1.6;
 }
 
 .detailLabel {
-  color: rgba(255, 255, 255, 0.45);
-  min-width: 70px;
-  flex-shrink: 0;
+  color: var(--text-muted);
 }
 
 .detailValue {
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--text);
+  overflow-wrap: anywhere;
 }
-
-// ── Attack profiles ────────────────────────────────────────────────────────
 
 .profileList {
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
+  gap: 20px;
 }
 
 .profileCard {
-  padding: 0.7rem 0.85rem;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: 12px;
+}
+
+.profileCard + .profileCard {
+  padding-top: 18px;
+  border-top: 1px solid var(--sheet-divider);
 }
 
 .profileHeader {
   display: flex;
-  align-items: center;
-  gap: 0.4rem;
+  align-items: baseline;
+  gap: 12px;
   flex-wrap: wrap;
-  font-size: 0.9rem;
-}
-
-.kindBadge {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.15rem 0.45rem;
-  border-radius: 999px;
-  font-size: 0.7rem;
-  text-transform: capitalize;
-  background: rgba(239, 68, 68, 0.12);
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  color: rgba(252, 165, 165, 0.9);
+  font-size: 15px;
+  line-height: 1.5;
 }
 
 .profileDetails {
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
+  gap: 8px;
 }
-
-// ── Granted abilities ──────────────────────────────────────────────────────
 
 .abilityList {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: 16px;
 }
 
 .abilityRow {
   display: flex;
   align-items: baseline;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  padding: 0.45rem 0.7rem;
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  font-size: 0.84rem;
+  gap: 6px 12px;
+  font-size: 13px;
+  line-height: 1.6;
 }
 
 .abilityKey {
-  font-family: monospace;
-  font-size: 0.82rem;
-  color: rgba(200, 160, 240, 0.9);
+  font-size: 13px;
+  color: var(--text);
+  overflow-wrap: anywhere;
 }
 
 .abilityMeta {
-  color: rgba(255, 255, 255, 0.45);
-  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-size: 12px;
 }
 
 .abilityNotes {
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 0.8rem;
+  width: 100%;
+  color: var(--text-muted);
+  font-size: 13px;
+  overflow-wrap: anywhere;
 }
 
-// ── Tags ───────────────────────────────────────────────────────────────────
-
-.tagRow {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
-}
-
-.tag {
-  background: rgba(255, 255, 255, 0.06);
+@media (max-width: 600px) {
+  .hero {
+    height: 160px;
+  }
+  .detailRow {
+    grid-template-columns: 68px minmax(0, 1fr);
+    gap: 10px;
+  }
 }

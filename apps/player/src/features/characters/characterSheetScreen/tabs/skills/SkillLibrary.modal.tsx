@@ -1,9 +1,12 @@
-// tabs/skills/SkillLibrary.modal.tsx
 'use client';
+
+import { SheetModal } from '../../SheetModal.component';
+// tabs/skills/SkillLibrary.modal.tsx
+
 
 import { useEffect, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Modal, Button, Select, TextField, Loader } from '@tapestry/ui';
+import { Button, Select, TextField, Loader } from '@tapestry/ui';
 import { api } from '@/lib/api';
 import { getSettings, getSkillsForSetting } from '@tapestry/api-client';
 import type { CharacterSheet, SettingDefinition, SkillDefinition } from '@tapestry/types';
@@ -68,7 +71,7 @@ export function SkillLibraryModal({ open, onClose, sheet, knownSkillKeys, onAddS
   }, [skills, search, knownSkillKeys]);
 
   return (
-    <Modal open={open} onCancel={onClose} title="Skill Library">
+    <SheetModal open={open} onCancel={onClose} title="Skill Library">
       <div className={styles.content}>
         <div className={styles.controls}>
           <label className={styles.field}>
@@ -126,6 +129,6 @@ export function SkillLibraryModal({ open, onClose, sheet, knownSkillKeys, onAddS
           </div>
         )}
       </div>
-    </Modal>
+    </SheetModal>
   );
 }

@@ -1,14 +1,15 @@
-import { useMemo, useState } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { ASPECT_BLOCKS, type AspectGroup, type AspectKey } from "@tapestry/types";
-import { Button, Modal, Input, SelectField } from "@tapestry/ui";
-import { createRoll, getSkillsForSetting, type CreateRollData } from "@tapestry/api-client";
-import { useMe } from "@/lib/auth-hooks";
-import { RollResultCard } from "@/components/rollResultCard/RollResultCard.component";
-import styles from "./Roll.modal.module.scss";
-import { api } from "@/lib/api";
-import { getAspectValue } from "../../../aspects/aspectutils";
-import { buildSkillOptions } from "../skills/skillDisplay.helpers";
+import { SheetModal } from '../../SheetModal.component';
+import { useMemo, useState } from 'react';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { ASPECT_BLOCKS, type AspectGroup, type AspectKey } from '@tapestry/types';
+import { Button, Input, SelectField } from '@tapestry/ui';
+import { createRoll, getSkillsForSetting, type CreateRollData } from '@tapestry/api-client';
+import { useMe } from '@/lib/auth-hooks';
+import { RollResultCard } from '@/components/rollResultCard/RollResultCard.component';
+import styles from './Roll.modal.module.scss';
+import { api } from '@/lib/api';
+import { getAspectValue } from '../../../aspects/aspectutils';
+import { buildSkillOptions } from '../skills/skillDisplay.helpers';
 
 type Props = {
   sheet: any;
@@ -19,7 +20,7 @@ type Props = {
 
 function normalizeSkills(skills: any): Record<string, number> {
   if (!skills) return {};
-  if (typeof skills === "object" && !Array.isArray(skills)) {
+  if (typeof skills === 'object' && !Array.isArray(skills)) {
     return skills as Record<string, number>;
   }
   if (Array.isArray(skills)) {
@@ -35,11 +36,11 @@ function normalizeSkills(skills: any): Record<string, number> {
 }
 
 function titleCaseLabel(value?: string) {
-  if (!value) return "";
-  return value.replace(/[_-]+/g, " ").replace(/\b\w/g, (m) => m.toUpperCase());
+  if (!value) return '';
+  return value.replace(/[_-]+/g, ' ').replace(/\b\w/g, (m) => m.toUpperCase());
 }
 
-export function RollModal({ sheet, initialAspect, rollType = "approach", onClose }: Props) {
+export function RollModal({ sheet, initialAspect, rollType = 'approach', onClose }: Props) {
   const { data: me } = useMe();
   const [rollResult, setRollResult] = useState<any>(null);
 
@@ -70,7 +71,7 @@ export function RollModal({ sheet, initialAspect, rollType = "approach", onClose
   const skillsRecord = useMemo(() => normalizeSkills(sheet?.sheet?.skills), [sheet?._id, sheet?.sheet?.skills]);
 
   const skillsQuery = useQuery({
-    queryKey: ["content:skills", sheet?.settingKey],
+    queryKey: ['content:skills', sheet?.settingKey],
     enabled: !!sheet?.settingKey,
     queryFn: () => getSkillsForSetting(api, sheet.settingKey),
   });
@@ -87,11 +88,11 @@ export function RollModal({ sheet, initialAspect, rollType = "approach", onClose
 
   const initialAspectValue = `${initialAspect.group}.${initialAspect.key}`;
   const [aspectValueKey, setAspectValueKey] = useState(initialAspectValue);
-  const [skill1, setSkill1] = useState("");
-  const [skill2, setSkill2] = useState("");
+  const [skill1, setSkill1] = useState('');
+  const [skill2, setSkill2] = useState('');
   const [useSecondSkill, setUseSecondSkill] = useState(false);
   const [modifier, setModifier] = useState(0);
-  const [context, setContext] = useState("");
+  const [context, setContext] = useState('');
   const [diceCount, setDiceCount] = useState(3);
   const [edge, setEdge] = useState(false);
   const [burden, setBurden] = useState(false);
@@ -109,22 +110,22 @@ export function RollModal({ sheet, initialAspect, rollType = "approach", onClose
   const total = aspectVal + skill1Rank + skill2Rank + (modifier ?? 0);
 
   const operations = useMemo(() => {
-    const ops: Array<{ operator: "+" | "-" | "*" | "/"; value: number }> = [];
+    const ops: Array<{ operator: '+' | '-' | '*' | '/'; value: number }> = [];
 
     if (aspectVal !== 0) {
-      ops.push({ operator: aspectVal >= 0 ? "+" : "-", value: Math.abs(aspectVal) });
+      ops.push({ operator: aspectVal >= 0 ? '+' : '-', value: Math.abs(aspectVal) });
     }
 
     if (skill1Rank !== 0) {
-      ops.push({ operator: skill1Rank >= 0 ? "+" : "-", value: Math.abs(skill1Rank) });
+      ops.push({ operator: skill1Rank >= 0 ? '+' : '-', value: Math.abs(skill1Rank) });
     }
 
     if (skill2Rank !== 0) {
-      ops.push({ operator: skill2Rank >= 0 ? "+" : "-", value: Math.abs(skill2Rank) });
+      ops.push({ operator: skill2Rank >= 0 ? '+' : '-', value: Math.abs(skill2Rank) });
     }
 
     if (modifier !== 0) {
-      ops.push({ operator: modifier >= 0 ? "+" : "-", value: Math.abs(modifier) });
+      ops.push({ operator: modifier >= 0 ? '+' : '-', value: Math.abs(modifier) });
     }
 
     return ops;
@@ -132,15 +133,15 @@ export function RollModal({ sheet, initialAspect, rollType = "approach", onClose
 
   const labelParts: string[] = [];
   if (selectedAspect) labelParts.push(selectedAspect.label);
-  if (skill1Option) labelParts.push(`${skill1Option.name} (${skill1Rank >= 0 ? "+" : ""}${skill1Rank})`);
-  if (skill2Option) labelParts.push(`${skill2Option.name} (${skill2Rank >= 0 ? "+" : ""}${skill2Rank})`);
-  if (modifier) labelParts.push(`Mod (${modifier >= 0 ? "+" : ""}${modifier})`);
+  if (skill1Option) labelParts.push(`${skill1Option.name} (${skill1Rank >= 0 ? '+' : ''}${skill1Rank})`);
+  if (skill2Option) labelParts.push(`${skill2Option.name} (${skill2Rank >= 0 ? '+' : ''}${skill2Rank})`);
+  if (modifier) labelParts.push(`Mod (${modifier >= 0 ? '+' : ''}${modifier})`);
 
-  const rollContext = context.trim() || labelParts.join(" + ");
+  const rollContext = context.trim() || labelParts.join(' + ');
 
   const rollMutation = useMutation({
     mutationFn: async () => {
-      if (!me?._id) throw new Error("No player ID available");
+      if (!me?._id) throw new Error('No player ID available');
 
       const rollData: CreateRollData = {
         characterId: sheet._id,
@@ -193,24 +194,23 @@ export function RollModal({ sheet, initialAspect, rollType = "approach", onClose
         Close
       </Button>
       <Button onClick={handleRoll} disabled={!canRoll}>
-        {rollMutation.isPending ? "Rolling..." : "Roll"}
+        {rollMutation.isPending ? 'Rolling...' : 'Roll'}
       </Button>
     </>
   );
 
   return (
-    <Modal open onCancel={onClose} title={modalTitle} footer={footer}>
+    <SheetModal open onCancel={onClose} title={modalTitle} footer={footer}>
       {rollResult ? (
         <RollResultCard result={rollResult} />
       ) : (
-        <>
+        <div className={styles.grid}>
           <label className={styles.field}>
             <span>Aspect</span>
             <SelectField value={aspectValueKey} onChange={(e) => setAspectValueKey(e.target.value)}>
               {aspectOptions.map((o) => (
                 <option key={o.value} value={o.value}>
-                  {o.label}{" "}
-                  {selectedAspect?.value === o.value ? `(${aspectVal >= 0 ? `+${aspectVal}` : aspectVal})` : ""}
+                  {o.label} {selectedAspect?.value === o.value ? `(${aspectVal >= 0 ? `+${aspectVal}` : aspectVal})` : ''}
                 </option>
               ))}
             </SelectField>
@@ -219,11 +219,11 @@ export function RollModal({ sheet, initialAspect, rollType = "approach", onClose
           <label className={styles.field}>
             <span>Skill</span>
             <SelectField value={skill1} onChange={(e) => setSkill1(e.target.value)} disabled={!skillOptions.length}>
-              <option value="">{skillOptions.length ? "None" : "No skills yet"}</option>
+              <option value="">{skillOptions.length ? 'None' : 'No skills yet'}</option>
               {skillOptions.map((s) => (
                 <option key={s.id} value={s.id}>
-                  {s.name} ({s.rank >= 0 ? "+" : ""}
-                  {s.rank}){s.defaultAspect ? ` • ${titleCaseLabel(s.defaultAspect)}` : ""}
+                  {s.name} ({s.rank >= 0 ? '+' : ''}
+                  {s.rank}){s.defaultAspect ? ` • ${titleCaseLabel(s.defaultAspect)}` : ''}
                 </option>
               ))}
             </SelectField>
@@ -236,7 +236,7 @@ export function RollModal({ sheet, initialAspect, rollType = "approach", onClose
               onChange={(e) => {
                 const checked = e.target.checked;
                 setUseSecondSkill(checked);
-                if (!checked) setSkill2("");
+                if (!checked) setSkill2('');
               }}
               disabled={!skillOptions.length}
             />
@@ -250,8 +250,8 @@ export function RollModal({ sheet, initialAspect, rollType = "approach", onClose
                 <option value="">None</option>
                 {skillOptions.map((s) => (
                   <option key={s.id} value={s.id}>
-                    {s.name} ({s.rank >= 0 ? "+" : ""}
-                    {s.rank}){s.defaultAspect ? ` • ${titleCaseLabel(s.defaultAspect)}` : ""}
+                    {s.name} ({s.rank >= 0 ? '+' : ''}
+                    {s.rank}){s.defaultAspect ? ` • ${titleCaseLabel(s.defaultAspect)}` : ''}
                   </option>
                 ))}
               </SelectField>
@@ -265,23 +265,14 @@ export function RollModal({ sheet, initialAspect, rollType = "approach", onClose
 
           <label className={styles.field}>
             <span>Context</span>
-            <Input
-              value={context}
-              onChange={(e) => setContext(e.target.value)}
-              placeholder={labelParts.join(" + ") || "Describe this roll..."}
-            />
+            <Input value={context} onChange={(e) => setContext(e.target.value)} placeholder={labelParts.join(' + ') || 'Describe this roll...'} />
           </label>
 
           <div className={styles.diceConfig}>
             <div className={styles.diceRow}>
               <label className={styles.fieldLabel}>Dice</label>
               <div className={styles.diceControls}>
-                <button
-                  className={styles.diceBtn}
-                  type="button"
-                  onClick={() => setDiceCount((c) => Math.max(1, c - 1))}
-                  disabled={diceCount <= 1}
-                >
+                <button className={styles.diceBtn} type="button" onClick={() => setDiceCount((c) => Math.max(1, c - 1))} disabled={diceCount <= 1}>
                   −
                 </button>
                 <span className={styles.diceDisplay}>{diceCount}d6</span>
@@ -293,24 +284,24 @@ export function RollModal({ sheet, initialAspect, rollType = "approach", onClose
 
             <div className={styles.mechanicsRow}>
               <button
-                className={`${styles.mechanicBtn} ${edge ? styles.active : ""}`}
+                className={`${styles.mechanicBtn} ${edge ? styles.active : ''}`}
                 type="button"
                 onClick={() => {
                   setEdge(!edge);
                   if (!edge) setBurden(false);
                 }}
               >
-                Edge {edge && "✓"}
+                Edge {edge && '✓'}
               </button>
               <button
-                className={`${styles.mechanicBtn} ${burden ? styles.active : ""}`}
+                className={`${styles.mechanicBtn} ${burden ? styles.active : ''}`}
                 type="button"
                 onClick={() => {
                   setBurden(!burden);
                   if (!burden) setEdge(false);
                 }}
               >
-                Burden {burden && "✓"}
+                Burden {burden && '✓'}
               </button>
             </div>
 
@@ -320,7 +311,7 @@ export function RollModal({ sheet, initialAspect, rollType = "approach", onClose
 
           <div className={styles.preview}>
             <div className={styles.previewLabel}>Preview</div>
-            <div className={styles.previewText}>{labelParts.join(" + ")}</div>
+            <div className={styles.previewText}>{labelParts.join(' + ')}</div>
             <div className={styles.previewValue}>{total >= 0 ? `+${total}` : total}</div>
           </div>
 
@@ -329,8 +320,8 @@ export function RollModal({ sheet, initialAspect, rollType = "approach", onClose
               Failed to submit roll. Please try again.
             </div>
           )}
-        </>
+        </div>
       )}
-    </Modal>
+    </SheetModal>
   );
 }

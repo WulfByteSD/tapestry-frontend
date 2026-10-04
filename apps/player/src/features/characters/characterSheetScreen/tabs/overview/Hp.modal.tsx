@@ -1,140 +1,47 @@
-import { useMemo, useState } from "react";
-import { Button, Modal, Input, SelectField } from "@tapestry/ui";
-import { useUpdateCharacterSheetMutation } from "../../../characterSheetScreen/characterSheet.mutations";
-import styles from "./Resource.modal.module.scss";
+import { useState } from 'react';
+import { Button, Input, SelectField } from '@tapestry/ui';
+import { SheetModal } from '../../SheetModal.component';
+import { useUpdateCharacterSheetMutation } from '../../characterSheet.mutations';
+import { getHpPreview, nonnegative } from './ResourceModal.helpers';
+import type { ResourceModalProps, HpMode } from './ResourceModal.types';
+import styles from './Resource.modal.module.scss';
 
-type Props = {
-  sheet: any;
-  onClose: () => void;
-};
-
-type Mode = "heal" | "set";
-
-function clamp(n: number, min: number, max: number) {
-  return Math.max(min, Math.min(max, n));
-}
-
-export function HpModal({ sheet, onClose }: Props) {
+export function HpModal({ sheet, onClose }: ResourceModalProps) {
   const update = useUpdateCharacterSheetMutation(sheet._id);
-
-  const hp = sheet?.sheet?.resources?.hp ?? { current: 0, max: 0, temp: 0 };
+  const hp = sheet.sheet.resources?.hp ?? { current: 0, max: 0, temp: 0 };
   const current = Number(hp.current ?? 0);
   const max = Number(hp.max ?? 0);
   const temp = Number(hp.temp ?? 0);
-
-  // If max is 0, prefill something sane so the modal can actually work
-  const [maxDraft, setMaxDraft] = useState<number>(max > 0 ? max : Math.max(10, current));
-  const [tempDraft, setTempDraft] = useState<number>(temp);
-
-  const [mode, setMode] = useState<Mode>("heal");
-  const [amount, setAmount] = useState<number>(1);
-
-  const preview = useMemo(() => {
-    const effectiveMax = Math.max(0, Number(maxDraft) || 0);
-    const startTemp = Math.max(0, Number(tempDraft) || 0);
-    const amt = Math.max(0, Number(amount) || 0);
-
-    let nextCurrent = current;
-    let nextTemp = startTemp;
-
-    if (effectiveMax === 0) {
-      // If max is 0, we can't clamp meaningfully; keep current unchanged in preview.
-      // (But since we prefill maxDraft, this usually won’t happen.)
-      return { nextCurrent: current, nextTemp };
-    }
-
-    if (mode === "heal") {
-      nextCurrent = clamp(nextCurrent + amt, 0, effectiveMax);
-    }
-
-    if (mode === "set") {
-      nextCurrent = clamp(amt, 0, effectiveMax);
-    }
-
-    return { nextCurrent, nextTemp };
-  }, [mode, amount, current, maxDraft, tempDraft]);
-
-  const footer = (
-    <>
-      <Button tone="purple" variant="outline" onClick={onClose}>
-        Cancel
-      </Button>
-      <Button
-        tone="gold"
-        onClick={() => {
-          const effectiveMax = Math.max(0, Number(maxDraft) || 0);
-          const effectiveTemp = Math.max(0, Number(tempDraft) || 0);
-
-          const updates: Record<string, any> = {
-            "sheet.resources.hp.max": effectiveMax,
-            "sheet.resources.hp.temp": effectiveTemp,
-            "sheet.resources.hp.current": preview.nextCurrent,
-          };
-
-          update.mutate(updates);
-          onClose();
-        }}
-      >
-        Apply
-      </Button>
-    </>
-  );
+  // Preserve the existing fallback for sheets whose maximum has not been set.
+  const maxDraft = max > 0 ? max : Math.max(10, current);
+  const [tempDraft, setTempDraft] = useState(temp);
+  const [mode, setMode] = useState<HpMode>('heal');
+  const [amount, setAmount] = useState(1);
+  const preview = getHpPreview(current, maxDraft, tempDraft, mode, amount);
+  const apply = () => update.mutate({
+    'sheet.resources.hp.max': nonnegative(maxDraft),
+    'sheet.resources.hp.temp': nonnegative(tempDraft),
+    'sheet.resources.hp.current': preview.nextCurrent,
+  }, { onSuccess: onClose });
 
   return (
-    <Modal open={true} title="HP" onCancel={onClose} footer={footer} width={440} centered>
+    <SheetModal open title="HP" subtitle="Heal or adjust your current and temporary HP." onCancel={onClose} width={480} footer={<>
+      <Button variant="outline" onClick={onClose}>Cancel</Button>
+      <Button tone="gold" onClick={apply} disabled={update.isPending}>{update.isPending ? 'Applying…' : 'Apply HP'}</Button>
+    </>}>
       <div className={styles.body}>
         <div className={styles.summaryRow}>
-          <div className={styles.summary}>
-            <div className={styles.k}>Current</div>
-            <div className={styles.v}>
-              {current}/{max > 0 ? max : "—"}
-            </div>
-          </div>
-          <div className={styles.summary}>
-            <div className={styles.k}>Temp</div>
-            <div className={styles.v}>{temp}</div>
-          </div>
+          <div className={styles.summary}><span className={styles.k}>Current HP</span><strong className={styles.v}>{current}/{max > 0 ? max : '—'}</strong><span className={styles.hint}>Temp {temp}</span></div>
+          <div className={styles.summary}><span className={styles.k}>After adjustment</span><strong className={styles.v}>{preview.nextCurrent}/{nonnegative(maxDraft) || '—'}</strong><span className={styles.hint}>Temp {preview.nextTemp}</span></div>
         </div>
-
         <div className={styles.twoCol}>
-          <div className={styles.field}>
-            <label className={styles.label}>Temp HP</label>
-            <Input type="number" min={0} value={tempDraft} onChange={(e) => setTempDraft(Number(e.target.value))} />
-          </div>
+          <SelectField label="Action" value={mode} onChange={(event) => setMode(event.target.value as HpMode)}><option value="heal">Heal</option><option value="set">Set current HP</option></SelectField>
+          <Input label={mode === 'heal' ? 'Healing amount' : 'Current HP'} type="number" min={0} value={amount} onChange={(event) => setAmount(Number(event.target.value))} />
         </div>
-
-        <SelectField label="Action" value={mode} onChange={(e) => setMode(e.target.value as Mode)} size={"lg" as any}>
-          <option value="heal">Heal</option>
-          <option value="set">Set Current</option>
-        </SelectField>
-
-        <div className={styles.field}>
-          <label className={styles.label}>Amount</label>
-          <Input type="number" min={0} value={amount} onChange={(e) => setAmount(Number(e.target.value))} />
-        </div>
-
-        <div className={styles.preview}>
-          <div className={styles.k}>After</div>
-          <div className={styles.v}>
-            HP {preview.nextCurrent}/{Math.max(0, Number(maxDraft) || 0) || "—"} • Temp {preview.nextTemp}
-          </div>
-        </div>
-
-        <div className={styles.quickRow}>
-          <button className={styles.quickBtn} type="button" onClick={() => setAmount(1)}>
-            1
-          </button>
-          <button className={styles.quickBtn} type="button" onClick={() => setAmount(2)}>
-            2
-          </button>
-          <button className={styles.quickBtn} type="button" onClick={() => setAmount(5)}>
-            5
-          </button>
-          <button className={styles.quickBtn} type="button" onClick={() => setAmount(10)}>
-            10
-          </button>
-        </div>
+        <div className={styles.quickRow} aria-label="Quick amounts">{[1, 2, 5, 10].map((value) => <button key={value} className={styles.quickBtn} type="button" onClick={() => setAmount(value)} aria-label={`Set amount to ${value}`}>{value}</button>)}</div>
+        <Input label="Temporary HP" type="number" min={0} value={tempDraft} onChange={(event) => setTempDraft(Number(event.target.value))} />
+        {update.isError && <p role="alert" className={styles.errorText}>HP could not be updated. Try again.</p>}
       </div>
-    </Modal>
+    </SheetModal>
   );
 }

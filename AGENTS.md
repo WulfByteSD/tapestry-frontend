@@ -16,8 +16,38 @@ Treat this as a shared system, not two unrelated apps taped together.
 
 - Prefer local, scoped changes.
 - Avoid monorepo-wide edits unless explicitly required.
-- Respect shared packages: a change in `packages/*` may affect both apps.
+- Respect shared packages: a change in `packages/*` may affect all apps.
 - Do not casually alter shared types, shared components, or shared client behavior.
+
+## Multi-agent context-efficiency policy
+
+When using frontend subagents, optimize for context reuse rather than
+independent rediscovery.
+
+Use dependent agents sequentially, not in parallel:
+
+1. ui_architect performs bounded discovery and returns a concise implementation brief.
+2. The coordinator compresses those findings into a targeted implementation assignment.
+3. frontend_builder receives that targeted assignment. Do not give it the original
+   broad discovery prompt or ask it to repeat the architecture audit.
+4. After implementation, ui_reviewer receives the approved requirements and should
+   inspect the git diff / changed files first.
+5. Send only actionable reviewer findings back to the existing frontend_builder
+   for a targeted correction pass.
+
+Do not ask multiple agents to independently establish the same repository context.
+
+Only the ui_architect may perform broad frontend discovery.
+Builder and reviewer exploration must remain local to the files and dependencies
+necessary for their assigned work.
+
+If a downstream agent lacks required information, it should request that specific
+information from the coordinator rather than broadening its own exploration.
+
+Prefer passing concise findings, file paths, symbols, constraints, and acceptance
+criteria between agents instead of passing raw research or asking agents to rediscover it.
+
+Do not spawn all agents simultaneously when later work depends on earlier findings.
 
 ## Canon Context
 

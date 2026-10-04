@@ -1,251 +1,112 @@
-/* CONTENT */
-.contentGrid {
+.overview {
   display: grid;
-  gap: 12px;
+  gap: 28px;
 }
-
-.card {
+.nextMove {
+  padding: 0 0 24px;
+  border-bottom: 1px solid var(--sheet-divider);
 }
-
-.cardHeader {
-  display: grid;
-  gap: 2px;
+.kicker {
+  font-size: 12px;
+  color: var(--text-muted);
 }
-
-.cardTitle {
-  font-weight: 900;
+.nextMove h2 {
+  font:
+    600 clamp(25px, 3vw, 34px)/1.2 Georgia,
+    serif;
+  margin: 10px 0;
+}
+.nextMove p {
+  margin: 0;
+  max-width: 60ch;
   font-size: 14px;
-}
-
-.cardHint {
-  color: var(--text-muted);
-  font-size: 12px;
-}
-
-.aspectsGrid {
-  display: grid;
-  gap: 10px;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
-}
-
-.aspectTile {
-  border: 1px solid color-mix(in srgb, var(--contrast) 12%, transparent);
-  border-radius: 14px;
-  overflow: hidden;
-  min-width: 0; // Prevent grid blowout
-}
-
-.aspectTileTitle {
-  padding: 10px 12px;
-  font-weight: 900;
-  font-size: 12px;
-  text-align: center;
-  background: color-mix(in srgb, var(--base-two) 70%, transparent);
-  border-bottom: 1px solid color-mix(in srgb, var(--contrast) 12%, transparent);
-}
-
-.aspectRows {
-  display: grid;
-}
-
-.aspectRow {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 12px;
-  padding: 10px 12px;
-  background: transparent;
-  border: 0;
-  color: inherit;
-  text-align: left;
-  cursor: pointer;
-
-  &:hover {
-    background: color-mix(in srgb, var(--contrast) 6%, transparent);
-  }
-}
-
-.aspectKey {
-  font-size: 13px;
-  color: var(--text);
-}
-
-.aspectValue {
-  font-weight: 900;
-  font-size: 13px;
-  color: var(--gold);
-}
-
-.glance {
-  display: grid;
-  gap: 10px;
-}
-
-.glanceRow {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 12px;
-}
-
-.glanceLabel {
-  font-size: 13px;
+  line-height: 1.6;
   color: var(--text-muted);
 }
-
-.glanceValue {
-  font-size: 13px;
-  font-weight: 900;
-  color: var(--text);
-}
-.chipRow {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-}
-
-.chip {
-  border: 1px solid color-mix(in srgb, var(--contrast) 12%, transparent);
-  border-radius: 12px;
-  padding: 10px 10px;
-  display: grid;
-  gap: 2px;
-  background: color-mix(in srgb, var(--base-two) 72%, transparent);
-}
-
-.chipLabel {
-  font-size: 11px;
-  color: var(--text-muted);
-}
-
-.chipValue {
-  font-size: 13px;
-  font-weight: 900;
-  color: var(--text);
-}
-
-.formGrid {
-  display: grid;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.field {
-  display: grid;
-  gap: 6px;
-}
-
-.fieldLabel {
-  font-size: 12px;
-  font-weight: 800;
-  color: var(--text);
-}
-
-.fieldHint {
-  font-size: 12px;
-  color: var(--text-muted);
-
-  b {
-    color: var(--gold);
-  }
-}
-
-.select,
-.number {
-  width: 100%;
-  border-radius: 12px;
-  padding: 10px 10px;
-  border: 1px solid color-mix(in srgb, var(--contrast) 16%, transparent);
-  background: color-mix(in srgb, var(--base-two) 70%, transparent);
-  color: var(--text);
-  font-size: 13px;
-
-  &:focus {
-    outline: none;
-    border-color: color-mix(in srgb, var(--gold) 45%, transparent);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--gold) 16%, transparent);
-  }
-
-  &:disabled {
-    opacity: 0.55;
-    cursor: not-allowed;
-  }
-}
-
-.secondaryRow {
-  display: grid;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.checkbox {
-  display: inline-flex;
+.actions {
+  display: flex;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 22px;
+}
+.primaryAction.primaryAction {
+  background: var(--gold-soft);
+  color: var(--base);
+  border-color: var(--gold);
+}
+.sectionHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
   gap: 8px;
-  color: var(--text-muted);
-  font-size: 12px;
-
-  input {
-    transform: translateY(1px);
+  h3 {
+    font-size: 16px;
+    margin: 0;
   }
 }
-
-.rollRow {
-  margin-top: 12px;
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 10px;
-  align-items: center;
+.equipmentList {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  li {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--sheet-divider);
+    font-size: 14px;
+    overflow-wrap: anywhere;
+  }
 }
-
-.preview {
-  border: 1px solid color-mix(in srgb, var(--contrast) 12%, transparent);
-  border-radius: 12px;
-  padding: 10px 10px;
-  display: grid;
-  gap: 2px;
-}
-
-.previewLabel {
-  font-size: 11px;
+.itemCategory {
   color: var(--text-muted);
+  font-size: 12px;
 }
-
-.previewValue {
-  font-size: 14px;
-  font-weight: 900;
-  color: var(--gold);
-}
-.playSurfaceBody {
-  display: grid;
-  gap: 12px;
-}
-
-.actionsCol {
-  display: grid;
-  gap: 8px;
-}
-
-.statsGrid {
-  display: grid;
-  gap: 8px;
-  grid-template-columns: repeat(2, 1fr);
-}
-
-.statCard {
-  border: 1px solid color-mix(in srgb, var(--contrast) 12%, transparent);
-  border-radius: 12px;
-  padding: 10px 10px;
-  display: grid;
-  gap: 2px;
-  background: color-mix(in srgb, var(--base-two) 72%, transparent);
-}
-
-.statLabel {
-  font-size: 11px;
-  color: var(--text-muted);
-}
-
-.statValue {
+.empty {
+  margin: 12px 0 0;
   font-size: 13px;
-  font-weight: 900;
-  color: var(--text);
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+.conditionList {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  gap: 8px 20px;
+  padding: 0;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+.quickLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  border-top: 1px solid var(--sheet-divider);
+  padding-top: 12px;
+}
+@media (max-width: 600px) {
+  .overview {
+    gap: 22px;
+  }
+  .actions {
+    gap: 8px;
+  }
+  .nextMove h2 {
+    font-size: 26px;
+    margin: 8px 0;
+  }
+  .nextMove p {
+    font-size: 13px;
+  }
+  .actions {
+    margin-top: 16px;
+  }
+  .primaryAction.primaryAction {
+    width: 100%;
+  }
+  .quickLinks {
+    gap: 4px;
+  }
 }

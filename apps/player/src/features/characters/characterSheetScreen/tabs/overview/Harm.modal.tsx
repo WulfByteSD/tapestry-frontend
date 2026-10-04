@@ -1,33 +1,20 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { SheetModal } from '../../SheetModal.component';
+
+import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Button, Modal, Input } from "@tapestry/ui";
+import { Button, Input } from "@tapestry/ui";
 import { applyHarm } from "@tapestry/api-client";
 import { api } from "@/lib/api";
 import { RollResultCard } from "@/components/rollResultCard/RollResultCard.component";
 import styles from "./Resource.modal.module.scss";
+import { getProtection } from '../../CharacterSheet.helpers';
 
 type Props = {
   sheet: any;
   onClose: () => void;
 };
-
-function getManualArmor(sheet: any): number {
-  const other = sheet?.sheet?.resources?.other ?? {};
-  const value = other.armor ?? other.ac ?? 0;
-  return typeof value === "number" ? value : 0;
-}
-
-function getEquippedProtection(sheet: any): number {
-  const inventory = sheet?.sheet?.inventory ?? [];
-  return inventory.reduce((sum: number, item: any) => {
-    if (!item?.equipped) return sum;
-    const protection = item?.overrides?.protection ?? item?.protection ?? 0;
-
-    return sum + (typeof protection === "number" ? protection : 0);
-  }, 0);
-}
 
 export function HarmModal({ sheet, onClose }: Props) {
   const queryClient = useQueryClient();
@@ -36,9 +23,7 @@ export function HarmModal({ sheet, onClose }: Props) {
   const [useTempFirst, setUseTempFirst] = useState(true);
   const [result, setResult] = useState<any>(null);
 
-  const totalProtection = useMemo(() => {
-    return getManualArmor(sheet) + getEquippedProtection(sheet);
-  }, [sheet]);
+  const totalProtection = getProtection(sheet);
 
   const mutation = useMutation({
     mutationFn: async () => {
@@ -81,7 +66,7 @@ export function HarmModal({ sheet, onClose }: Props) {
   );
 
   return (
-    <Modal open onCancel={onClose} title="Take Damage" footer={footer}>
+    <SheetModal open onCancel={onClose} title="Take Damage" footer={footer}>
       {result ? (
         <div className={styles.stack}>
           <div className={styles.previewBox}>
@@ -175,6 +160,6 @@ export function HarmModal({ sheet, onClose }: Props) {
           ) : null}
         </div>
       )}
-    </Modal>
+    </SheetModal>
   );
 }

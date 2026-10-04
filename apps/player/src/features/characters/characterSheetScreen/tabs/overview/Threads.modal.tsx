@@ -1,145 +1,43 @@
-import { useMemo, useState } from "react";
-import { Button, Modal, Input, SelectField } from "@tapestry/ui";
-import { useUpdateCharacterSheetMutation } from "../../../characterSheetScreen/characterSheet.mutations";
-import styles from "./Resource.modal.module.scss";
+import { useState } from 'react';
+import { Button, Input, SelectField } from '@tapestry/ui';
+import { SheetModal } from '../../SheetModal.component';
+import { useUpdateCharacterSheetMutation } from '../../characterSheet.mutations';
+import { getThreadsPreview } from './ResourceModal.helpers';
+import type { ResourceModalProps, ThreadsMode } from './ResourceModal.types';
+import styles from './Resource.modal.module.scss';
 
-type Props = {
-  sheet: any;
-  onClose: () => void;
-};
-
-type Mode = "spend" | "gain" | "set";
-
-function clamp(n: number, min: number, max: number) {
-  console.log({ n, min, max });
-  return Math.max(min, Math.min(max, n));
-}
-
-export function ThreadsModal({ sheet, onClose }: Props) {
+export function ThreadsModal({ sheet, onClose }: ResourceModalProps) {
   const update = useUpdateCharacterSheetMutation(sheet._id);
-
-  const threads = sheet?.sheet?.resources?.threads ?? { current: 0, max: 0 };
+  const threads = sheet.sheet.resources?.threads ?? { current: 0, max: 0 };
   const current = Number(threads.current ?? 0);
   const max = Number(threads.max ?? 5);
-
-  const [mode, setMode] = useState<Mode>("spend");
-  const [amount, setAmount] = useState<number>(1);
-  const [reason, setReason] = useState<string>("");
-
-  const nextCurrent = useMemo(() => {
-    const amt = Math.max(0, Number(amount) || 0);
-    console.log({ mode, amt, current, max });
-
-    if (mode === "spend") return clamp(current - amt, 0, max);
-    if (mode === "gain") return clamp(current + amt, 0, max);
-    return clamp(amt, 0, max);
-  }, [mode, amount, current, max]);
-
-  const footer = (
-    <>
-      <Button tone="purple" variant="outline" onClick={onClose}>
-        Cancel
-      </Button>
-      <Button
-        tone="gold"
-        onClick={() => {
-          update.mutate({
-            "sheet.resources.threads.current": nextCurrent,
-            // later: store reason in an audit log if you want
-          });
-          onClose();
-        }}
-      >
-        Apply
-      </Button>
-    </>
-  );
+  const [mode, setMode] = useState<ThreadsMode>('spend');
+  const [amount, setAmount] = useState(1);
+  const nextCurrent = getThreadsPreview(current, max, mode, amount);
+  const quickAdjust = (nextMode: ThreadsMode, nextAmount: number) => { setMode(nextMode); setAmount(nextAmount); };
 
   return (
-    <Modal open={true} title="Threads" onCancel={onClose} footer={footer} width={420} centered>
+    <SheetModal open title="Threads" subtitle="Spend or gain the Threads that turn the story." onCancel={onClose} width={480} footer={<>
+      <Button variant="outline" onClick={onClose}>Cancel</Button>
+      <Button tone="gold" disabled={update.isPending} onClick={() => update.mutate({ 'sheet.resources.threads.current': nextCurrent }, { onSuccess: onClose })}>{update.isPending ? 'Applying…' : 'Apply Threads'}</Button>
+    </>}>
       <div className={styles.body}>
         <div className={styles.summaryRow}>
-          <div className={styles.summary}>
-            <div className={styles.k}>Current</div>
-            <div className={styles.v}>
-              {current}/{max}
-            </div>
-          </div>
-          <div className={styles.summary}>
-            <div className={styles.k}>After</div>
-            <div className={styles.v}>
-              {nextCurrent}/{max}
-            </div>
-          </div>
+          <div className={styles.summary}><span className={styles.k}>Current Threads</span><strong className={styles.v}>{current}/{max}</strong></div>
+          <div className={styles.summary}><span className={styles.k}>After adjustment</span><strong className={styles.v}>{nextCurrent}/{max}</strong></div>
         </div>
-
-        <SelectField label="Action" value={mode} onChange={(e) => setMode(e.target.value as Mode)}>
-          <option value="spend">Spend</option>
-          <option value="gain">Gain</option>
-          <option value="set">Set Current</option>
-        </SelectField>
-
-        <div className={styles.field}>
-          <label className={styles.label}>Amount</label>
-          <Input type="number" min={0} value={amount} onChange={(e) => setAmount(Number(e.target.value))} />
+        <div className={styles.twoCol}>
+          <SelectField label="Action" value={mode} onChange={(event) => setMode(event.target.value as ThreadsMode)}><option value="spend">Spend</option><option value="gain">Gain</option><option value="set">Set current Threads</option></SelectField>
+          <Input label="Amount" type="number" min={0} value={amount} onChange={(event) => setAmount(Number(event.target.value))} />
         </div>
-
         <div className={styles.quickRow}>
-          <button
-            className={styles.quickBtn}
-            type="button"
-            onClick={() => {
-              setMode("spend");
-              setAmount(1);
-            }}
-          >
-            Nudge (−1)
-          </button>
-          <button
-            className={styles.quickBtn}
-            type="button"
-            onClick={() => {
-              setMode("spend");
-              setAmount(2);
-            }}
-          >
-            Big Swing (−2)
-          </button>
-          <button
-            className={styles.quickBtn}
-            type="button"
-            onClick={() => {
-              setMode("spend");
-              setAmount(5);
-            }}
-          >
-            Miracle (−5)
-          </button>
-          <button
-            className={styles.quickBtn}
-            type="button"
-            onClick={() => {
-              setMode("gain");
-              setAmount(1);
-            }}
-          >
-            Gain (+1)
-          </button>
+          <button className={styles.quickBtn} type="button" onClick={() => quickAdjust('spend', 1)}>Nudge −1</button>
+          <button className={styles.quickBtn} type="button" onClick={() => quickAdjust('spend', 2)}>Big Swing −2</button>
+          <button className={styles.quickBtn} type="button" onClick={() => quickAdjust('spend', 5)}>Miracle −5</button>
+          <button className={styles.quickBtn} type="button" onClick={() => quickAdjust('gain', 1)}>Gain +1</button>
         </div>
-
-        <div className={styles.field}>
-          <label className={styles.label}>Why? (optional)</label>
-          <textarea
-            className={styles.textarea}
-            rows={3}
-            value={reason}
-            onChange={(e) => setReason(e.target.value)}
-            placeholder="Miss, bargain, nudge for +2, etc."
-          />
-        </div>
-
-        <div className={styles.hint}>MVP: reason is not stored yet (we can add an audit/event log later).</div>
+        {update.isError && <p role="alert" className={styles.errorText}>Threads could not be updated. Try again.</p>}
       </div>
-    </Modal>
+    </SheetModal>
   );
 }

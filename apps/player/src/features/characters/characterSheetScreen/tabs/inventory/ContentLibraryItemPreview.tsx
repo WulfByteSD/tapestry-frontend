@@ -1,7 +1,9 @@
 'use client';
 
+import { SheetModal } from '../../SheetModal.component';
+
 import Image from 'next/image';
-import { Modal } from '@tapestry/ui';
+import { Button } from '@tapestry/ui';
 import type { AttackProfile, ItemDefinition } from '@tapestry/types';
 import styles from './ContentLibraryItemPreview.module.scss';
 
@@ -66,7 +68,7 @@ export function ContentLibraryItemPreview({ item, onClose }: Props) {
   const hasAbilities = !!item.grantedAbilities?.length;
 
   return (
-    <Modal open={!!item} onCancel={onClose} footer={null} title={item.name} width={600} zIndex={1100} destroyOnClose>
+    <SheetModal open={!!item} onCancel={onClose} footer={null} title={item.name} width={600} zIndex={1100} destroyOnClose>
       <div className={styles.root}>
         {/* Hero image */}
         {hasImage && (
@@ -144,6 +146,6 @@ export function ContentLibraryItemPreview({ item, onClose }: Props) {
           </div>
         )}
       </div>
-    </Modal>
+    </SheetModal>
   );
 }

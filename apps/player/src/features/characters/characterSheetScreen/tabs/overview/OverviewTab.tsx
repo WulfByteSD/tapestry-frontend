@@ -1,240 +1,39 @@
-import { useMemo, useState } from "react";
-import { Button, Card, CardBody, CardHeader } from "@tapestry/ui";
-import { ASPECT_BLOCKS, type AspectGroup, type AspectKey } from "@tapestry/types";
-import styles from "./OverviewTab.module.scss";
-import { RollModal } from "./Roll.modal";
-import { AspectStepperRow } from "../../../aspects/AspectStepperRow";
-import { aspectPath, getAspectValue } from "../../../aspects/aspectutils";
-import { useUpdateCharacterSheetMutation } from "../../../characterSheetScreen/characterSheet.mutations";
-import { HpModal } from "./Hp.modal";
-import { ThreadsModal } from "./Threads.modal";
-import { AttackModal } from "./Attack.modal";
-import { HarmModal } from "./Harm.modal";
+import { Button } from '@tapestry/ui';
+import { titleCaseFromKey } from '../../CharacterSheet.helpers';
+import type { OverviewTabProps } from './OverviewTab.types';
+import styles from './OverviewTab.module.scss';
 
-// Aspect value rules:
-// - Game-wide range: -2 to +4 (enforced by game rules across all levels)
-// - Creation rules: -2 to +2 with pool of 2 (only at weave level 0)
-// TODO: Enforce aspect min/max based on weave level when we implement weave tracking
-// Until then, no programmatic enforcement - players manage their own aspect values.
+export function OverviewTab({ sheet, mode, onAction, onNavigate }: OverviewTabProps) {
+  const isBuild = mode === 'build';
+  const equipped = sheet.sheet.inventory?.filter((item) => item.equipped) ?? [];
+  const conditions = sheet.sheet.conditions ?? [];
 
-// const ENFORCE_CREATION_RULES = false; // later (campaign-driven)
-// const CREATION_MIN = -2;
-// const CREATION_MAX = 2;
-// const CREATION_POOL = 2;
-
-type Props = {
-  sheet: any;
-  mode: "build" | "play";
-};
-
-type AspectSelection = {
-  group: AspectGroup;
-  key: AspectKey;
-  label: string;
-  blockTitle: string;
-};
-
-function getOtherNumber(sheet: any, key: string): number | null {
-  const v = sheet?.sheet?.resources?.other?.[key];
-  return typeof v === "number" ? v : null;
-}
-function getEquippedProtection(sheet: any): number {
-  const inventory = sheet?.sheet?.inventory ?? [];
-  return inventory.reduce((sum: number, item: any) => {
-    if (!item?.equipped) return sum;
-
-    const protection = item?.overrides?.protection ?? item?.protection ?? 0;
-
-    return sum + (typeof protection === "number" ? protection : 0);
-  }, 0);
-}
-
-function getDerivedProtection(sheet: any): number {
-  const manual = getOtherNumber(sheet, "armor") ?? getOtherNumber(sheet, "ac") ?? 0;
-  return manual + getEquippedProtection(sheet);
-}
-export function OverviewTab({ sheet, mode }: Props) {
-  const update = useUpdateCharacterSheetMutation(sheet._id);
-  const isBuild = mode === "build";
-
-  const [rollOpen, setRollOpen] = useState(false);
-  const [initialAspect, setInitialAspect] = useState<AspectSelection | null>(null);
-  const [hpOpen, setHpOpen] = useState(false);
-  const [threadsOpen, setThreadsOpen] = useState(false);
-  const [attackOpen, setAttackOpen] = useState(false);
-  const [harmOpen, setHarmOpen] = useState(false);
-  const hp = sheet?.sheet?.resources?.hp;
-  const threads = sheet?.sheet?.resources?.threads;
-  const armor = getDerivedProtection(sheet);
-
-  const defaultAspect = useMemo<AspectSelection>(() => {
-    // default to Might/Strength
-    return {
-      group: "might",
-      key: "strength",
-      label: "Strength (Might)",
-      blockTitle: "Might",
-    };
-  }, []);
-
-  function openApproach(aspect?: AspectSelection) {
-    setInitialAspect(aspect ?? initialAspect ?? defaultAspect);
-    setRollOpen(true);
-  }
-
-  return (
-    <div className={styles.contentGrid}>
-      {/* ASPECTS */}
-      <Card inlay className={styles.card}>
-        <CardHeader className={styles.cardHeader}>
-          <div className={styles.cardTitle}>Aspects</div>
-          <div className={styles.cardHint}>
-            {isBuild ? "Build mode: set starting values." : "Play mode: tap an aspect to roll an Approach."}
-          </div>
-        </CardHeader>
-
-        <CardBody className={styles.aspectsGrid}>
-          {ASPECT_BLOCKS.map((block) => (
-            <div key={block.title} className={styles.aspectTile}>
-              <div className={styles.aspectTileTitle}>{block.title}</div>
-
-              <div className={styles.aspectRows}>
-                {block.keys.map(({ label, key }) => {
-                  const value = getAspectValue(sheet, block.group, key);
-
-                  if (isBuild) {
-                    // No min/max enforcement until we track weave levels
-                    return (
-                      <AspectStepperRow
-                        key={key}
-                        label={label}
-                        value={value}
-                        onInc={() => {
-                          update.mutate({ [aspectPath(block.group, key)]: value + 1 });
-                        }}
-                        onDec={() => {
-                          update.mutate({ [aspectPath(block.group, key)]: value - 1 });
-                        }}
-                      />
-                    );
-                  }
-
-                  // PLAY MODE: click -> open RollModal with this aspect preselected
-                  return (
-                    <button
-                      key={key}
-                      type="button"
-                      className={styles.aspectRow}
-                      onClick={() =>
-                        openApproach({
-                          group: block.group,
-                          key,
-                          label: `${label} (${block.title})`,
-                          blockTitle: block.title,
-                        })
-                      }
-                    >
-                      <span className={styles.aspectKey}>{label}</span>
-                      <span className={styles.aspectValue}>{value}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          ))}
-        </CardBody>
-      </Card>
-
-      {/* PLAY SURFACE */}
-      <Card inlay className={styles.card}>
-        <CardHeader className={styles.cardHeader}>
-          <div className={styles.cardTitle}>Play Surface</div>
-          <div className={styles.cardHint}>Quick actions + live state.</div>
-        </CardHeader>
-
-        <CardBody className={styles.playSurfaceBody}>
-          <div className={styles.actionsCol}>
-            <Button
-              tone="gold"
-              fullWidth
-              disabled={isBuild}
-              onClick={() => {
-                /* later: open Approach modal */
-                openApproach();
-              }}
-            >
-              Approach
-            </Button>
-            <Button tone="danger" fullWidth disabled={isBuild} onClick={() => setAttackOpen(true)}>
-              Attack
-            </Button>
-
-            <Button tone="purple" variant="outline" fullWidth onClick={() => setHpOpen(true)}>
-              HP
-            </Button>
-            <Button tone="purple" variant="outline" fullWidth onClick={() => setThreadsOpen(true)}>
-              Threads
-            </Button>
-            <Button tone="neutral" fullWidth disabled={isBuild} onClick={() => setHarmOpen(true)}>
-              Take Damage
-            </Button>
-          </div>
-
-          <div className={styles.statsGrid}>
-            <div className={styles.statCard}>
-              <div className={styles.statLabel}>Threads</div>
-              <div className={styles.statValue}>
-                {sheet?.sheet?.resources?.threads
-                  ? `${sheet.sheet.resources.threads.current}/${sheet.sheet.resources.threads.max}`
-                  : "—"}
-              </div>
-            </div>
-
-            <div className={styles.statCard}>
-              <div className={styles.statLabel}>HP</div>
-              <div className={styles.statValue}>
-                {sheet?.sheet?.resources?.hp
-                  ? `${sheet.sheet.resources.hp.current}/${sheet.sheet.resources.hp.max}`
-                  : "—"}
-              </div>
-            </div>
-
-            <div className={styles.statCard}>
-              <div className={styles.statLabel}>Armor</div>
-              <div className={styles.statValue}>
-                {sheet?.sheet?.resources?.other?.armor ?? sheet?.sheet?.resources?.other?.ac ?? "—"}
-              </div>
-            </div>
-
-            <div className={styles.statCard}>
-              <div className={styles.statLabel}>Conditions</div>
-              <div className={styles.statValue}>{sheet?.sheet?.conditions?.length ?? 0}</div>
-            </div>
-            <div className={styles.statCard}>
-              <div className={styles.statLabel}>Defense TN</div>
-              <div className={styles.statValue}>{sheet?.sheet?.dtn ?? "—"}</div>
-            </div>
-          </div>
-        </CardBody>
-      </Card>
-
-      {hpOpen && <HpModal sheet={sheet} onClose={() => setHpOpen(false)} />}
-      {threadsOpen && <ThreadsModal sheet={sheet} onClose={() => setThreadsOpen(false)} />}
-      {rollOpen && (
-        <RollModal
-          key={`${initialAspect?.group ?? "might"}.${initialAspect?.key ?? "strength"}`}
-          sheet={sheet}
-          initialAspect={
-            initialAspect ?? {
-              group: "might",
-              key: "strength",
-            }
-          }
-          onClose={() => setRollOpen(false)}
-        />
-      )}
-      {attackOpen && <AttackModal sheet={sheet} onClose={() => setAttackOpen(false)} />}
-      {harmOpen && <HarmModal sheet={sheet} onClose={() => setHarmOpen(false)} />}
-    </div>
-  );
+  return <div className={styles.overview}>
+    <section className={styles.nextMove} aria-labelledby="next-move-heading">
+      <div className={styles.kicker}>{isBuild ? 'Build your character' : 'At the table'}</div>
+      <h2 id="next-move-heading">{isBuild ? 'Bring your character to life' : 'Your next move'}</h2>
+      <p>{isBuild ? 'Shape your aspects, choose skills and abilities, and gather your gear. Switch to Play when you are ready.' : 'Choose an aspect for your approach, or prepare a roll from here.'}</p>
+      <div className={styles.actions}>
+        <Button tone="gold" size="lg" className={styles.primaryAction} disabled={isBuild} onClick={() => onAction('approach')}>Roll an Approach</Button>
+        <Button variant="outline" tone="neutral" size="lg" disabled={isBuild} onClick={() => onAction('attack')}>Attack</Button>
+        <Button variant="ghost" tone="neutral" size="lg" disabled={isBuild} onClick={() => onAction('harm')}>Take Damage</Button>
+      </div>
+    </section>
+    <section className={styles.readySection} aria-labelledby="equipped-heading">
+      <div className={styles.sectionHeader}><h3 id="equipped-heading">Equipped & ready</h3><Button variant="ghost" size="sm" onClick={() => onNavigate('inventory')}>Open inventory →</Button></div>
+      {equipped.length ? <ul className={styles.equipmentList}>{equipped.map((item, index) => <li key={item.instanceId ?? `${item.itemKey}-${index}`}>
+        <span>{item.overrides?.displayName || item.name || titleCaseFromKey(item.itemKey || item.definition?.itemKey) || 'Unnamed item'}</span>
+        <span className={styles.itemCategory}>{titleCaseFromKey(item.category)}</span>
+      </li>)}</ul> : <p className={styles.empty}>No gear equipped. Your inventory is ready when you need it.</p>}
+    </section>
+    {conditions.length > 0 && <section className={styles.readySection} aria-labelledby="active-conditions-heading">
+      <div className={styles.sectionHeader}><h3 id="active-conditions-heading">Active conditions</h3><Button variant="ghost" size="sm" onClick={() => onNavigate('conditions')}>Manage →</Button></div>
+      <ul className={styles.conditionList}>{conditions.map((condition) => <li key={condition.key}>{titleCaseFromKey(condition.key)}{condition.stacks && condition.stacks > 1 ? ` ×${condition.stacks}` : ''}</li>)}</ul>
+    </section>}
+    <nav className={styles.quickLinks} aria-label="Character options">
+      <Button variant="ghost" onClick={() => onNavigate('abilities')}>Abilities →</Button>
+      <Button variant="ghost" onClick={() => onNavigate('skills')}>Skills →</Button>
+      <Button variant="ghost" onClick={() => onNavigate('notes')}>Story notes →</Button>
+    </nav>
+  </div>;
 }

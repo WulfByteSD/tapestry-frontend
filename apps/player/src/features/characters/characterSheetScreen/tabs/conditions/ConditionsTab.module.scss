@@ -1,3 +1,4 @@
+@use '../../CharacterTab.styles' as sheet;
 .screenCard {
   min-height: 420px;
 }
@@ -173,3 +174,15 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
+
+.screenCard.screenCard { @include sheet.section; }
+.title { @include sheet.title; }
+.subtitle { font-size: 13px; line-height: 1.6; }
+.conditionGrid { grid-template-columns: 1fr; gap: 0; }
+.conditionCard { @include sheet.entry; }
+.conditionCardActive { border-left: 3px solid var(--gold); padding-left: 16px; background: var(--surface); }
+.conditionName { font-size: 16px; }
+.conditionSummary { font-size: 13px; line-height: 1.6; }
+.conditionToggle:focus-visible { outline: 2px solid var(--gold-soft); outline-offset: 4px; }
+.tag, .effectChip { border: 0; border-radius: 0; background: transparent; padding: 0 12px 0 0; font-weight: 500; }
+.textarea { border-radius: 6px; background: var(--surface); }

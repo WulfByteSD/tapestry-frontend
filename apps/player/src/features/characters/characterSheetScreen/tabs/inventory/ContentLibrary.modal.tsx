@@ -1,8 +1,10 @@
 'use client';
 
+import { SheetModal } from '../../SheetModal.component';
+
 import { useEffect, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Modal, Button, Loader } from '@tapestry/ui';
+import { Button, Loader } from '@tapestry/ui';
 import { api } from '@/lib/api';
 import { buildFilterString, getItems, getSettings } from '@tapestry/api-client';
 import type { CharacterSheet, InventoryCategory, ItemDefinition } from '@tapestry/types';
@@ -146,7 +148,7 @@ export function ContentLibraryModal({ open, onClose, sheet, onAddItem }: Props) 
   // ── Render ─────────────────────────────────────────────────────────────
 
   return (
-    <Modal open={open} onCancel={onClose} footer={null} title="Add from Content Library" width={820} destroyOnClose>
+    <SheetModal open={open} onCancel={onClose} footer={null} title="Add from Content Library" width={820} destroyOnClose>
       <div className={styles.root}>
         <ContentLibraryFilters
           filters={filters}
@@ -195,6 +197,6 @@ export function ContentLibraryModal({ open, onClose, sheet, onAddItem }: Props) 
           </div>
         )}
       </div>
-    </Modal>
+    </SheetModal>
   );
 }

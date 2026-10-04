@@ -1,9 +1,12 @@
-// apps/player/src/features/characters/characterSheetScreen/tabs/abilities/AbilityLibrary.modal.tsx
 'use client';
+
+import { SheetModal } from '../../SheetModal.component';
+// apps/player/src/features/characters/characterSheetScreen/tabs/abilities/AbilityLibrary.modal.tsx
+
 
 import { useEffect, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Button, Modal, Select, TextField, Loader } from '@tapestry/ui';
+import { Button, Select, TextField, Loader } from '@tapestry/ui';
 import { api } from '@/lib/api';
 import { getAbilitiesForSetting, getSettings } from '@tapestry/api-client';
 import type { AbilityDefinition, CharacterSheet, SettingDefinition } from '@tapestry/types';
@@ -80,7 +83,7 @@ export function AbilityLibraryModal({ open, onClose, sheet, knownAbilityKeys, on
   }, [abilities, search, knownAbilityKeys]);
 
   return (
-    <Modal open={open} onCancel={onClose} title="Ability Library">
+    <SheetModal open={open} onCancel={onClose} title="Ability Library">
       <div className={styles.content}>
         <div className={styles.controls}>
           <label className={styles.field}>
@@ -140,6 +143,6 @@ export function AbilityLibraryModal({ open, onClose, sheet, knownAbilityKeys, on
           </div>
         )}
       </div>
-    </Modal>
+    </SheetModal>
   );
 }
