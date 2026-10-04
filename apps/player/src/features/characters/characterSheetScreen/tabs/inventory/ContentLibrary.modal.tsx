@@ -2,7 +2,7 @@
 
 import { SheetModal } from '../../SheetModal.component';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Button, Loader } from '@tapestry/ui';
 import { api } from '@/lib/api';
@@ -58,16 +58,6 @@ export function ContentLibraryModal({ open, onClose, sheet, onAddItem }: Props) 
 
   const settings = settingsQuery.data?.payload ?? [];
 
-  useEffect(() => {
-    if (sheet.settingKey) {
-      setSelectedSettingKey(sheet.settingKey);
-      return;
-    }
-    if (!selectedSettingKey && settings.length > 0) {
-      setSelectedSettingKey(settings[0].key);
-    }
-  }, [sheet.settingKey, selectedSettingKey, settings]);
-
   const effectiveSettingKey = sheet.settingKey || selectedSettingKey || settings[0]?.key || '';
 
   // ── Query strategy ─────────────────────────────────────────────────────
@@ -108,7 +98,7 @@ export function ContentLibraryModal({ open, onClose, sheet, onAddItem }: Props) 
 
   // ── Data derivation ────────────────────────────────────────────────────
 
-  const rawItems = itemsQuery.data?.payload ?? [];
+  const rawItems = useMemo(() => itemsQuery.data?.payload ?? [], [itemsQuery.data]);
   const serverMetadata = itemsQuery.data?.metadata;
 
   // Client-side text search
@@ -148,7 +138,7 @@ export function ContentLibraryModal({ open, onClose, sheet, onAddItem }: Props) 
   // ── Render ─────────────────────────────────────────────────────────────
 
   return (
-    <SheetModal open={open} onCancel={onClose} footer={null} title="Add from Content Library" width={820} destroyOnClose>
+    <SheetModal open={open} onCancel={onClose} footer={null} title="Add Items" destroyOnClose>
       <div className={styles.root}>
         <ContentLibraryFilters
           filters={filters}

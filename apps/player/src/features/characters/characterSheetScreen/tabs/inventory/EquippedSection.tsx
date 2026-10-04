@@ -13,7 +13,7 @@ export const BODY_SLOT_ORDER: BodySlotKey[] = ['head', 'body', 'hands', 'legs', 
 
 const SLOT_LABELS: Record<BodySlotKey, string> = {
   head: 'Head',
-  body: 'Body',
+  body: 'Torso',
   hands: 'Hands',
   legs: 'Legs',
   feet: 'Feet',
@@ -71,10 +71,11 @@ type Props = {
   equippedItems: InventoryItem[];
   onToggleEquipped: (instanceId?: string) => void;
   onRemove: (instanceId?: string) => void;
+  onQuantityChange: (instanceId: string | undefined, qty: number) => void;
   characterSex?: string;
 };
 
-export function EquippedSection({ equippedItems, onToggleEquipped, onRemove, characterSex }: Props) {
+export function EquippedSection({ equippedItems, onToggleEquipped, onRemove, onQuantityChange, characterSex }: Props) {
   const BodySilhouette = characterSex?.toLowerCase() === 'female' ? FemaleBodySilhouette : MaleBodySilhouette;
   const bySlot = useMemo(() => {
     const map = new Map<SlotKey, InventoryItem[]>();
@@ -88,11 +89,10 @@ export function EquippedSection({ equippedItems, onToggleEquipped, onRemove, cha
     return map;
   }, [equippedItems]);
 
-  const defaultSlot = BODY_SLOT_ORDER.find((slotKey) => bySlot.has(slotKey)) ?? 'body';
-  const [selectedSlot, setSelectedSlot] = useState<BodySlotKey>(defaultSlot);
+  const [selectedSlot, setSelectedSlot] = useState<BodySlotKey | null>(null);
 
-  const activeItems = bySlot.get(selectedSlot) ?? [];
-  const activeLabel = SLOT_LABELS[selectedSlot];
+  const activeItems = selectedSlot === null ? equippedItems : (bySlot.get(selectedSlot) ?? []);
+  const activeLabel = selectedSlot === null ? 'All equipped' : SLOT_LABELS[selectedSlot];
 
   const slotStates = Object.fromEntries(BODY_SLOT_ORDER.map((key) => [key, key === selectedSlot ? 'active' : bySlot.has(key) ? 'filled' : 'empty'])) as Record<
     BodySlotKey,
@@ -105,27 +105,50 @@ export function EquippedSection({ equippedItems, onToggleEquipped, onRemove, cha
         <div className={styles.diagramPanel}>
           <div className={styles.diagramHeader}>
             <div>
-              <div className={styles.diagramTitle}>Equipment Map</div>
-              <div className={styles.diagramSubtle}>Click a zone to inspect what is equipped there.</div>
+              <div className={styles.diagramTitle}>Equipment</div>
+              <div className={styles.diagramSubtle}>Select a zone to see its items.</div>
             </div>
           </div>
 
           <BodySilhouette slotStates={slotStates} onSlotClick={setSelectedSlot} className={styles.equipmentSvg} />
+
+          <div className={styles.zoneControls} role="group" aria-label="Equipment zones">
+            {BODY_SLOT_ORDER.map((slot) => {
+              const count = bySlot.get(slot)?.length ?? 0;
+              return (
+                <button
+                  key={slot}
+                  type="button"
+                  className={styles.zoneControl}
+                  aria-label={`${SLOT_LABELS[slot]}, ${count} equipped ${count === 1 ? 'item' : 'items'}`}
+                  aria-pressed={selectedSlot === slot}
+                  onClick={() => setSelectedSlot(slot)}
+                >
+                  <span>{SLOT_LABELS[slot]}</span>
+                  <span className={styles.sectionCount} aria-hidden="true">{count}</span>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         <div className={styles.equippedInspector}>
           <div className={styles.inspectorHeader}>
             <span className={styles.inspectorSlotLabel}>{activeLabel}</span>
+            <span className={styles.sectionCount}>{activeItems.length}</span>
+            <button type="button" className={styles.showAll} aria-pressed={selectedSlot === null} onClick={() => setSelectedSlot(null)}>
+              All
+            </button>
           </div>
 
           {activeItems.length > 0 ? (
             <div className={styles.inspectorList}>
               {activeItems.map((item) => (
-                <InventoryItemCard key={item.instanceId} item={item} onToggleEquipped={onToggleEquipped} onRemove={onRemove} onQuantityChange={() => {}} />
+                <InventoryItemCard key={item.instanceId} item={item} onToggleEquipped={onToggleEquipped} onRemove={onRemove} onQuantityChange={onQuantityChange} />
               ))}
             </div>
           ) : (
-            <div className={styles.inspectorEmpty}>Nothing is equipped in the {activeLabel.toLowerCase()} slot.</div>
+            <div className={styles.inspectorEmpty}>{selectedSlot === null ? 'Nothing equipped yet.' : 'Nothing equipped here.'}</div>
           )}
         </div>
       </div>

@@ -1,5 +1,14 @@
 import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import { PublicCharacterSheet } from '@/features/characters/publicCharacterSheet/PublicCharacterSheet';
+import { CharacterLoadError, fetchPublicCharacter } from '@/features/characters/publicCharacterSheet/public-character';
+
+export const revalidate = 30;
+
+// Generate unknown character IDs on their first visit, then serve cached HTML.
+export function generateStaticParams() {
+  return [];
+}
 
 export const metadata: Metadata = {
   title: 'Character Sheet | Tapestry',
@@ -11,5 +20,15 @@ export const metadata: Metadata = {
 // redirect away from the page is needed, regardless of the viewer's session.
 export default async function SharedCharacterPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  return <PublicCharacterSheet key={id} identifier={id} />;
+  let character;
+  try {
+    character = await fetchPublicCharacter(id);
+  } catch (error) {
+    if (error instanceof CharacterLoadError && [400, 401, 403, 404].includes(error.status)) {
+      notFound();
+    }
+    // Throw transient failures so ISR retains a previously generated sheet.
+    throw error;
+  }
+  return <PublicCharacterSheet character={character} identifier={id} />;
 }

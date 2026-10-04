@@ -8,7 +8,7 @@ import { addInventoryItemFromDefinition, removeInventoryItem, toggleInventoryEqu
 import styles from './InventoryTab.module.scss';
 import { ContentLibraryModal } from './ContentLibrary.modal';
 import { InventoryItemCard } from './InventoryItemCard';
-import { EquippedSection, resolveSlotKey } from './EquippedSection';
+import { EquippedSection } from './EquippedSection';
 
 type Props = {
   sheet: CharacterSheet;
@@ -19,21 +19,15 @@ export function InventoryTab({ sheet }: Props) {
   const update = useUpdateCharacterSheetMutation(sheet._id);
   const [libraryOpen, setLibraryOpen] = useState(false);
 
-  const inventory = sheet?.sheet?.inventory ?? [];
+  const inventory = useMemo(() => sheet.sheet.inventory ?? [], [sheet.sheet.inventory]);
 
-  const { stats, equippedItems, backpackItems, overflowItems } = useMemo(() => {
+  const { stats, equippedItems, backpackItems } = useMemo(() => {
     const equipped = inventory.filter((item) => item.equipped);
     const backpack = inventory.filter((item) => !item.equipped);
-
-    const overflow = equipped.filter((item) => {
-      const key = resolveSlotKey(item);
-      return key === 'consumable' || key === 'other';
-    });
 
     return {
       equippedItems: equipped,
       backpackItems: backpack,
-      overflowItems: overflow,
       stats: {
         total: inventory.length,
         equipped: equipped.length,
@@ -78,7 +72,7 @@ export function InventoryTab({ sheet }: Props) {
           <div className={styles.headerRow}>
             <div>
               <h3 className={styles.title}>Inventory</h3>
-              <p className={styles.subtle}>Manage what the character carries and equips.</p>
+              <p className={styles.subtle}>Equipped gear and everything in your pack.</p>
             </div>
 
             <div className={styles.headerActions}>
@@ -88,7 +82,7 @@ export function InventoryTab({ sheet }: Props) {
                 <span>{stats.weapons} weapons</span>
               </div>
 
-              <Button onClick={() => setLibraryOpen(true)}>Add</Button>
+              <Button onClick={() => setLibraryOpen(true)}>Add Items</Button>
             </div>
           </div>
         </CardHeader>
@@ -96,7 +90,7 @@ export function InventoryTab({ sheet }: Props) {
         <CardBody>
           {inventory.length === 0 ? (
             <div className={styles.empty}>
-              Nothing in inventory yet. Click <strong>Add</strong> to open the content library.
+              Your pack is empty. Choose <strong>Add Items</strong> to get started.
             </div>
           ) : (
             <div className={styles.sections}>
@@ -106,27 +100,13 @@ export function InventoryTab({ sheet }: Props) {
                     <span className={styles.sectionLabel}>Equipped</span>
                     <span className={styles.sectionCount}>{equippedItems.length}</span>
                   </div>
-                  <EquippedSection equippedItems={equippedItems} onToggleEquipped={handleToggleEquipped} onRemove={handleRemove} characterSex={sheet.sheet.profile?.sex} />
-                </div>
-              )}
-
-              {overflowItems.length > 0 && (
-                <div>
-                  <div className={styles.sectionHeader}>
-                    <span className={styles.sectionLabel}>Additional Equipped Items</span>
-                    <span className={styles.sectionCount}>{overflowItems.length}</span>
-                  </div>
-                  <div className={styles.list}>
-                    {overflowItems.map((item) => (
-                      <InventoryItemCard
-                        key={item.instanceId}
-                        item={item}
-                        onRemove={handleRemove}
-                        onToggleEquipped={handleToggleEquipped}
-                        onQuantityChange={handleQuantityChange}
-                      />
-                    ))}
-                  </div>
+                  <EquippedSection
+                    equippedItems={equippedItems}
+                    onToggleEquipped={handleToggleEquipped}
+                    onRemove={handleRemove}
+                    onQuantityChange={handleQuantityChange}
+                    characterSex={sheet.sheet.profile?.sex}
+                  />
                 </div>
               )}
 

@@ -35,6 +35,15 @@ function getHarm(item: InventoryItem): number | string | null {
   return null;
 }
 
+function getSlotLabel(slot?: string): string | null {
+  if (!slot) return null;
+  const labels: Record<string, string> = {
+    body: 'Torso', chest: 'Torso', torso: 'Torso', main_hand: 'Main hand', mainhand: 'Main hand',
+    off_hand: 'Off hand', offhand: 'Off hand', two_hands: 'Two hands', twohands: 'Two hands',
+  };
+  return labels[slot.toLowerCase()] ?? slot.replaceAll('_', ' ');
+}
+
 // --- Component ---
 
 type InventoryItemCardProps = {
@@ -48,8 +57,8 @@ type InventoryItemCardProps = {
 export function InventoryItemCard({ item, variant = 'card', onRemove, onToggleEquipped, onQuantityChange }: InventoryItemCardProps) {
   const protection = getProtection(item);
   const harm = getHarm(item);
-  const hasSpecialProps = protection !== null || harm !== null;
   const displayName = getDisplayName(item);
+  const slotLabel = getSlotLabel(item.slot);
 
   if (variant === 'slot') {
     return (
@@ -63,58 +72,56 @@ export function InventoryItemCard({ item, variant = 'card', onRemove, onToggleEq
   }
 
   return (
-    <div className={styles.itemCard}>
-      <div className={styles.itemImageArea}>
-        <Image src={item.imageUrl ?? getCategoryIconUrl(item.category)} alt={displayName} fill style={{ objectFit: 'contain' }} unoptimized />
-      </div>
-
+    <article className={styles.itemCard} data-equipped={item.equipped}>
       <div className={styles.cardContent}>
         <div className={styles.cardHeader}>
-          <div className={styles.itemTitle}>{displayName}</div>
-          <div className={styles.badges}>
-            {item.category ? <span className={styles.badge}>{item.category}</span> : null}
-            {item.equipped ? <span className={styles.badgeActive}>Equipped</span> : null}
+          <div className={styles.cardHeading}>
+            <h4 className={styles.itemTitle}>{displayName}</h4>
+            <div className={styles.itemMeta}>
+              {item.category ?? 'Item'}{slotLabel ? ` · ${slotLabel}` : ''}
+            </div>
+          </div>
+          <div className={styles.itemImageArea}>
+            <Image src={item.imageUrl ?? getCategoryIconUrl(item.category)} alt="" fill style={{ objectFit: 'contain' }} unoptimized />
           </div>
         </div>
 
-        {hasSpecialProps ? (
-          <div className={styles.itemStats}>
+        {(protection !== null || harm !== null) && (
+          <dl className={styles.itemStats}>
             {protection !== null && (
               <div className={styles.statBox}>
-                <div className={styles.statLabel}>Protection</div>
-                <div className={styles.statValue}>+{protection}</div>
+                <dt className={styles.statLabel}>Protection</dt>
+                <dd className={styles.statValue}>+{protection}</dd>
               </div>
             )}
             {harm !== null && (
               <div className={styles.statBox}>
-                <div className={styles.statLabel}>Harm</div>
-                <div className={styles.statValue}>{harm}</div>
+                <dt className={styles.statLabel}>Harm</dt>
+                <dd className={styles.statValue}>{harm}</dd>
               </div>
             )}
-          </div>
-        ) : (
-          <div className={styles.divider} />
+          </dl>
         )}
 
         <div className={styles.actions}>
           {item.stackable && (
             <label className={styles.qtyField}>
               <span>Qty</span>
-              <input type="number" min={1} value={item.qty} onChange={(e) => onQuantityChange(item.instanceId, Number(e.target.value))} />
+              <input aria-label={`Quantity of ${displayName}`} type="number" min={1} step={1} value={item.qty} onChange={(e) => onQuantityChange(item.instanceId, Number(e.target.value))} />
             </label>
           )}
 
           {(item.category === 'weapon' || item.slot) && (
-            <Button variant={item.equipped ? 'outline' : 'solid'} onClick={() => onToggleEquipped(item.instanceId)}>
+            <Button size="sm" variant="outline" onClick={() => onToggleEquipped(item.instanceId)}>
               {item.equipped ? 'Unequip' : 'Equip'}
             </Button>
           )}
 
-          <Button variant="outline" onClick={() => onRemove(item.instanceId)}>
+          <Button size="sm" variant="ghost" onClick={() => onRemove(item.instanceId)}>
             Remove
           </Button>
         </div>
       </div>
-    </div>
+    </article>
   );
 }

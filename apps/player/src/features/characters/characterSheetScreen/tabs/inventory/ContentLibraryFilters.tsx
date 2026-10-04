@@ -94,8 +94,8 @@ export function ContentLibraryFilters({ filters, onChange, settings, settingKey,
     <div className={styles.filters}>
       {/* Row 1: Setting + Search */}
       <div className={styles.filterRow}>
-        <div className={styles.filterGroup}>
-          <label className={styles.label}>Setting</label>
+        <label className={styles.filterGroup}>
+          <span className={styles.label}>Setting</span>
           <Select value={settingKey} onChange={(e) => onSettingChange(e.target.value)} disabled={settingLocked || settingsLoading}>
             {settings.map((s: SettingDefinition) => (
               <option key={s.key} value={s.key}>
@@ -103,11 +103,12 @@ export function ContentLibraryFilters({ filters, onChange, settings, settingKey,
               </option>
             ))}
           </Select>
-        </div>
+        </label>
 
-        <div className={styles.filterGroup}>
-          <TextField label="Search" value={filters.search} onChange={(e) => set('search', e.target.value)} placeholder="Shortsword, potion, armor..." />
-        </div>
+        <label className={styles.filterGroup}>
+          <span className={styles.label}>Search</span>
+          <TextField value={filters.search} onChange={(e) => set('search', e.target.value)} placeholder="Search items..." />
+        </label>
       </div>
 
       {/* Row 2: Category multi-select + Range mode toggle */}

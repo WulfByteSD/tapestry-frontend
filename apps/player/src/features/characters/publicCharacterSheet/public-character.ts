@@ -17,7 +17,10 @@ export function publicCharacterPath(identifier: string): string {
   return `/share/characters/${encodeURIComponent(identifier)}`;
 }
 
-export async function fetchPublicCharacter(identifier: string, signal?: AbortSignal): Promise<PublicCharacter> {
+export async function fetchPublicCharacter(identifier: string, signal?: AbortSignal, options: { fresh?: boolean } = {}): Promise<PublicCharacter> {
+  if (!/^[a-f\d]{24}$/i.test(identifier)) {
+    throw new CharacterLoadError(400, 'This link is not valid. Ask the player for their character share link.');
+  }
   const origin = process.env.NEXT_PUBLIC_API_ORIGIN?.replace(/\/+$/, '');
   if (!origin) throw new CharacterLoadError(0, 'Character sheets are temporarily unavailable. Please try again later.');
 
@@ -25,9 +28,9 @@ export async function fetchPublicCharacter(identifier: string, signal?: AbortSig
   const response = await fetch(`${origin}/api/v1/game/characters/${encodeURIComponent(identifier)}/public`, {
     method: 'GET',
     credentials: 'omit',
-    cache: 'no-store',
+    ...(options.fresh ? { cache: 'no-store' as const } : { next: { revalidate: 30 } }),
     headers: { Accept: 'application/json' },
-    signal,
+    signal: signal ?? AbortSignal.timeout(15_000),
   });
 
   if (!response.ok) {
