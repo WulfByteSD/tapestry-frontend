@@ -3,11 +3,12 @@
 import { ReactNode, useCallback, useEffect, useMemo, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { BiBook, BiCog, BiFile, BiHome, BiLibrary, BiShoppingBag, BiTable, BiUser } from 'react-icons/bi';
+import { BiBook, BiCog, BiFile, BiHome, BiLibrary, BiLink, BiShoppingBag, BiTable, BiUser } from 'react-icons/bi';
 import { useAdminProfile } from '@tapestry/hooks';
 import { AlertContainer, Header, Loader, Sidebar, type SidebarGroup } from '@tapestry/ui';
 import { api } from '@/lib/api';
 import { useLogout, useMe } from '@/lib/auth-hooks';
+import { useMcpPermissions } from '@/lib/mcp-admin/mcpAdmin.hooks';
 import styles from './AdminShell.module.scss';
 import Image from 'next/image';
 
@@ -49,7 +50,7 @@ const sidebarGroups: SidebarGroup[] = [
   },
   {
     title: 'Platform',
-    links: [{ href: '/players', label: 'Players', icon: <BiUser /> }],
+    links: [{ href: '/players', label: 'Players', icon: <BiUser /> }, { href: '/ai-connections', label: 'AI connections', icon: <BiLink /> }],
   },
   {
     title: 'Account',
@@ -67,7 +68,7 @@ function LoadingState({ message }: { message: string }) {
   );
 }
 
-function getDisplayName(profile: any, email?: string | null) {
+function getDisplayName(profile: { displayName?: unknown; firstName?: unknown; lastName?: unknown } | null, email?: string | null) {
   if (typeof profile?.displayName === 'string' && profile.displayName.trim()) {
     return profile.displayName;
   }
@@ -91,6 +92,9 @@ export default function AdminShell({ children }: { children: ReactNode }) {
   const hasRedirectedRef = useRef(false);
 
   const { data: user, isLoading: userLoading, isError: userError } = useMe();
+  const isMcpRoute = pathname === '/ai-connections';
+  const mcpPermissions = useMcpPermissions();
+  const visibleGroups = sidebarGroups.map(group => ({ ...group, links: group.links.filter(link => link.href !== '/ai-connections' || mcpPermissions.manage || mcpPermissions.review) }));
   const adminProfileId = user?.profileRefs?.admin ?? null;
   const {
     selectedProfile: adminProfile,
@@ -132,16 +136,16 @@ export default function AdminShell({ children }: { children: ReactNode }) {
       return;
     }
 
-    if (!adminProfileId || profileError) {
+    if (!isMcpRoute && (!adminProfileId || profileError)) {
       redirectToLogin();
     }
-  }, [adminProfileId, profileError, redirectToLogin, user, userLoading]);
+  }, [adminProfileId, isMcpRoute, profileError, redirectToLogin, user, userLoading]);
 
   if (userLoading || (!!user && !!adminProfileId && profileLoading)) {
     return <LoadingState message="Loading your admin workspace..." />;
   }
 
-  if (!user || userError || !adminProfileId || profileError || !adminProfile) {
+  if (!user || userError || (!isMcpRoute && (!adminProfileId || profileError || !adminProfile))) {
     return <LoadingState message="Redirecting to the admin login..." />;
   }
 
@@ -150,7 +154,7 @@ export default function AdminShell({ children }: { children: ReactNode }) {
       <aside className={styles.sidebarArea}>
         <Sidebar
           title="Tapestry Admin"
-          groups={sidebarGroups}
+          groups={visibleGroups}
           currentPath={pathname || '/'}
           LinkComponent={Link}
           logo={
