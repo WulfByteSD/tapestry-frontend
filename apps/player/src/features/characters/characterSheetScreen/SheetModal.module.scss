@@ -1,6 +1,10 @@
 .wrapper {
-  > div:first-child { backdrop-filter: none; }
-  > div:last-child { padding: 24px; }
+  > div:first-child {
+    backdrop-filter: none;
+  }
+  > div:last-child {
+    padding: 24px;
+  }
 }
 
 .dialog {
@@ -8,37 +12,98 @@
   flex-direction: column;
   max-height: calc(100dvh - 48px);
   border-radius: 6px;
-  border-top: 3px solid var(--gold);
+  --sheet-divider: color-mix(in srgb, var(--text-muted) 24%, transparent);
+  border: 1px solid var(--sheet-divider);
   background: var(--surface);
   > div:first-child {
     flex-shrink: 0;
-    padding: 18px 24px;
-    button { width: 44px; height: 44px; border-radius: 4px; }
+    padding: 16px 24px;
+    border-color: var(--sheet-divider);
+    button {
+      width: 44px;
+      height: 44px;
+      border-radius: 4px;
+    }
   }
-  > div:nth-child(2) { min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 24px; }
+  > div:nth-child(2) {
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 24px;
+    scrollbar-width: thin;
+  }
   > div:nth-child(3) {
     flex-shrink: 0;
     padding: 16px 24px;
     background: var(--surface);
-    button { min-height: 44px; }
+    border-color: var(--sheet-divider);
+    button {
+      min-height: 44px;
+    }
   }
-  input, select, textarea { font-size: 16px; }
-  input:not([type='checkbox']), select { min-height: 44px; }
-  button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+  input:not([type='checkbox']),
+  select,
+  textarea {
+    border-radius: 4px;
+  }
+  input:not([type='checkbox']),
+  select {
+    min-height: 44px;
+  }
+  button:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 3px;
+  }
 }
 
-.title { display: block; font: 600 1.55rem/1.2 Georgia, 'Times New Roman', serif; letter-spacing: -.02em; }
-.subtitle { display: block; margin-top: 6px; font: 400 .85rem/1.5 var(--font-sans, inherit); letter-spacing: 0; color: var(--text-muted); }
+.title {
+  display: block;
+  font:
+    600 1.55rem/1.2 Georgia,
+    'Times New Roman',
+    serif;
+  letter-spacing: -0.02em;
+}
+.subtitle {
+  display: block;
+  margin-top: 6px;
+  font: 400 0.85rem/1.5 var(--font-sans, inherit);
+  letter-spacing: 0;
+  color: var(--text-muted);
+}
 
 @media (max-width: 600px) {
-  .wrapper > div:last-child { padding: 10px; }
+  .wrapper > div:last-child {
+    padding: 10px;
+  }
   .dialog {
     max-height: calc(100dvh - 20px);
-    > div:first-child { padding: 12px 16px; }
-    > div:nth-child(2) { padding: 18px 16px; }
-    > div:nth-child(3) { padding: 12px 16px; gap: 10px; button { flex: 1; } }
+    > div:first-child {
+      padding: 12px 16px;
+    }
+    > div:nth-child(2) {
+      padding: 18px 16px;
+    }
+    > div:nth-child(3) {
+      padding: 12px 16px;
+      gap: 10px;
+      button {
+        flex: 1;
+      }
+    }
   }
-  .title { font-size: 1.35rem; }
+  .title {
+    font-size: 1.35rem;
+  }
 }
 
-@media (prefers-reduced-motion: reduce) { .dialog { transition: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .dialog {
+    transition: none;
+  }
+}
