@@ -51,7 +51,7 @@ export function PublicCharacterSheet({ character, identifier = character._id }: 
         </aside>
         <div className={styles.content}>
           <PublicAbilities character={character} />
-          <PublicInventory inventory={sheet.inventory ?? []} />
+          <PublicInventory inventory={sheet.inventory ?? []} characterSex={sheet.profile?.sex} />
         </div>
       </div>
       <PublicConditions conditions={sheet.conditions ?? []} />
