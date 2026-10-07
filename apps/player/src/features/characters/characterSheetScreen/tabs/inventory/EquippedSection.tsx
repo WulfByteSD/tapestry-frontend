@@ -69,13 +69,18 @@ export function resolveSlotKey(item: InventoryItem): SlotKey {
 
 type Props = {
   equippedItems: InventoryItem[];
+  characterSex?: string;
+} & ({
+  readOnly: true;
+} | {
+  readOnly?: false;
   onToggleEquipped: (instanceId?: string) => void;
   onRemove: (instanceId?: string) => void;
   onQuantityChange: (instanceId: string | undefined, qty: number) => void;
-  characterSex?: string;
-};
+});
 
-export function EquippedSection({ equippedItems, onToggleEquipped, onRemove, onQuantityChange, characterSex }: Props) {
+export function EquippedSection(props: Props) {
+  const { equippedItems, characterSex } = props;
   const BodySilhouette = characterSex?.toLowerCase() === 'female' ? FemaleBodySilhouette : MaleBodySilhouette;
   const bySlot = useMemo(() => {
     const map = new Map<SlotKey, InventoryItem[]>();
@@ -143,8 +148,9 @@ export function EquippedSection({ equippedItems, onToggleEquipped, onRemove, onQ
 
           {activeItems.length > 0 ? (
             <div className={styles.inspectorList}>
-              {activeItems.map((item) => (
-                <InventoryItemCard key={item.instanceId} item={item} onToggleEquipped={onToggleEquipped} onRemove={onRemove} onQuantityChange={onQuantityChange} />
+              {activeItems.map((item, index) => (
+                props.readOnly ? <InventoryItemCard key={item.instanceId ?? index} item={item} readOnly /> :
+                  <InventoryItemCard key={item.instanceId ?? index} item={item} onToggleEquipped={props.onToggleEquipped} onRemove={props.onRemove} onQuantityChange={props.onQuantityChange} />
               ))}
             </div>
           ) : (

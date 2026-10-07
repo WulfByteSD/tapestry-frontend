@@ -8,8 +8,12 @@ import styles from './InventoryTab.module.scss';
 
 // --- Display helpers (card-local) ---
 
-function getDisplayName(item: InventoryItem): string {
-  return item.overrides?.displayName || item.name || item.definition?.itemKey || 'Unnamed Item';
+function getDisplayName(item: InventoryItem, readOnly: boolean): string {
+  const name = item.overrides?.displayName || item.name;
+  if (name) return name;
+  if (!readOnly) return item.definition?.itemKey || 'Unnamed Item';
+  const key = item.definition?.itemKey || item.itemKey;
+  return key ? (key.split(':').pop() ?? key).replace(/[_-]+/g, ' ').replace(/\b\w/g, (letter) => letter.toUpperCase()) : 'Unnamed Item';
 }
 
 function getProtection(item: InventoryItem): number | null {
@@ -49,24 +53,31 @@ function getSlotLabel(slot?: string): string | null {
 type InventoryItemCardProps = {
   item: InventoryItem;
   variant?: 'card' | 'slot';
+} & ({
+  readOnly: true;
+} | {
+  readOnly?: false;
   onRemove: (instanceId?: string) => void;
   onToggleEquipped: (instanceId?: string) => void;
   onQuantityChange: (instanceId: string | undefined, qty: number) => void;
-};
+});
 
-export function InventoryItemCard({ item, variant = 'card', onRemove, onToggleEquipped, onQuantityChange }: InventoryItemCardProps) {
+export function InventoryItemCard(props: InventoryItemCardProps) {
+  const { item, variant = 'card' } = props;
+  const readOnly = props.readOnly === true;
   const protection = getProtection(item);
   const harm = getHarm(item);
-  const displayName = getDisplayName(item);
+  const displayName = getDisplayName(item, readOnly);
   const slotLabel = getSlotLabel(item.slot);
+  const tags = item.overrides?.tags ?? item.tags;
 
   if (variant === 'slot') {
     return (
       <div className={styles.slotItemContent}>
         <span className={styles.slotItemName}>{displayName}</span>
-        <Button variant="outline" onClick={() => onToggleEquipped(item.instanceId)}>
+        {!props.readOnly && <Button variant="outline" onClick={() => props.onToggleEquipped(item.instanceId)}>
           Unequip
-        </Button>
+        </Button>}
       </div>
     );
   }
@@ -86,7 +97,7 @@ export function InventoryItemCard({ item, variant = 'card', onRemove, onToggleEq
           </div>
         </div>
 
-        {(protection !== null || harm !== null) && (
+        {(readOnly || protection !== null || harm !== null) && (
           <dl className={styles.itemStats}>
             {protection !== null && (
               <div className={styles.statBox}>
@@ -100,27 +111,49 @@ export function InventoryItemCard({ item, variant = 'card', onRemove, onToggleEq
                 <dd className={styles.statValue}>{harm}</dd>
               </div>
             )}
+            {readOnly && (
+              <div className={styles.statBox}>
+                <dt className={styles.statLabel}>Qty</dt>
+                <dd className={styles.statValue}>{item.qty}</dd>
+              </div>
+            )}
           </dl>
         )}
 
-        <div className={styles.actions}>
+        {readOnly && (!!item.attackProfiles?.length || item.notes || !!tags?.length) && (
+          <div className={styles.itemDetails}>
+            {!!item.attackProfiles?.length && <ul className={styles.attackProfiles}>{item.attackProfiles.map((attack) => (
+              <li key={attack.key}>
+                <strong>{attack.name}</strong>
+                {attack.harm != null && <> · Harm {attack.harm}</>}
+                {attack.modifier != null && <> · Modifier {Number.isFinite(attack.modifier) ? (attack.modifier > 0 ? `+${attack.modifier}` : attack.modifier) : '—'}</>}
+                {attack.rangeLabel && <> · {attack.rangeLabel}</>}
+                {attack.notes && <p className={styles.itemNotes}>{attack.notes}</p>}
+              </li>
+            ))}</ul>}
+            {item.notes && <p className={styles.itemNotes}>{item.notes}</p>}
+            {!!tags?.length && <p className={styles.itemTags}>Tags: {tags.join(', ')}</p>}
+          </div>
+        )}
+
+        {!props.readOnly && <div className={styles.actions}>
           {item.stackable && (
             <label className={styles.qtyField}>
               <span>Qty</span>
-              <input aria-label={`Quantity of ${displayName}`} type="number" min={1} step={1} value={item.qty} onChange={(e) => onQuantityChange(item.instanceId, Number(e.target.value))} />
+              <input aria-label={`Quantity of ${displayName}`} type="number" min={1} step={1} value={item.qty} onChange={(e) => props.onQuantityChange(item.instanceId, Number(e.target.value))} />
             </label>
           )}
 
           {(item.category === 'weapon' || item.slot) && (
-            <Button size="sm" variant="outline" onClick={() => onToggleEquipped(item.instanceId)}>
+            <Button size="sm" variant="outline" onClick={() => props.onToggleEquipped(item.instanceId)}>
               {item.equipped ? 'Unequip' : 'Equip'}
             </Button>
           )}
 
-          <Button size="sm" variant="ghost" onClick={() => onRemove(item.instanceId)}>
+          <Button size="sm" variant="ghost" onClick={() => props.onRemove(item.instanceId)}>
             Remove
           </Button>
-        </div>
+        </div>}
       </div>
     </article>
   );
