@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { NoteBody } from '../noteContent';
 import { PublicAspects, PublicConditions, PublicConditionSummary, PublicResources, PublicSkills } from './PublicSheetCore';
 import { PublicAbilities, PublicProfile } from './PublicSheetDetails';
 import { PublicInventory } from './PublicInventory';
@@ -9,6 +10,7 @@ import styles from './PublicCharacterSheet.module.scss';
 
 export function PublicCharacterSheet({ character, identifier = character._id }: { character: PublicCharacter; identifier?: string }) {
   const { sheet } = character;
+  const publicNotes = (sheet.noteCards ?? []).filter((note) => note.isPrivate === false);
   const updatedAt = new Date(character.updatedAt);
   const savedAt = Number.isNaN(updatedAt.getTime()) ? null : updatedAt;
 
@@ -40,7 +42,7 @@ export function PublicCharacterSheet({ character, identifier = character._id }: 
       </header>
       <PublicConditionSummary conditions={sheet.conditions ?? []} />
       <nav className={styles.sectionNav} aria-label="Character sheet sections">
-        {['aspects', 'skills', 'abilities', 'inventory', 'conditions', 'profile'].map((section) => (
+        {['aspects', 'skills', 'abilities', 'inventory', 'conditions', 'profile', ...(publicNotes.length ? ['notes'] : [])].map((section) => (
           <a key={section} href={`#${section}`}>{displayKey(section)}</a>
         ))}
       </nav>
@@ -56,6 +58,22 @@ export function PublicCharacterSheet({ character, identifier = character._id }: 
       </div>
       <PublicConditions conditions={sheet.conditions ?? []} />
       <PublicProfile character={character} />
+      {publicNotes.length > 0 && (
+        <section id="notes" className={`${styles.section} ${styles.notes}`} aria-labelledby="notes-title">
+          <h2 id="notes-title">Notes</h2>
+          <ul className={styles.entries}>
+            {publicNotes.map((note) => (
+              <li key={note.id}>
+                <div className={styles.entryHeading}>
+                  <h3>{note.title?.trim() || 'Untitled Note'}</h3>
+                  <span>{displayKey(note.kind)}{note.pinned ? ' · Pinned' : ''}</span>
+                </div>
+                <div className={styles.noteBody}><NoteBody body={note.body} /></div>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
       {savedAt && <footer className={styles.savedAt}>Character saved <time dateTime={savedAt.toISOString()}>{savedAt.toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'UTC' })} UTC</time></footer>}
     </main>
   );

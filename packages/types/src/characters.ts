@@ -96,6 +96,8 @@ export type NoteCard = {
   title: string;
   body: string;
   kind: NoteCardKind;
+  /** Missing legacy flags are private. Only false is public. */
+  isPrivate?: boolean;
   pinned?: boolean;
   tags?: string[];
   createdAt: string;

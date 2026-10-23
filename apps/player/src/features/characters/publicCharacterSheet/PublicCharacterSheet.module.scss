@@ -196,3 +196,13 @@
   .profileDetails { gap: 14px 20px; }
   .state { margin: 44px 0; }
 }
+
+.notes { margin-top: 32px; }
+.noteBody { margin-top: 12px; font-size: 14px; line-height: 1.7; overflow-wrap: anywhere; }
+.noteBody p { margin: 0 0 12px; }
+.noteBody h1, .noteBody h2, .noteBody h3, .noteBody h4, .noteBody h5, .noteBody h6 { margin: 20px 0 10px; padding: 0; border: 0; font: 600 18px/1.4 Georgia, serif; }
+.noteBody ul, .noteBody ol { padding-left: 24px; margin: 12px 0; }
+.noteBody li + li { margin-top: 6px; }
+.noteBody blockquote { border-left: 2px solid var(--gold); margin: 16px 0; padding-left: 16px; color: var(--text-muted); }
+.noteBody pre { max-width: 100%; white-space: pre-wrap; }
+.noteBody a { color: var(--gold-soft); text-decoration: underline; }

@@ -2,18 +2,27 @@
 
 import { useDebouncedCallback } from "@/lib/useDebouncedCallback";
 import type { NoteCard, NoteCardKind } from "@tapestry/types";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { createBlankNote } from "./functions";
 import { NoteEditorScreen } from "./editor/NoteEditorScreen";
 import { NoteListScreen } from "./list/NoteListScreen";
 import { useNoteListState } from "./list/useNoteListState";
 
+function normalizeCards(cards: NoteCard[]) {
+  return cards.map((card) => ({ ...card, isPrivate: card.isPrivate !== false }));
+}
+
+function sameCardContents(left: NoteCard[], right: NoteCard[]) {
+  const contents = (entries: NoteCard[]) => entries.map((entry) => ({ ...entry, updatedAt: undefined }));
+  return JSON.stringify(contents(left)) === JSON.stringify(contents(right));
+}
+
 type NotesView = "list" | "editor";
 
 type Props = {
   initialNoteCards: NoteCard[];
-  onSave: (noteCards: NoteCard[]) => void;
+  onSave: (noteCards: NoteCard[]) => Promise<void>;
 };
 
 export function NotesTab({ initialNoteCards, onSave }: Props) {
@@ -21,37 +30,57 @@ export function NotesTab({ initialNoteCards, onSave }: Props) {
   const [selectedId, setSelectedId] = useState<string | null>(initialNoteCards?.[0]?.id ?? null);
   const [view, setView] = useState<NotesView>("list");
 
+  const hasUnsentEdits = useRef(false);
+  const pendingSaves = useRef(0);
+  const saveRevision = useRef(0);
+  const latestCards = useRef(initialNoteCards ?? []);
+
   // Must be called at top level, every render.
   const listState = useNoteListState();
 
+  async function sendCards(nextCards: NoteCard[]) {
+    const revision = ++saveRevision.current;
+    hasUnsentEdits.current = false;
+    pendingSaves.current += 1;
+    try {
+      await onSave(nextCards);
+    } catch {
+      if (revision === saveRevision.current) hasUnsentEdits.current = true;
+    } finally {
+      pendingSaves.current -= 1;
+    }
+  }
+
   const debouncedSave = useDebouncedCallback((nextCards: NoteCard[]) => {
-    onSave(nextCards);
+    void sendCards(nextCards);
   }, 650);
 
   useEffect(() => {
-    const nextCards = initialNoteCards ?? [];
+    const nextCards = normalizeCards(initialNoteCards ?? []);
+    // Debounced edits and queued requests must survive older server responses.
+    if (hasUnsentEdits.current || pendingSaves.current) return;
+    latestCards.current = nextCards;
     setCards(nextCards);
+    setSelectedId((current) => nextCards.some((card) => card.id === current) ? current : nextCards[0]?.id ?? null);
+    if (!nextCards.length) setView("list");
+  }, [initialNoteCards]);
 
-    if (!nextCards.length) {
-      setSelectedId(null);
-      setView("list");
-      return;
-    }
-
-    const stillExists = nextCards.some((card) => card.id === selectedId);
-    if (!stillExists) {
-      setSelectedId(nextCards[0].id);
-    }
-  }, [initialNoteCards, selectedId]);
+  const { flush } = debouncedSave;
+  useEffect(() => () => flush(), [flush]);
 
   const activeCard = useMemo(() => cards.find((card) => card.id === selectedId) ?? null, [cards, selectedId]);
 
   function persist(nextCards: NoteCard[], immediate = false) {
+    nextCards = normalizeCards(nextCards);
+    // Blur followed by Back commits the same content twice with a new timestamp.
+    if (sameCardContents(nextCards, latestCards.current) && !hasUnsentEdits.current) return;
+    hasUnsentEdits.current = !immediate;
+    latestCards.current = nextCards;
     setCards(nextCards);
 
     if (immediate) {
       debouncedSave.cancel();
-      onSave(nextCards);
+      void sendCards(nextCards);
       return;
     }
 

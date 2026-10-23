@@ -21,10 +21,14 @@ function normalizeEmpty(html: string): string {
 
 export function RichTextEditor({ value = '', onChange, placeholder = 'Start typing...', disabled = false, className, minHeight = 200 }: RichTextEditorProps) {
   const editor = useEditor({
+    immediatelyRender: false,
+    editorProps: { attributes: { role: 'textbox', 'aria-label': 'Rich text details', 'aria-multiline': 'true' } },
     extensions: [
       StarterKit.configure({
         // Disable code block — can be re-enabled later with a toolbar button
         codeBlock: false,
+        link: false,
+        underline: false,
       }),
       Underline,
       Link.configure({
@@ -46,8 +50,7 @@ export function RichTextEditor({ value = '', onChange, placeholder = 'Start typi
     const current = normalizeEmpty(editor.getHTML());
     const incoming = normalizeEmpty(value ?? '');
     if (current !== incoming) {
-      // false = don't emit onUpdate, prevents infinite loops
-      editor.commands.setContent(incoming || '', false as any);
+      editor.commands.setContent(incoming || '', { emitUpdate: false });
     }
   }, [value, editor]);
 

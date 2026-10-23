@@ -1,9 +1,9 @@
-import type { CharacterSheet } from '@tapestry/types';
+import type { CharacterSheet, NoteCard } from '@tapestry/types';
 
-// Public responses deliberately omit ownership, campaign references, and journal cards.
+// Public responses deliberately omit ownership, campaign references, and private journal cards.
 // dtn already exists in the API; keep this extension local to this viewer.
 export type PublicCharacter = Pick<CharacterSheet, '_id' | 'name' | 'avatarUrl' | 'status' | 'settingKey' | 'toneModules' | 'tags' | 'updatedAt' | 'derived'> & {
-  sheet: Omit<CharacterSheet['sheet'], 'noteCards'> & { dtn?: number };
+  sheet: Omit<CharacterSheet['sheet'], 'noteCards'> & { dtn?: number; noteCards?: NoteCard[] };
 };
 
 export class CharacterLoadError extends Error {
@@ -17,7 +17,9 @@ export function publicCharacterPath(identifier: string): string {
   return `/share/characters/${encodeURIComponent(identifier)}`;
 }
 
-export async function fetchPublicCharacter(identifier: string, signal?: AbortSignal, options: { fresh?: boolean } = {}): Promise<PublicCharacter> {
+export async function fetchPublicCharacter(identifier: string, signal?: AbortSignal, _options: { fresh?: boolean } = {}): Promise<PublicCharacter> {
+  // Keep the refresh option compatible with existing callers; all reads are fresh.
+  void _options;
   if (!/^[a-f\d]{24}$/i.test(identifier)) {
     throw new CharacterLoadError(400, 'This link is not valid. Ask the player for their character share link.');
   }
@@ -28,7 +30,8 @@ export async function fetchPublicCharacter(identifier: string, signal?: AbortSig
   const response = await fetch(`${origin}/api/v1/game/characters/${encodeURIComponent(identifier)}/public`, {
     method: 'GET',
     credentials: 'omit',
-    ...(options.fresh ? { cache: 'no-store' as const } : { next: { revalidate: 30 } }),
+    // Visibility can change at any time; never cache public journal content.
+    cache: 'no-store',
     headers: { Accept: 'application/json' },
     signal: signal ?? AbortSignal.timeout(15_000),
   });

@@ -20,8 +20,8 @@ const ToolbarButton = ({ onClick, isActive, disabled, title, children }: Toolbar
     disabled={disabled}
     onMouseDown={(e) => {
       e.preventDefault(); // prevent editor blur
-      onClick();
     }}
+    onClick={onClick}
     className={clsx(styles.toolbarBtn, isActive && styles.toolbarBtnActive)}
   >
     {children}
