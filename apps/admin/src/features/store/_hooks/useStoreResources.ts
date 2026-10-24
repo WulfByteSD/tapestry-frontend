@@ -4,14 +4,13 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   createLibraryResource,
   deleteLibraryResource,
-  getLibraryResource,
-  getLibraryResources,
   updateLibraryResource,
   uploadLibraryResourceFile,
 } from '@tapestry/api-client';
 import type { CreateLibraryResourceInput } from '@tapestry/types';
 import type { ListQueryParams } from '@tapestry/api-client';
 import { api } from '@/lib/api';
+import { getAdminLibraryResource, getAdminLibraryResources } from '@/lib/adminLibrary';
 
 function normalizeListParams(params?: ListQueryParams) {
   return {
@@ -34,14 +33,14 @@ export const storeResourceQueryKeys = {
 export function useStoreResources(params?: ListQueryParams) {
   return useQuery({
     queryKey: storeResourceQueryKeys.resourceList(params),
-    queryFn: () => getLibraryResources(api, params),
+    queryFn: () => getAdminLibraryResources(params),
   });
 }
 
 export function useStoreResource(id?: string) {
   return useQuery({
     queryKey: storeResourceQueryKeys.resource(id || 'missing'),
-    queryFn: () => getLibraryResource(api, id as string),
+    queryFn: () => getAdminLibraryResource(id as string),
     enabled: Boolean(id),
   });
 }

@@ -42,6 +42,8 @@ const sidebarGroups: SidebarGroup[] = [
           },
         ],
       },
+      { href: '/adventures', label: 'Adventures', icon: <BiBook /> },
+      { href: '/unwoven', label: 'Unwoven', icon: <BiUser /> },
       { href: '/products', label: 'Products', icon: <BiShoppingBag /> },
       { href: '/resources', label: 'Resources', icon: <BiBook /> },
       { href: '/tables', label: 'Tables', icon: <BiTable /> },
@@ -188,6 +190,7 @@ export default function AdminShell({ children }: { children: ReactNode }) {
           leftContent={
             <div className={styles.headerCopy}>
               <p className={styles.headerTitle}>Admin Panel</p>
+              <nav className={styles.adventuresMobileLink} aria-label="Authoring"><Link href="/adventures">Adventures</Link><span aria-hidden> · </span><Link href="/unwoven">Unwoven</Link></nav>
               <p className={styles.headerSubtitle}>Authenticated storyweaver workspace</p>
             </div>
           }

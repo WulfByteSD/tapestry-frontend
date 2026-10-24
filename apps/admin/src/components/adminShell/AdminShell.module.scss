@@ -155,3 +155,20 @@
     transform: rotate(360deg);
   }
 }
+
+// Adventure authoring integration: leave other admin screens unchanged.
+.adventuresMobileLink { display: none; }
+.contentArea:has([data-adventure-workspace]) { min-width: 0; }
+@media (max-width: 767px) {
+  .adventuresMobileLink { display: inline-flex; align-items: center; min-height: 44px; font-size: 14px; }
+  .headerCopy:has(.adventuresMobileLink) .headerSubtitle { display: none; }
+  .main:has([data-adventure-workspace]) { padding: 16px; }
+  .shell:has([data-adventure-workspace]) { grid-template-columns: minmax(0, 1fr); grid-template-areas: 'content'; }
+}
+// Contain the Unwoven editor on narrow screens without changing other workspaces.
+.contentArea:has([data-unwoven-workspace]) { min-width: 0; }
+.adventuresMobileLink { gap: .65rem; }
+@media (max-width: 767px) {
+  .main:has([data-unwoven-workspace]) { padding: 16px; }
+  .shell:has([data-unwoven-workspace]) { grid-template-columns: minmax(0, 1fr); grid-template-areas: "content"; }
+}
