@@ -3,8 +3,9 @@
 import Link from 'next/link';
 import { BrandMark } from '@/components/brandMark/BrandMark.component';
 import { portalCtas, portalNavigation } from '@/config/portal-navigation';
-import type { PortalNavigationGroup, PortalNavigationItem } from '@/config/portal-navigation';
+import type { PortalNavigationGroup, PortalNavigationItem, PortalNavigationLink } from '@/config/portal-navigation';
 import styles from './Navbar.module.scss';
+import { useMobileNavigation } from './Navbar.hooks';
 
 type NavbarProps = {
   isMobileMenuOpen: boolean;
@@ -12,18 +13,18 @@ type NavbarProps = {
   onCloseMobileMenu: () => void;
 };
 
-const portalUtilityLinks = [
-  // portalCtas.cart, portalCtas.checkout
-] as any[];
+const portalUtilityLinks: readonly PortalNavigationLink[] = [];
 
 function isPortalNavigationGroup(item: PortalNavigationItem): item is PortalNavigationGroup {
   return 'items' in item;
 }
 
 export function Navbar({ isMobileMenuOpen, onOpenMobileMenu, onCloseMobileMenu }: NavbarProps) {
+  const { drawerRef, triggerRef, headerRef } = useMobileNavigation(isMobileMenuOpen, onCloseMobileMenu);
+
   return (
     <>
-      <header className={styles.navbar}>
+      <header ref={headerRef} className={styles.navbar} inert={isMobileMenuOpen}>
         <div className={styles.inner}>
           <BrandMark />
 
@@ -63,6 +64,7 @@ export function Navbar({ isMobileMenuOpen, onOpenMobileMenu, onCloseMobileMenu }
 
             <button
               type="button"
+              ref={triggerRef}
               className={[styles.menuButton, isMobileMenuOpen ? styles.menuButtonOpen : ''].filter(Boolean).join(' ')}
               onClick={isMobileMenuOpen ? onCloseMobileMenu : onOpenMobileMenu}
               aria-controls="portal-mobile-navigation"
@@ -77,10 +79,10 @@ export function Navbar({ isMobileMenuOpen, onOpenMobileMenu, onCloseMobileMenu }
         </div>
       </header>
 
-      <div className={[styles.mobileLayer, isMobileMenuOpen ? styles.mobileLayerOpen : ''].filter(Boolean).join(' ')} aria-hidden={!isMobileMenuOpen}>
-        <button type="button" className={styles.mobileBackdrop} onClick={onCloseMobileMenu} aria-label="Close navigation overlay" tabIndex={isMobileMenuOpen ? 0 : -1} />
+      <div className={[styles.mobileLayer, isMobileMenuOpen ? styles.mobileLayerOpen : ''].filter(Boolean).join(' ')} aria-hidden={!isMobileMenuOpen} inert={!isMobileMenuOpen}>
+        <button type="button" className={styles.mobileBackdrop} onClick={onCloseMobileMenu} aria-label="Close navigation overlay" tabIndex={-1} />
 
-        <div id="portal-mobile-navigation" className={styles.mobileDrawer} role="dialog" aria-modal="true" aria-label="Site navigation">
+        <div ref={drawerRef} tabIndex={-1} id="portal-mobile-navigation" className={styles.mobileDrawer} role="dialog" aria-modal="true" aria-label="Site navigation">
           <div className={styles.mobileHeader}>
             <BrandMark compact tabIndex={isMobileMenuOpen ? 0 : -1} />
 

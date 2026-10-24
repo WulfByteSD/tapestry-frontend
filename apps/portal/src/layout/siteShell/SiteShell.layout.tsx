@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import type { ReactNode } from 'react';
 import { Footer } from '@/layout/footer/Footer.layout';
 import { Navbar } from '@/layout/navbar/Navbar.layout';
@@ -14,36 +14,18 @@ type SiteShellProps = {
 export function SiteShell({ children }: SiteShellProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  useEffect(() => {
-    if (!isMobileMenuOpen) {
-      document.body.style.overflow = '';
-      return;
-    }
-
-    document.body.style.overflow = 'hidden';
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        setIsMobileMenuOpen(false);
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      document.body.style.overflow = '';
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [isMobileMenuOpen]);
+  const closeMobileMenu = useCallback(() => setIsMobileMenuOpen(false), []);
 
   return (
     <div className={styles.shell}>
-      <Navbar isMobileMenuOpen={isMobileMenuOpen} onOpenMobileMenu={() => setIsMobileMenuOpen(true)} onCloseMobileMenu={() => setIsMobileMenuOpen(false)} />
-      <div className={styles.content}>
+      <Navbar isMobileMenuOpen={isMobileMenuOpen} onOpenMobileMenu={() => setIsMobileMenuOpen(true)} onCloseMobileMenu={closeMobileMenu} />
+      <div className={styles.content} inert={isMobileMenuOpen}>
         <NextTopLoader color="var(--ui-accent)" height={3} showSpinner={false} easing="ease" speed={200} shadow="0 0 10px var(--ui-accent),0 0 5px var(--ui-accent)" />
         {children}
       </div>
-      <Footer />
+      <div inert={isMobileMenuOpen}>
+        <Footer />
+      </div>
     </div>
   );
 }

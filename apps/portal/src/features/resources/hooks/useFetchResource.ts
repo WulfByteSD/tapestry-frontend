@@ -14,6 +14,8 @@ export function useFetchResource(slug: string) {
     error,
   } = useQuery({
     queryKey: ['libraryResource', slug],
+    retry: false,
+    meta: { suppressGlobalError: true },
     queryFn: async () => {
       const res = await getLibraryResource(api, slug);
       return res.payload;

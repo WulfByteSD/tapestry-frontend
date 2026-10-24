@@ -6,6 +6,7 @@ export const metadata: Metadata = createRouteMetadata({
   title: 'Tapestry TTRPG | Resources',
   description: 'A collection of resources for Tapestry players, including guides, character sheets, and more.',
   path: '/resources',
+  robots: { index: true, follow: true },
 });
 
 export default function Page() {

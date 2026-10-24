@@ -9,6 +9,7 @@ function QueryProvider({ children }: React.PropsWithChildren) {
     new QueryClient({
       queryCache: new QueryCache({
         onError: (error, query) => {
+          if (query.meta?.suppressGlobalError) return;
           // Use meta.errorMessage if provided, otherwise fall back to error message
           const message =
             (query.meta?.errorMessage as string) ||

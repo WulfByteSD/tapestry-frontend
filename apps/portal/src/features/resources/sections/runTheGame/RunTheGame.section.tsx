@@ -1,5 +1,5 @@
 import { InteractiveBook } from '@tapestry/ui';
-import { FiActivity, FiArrowUpRight, FiBookOpen, FiCheckCircle, FiDownload, FiLayers, FiMonitor, FiUsers } from 'react-icons/fi';
+import { FiArrowUpRight, FiBookOpen, FiCheckCircle, FiLayers, FiMonitor } from 'react-icons/fi';
 
 import { rulesGuideResource, storyweaverWorkspace, storyweaversLoomResource, threadBuilderResource } from './RunTheGameSection.data';
 
@@ -51,17 +51,7 @@ export function RunTheGameSection() {
             ))}
           </ul>
 
-          <div className={styles.actions}>
-            <a className={styles.primaryAction} href={rulesGuideResource.downloadHref} target="_blank" rel="noreferrer">
-              <FiDownload aria-hidden="true" />
-              Download the guide
-            </a>
-
-            <a className={styles.secondaryAction} href={rulesGuideResource.previewHref} target="_blank" rel="noreferrer">
-              Preview the guide
-              <FiArrowUpRight aria-hidden="true" />
-            </a>
-          </div>
+          <p className={styles.resourceMeta}>The published PDF is currently unavailable.</p>
         </div>
       </article>
 
@@ -103,7 +93,7 @@ export function RunTheGameSection() {
           </div>
         </div>
 
-        <WorkspacePreview />
+        <div><p className={styles.resourceMeta}>Illustrative workspace preview — sample campaign content</p><WorkspacePreview /></div>
       </article>
 
       <div className={styles.planningGrid}>
@@ -128,17 +118,7 @@ export function RunTheGameSection() {
             ))}
           </div>
 
-          <div className={styles.actions}>
-            <a className={styles.primaryAction} href={storyweaversLoomResource.downloadHref} target="_blank" rel="noreferrer">
-              <FiDownload aria-hidden="true" />
-              Download the Loom
-            </a>
-
-            <a className={styles.secondaryAction} href={storyweaversLoomResource.previewHref} target="_blank" rel="noreferrer">
-              Preview
-              <FiArrowUpRight aria-hidden="true" />
-            </a>
-          </div>
+          <p className={styles.resourceMeta}>The published PDF is currently unavailable.</p>
         </article>
 
         <article className={styles.planningCard}>
@@ -154,17 +134,7 @@ export function RunTheGameSection() {
 
           <span className={styles.resourceMeta}>{threadBuilderResource.meta}</span>
 
-          <div className={styles.actions}>
-            <a className={styles.primaryAction} href={threadBuilderResource.downloadHref} target="_blank" rel="noreferrer">
-              <FiDownload aria-hidden="true" />
-              Download the framework
-            </a>
-
-            <a className={styles.secondaryAction} href={threadBuilderResource.previewHref} target="_blank" rel="noreferrer">
-              Preview
-              <FiArrowUpRight aria-hidden="true" />
-            </a>
-          </div>
+          <p className={styles.resourceMeta}>The published PDF is currently unavailable.</p>
         </article>
       </div>
     </section>

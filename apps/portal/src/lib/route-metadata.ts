@@ -42,6 +42,8 @@ export function createRouteMetadata({
   keywords = [],
   robots = privateRouteRobots,
 }: RouteMetadataInput): Metadata {
+  const canonical = new URL(path, MetadataBase).toString();
+
   return {
     title,
     description,
@@ -51,18 +53,20 @@ export function createRouteMetadata({
     publisher: SITE_NAME,
     keywords: [...defaultKeywords, ...keywords],
     alternates: {
-      canonical: path,
+      canonical,
     },
     openGraph: {
       title,
       description,
-      url: path,
+      url: canonical,
       siteName: SITE_NAME,
       type: 'website',
       locale: 'en_US',
+      images: [{ url: new URL('/images/tapestry-story-scene.webp', MetadataBase).toString(), width: 1600, height: 900, alt: 'A storyteller holding an open book beneath golden Threads' }],
     },
     twitter: {
-      card: 'summary',
+      card: 'summary_large_image',
+      images: [new URL('/images/tapestry-story-scene.webp', MetadataBase).toString()],
       title,
       description,
     },
