@@ -56,6 +56,6 @@ export async function resetUserPassword(api: AxiosInstance, authId: string, inpu
 }
 
 export async function setCustomPassword(api: AxiosInstance, authId: string, input: SetPasswordInput) {
-  const res = await api.post(`/auth/users/${authId}/set-password`, input);
+  const res = await api.post(`/auth/users/${authId}/reset-password`, input);
   return res.data;
 }
