@@ -10,7 +10,7 @@ import type { Capability, Client, ContentType, CreateGrant, Grant, OwnAuth, Page
 import { ActionFeedback, Check, date, Dialog, lines, Paging, QueryFeedback } from './McpShared.component';
 import styles from './AiConnections.module.scss';
 
-const types: ContentType[] = ['items', 'skills', 'abilities', 'settings', 'lore', 'combatants'];
+const types: ContentType[] = ['items', 'skills', 'abilities', 'settings', 'lore', 'combatants', 'adventures'];
 const capabilities: { value: Capability; hint: string }[] = [
   { value: 'read', hint: 'Required. Reads published content within this scope.' },
   { value: 'propose', hint: 'Suggestions for human review; no direct writes.' },
@@ -93,6 +93,7 @@ function GrantForm({ grant, initialClient, clients, grants, onClose, onSaved, on
     {settings.error && <p>Setting suggestions could not be loaded. Enter exact keys below.</p>}
     <label className={styles.field}>Allowed setting keys (one per line)<textarea rows={3} value={keys} onChange={event => setKeys(event.target.value)} /><small>Domain keys, including future setting keys. Referenced settings must exist before another record uses them. Empty keys with shared disabled grants no setting access.</small></label>
     <Check label="Allow shared content" checked={shared} onChange={setShared} hint="Required for records with empty setting membership or the shared marker. Every attached setting must still be allowed." />
+    {selectedTypes.includes('adventures') && <p className={styles.warning}>Adventure access requires Allow shared content because adventures have no setting membership. Editing adventures, including proposed updates, also requires read:draft. Encounter references need readable combatants and their setting access.</p>}
     <fieldset><legend>Capabilities</legend><div className={styles.capabilities}>{capabilities.map(({ value, hint }) => <Check key={value} label={value} hint={hint} checked={selectedCapabilities.includes(value)} disabled={value === 'read'} onChange={selected => setCapabilities(toggle(selectedCapabilities, value, selected))} />)}</div></fieldset>
     <p className={styles.warning}>Referenced types and settings must also be readable. Items that grant abilities need readable abilities. This form never expands scope automatically.</p>
     {grant && <Check label="Grant is active" checked={active} onChange={setActive} hint="Disabling stops current tokens and blocks approval of pending proposals. Reactivation requires a future expiry; old revoked tokens are not revived." />}
