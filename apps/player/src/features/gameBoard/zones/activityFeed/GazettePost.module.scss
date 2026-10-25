@@ -49,14 +49,16 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  font-size: 1rem;
+  font-weight: 650;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
   color: var(--gold);
-  margin-bottom: 0.75rem;
+  margin: 0 0 0.75rem;
   padding-bottom: 0.5rem;
   border-bottom: 1px solid color-mix(in srgb, var(--gold) 20%, transparent);
+
+  svg { flex-shrink: 0; }
 }
 
 .gazetteContent {
@@ -86,7 +88,24 @@
     background: color-mix(in srgb, var(--gold) 15%, transparent);
     border-color: var(--gold);
   }
+
+  &:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
 }
+
+.modalTitle { display: grid; gap: 0.3rem; min-width: 0; overflow-wrap: anywhere; }
+.modalPostType {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+  color: var(--gold);
+  font-size: 1rem;
+  font-weight: 650;
+  line-height: 1.4;
+  svg { flex-shrink: 0; }
+}
+.modalAuthor { font-size: 0.9rem; font-weight: 600; }
+.modalTimestamp { font-size: 0.8125rem; color: var(--text-muted); font-weight: normal; }
 
 .modalContent {
   font-size: 0.9375rem;

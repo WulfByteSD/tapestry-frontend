@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Button, Loader } from '@tapestry/ui';
+import { Loader } from '@tapestry/ui';
 import { useGameBoard } from '@/features/gameBoard/useGameBoard';
 import type { BoardZone } from '@/features/gameBoard/useGameBoard';
 import BoardLayout from '@/features/gameBoard/layout/BoardLayout';
@@ -70,11 +70,7 @@ export default function GameBoardView({ campaignId }: Props) {
       <div className={styles.centered}>
         <h1>Campaign Not Found</h1>
         <p>The campaign you&apos;re looking for doesn&apos;t exist or you don&apos;t have access to it.</p>
-        <Link href="/games">
-          <Button variant="outline" tone="gold">
-            Browse Campaigns
-          </Button>
-        </Link>
+        <Link href="/games" className={styles.browseLink}>Browse Campaigns</Link>
       </div>
     );
   }
@@ -82,8 +78,8 @@ export default function GameBoardView({ campaignId }: Props) {
   return (
     <div className={styles.container}>
       <BoardLayout
-        header={<BoardHeader campaign={campaign} campaignId={campaignId} isSW={isSW} />}
-        nav={<BoardNav activeZone={activeZone} onZoneChange={setActiveZone} isSW={isSW} />}
+        header={(controls) => <BoardHeader campaign={campaign} campaignId={campaignId} isSW={isSW} {...controls} />}
+        nav={(controls) => <BoardNav activeZone={activeZone} onZoneChange={setActiveZone} isSW={isSW} {...controls} />}
         main={<MainZone zone={activeZone} isSW={isSW} campaign={campaign} currentUserId={currentUserId ?? ''} />}
         sidebar={<BoardSidebar campaign={campaign} isSW={isSW} />}
       />

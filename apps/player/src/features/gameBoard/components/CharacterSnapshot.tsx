@@ -1,6 +1,6 @@
 'use client';
 
-import { Avatar, Button } from '@tapestry/ui';
+import { Avatar } from '@tapestry/ui';
 import type { CharacterSheet } from '@tapestry/types';
 import styles from './CharacterSnapshot.module.scss';
 
@@ -13,7 +13,7 @@ interface Props {
 
 function Pips({ current, max, temp = 0 }: { current: number; max: number; temp?: number }) {
   return (
-    <div className={styles.pips}>
+    <div className={styles.pips} role="img" aria-label={`${current} of ${max}${temp ? `, plus ${temp} temporary` : ''}`}>
       {Array.from({ length: max }).map((_, i) => {
         const isTemp = i >= current && i < current + temp;
         const isFilled = i < current;
@@ -45,15 +45,15 @@ export default function CharacterSnapshot({ activeCharacter, playerName, isLoadi
   // No character selected - "As Self" mode
   if (!activeCharacter) {
     return (
-      <button className={styles.snapshot} onClick={onClick} type="button">
+      <button className={styles.snapshot} onClick={onClick} type="button" aria-haspopup="dialog">
         <div className={styles.avatarWrapper}>
           <Avatar name={playerName} size="md" />
         </div>
         <div className={styles.info}>
           <p className={styles.name}>{playerName}</p>
           <p className={styles.meta}>Acting as self</p>
+          <span className={styles.actionLabel}>Choose character</span>
         </div>
-        <div className={styles.chevron}>›</div>
       </button>
     );
   }
@@ -66,7 +66,7 @@ export default function CharacterSnapshot({ activeCharacter, playerName, isLoadi
   const threads = sheet.resources.threads;
 
   return (
-    <button className={styles.snapshot} onClick={onClick} type="button">
+    <button className={styles.snapshot} onClick={onClick} type="button" aria-haspopup="dialog">
       <div className={styles.avatarWrapper}>
         <Avatar src={avatarUrl ?? undefined} alt={name} size="md" />
       </div>
@@ -85,8 +85,8 @@ export default function CharacterSnapshot({ activeCharacter, playerName, isLoadi
             <Pips current={threads.current} max={threads.max} />
           </div>
         </div>
+        <span className={styles.actionLabel}>Change character</span>
       </div>
-      <div className={styles.chevron}>›</div>
     </button>
   );
 }

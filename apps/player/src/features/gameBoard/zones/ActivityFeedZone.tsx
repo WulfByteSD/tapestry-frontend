@@ -48,7 +48,7 @@ export default function ActivityFeedZone({ campaignId, isSW }: Props) {
   };
 
   return (
-    <div className={styles.zone}>
+    <div className={`${styles.zone} ${styles.feedZone}`}>
       <div className={styles.zoneHeader}>
         <h2 className={styles.zoneTitle}>Activity Feed</h2>
         {isSW && (
@@ -58,7 +58,7 @@ export default function ActivityFeedZone({ campaignId, isSW }: Props) {
         )}
       </div>
 
-      <div ref={scrollRef} className={styles.feedScroll} onScroll={handleScroll}>
+      <div ref={scrollRef} className={styles.feedScroll} onScroll={handleScroll} tabIndex={0} role="region" aria-label="Campaign activity feed">
         {isFetchingNextPage && (
           <div className={styles.loadMoreIndicator}>
             <Loader size="sm" label="Loading older activities" />

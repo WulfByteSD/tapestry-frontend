@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import type { CampaignType } from '@tapestry/types';
 import { Avatar } from '@tapestry/ui';
+import { TbDice, TbNotebook, TbSwords } from 'react-icons/tb';
 import { useMe } from '@/lib/auth-hooks';
 import { useProfile } from '@tapestry/hooks/src/useProfile';
 import { api } from '@/lib/api';
@@ -40,16 +41,15 @@ export default function BoardSidebar({ campaign, isSW }: Props) {
 
   const members = sortedMembers.slice(0, 8);
   const playerName = playerProfile?.payload?.displayName ?? 'Player';
+  const roleNames = { sw: 'Storyweaver', 'co-sw': 'Co-Storyweaver', player: 'Player', observer: 'Observer' };
 
   return (
     <div className={styles.sidebar}>
-      {/* Character Snapshot panel */}
       <section className={styles.panel}>
-        <h3 className={styles.panelTitle}>Your Character</h3>
+        <h3 className={styles.panelTitle}>Acting as</h3>
         <CharacterSnapshot activeCharacter={activeCharacter} playerName={playerName} isLoading={isLoading} onClick={() => setSelectorOpen(true)} />
       </section>
 
-      {/* Party Members panel */}
       <section className={styles.panel}>
         <h3 className={styles.panelTitle}>Party ({campaign.members.length})</h3>
         <div className={styles.memberList}>
@@ -60,30 +60,30 @@ export default function BoardSidebar({ campaign, isSW }: Props) {
               <div className={styles.memberRow} key={player?._id ?? i}>
                 <div className={styles.avatarWrapper}>
                   <Avatar src={player?.avatar ?? undefined} alt={player?.displayName ?? 'Member'} name={player?.displayName ?? undefined} size="sm" />
-                  {online && <span className={styles.onlineDot} />}
+                  {online && <span className={styles.onlineDot} role="img" aria-label="Online" />}
                 </div>
                 <div className={styles.memberInfo}>
                   <span className={styles.memberName}>{player?.displayName ?? 'Unknown'}</span>
                   <span className={styles.memberRole}>
-                    {m.role}
+                    {roleNames[m.role]}
                   </span>
                 </div>
               </div>
             );
           })}
         </div>
+        {sortedMembers.length > members.length ? <p className={styles.overflow}>+{sortedMembers.length - members.length} others</p> : null}
       </section>
 
-      {/* Quick Actions panel — stub */}
       <section className={styles.panel}>
         <h3 className={styles.panelTitle}>Quick Actions</h3>
+        <p className={styles.unavailable}>Not yet available</p>
         <div className={styles.actionStubs}>
-          <div className={styles.actionStub}>🎲 Roll Dice</div>
-          {isSW && <div className={styles.actionStub}>⚔️ Start Encounter</div>}
-          <div className={styles.actionStub}>📝 Quick Note</div>
+          <button type="button" disabled className={styles.actionStub} aria-label="Roll Dice — Not yet available"><TbDice size={18} aria-hidden />Roll Dice</button>
+          {isSW && <button type="button" disabled className={styles.actionStub} aria-label="Start Encounter — Not yet available"><TbSwords size={18} aria-hidden />Start Encounter</button>}
+          <button type="button" disabled className={styles.actionStub} aria-label="Quick Note — Not yet available"><TbNotebook size={18} aria-hidden />Quick Note</button>
         </div>
       </section>
-      {/* Character Selector Modal */}
       <CharacterSelector
         open={selectorOpen}
         onClose={() => setSelectorOpen(false)}

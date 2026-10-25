@@ -1,13 +1,13 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
+import Link from 'next/link';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { TextAreaField, SelectField, Button, Loader } from '@tapestry/ui';
+import { TextAreaField, SelectField, Button } from '@tapestry/ui';
 import { api } from '@/lib/api';
 import { useMyJoinRequests } from '@/lib/campaign-hooks';
 import type { CampaignMember } from '@tapestry/types';
 import styles from './JoinCampaignCard.module.scss';
-import Link from 'next/link';
 
 type JoinPolicy = 'open' | 'request' | 'invite-only';
 
@@ -22,176 +22,112 @@ export default function JoinCampaignCard({ gameId, joinPolicy, members, currentU
   const queryClient = useQueryClient();
   const [requestMessage, setRequestMessage] = useState('');
   const [preferredRole, setPreferredRole] = useState<'player' | 'observer'>('player');
-
-  // Check if user is already a member
-  const isMember = useMemo(() => {
-    if (!currentUserProfileId) return false;
-    return members.some((member) => (typeof member.player === 'string' ? member.player === currentUserProfileId : member.player._id === currentUserProfileId));
-  }, [members, currentUserProfileId]);
-
-  // Only fetch join requests if user is not already a member
-  const { data: joinRequestsResponse } = useMyJoinRequests(
-    !isMember && joinPolicy === 'request' // Only fetch if not a member and campaign requires approval
-  );
-  const joinRequests = joinRequestsResponse?.payload || [];
-
-  // Check if user has a pending join request for this campaign
-  const pendingRequest = useMemo(() => {
-    if (isMember) return null;
-    return joinRequests.find((req) => req.campaign === gameId && req.status === 'pending');
-  }, [joinRequests, gameId, isMember]);
+  const userMember = currentUserProfileId
+    ? members.find((member) => (typeof member.player === 'string' ? member.player === currentUserProfileId : member.player._id === currentUserProfileId))
+    : undefined;
+  const isMember = Boolean(userMember);
+  const { data: joinRequestsResponse } = useMyJoinRequests(!isMember && joinPolicy === 'request');
+  const pendingRequest = !isMember ? joinRequestsResponse?.payload?.find((req) => req.campaign === gameId && req.status === 'pending') : undefined;
 
   const joinMutation = useMutation({
     mutationFn: async () => {
-      // Different endpoints for open vs request policies
       if (joinPolicy === 'open') {
-        // Direct join for open campaigns
-        await api.post(`/game/campaigns/${gameId}/join`, {
-          role: preferredRole,
-        });
+        await api.post(`/game/campaigns/${gameId}/join`, { role: preferredRole });
       } else {
-        // Request approval for 'request' policy
-        const payload: { role: string; message?: string } = {
-          role: preferredRole,
-        };
-
-        if (requestMessage.trim()) {
-          payload.message = requestMessage.trim();
-        }
-
+        const payload: { role: string; message?: string } = { role: preferredRole };
+        if (requestMessage.trim()) payload.message = requestMessage.trim();
         await api.post(`/game/campaigns/${gameId}/join-requests`, payload);
       }
     },
     onSuccess: () => {
-      // Invalidate queries to refresh campaign data and user's campaign list
       queryClient.invalidateQueries({ queryKey: ['campaign', gameId] });
       queryClient.invalidateQueries({ queryKey: ['my-campaigns'] });
       queryClient.invalidateQueries({ queryKey: ['my-join-requests'] });
     },
   });
 
-  // User is already a member - show member status
   if (isMember) {
-    const userMember = members.find((member) => (typeof member.player === 'string' ? member.player === currentUserProfileId : member.player._id === currentUserProfileId));
-
     return (
-      <section className={styles.joinCard}>
+      <section className={`${styles.joinCard} ${styles.memberCard}`} aria-labelledby="participation-heading">
         <div className={styles.joinCardTop}>
-          <div className={styles.successIcon}>✓</div>
-          <h2>You're a Member</h2>
+          <h2 id="participation-heading">Your place at the table</h2>
           <p>
-            You joined this campaign as a{' '}
-            <strong>{userMember?.role === 'sw' ? 'Storyweaver' : userMember?.role === 'co-sw' ? 'Co-Storyweaver' : userMember?.role === 'observer' ? 'Observer' : 'Player'}</strong>
-            .
+            You’re part of this campaign as a{' '}
+            <strong>{userMember?.role === 'sw' ? 'Storyweaver' : userMember?.role === 'co-sw' ? 'Co-Storyweaver' : userMember?.role === 'observer' ? 'Observer' : 'Player'}</strong>.
           </p>
-          <Link href={`/games/${gameId}/board`}>
-            <Button variant="solid" tone="gold" className={styles.boardButton}>
-              Go to Game Board
-            </Button>
-          </Link>
         </div>
+        <Link href={`/games/${gameId}/board`} className={styles.boardLink}>Go to Game Board</Link>
       </section>
     );
   }
 
-  // User has a pending join request
   if (pendingRequest) {
     return (
-      <section className={styles.joinCard}>
+      <section className={styles.joinCard} aria-labelledby="participation-heading">
         <div className={styles.joinCardTop}>
-          <div className={styles.pendingIcon}>⏳</div>
-          <h2>Request Pending</h2>
-          <p>
-            Your request to join as a <strong>{pendingRequest.preferredRole === 'observer' ? 'Observer' : 'Player'}</strong> is awaiting approval from the Storyweaver.
-          </p>
-          {pendingRequest.message && (
-            <div className={styles.requestMessage}>
-              <p className={styles.messageLabel}>Your message:</p>
-              <p className={styles.messageText}>"{pendingRequest.message}"</p>
-            </div>
-          )}
+          <h2 id="participation-heading">Request pending</h2>
+          <p>Your request to join as a <strong>{pendingRequest.preferredRole === 'observer' ? 'Observer' : 'Player'}</strong> is awaiting approval from the Storyweaver.</p>
         </div>
+        {pendingRequest.message ? (
+          <div className={styles.requestMessage}>
+            <p className={styles.messageLabel}>Your message</p>
+            <p className={styles.messageText}>{pendingRequest.message}</p>
+          </div>
+        ) : null}
       </section>
     );
   }
 
-  // Invite-only campaigns cannot be joined
   if (joinPolicy === 'invite-only') {
     return (
-      <section className={styles.joinCard}>
+      <section className={styles.joinCard} aria-labelledby="participation-heading">
         <div className={styles.joinCardTop}>
-          <h2>Invite Only</h2>
-          <p>This campaign is private. To join, you'll need a specific invite code from the campaign creator.</p>
+          <h2 id="participation-heading">Join the table</h2>
+          <p>You’ll need an invite code from the Storyweaver to join this campaign.</p>
         </div>
       </section>
     );
   }
 
   const isOpen = joinPolicy === 'open';
-  const buttonText = isOpen ? 'Join Campaign' : 'Request to Join';
-  const headingText = isOpen ? 'Join this campaign' : 'Request to join';
-  const descriptionText = isOpen
-    ? 'Choose your role and join the adventure immediately.'
-    : 'Send a request to the Storyweaver. Once accepted, you can attach a character and begin play.';
 
   return (
-    <>
-      <section className={styles.joinCard}>
-        <div className={styles.joinCardTop}>
-          <h2>{headingText}</h2>
-          <p>{descriptionText}</p>
-        </div>
-
-        <SelectField
-          label="Preferred Role"
-          value={preferredRole}
-          onChange={(e) => setPreferredRole(e.target.value as 'player' | 'observer')}
+    <section className={styles.joinCard} aria-labelledby="participation-heading">
+      <div className={styles.joinCardTop}>
+        <h2 id="participation-heading">{isOpen ? 'Join this campaign' : 'Request to join'}</h2>
+        <p>{isOpen ? 'Choose your role and join the adventure.' : 'Introduce yourself and send a request to the Storyweaver.'}</p>
+      </div>
+      <SelectField
+        label="Preferred role"
+        value={preferredRole}
+        onChange={(event) => setPreferredRole(event.target.value as 'player' | 'observer')}
+        disabled={joinMutation.isPending}
+      >
+        <option value="player">Player</option>
+        <option value="observer">Observer</option>
+      </SelectField>
+      {!isOpen ? (
+        <TextAreaField
+          id="join-request-message"
+          label="Message to Storyweaver (optional)"
+          value={requestMessage}
+          onChange={(event) => setRequestMessage(event.target.value)}
+          placeholder="What draws you to this campaign?"
+          rows={4}
           disabled={joinMutation.isPending}
-          helpText="Choose how you'd like to participate in this campaign"
-        >
-          <option value="player">Player</option>
-          <option value="observer">Observer</option>
-        </SelectField>
-
-        {!isOpen ? (
-          <TextAreaField
-            label="Message to Storyweaver (optional)"
-            value={requestMessage}
-            onChange={(event) => setRequestMessage(event.target.value)}
-            placeholder="Hey, this campaign looks like exactly my kind of bad decision."
-            rows={5}
-            disabled={joinMutation.isPending}
-            maxLength={500}
-            helpText={`${requestMessage.length} / 500 characters`}
-          />
-        ) : null}
-
-        <button type="button" className={styles.joinButton} onClick={() => joinMutation.mutate()} disabled={joinMutation.isPending}>
-          {joinMutation.isPending ? (
-            <>
-              <Loader size="sm" tone="neutral" layout="inline" />
-              {isOpen ? 'Joining...' : 'Submitting...'}
-            </>
-          ) : (
-            buttonText
-          )}
-        </button>
-
-        {joinMutation.isError ? (
-          <div className={styles.errorMessage}>
-            <span className={styles.errorIcon}>⚠️</span>
-            <p>{isOpen ? 'Failed to join campaign' : 'Join request failed'}. The backend probably hasn't grown this limb yet.</p>
-          </div>
-        ) : null}
-      </section>
-
-      {joinMutation.isSuccess ? (
-        <section className={styles.successCard}>
-          <div className={styles.successIcon}>✓</div>
-          <h2>{isOpen ? 'Joined Successfully' : 'Request Submitted'}</h2>
-          <p>{isOpen ? "You're now a member of this campaign!" : "Your join request has been sent to the Storyweaver. You'll be notified when they review it."}</p>
-        </section>
+          maxLength={500}
+          helpText={`${requestMessage.length} / 500 characters`}
+        />
       ) : null}
-    </>
+      <Button type="button" tone="gold" fullWidth isLoading={joinMutation.isPending} className={styles.joinButton} onClick={() => joinMutation.mutate()}>
+        {joinMutation.isPending ? (isOpen ? 'Joining...' : 'Submitting...') : (isOpen ? 'Join Campaign' : 'Request to Join')}
+      </Button>
+      {joinMutation.isError ? (
+        <p className={styles.feedback} role="alert">{isOpen ? 'We couldn’t join this campaign.' : 'Your join request could not be sent.'} Please try again.</p>
+      ) : null}
+      {joinMutation.isSuccess ? (
+        <p className={styles.feedback} role="status">{isOpen ? 'You’ve joined the campaign. Your membership is updating.' : 'Your request has been sent to the Storyweaver for review.'}</p>
+      ) : null}
+    </section>
   );
 }

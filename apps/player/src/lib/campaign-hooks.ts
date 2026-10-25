@@ -313,9 +313,9 @@ export function useUpdateCampaignMutation(campaignId: string) {
         queryClient.setQueryData(['campaign', campaignId], ctx.prev);
       }
     },
-    onSuccess: (data) => {
-      queryClient.setQueryData(['campaign', campaignId], data);
-
+    onSuccess: () => {
+      // Keep the optimistic, populated campaign until the refetch below.
+      // The update response contains raw owner/member IDs, not the hydrated profiles.
       // Clear any existing refetch timer
       const existingTimer = refetchTimers.get(campaignId);
       if (existingTimer) {

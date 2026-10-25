@@ -1,102 +1,85 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
-import { useMemo, useState } from 'react';
-import { Avatar, Loader } from '@tapestry/ui';
+import { useMemo, useRef, useState } from 'react';
+import { Avatar, Button, Loader } from '@tapestry/ui';
 import { useProfile } from '@tapestry/hooks';
 import { useCampaign } from '@/lib/campaign-hooks';
 import { useMe } from '@/lib/auth-hooks';
 import { api } from '@/lib/api';
 import type { CampaignType, CampaignMember, CampaignRole, PlayerType } from '@tapestry/types';
 import JoinCampaignCard from '@/views/games/_components/joinCampaignCard/JoinCampaignCard.component';
+import { NoteBody, noteBodyText } from '@/features/characters/noteContent';
 import styles from './GameOverview.module.scss';
-import Image from 'next/image';
 
-type Props = {
-  gameId: string;
+type Props = { gameId: string };
+
+// Preserve the existing optional response fields and defaults locally.
+type OverviewCampaign = CampaignType & {
+  maxPlayers?: number | null;
+  joinPolicy?: 'open' | 'request' | 'invite-only';
 };
 
-type MembersByRole = {
-  sw: CampaignMember[];
-  'co-sw': CampaignMember[];
-  player: CampaignMember[];
-  observer: CampaignMember[];
-};
+type MembersByRole = Record<CampaignRole, CampaignMember[]>;
+
+const memberGroups = [
+  { role: 'player', label: 'Players', fallback: 'Player' },
+  { role: 'co-sw', label: 'Co-Storyweavers', fallback: 'Co-Storyweaver' },
+  { role: 'observer', label: 'Observers', fallback: 'Observer' },
+] as const;
 
 function truncateWords(text: string, maxWords: number): { truncated: string; isTruncated: boolean } {
   const words = text.trim().split(/\s+/);
-  if (words.length <= maxWords) {
-    return { truncated: text, isTruncated: false };
-  }
-  return {
-    truncated: words.slice(0, maxWords).join(' ') + '...',
-    isTruncated: true,
-  };
+  if (words.length <= maxWords) return { truncated: text, isTruncated: false };
+  return { truncated: words.slice(0, maxWords).join(' ') + '...', isTruncated: true };
+}
+
+function truncateCharacters(text: string, maxCharacters: number): { truncated: string; isTruncated: boolean } {
+  const characters = Array.from(text);
+  if (characters.length <= maxCharacters) return { truncated: text, isTruncated: false };
+  return { truncated: characters.slice(0, maxCharacters).join('').trimEnd() + '…', isTruncated: true };
 }
 
 function groupMembersByRole(members: CampaignMember[]): MembersByRole {
-  const grouped: MembersByRole = {
-    sw: [],
-    'co-sw': [],
-    player: [],
-    observer: [],
-  };
-
-  members.forEach((member) => {
-    grouped[member.role].push(member);
-  });
-
+  const grouped: MembersByRole = { sw: [], 'co-sw': [], player: [], observer: [] };
+  members.forEach((member) => grouped[member.role].push(member));
   return grouped;
 }
 
 export default function GameOverviewView({ gameId }: Props) {
   const [notesExpanded, setNotesExpanded] = useState(false);
+  const descriptionDialogRef = useRef<HTMLDialogElement>(null);
+  const descriptionTriggerRef = useRef<HTMLButtonElement>(null);
   const [bioExpanded, setBioExpanded] = useState(false);
   const [expectationsExpanded, setExpectationsExpanded] = useState(false);
-
   const { data, isLoading, isError } = useCampaign(gameId);
-  const campaign = data?.payload as CampaignType | undefined;
-
-  // Get current user's profile to check membership
+  const campaign = data?.payload as OverviewCampaign | undefined;
   const { data: me } = useMe();
   const { selectedProfile: profile } = useProfile<PlayerType>(api, me, 'player');
 
-  // Compute derived values (must be before early returns to satisfy Rules of Hooks)
-  const playerCount = campaign?.members?.length ?? 0;
-  const maxPlayers = (campaign as any)?.maxPlayers ?? null;
-  const settingLabel = campaign?.settingKey ?? 'No setting';
-  const joinPolicyLabel = campaign?.discoverable ? 'Open to discovery' : 'Private';
-  const joinPolicy = (campaign as any)?.joinPolicy ?? 'invite-only';
-  const capacityLabel = maxPlayers ? `${playerCount} / ${maxPlayers}` : `${playerCount}`;
-
+  const memberCount = campaign?.members?.length ?? 0;
+  const maxPlayers = campaign?.maxPlayers ?? null;
+  const capacityLabel = maxPlayers ? `${memberCount} / ${maxPlayers}` : `${memberCount}`;
+  const joinPolicy = campaign?.joinPolicy ?? 'invite-only';
+  const isMember = Boolean(profile?._id && campaign?.members?.some((member) => (typeof member.player === 'string' ? member.player === profile._id : member.player._id === profile._id)));
   const membersByRole = useMemo(() => groupMembersByRole(campaign?.members ?? []), [campaign?.members]);
-
-  const storyweaver = useMemo(() => {
-    return membersByRole.sw[0]?.player ?? null;
-  }, [membersByRole]);
-
-  const notesContent = useMemo(() => {
-    const text = campaign?.notes ?? '';
-    if (!text) return { truncated: 'No campaign pitch has been written yet.', isTruncated: false };
-    return truncateWords(text, 50);
-  }, [campaign?.notes]);
-
-  const bioContent = useMemo(() => {
-    const text = storyweaver?.bio ?? '';
-    if (!text) return { truncated: '', isTruncated: false };
-    return truncateWords(text, 35);
-  }, [storyweaver?.bio]);
-
-  const expectationsContent = useMemo(() => {
-    const text = campaign?.tableExpectations ?? '';
-    if (!text) return { truncated: '', isTruncated: false };
-    return truncateWords(text, 60);
-  }, [campaign?.tableExpectations]);
+  const storyweaver = membersByRole.sw[0]?.player;
+  const visibleNotes = noteBodyText(campaign?.notes ?? '');
+  const notesBody = visibleNotes.trim() ? campaign?.notes ?? '' : 'No campaign pitch has been written yet.';
+  const notesText = visibleNotes.trim() ? visibleNotes : notesBody;
+  const notesContent = truncateCharacters(notesText.replace(/\s+/g, ' ').trim(), 150);
+  // Empty rich-text blocks can still consume space even when their visible text is short.
+  const notesBlockCount = notesBody.match(/<(?:p|h[1-6]|li|blockquote|br|hr)\b/gi)?.length ?? 0;
+  const notesNeedDialog = Array.from(notesText).length > 450 || notesText.split(/\r\n|\r|\n/).length > 4 || notesBlockCount > 4;
+  const bioContent = truncateWords(storyweaver?.bio ?? '', 35);
+  const expectationsText = noteBodyText(campaign?.tableExpectations ?? '');
+  const expectationsContent = truncateWords(expectationsText, 60);
 
   if (isLoading) {
     return (
       <div className={styles.stateCard}>
-        <Loader size="lg" tone="gold" label="Loading game..." caption="Pulling the campaign overview together." />
+        <Loader size="lg" tone="gold" label="Loading game..." caption="Gathering the campaign details." />
       </div>
     );
   }
@@ -104,186 +87,165 @@ export default function GameOverviewView({ gameId }: Props) {
   if (!campaign) {
     return (
       <div className={styles.stateCard}>
-        <h1>Game not found</h1>
-        <p>That campaign either moved, vanished, or never existed in the first place.</p>
-        <Link href="/games" className={styles.backLink}>
-          Back to games
-        </Link>
+        <h1>{isError ? 'Unable to load this game' : 'Game not found'}</h1>
+        <p>{isError ? 'The campaign details could not be loaded. Please try again.' : 'This campaign is unavailable or no longer exists.'}</p>
+        <Link href="/games" className={styles.backLink}>Back to games</Link>
       </div>
     );
   }
 
-  return (
-    <div className={styles.page}>
-      <Link href="/games" className={styles.backLink}>
-        ← Back to games
-      </Link>
+  const participation = (
+    <div id="participation" tabIndex={-1} className={isMember ? styles.memberParticipation : styles.participation}>
+      <JoinCampaignCard gameId={gameId} joinPolicy={joinPolicy} members={campaign.members || []} currentUserProfileId={profile?._id} />
+    </div>
+  );
 
-      {isError ? <div className={styles.notice}>Live detail fetch failed, so this page is using placeholder data while you build the frontend.</div> : null}
+  const campaignDetails = (
+    <section className={styles.section} aria-labelledby="campaign-table-heading">
+      <h2 id="campaign-table-heading">At this table</h2>
+      <section className={styles.subsection} aria-labelledby="campaign-tones-heading">
+        <h3 id="campaign-tones-heading">Tone Modules</h3>
+        {campaign.toneModules?.length ? (
+          <ul className={styles.toneList}>
+            {campaign.toneModules.map((tone) => <li key={tone}>{tone}</li>)}
+          </ul>
+        ) : <p className={styles.empty}>No Tone Modules listed yet.</p>}
+      </section>
+      {expectationsText.trim() ? (
+        <section className={styles.subsection} aria-labelledby="campaign-expectations-heading">
+          <h3 id="campaign-expectations-heading">Table expectations</h3>
+          <div id="campaign-expectations" className={`${styles.prose} ${styles.richProse}`}>
+            {expectationsExpanded || !expectationsContent.isTruncated ? <NoteBody body={campaign.tableExpectations ?? ''} /> : expectationsContent.truncated}
+          </div>
+          {expectationsContent.isTruncated ? (
+            <button type="button" className={styles.expandButton} aria-expanded={expectationsExpanded} aria-controls="campaign-expectations" onClick={() => setExpectationsExpanded(!expectationsExpanded)}>
+              {expectationsExpanded ? 'Show less' : 'Read more'}
+            </button>
+          ) : null}
+        </section>
+      ) : null}
+    </section>
+  );
 
-      <section className={styles.hero}>
-        {campaign.avatar ? <Image src={campaign.avatar} alt={campaign.name} width={460} height={460} className={styles.heroAvatar} /> : null}
-        <div className={styles.heroContent}>
-          <p className={styles.eyebrow}>Campaign Overview</p>
-          <h1 className={styles.title}>{campaign.name}</h1>
-
-          <div className={styles.metaRow}>
-            <span className={styles.pill}>
-              <span className={styles.pillLabel}>Setting</span>
-              <span className={styles.pillValue}>{settingLabel}</span>
-            </span>
-            <span className={styles.pill}>
-              <span className={styles.pillLabel}>Players</span>
-              <span className={styles.pillValue}>{capacityLabel}</span>
-            </span>
-            <span className={styles.pill}>
-              <span className={styles.pillLabel}>Join Policy</span>
-              <span className={styles.pillValue}>{joinPolicy === 'open' ? 'Open' : joinPolicy === 'request' ? 'Request' : 'Invite Only'}</span>
-            </span>
+  const people = (
+    <section className={`${styles.section} ${styles.people}`} aria-labelledby="campaign-people-heading">
+      <h2 id="campaign-people-heading">People at the table</h2>
+      {storyweaver ? (
+        <div className={styles.storyweaver}>
+          <Avatar src={storyweaver.avatar ?? null} name={storyweaver.displayName ?? 'Storyweaver'} size="lg" />
+          <div className={styles.personDetails}>
+            <h3 className={styles.roleTitle}>Storyweaver</h3>
+            <p className={styles.personName}>{storyweaver.displayName ?? 'Unknown Storyweaver'}</p>
+            {storyweaver.bio ? (
+              <>
+                <p id="storyweaver-bio" className={styles.prose}>{bioExpanded ? storyweaver.bio : bioContent.truncated}</p>
+                {bioContent.isTruncated ? (
+                  <button type="button" className={styles.expandButton} aria-expanded={bioExpanded} aria-controls="storyweaver-bio" onClick={() => setBioExpanded(!bioExpanded)}>
+                    {bioExpanded ? 'Show less' : 'Read more'}
+                  </button>
+                ) : null}
+              </>
+            ) : null}
           </div>
         </div>
-      </section>
+      ) : null}
+      {memberGroups.map(({ role, label, fallback }) => membersByRole[role].length > 0 ? (
+        <div className={styles.memberGroup} key={role}>
+          <h3 className={styles.roleTitle}>{label}</h3>
+          <ul className={styles.memberList}>
+            {membersByRole[role].slice(0, 4).map((member) => (
+              <li key={member.player._id} className={styles.member}>
+                <Avatar src={member.player.avatar ?? null} name={member.player.displayName ?? fallback} size="md" />
+                <span>{member.player.displayName ?? fallback}</span>
+              </li>
+            ))}
+          </ul>
+          {membersByRole[role].length > 4 ? <p className={styles.empty}>+ {membersByRole[role].length - 4} others</p> : null}
+        </div>
+      ) : null)}
+      {memberCount === 0 ? <p className={styles.empty}>No members listed yet.</p> : null}
+    </section>
+  );
 
-      <div className={styles.grid}>
-        <main className={styles.mainColumn}>
-          <section className={styles.panel}>
-            <h2>About this campaign</h2>
-            <div className={notesExpanded ? styles.scrollableContent : undefined}>
-              <p className={styles.panelText}>{notesExpanded ? campaign.notes : notesContent.truncated}</p>
+  return (
+    <div className={styles.page}>
+      <Link href="/games" className={styles.backLink}>← Back to games</Link>
+      {isError ? <p className={styles.notice} role="status">We couldn’t refresh this campaign. The details below may be out of date.</p> : null}
+      <header className={`${styles.identity} ${!campaign.avatar ? styles.identityWithoutArtwork : ''}`}>
+        {campaign.avatar ? (
+          <div className={styles.artworkFrame}>
+            <Image src={campaign.avatar} alt="" width={1200} height={1200} sizes="(max-width: 700px) 100vw, 33vw" className={styles.artwork} />
+          </div>
+        ) : null}
+        <div className={styles.identityContent}>
+          <p className={styles.eyebrow}>Campaign</p>
+          <h1 className={styles.title}>{campaign.name}</h1>
+          <dl className={styles.facts}>
+            <div><dt>Setting</dt><dd>{campaign.settingKey ?? 'No setting'}</dd></div>
+            <div><dt>Members</dt><dd>{capacityLabel}</dd></div>
+            <div><dt>Status</dt><dd className={styles.status}>{campaign.status ?? 'active'}</dd></div>
+            <div><dt>Joining</dt><dd>{joinPolicy === 'open' ? 'Open to all' : joinPolicy === 'request' ? 'Approval required' : 'Invite only'}</dd></div>
+          </dl>
+          <section className={styles.pitch} aria-labelledby="campaign-pitch-heading">
+            <h2 id="campaign-pitch-heading">About this campaign</h2>
+            <div id="campaign-pitch" className={`${styles.prose} ${styles.richProse}`}>
+              {!notesNeedDialog && (notesExpanded || !notesContent.isTruncated) ? <NoteBody body={notesBody} /> : notesContent.truncated}
             </div>
-            {notesContent.isTruncated ? (
-              <button type="button" className={styles.expandButton} onClick={() => setNotesExpanded(!notesExpanded)}>
+            {notesNeedDialog ? (
+              <button
+                ref={descriptionTriggerRef}
+                type="button"
+                className={styles.expandButton}
+                aria-haspopup="dialog"
+                aria-controls="campaign-description-dialog"
+                onClick={() => descriptionDialogRef.current?.showModal()}
+              >
+                Read full description
+              </button>
+            ) : notesContent.isTruncated ? (
+              <button type="button" className={styles.expandButton} aria-expanded={notesExpanded} aria-controls="campaign-pitch" onClick={() => setNotesExpanded(!notesExpanded)}>
                 {notesExpanded ? 'Show less' : 'Read more'}
               </button>
             ) : null}
           </section>
-
-          {storyweaver ? (
-            <section className={styles.storyweaverCard}>
-              <h2>Storyweaver</h2>
-              <div className={styles.storyweaverContent}>
-                <Avatar src={storyweaver.avatar ?? null} name={storyweaver.displayName ?? 'Unknown'} size="lg" className={styles.storyweaverAvatar} />
-                <div className={styles.storyweaverInfo}>
-                  <h3 className={styles.storyweaverName}>{storyweaver.displayName ?? 'Unknown Storyweaver'}</h3>
-                  {storyweaver.bio ? (
-                    <>
-                      <p className={styles.storyweaverBio}>{bioExpanded ? storyweaver.bio : bioContent.truncated}</p>
-                      {bioContent.isTruncated ? (
-                        <button type="button" className={styles.expandButton} onClick={() => setBioExpanded(!bioExpanded)}>
-                          {bioExpanded ? 'Show less' : 'Read more'}
-                        </button>
-                      ) : null}
-                    </>
-                  ) : null}
-                </div>
-              </div>
-            </section>
+          {!isMember ? (
+            <a href="#participation" className={styles.joinShortcut} onClick={() => document.getElementById('participation')?.focus()}>
+              {joinPolicy === 'open' ? 'Join this campaign' : joinPolicy === 'request' ? 'Request to join' : 'How to join'}
+              <span aria-hidden="true"> ↓</span>
+            </a>
           ) : null}
-
-          <section className={styles.panel}>
-            <h2>Campaign Members</h2>
-            <div className={styles.membersGrid}>
-              {membersByRole.player.length > 0 ? (
-                <div className={styles.memberRoleSection}>
-                  <h3 className={styles.memberRoleTitle}>Players</h3>
-                  <div className={styles.memberAvatarRow}>
-                    {membersByRole.player.slice(0, 4).map((member) => (
-                      <Avatar key={member.player._id} src={member.player.avatar ?? null} name={member.player.displayName ?? 'Player'} size="md" className={styles.memberAvatar} />
-                    ))}
-                    {membersByRole.player.length > 4 ? <span className={styles.memberOverflow}>+ {membersByRole.player.length - 4} others</span> : null}
-                  </div>
-                </div>
-              ) : null}
-
-              {membersByRole['co-sw'].length > 0 ? (
-                <div className={styles.memberRoleSection}>
-                  <h3 className={styles.memberRoleTitle}>Co-Storyweavers</h3>
-                  <div className={styles.memberAvatarRow}>
-                    {membersByRole['co-sw'].slice(0, 4).map((member) => (
-                      <Avatar key={member.player._id} src={member.player.avatar ?? null} name={member.player.displayName ?? 'Co-SW'} size="md" className={styles.memberAvatar} />
-                    ))}
-                    {membersByRole['co-sw'].length > 4 ? <span className={styles.memberOverflow}>+ {membersByRole['co-sw'].length - 4} others</span> : null}
-                  </div>
-                </div>
-              ) : null}
-
-              {membersByRole.observer.length > 0 ? (
-                <div className={styles.memberRoleSection}>
-                  <h3 className={styles.memberRoleTitle}>Observers</h3>
-                  <div className={styles.memberAvatarRow}>
-                    {membersByRole.observer.slice(0, 4).map((member) => (
-                      <Avatar key={member.player._id} src={member.player.avatar ?? null} name={member.player.displayName ?? 'Observer'} size="md" className={styles.memberAvatar} />
-                    ))}
-                    {membersByRole.observer.length > 4 ? <span className={styles.memberOverflow}>+ {membersByRole.observer.length - 4} others</span> : null}
-                  </div>
-                </div>
-              ) : null}
-
-              {membersByRole.player.length === 0 && membersByRole['co-sw'].length === 0 && membersByRole.observer.length === 0 ? (
-                <p className={styles.emptyMembers}>No members yet. Be the first to join!</p>
-              ) : null}
+        </div>
+      </header>
+      {notesNeedDialog ? (
+        <dialog
+          ref={descriptionDialogRef}
+          id="campaign-description-dialog"
+          className={styles.readerDialog}
+          aria-labelledby="campaign-description-title"
+          onClose={() => descriptionTriggerRef.current?.focus()}
+        >
+          <div className={styles.readerHeader}>
+            <div>
+              <p className={styles.eyebrow}>About this campaign</p>
+              <h2 id="campaign-description-title">{campaign.name}</h2>
             </div>
-          </section>
-
-          {campaign.tableExpectations ? (
-            <section className={styles.expectationsPanel}>
-              <div className={styles.expectationsHeader}>
-                <h2>Table Expectations</h2>
-                <span className={styles.expectationsIcon}>📋</span>
-              </div>
-              <div className={styles.scrollableContent}>
-                <p className={styles.expectationsText}>{expectationsExpanded ? campaign.tableExpectations : expectationsContent.truncated}</p>
-              </div>
-              {expectationsContent.isTruncated ? (
-                <button type="button" className={styles.expandButton} onClick={() => setExpectationsExpanded(!expectationsExpanded)}>
-                  {expectationsExpanded ? 'Show less' : 'Read more'}
-                </button>
-              ) : null}
-            </section>
-          ) : null}
-
-          <section className={styles.panel}>
-            <h2>Tone & Atmosphere</h2>
-            <div className={styles.chipRow}>
-              {campaign.toneModules && campaign.toneModules.length > 0 ? (
-                campaign.toneModules.map((tone) => (
-                  <span key={tone} className={styles.chip}>
-                    {tone}
-                  </span>
-                ))
-              ) : (
-                <span className={styles.empty}>No tone modules listed yet</span>
-              )}
-            </div>
-          </section>
-        </main>
-
-        <aside className={styles.sideColumn}>
-          <JoinCampaignCard gameId={gameId} joinPolicy={joinPolicy as 'open' | 'request' | 'invite-only'} members={campaign?.members || []} currentUserProfileId={profile?._id} />
-
-          <section className={styles.panel}>
-            <h2>Campaign Details</h2>
-            <dl className={styles.detailList}>
-              <div className={styles.detailItem}>
-                <dt>Status</dt>
-                <dd className={styles[`status_${campaign.status}`]}>{campaign.status ?? 'active'}</dd>
-              </div>
-              <div className={styles.detailItem}>
-                <dt>Current Players</dt>
-                <dd>{capacityLabel} players</dd>
-              </div>
-              <div className={styles.detailItem}>
-                <dt>Setting</dt>
-                <dd>{settingLabel}</dd>
-              </div>
-              <div className={styles.detailItem}>
-                <dt>Join Policy</dt>
-                <dd>{joinPolicy === 'open' ? 'Open to all' : joinPolicy === 'request' ? 'Approval required' : 'Invite only'}</dd>
-              </div>
-            </dl>
-          </section>
-        </aside>
-      </div>
+            <Button type="button" variant="outline" tone="gold" autoFocus onClick={() => descriptionDialogRef.current?.close()}>
+              Close
+            </Button>
+          </div>
+          <div className={styles.readerBody} tabIndex={0} role="region" aria-label="Campaign description">
+            <div className={`${styles.prose} ${styles.richProse}`}><NoteBody body={notesBody} /></div>
+          </div>
+        </dialog>
+      ) : null}
+      {isMember ? (
+        <>
+          {participation}
+          <div className={styles.memberContent}>{campaignDetails}{people}</div>
+        </>
+      ) : (
+        <div className={styles.overviewGrid}>{campaignDetails}{participation}{people}</div>
+      )}
     </div>
   );
 }

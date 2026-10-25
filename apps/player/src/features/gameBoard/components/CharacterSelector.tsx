@@ -1,7 +1,9 @@
 'use client';
 
-import { Avatar, Button, Modal } from '@tapestry/ui';
+import { useEffect, useId, useRef } from 'react';
+import { Avatar, Button } from '@tapestry/ui';
 import type { CharacterSheet } from '@tapestry/types';
+import { TbCheck } from 'react-icons/tb';
 import styles from './CharacterSelector.module.scss';
 
 interface Props {
@@ -13,68 +15,70 @@ interface Props {
   playerName: string;
 }
 
-/**
- * Modal for selecting which character to act as.
- * Includes "No Character (As Self)" option plus all attached characters.
- */
 export default function CharacterSelector({ open, onClose, characters, activeCharacterId, onSelect, playerName }: Props) {
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const openerRef = useRef<HTMLElement | null>(null);
+  const titleId = useId();
+
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+    if (open && !dialog.open) {
+      openerRef.current = document.activeElement as HTMLElement;
+      dialog.showModal();
+    } else if (!open && dialog.open) dialog.close();
+  }, [open]);
+
   const handleSelect = (characterId: string | null) => {
     onSelect(characterId);
     onClose();
   };
-
-  // Sort characters alphabetically by name
   const sortedCharacters = [...characters].sort((a, b) => a.name.localeCompare(b.name));
 
   return (
-    <Modal open={open} onCancel={onClose} title="Select Character" width={480}>
+    <dialog
+      ref={dialogRef}
+      className={styles.dialog}
+      aria-labelledby={titleId}
+      onClose={(event) => {
+        if (event.target !== event.currentTarget) return;
+        onClose();
+        openerRef.current?.focus();
+      }}
+    >
+      <div className={styles.header}>
+        <h2 id={titleId}>Choose character</h2>
+        <Button type="button" variant="outline" tone="gold" autoFocus onClick={onClose}>Close</Button>
+      </div>
       <div className={styles.selector}>
-        <p className={styles.description}>Choose which character you're acting as, or select "As Self" to take actions without a character.</p>
-
+        <p className={styles.description}>Choose who you’re acting as at this table. Your selection takes effect immediately.</p>
         <div className={styles.list}>
-          {/* "As Self" option */}
-          <button type="button" className={[styles.option, activeCharacterId === null ? styles.active : ''].filter(Boolean).join(' ')} onClick={() => handleSelect(null)}>
-            <div className={styles.optionAvatar}>
-              <Avatar name={playerName} size="md" />
-            </div>
+          <button type="button" aria-pressed={activeCharacterId === null} className={`${styles.option} ${activeCharacterId === null ? styles.active : ''}`} onClick={() => handleSelect(null)}>
+            <Avatar name={playerName} size="md" />
             <div className={styles.optionInfo}>
               <p className={styles.optionName}>{playerName}</p>
               <p className={styles.optionMeta}>Acting as self</p>
             </div>
-            {activeCharacterId === null && <span className={styles.checkmark}>✓</span>}
+            {activeCharacterId === null ? <TbCheck className={styles.checkmark} size={21} aria-hidden /> : null}
           </button>
-
-          {/* Character options */}
-          {sortedCharacters.map((char) => {
-            const archetype = char.sheet.archetypeKey ?? 'Unknown';
-            const level = char.sheet.weaveLevel ?? 1;
-            const isActive = activeCharacterId === char._id;
-
+          {sortedCharacters.map((character) => {
+            const isActive = activeCharacterId === character._id;
             return (
-              <button key={char._id} type="button" className={[styles.option, isActive ? styles.active : ''].filter(Boolean).join(' ')} onClick={() => handleSelect(char._id)}>
-                <div className={styles.optionAvatar}>
-                  <Avatar src={char.avatarUrl ?? undefined} alt={char.name} size="md" />
-                </div>
+              <button key={character._id} type="button" aria-pressed={isActive} className={`${styles.option} ${isActive ? styles.active : ''}`} onClick={() => handleSelect(character._id)}>
+                <Avatar src={character.avatarUrl ?? undefined} alt={character.name} size="md" />
                 <div className={styles.optionInfo}>
-                  <p className={styles.optionName}>{char.name}</p>
-                  <p className={styles.optionMeta}>
-                    {archetype} · Level {level}
-                  </p>
+                  <p className={styles.optionName}>{character.name}</p>
+                  <p className={styles.optionMeta}>{character.sheet.archetypeKey ?? 'Unknown'} · Level {character.sheet.weaveLevel ?? 1}</p>
                 </div>
-                {isActive && <span className={styles.checkmark}>✓</span>}
+                {isActive ? <TbCheck className={styles.checkmark} size={21} aria-hidden /> : null}
               </button>
             );
           })}
-
-          {/* Empty state */}
-          {sortedCharacters.length === 0 && (
-            <div className={styles.empty}>
-              <p className={styles.emptyText}>No characters attached to this campaign.</p>
-              <p className={styles.emptyHint}>Visit the Character zone to attach a character.</p>
-            </div>
-          )}
+          {sortedCharacters.length === 0 ? (
+            <p className={styles.empty}>No characters are available to you in this campaign. Visit the Character zone to attach a character.</p>
+          ) : null}
         </div>
       </div>
-    </Modal>
+    </dialog>
   );
 }

@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import type { CampaignType } from '@tapestry/types';
 import { Avatar, Button } from '@tapestry/ui';
+import { TbArrowLeft, TbUsersGroup } from 'react-icons/tb';
 import { useGameBoardPresence } from '../useGameBoardPresence';
 import styles from './BoardHeader.module.scss';
 
@@ -10,9 +11,11 @@ type Props = {
   campaign: CampaignType;
   campaignId: string;
   isSW: boolean;
+  tableOpen: boolean;
+  onToggleTable: () => void;
 };
 
-export default function BoardHeader({ campaign, campaignId, isSW }: Props) {
+export default function BoardHeader({ campaign, campaignId, isSW, tableOpen, onToggleTable }: Props) {
   const { isUserOnline, currentUserCount } = useGameBoardPresence(campaignId);
 
   // Sort members: online first, then rest
@@ -34,12 +37,17 @@ export default function BoardHeader({ campaign, campaignId, isSW }: Props) {
   return (
     <header className={styles.header}>
       <div className={styles.left}>
-        <Link href={`/games/${campaignId}`} className={styles.backLink}>
-          ←
+        <Link href={`/games/${campaignId}`} className={styles.backLink} aria-label={`Back to ${campaign.name} overview`}>
+          <TbArrowLeft size={22} aria-hidden />
         </Link>
-        <h1 className={styles.name}>{campaign.name}</h1>
-        {campaign.status === 'archived' && <span className={styles.badge}>Archived</span>}
-        {hasLiveUsers && <span className={styles.liveBadge}>● Live ({currentUserCount})</span>}
+        <div className={styles.identity}>
+          <h1 className={styles.name}>{campaign.name}</h1>
+          <div className={styles.summary}>
+            <span>{campaign.members.length} members</span>
+            {campaign.status === 'archived' && <span>Archived</span>}
+            {hasLiveUsers && <span className={styles.liveBadge}>{currentUserCount} online</span>}
+          </div>
+        </div>
       </div>
 
       <div className={styles.right}>
@@ -50,7 +58,7 @@ export default function BoardHeader({ campaign, campaignId, isSW }: Props) {
             return (
               <div className={styles.memberAvatar} key={player?._id ?? i}>
                 <Avatar src={player?.avatar ?? undefined} alt={player?.displayName ?? 'Member'} name={player?.displayName ?? undefined} size="sm" />
-                {online && <span className={styles.onlineDot} />}
+                {online && <span className={styles.onlineDot} role="img" aria-label="Online" />}
               </div>
             );
           })}
@@ -58,10 +66,13 @@ export default function BoardHeader({ campaign, campaignId, isSW }: Props) {
         </div>
 
         {isSW && (
-          <Button variant="outline" tone="gold" size="sm" disabled>
-            Post
+          <Button variant="outline" tone="gold" size="sm" disabled className={styles.postButton}>
+            Post · Not yet available
           </Button>
         )}
+        <Button type="button" variant="outline" tone="gold" aria-expanded={tableOpen} aria-controls="board-table-panel" onClick={onToggleTable} leftIcon={<TbUsersGroup size={18} aria-hidden />}>
+          Table panel
+        </Button>
       </div>
     </header>
   );

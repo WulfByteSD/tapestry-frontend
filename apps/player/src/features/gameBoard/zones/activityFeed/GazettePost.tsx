@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { Avatar, Card, CardBody, Modal } from '@tapestry/ui';
 import type { CampaignActivity, NotePostType } from '@tapestry/types';
 import { formatDistanceToNow } from 'date-fns';
+import type { IconType } from 'react-icons';
+import { TbNews, TbSwords, TbBook2, TbStar, TbSpeakerphone, TbMovie } from 'react-icons/tb';
 import { MarkdownContent } from './MarkdownContent';
 import styles from './GazettePost.module.scss';
 
@@ -11,22 +13,22 @@ type Props = {
   activity: CampaignActivity;
 };
 
-function getPostTypeDisplay(postType: NotePostType): { icon: string; label: string } {
+function getPostTypeDisplay(postType: NotePostType): { icon: IconType; label: string } {
   switch (postType) {
     case 'campaign-update':
-      return { icon: '📰', label: 'Campaign Update' };
+      return { icon: TbNews, label: 'Campaign Update' };
     case 'session-recap':
-      return { icon: '⚔️', label: 'Session Recap' };
+      return { icon: TbSwords, label: 'Session Recap' };
     case 'lore-drop':
-      return { icon: '📜', label: 'Lore Drop' };
+      return { icon: TbBook2, label: 'Lore Drop' };
     case 'player-spotlight':
-      return { icon: '⭐', label: 'Player Spotlight' };
+      return { icon: TbStar, label: 'Player Spotlight' };
     case 'announcement':
-      return { icon: '📢', label: 'Announcement' };
+      return { icon: TbSpeakerphone, label: 'Announcement' };
     case 'behind-the-scenes':
-      return { icon: '🎬', label: 'Behind the Scenes' };
+      return { icon: TbMovie, label: 'Behind the Scenes' };
     default:
-      return { icon: '📰', label: 'Campaign Update' };
+      return { icon: TbNews, label: 'Campaign Update' };
   }
 }
 
@@ -40,7 +42,7 @@ export function GazettePost({ activity }: Props) {
 
   const content = activity.payload.content || '';
   const postType = (activity.payload.postType || 'campaign-update') as NotePostType;
-  const { icon, label } = getPostTypeDisplay(postType);
+  const { icon: PostIcon, label } = getPostTypeDisplay(postType);
 
   const needsTruncation = content.length > 300;
   const truncatedContent = needsTruncation ? content.slice(0, 300) + '...' : content;
@@ -58,10 +60,10 @@ export function GazettePost({ activity }: Props) {
 
         <Card tone="surface" inlay className={styles.gazetteCard}>
           <CardBody>
-            <div className={styles.gazetteLabel}>
-              <span>{icon}</span>
+            <h3 className={styles.gazetteLabel}>
+              <PostIcon size={22} aria-hidden />
               <span>{label}</span>
-            </div>
+            </h3>
             <div className={styles.gazetteContent}>
               <MarkdownContent content={truncatedContent} />
             </div>
@@ -78,9 +80,10 @@ export function GazettePost({ activity }: Props) {
         open={showFullModal}
         onCancel={() => setShowFullModal(false)}
         title={
-          <div>
-            <div style={{ fontWeight: 600 }}>{displayName}</div>
-            <div style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', fontWeight: 'normal' }}>{timestamp}</div>
+          <div className={styles.modalTitle}>
+            <div className={styles.modalPostType}><PostIcon size={22} aria-hidden /><span>{label}</span></div>
+            <div className={styles.modalAuthor}>{displayName}</div>
+            <div className={styles.modalTimestamp}>{timestamp}</div>
           </div>
         }
       >

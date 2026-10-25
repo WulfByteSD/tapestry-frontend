@@ -175,12 +175,29 @@
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   background: color-mix(in srgb, var(--surface) 40%, transparent);
+
+  > * { flex-shrink: 0; }
+  &:focus-visible { outline: 2px solid var(--gold); outline-offset: -3px; }
 }
 
 .feedList {
   display: flex;
   flex-direction: column;
   /* Timeline events handle their own spacing, gazette posts have margin */
+  > * { flex-shrink: 0; }
+}
+
+@container gameBoard (min-width: 700px) {
+  .feedZone {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    min-height: 0;
+
+    .feedScroll { min-height: 0; max-height: none; }
+  }
 }
 
 .loadMoreIndicator {
