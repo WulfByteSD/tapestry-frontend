@@ -9,7 +9,7 @@ import { usePortalSettings } from './usePortalSettings';
 const entryPointIcons = [FiMapPin, FiFlag, FiCompass] as const;
 
 export function SettingsFeature() {
-  const { settings, isFallback, isLoading } = usePortalSettings();
+  const { settings } = usePortalSettings();
 
   return (
     <main className={styles.page}>
@@ -23,12 +23,10 @@ export function SettingsFeature() {
             </p>
           </div>
 
-          <aside className={styles.heroNote} aria-label="Archive status">
-            <span>Archive state</span>
-            <strong>{isLoading ? 'Loading published settings...' : isFallback ? 'Showing canon-backed fallback content' : 'Showing published settings from the archive'}</strong>
-            <p>
-              The setting page can read from the content API when published settings exist, but it keeps a static Woven Realms presentation so the portal still speaks with the right voice when the archive is empty.
-            </p>
+          <aside className={styles.heroNote} aria-label="Explore the setting">
+            <span>Begin close to home</span>
+            <strong>A village. A vow. A choice that matters.</strong>
+            <p>Meet the Woven Realms through its frontier communities, rival banners, and the memories that shape its future.</p>
           </aside>
         </section>
 
@@ -36,7 +34,7 @@ export function SettingsFeature() {
           <div className={styles.sectionHeading}>
             <p className={styles.sectionLabel}>Published settings</p>
             <h2 id="official-settings-title">Official settings in the archive.</h2>
-            <p>These cards come from the backend when available. The Woven Realms remains the canonical fallback until more official settings are published.</p>
+            <p>Explore the places, pressures, and possibilities that give your next story a home.</p>
           </div>
 
           <div className={styles.settingsGrid}>
@@ -83,7 +81,7 @@ export function SettingsFeature() {
         <section className={styles.dossierSection} aria-labelledby="woven-realms-dossier-title">
           <div className={styles.sectionHeading}>
             <p className={styles.sectionLabel}>Featured setting</p>
-            <h2 id="woven-realms-dossier-title">Why Woven Realms is the portal anchor setting.</h2>
+            <h2 id="woven-realms-dossier-title">A world shaped by memory and fate.</h2>
             <p>
               The canon describes a realm where memory and fate are active forces. It can hold frontier survival, political fracture, mythic stakes, and intimate stories without changing the underlying engine.
             </p>
@@ -113,7 +111,7 @@ export function SettingsFeature() {
           <div className={styles.sectionHeading}>
             <p className={styles.sectionLabel}>Where to begin</p>
             <h2 id="entry-points-title">Three strong entry points into the setting.</h2>
-            <p>Each of these comes directly from the canon material and gives the portal a clear way to talk about play without flattening the setting into generic fantasy.</p>
+            <p>Start with a community, a conflict, or a promise. Follow the people and places that make it matter.</p>
           </div>
 
           <div className={styles.entryGrid}>
@@ -146,7 +144,7 @@ export function SettingsFeature() {
             <p className={styles.sectionLabel}>Canon sources</p>
             <h2 id="sourcebooks-title">The setting books behind this page.</h2>
             <p>
-              Until every world document is published as a library resource, these summaries stay grounded in the PDF archive so the portal can present official language and priorities without inventing new lore.
+              Discover the setting through its world guide and frontier stories.
             </p>
           </div>
 

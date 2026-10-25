@@ -1,3 +1,4 @@
+import { noteBodyText } from "@/features/characters/noteContent";
 import type { NoteCard, NoteCardKind } from "@tapestry/types";
 import { ALL_KIND, sortCards } from "../functions";
 
@@ -7,7 +8,7 @@ export function matchesSearch(card: NoteCard, query: string) {
 
   return (
     card.title.toLowerCase().includes(q) ||
-    card.body.toLowerCase().includes(q) ||
+    noteBodyText(card.body).toLowerCase().includes(q) ||
     card.kind.toLowerCase().includes(q) ||
     (card.tags ?? []).some((tag) => tag.toLowerCase().includes(q))
   );

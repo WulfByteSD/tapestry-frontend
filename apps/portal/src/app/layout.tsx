@@ -5,6 +5,8 @@ import { SiteShell } from '@/layout/siteShell/SiteShell.layout';
 import QueryProvider from './QueryProvider';
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://tapestry-ttrpg.com'),
+  robots: { index: false, follow: false },
   title: 'Tapestry',
   description: 'The public portal for Tapestry tabletop roleplaying.',
   manifest: '/site.webmanifest',

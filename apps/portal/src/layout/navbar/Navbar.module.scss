@@ -236,6 +236,8 @@
   gap: 1.35rem;
   width: min(86vw, 23rem);
   height: 100svh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 1.25rem;
   border-left: 1px solid color-mix(in srgb, var(--contrast-2) 14%, transparent);
   background: linear-gradient(180deg, color-mix(in srgb, var(--base-2) 92%, black), color-mix(in srgb, var(--ink) 90%, black));
@@ -358,4 +360,10 @@
   .menuButton {
     display: inline-flex;
   }
+}
+
+.mobileDrawer > * { flex-shrink: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .mobileLayer, .mobileBackdrop, .mobileDrawer, .menuButtonLine { transition: none; }
 }

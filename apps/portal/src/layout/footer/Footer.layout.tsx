@@ -26,7 +26,7 @@ export function Footer() {
           <div className={styles.summary}>
             <BrandMark />
             <p className={styles.blurb}>
-              Tapestry is the public front door for the platform, with clear paths into player playspaces and storyweaver tooling.
+              Gather your friends, follow the Threads, and tell a story together. Start with the free Tapestry guides.
             </p>
             <Link href={portalCtas.getPlayersGuide.href} className={styles.cta}>
               {portalCtas.getPlayersGuide.label}

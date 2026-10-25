@@ -1,52 +1,29 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { FiArrowDown, FiArrowUpRight } from 'react-icons/fi';
 import { portalCtas } from '@/config/portal-navigation';
 import styles from './HeroSection.module.scss';
-
-const secondaryCallToAction = {
-  label: 'Contact',
-  href: 'mailto:hello@tapestry-ttrpg.com',
-} as const;
-
-const videoSrc = 'https://res.cloudinary.com/wulfdev/video/upload/v1780601263/TapestryStories_llb3ac.mp4';
 
 export function HeroSection() {
   return (
     <section className={styles.hero} aria-labelledby="home-title">
-      <div className={styles.media} aria-hidden="true">
-        <video className={styles.video} autoPlay loop muted playsInline preload="none" src={videoSrc} />
-        <div className={styles.orb} />
-        <div className={styles.mesh} />
+      <div className={styles.art} aria-hidden="true">
+        <Image src="/images/tapestry-story-scene.webp" alt="" fill priority sizes="(max-width: 720px) 100vw, 70vw" />
       </div>
-
-      <div className={styles.panel}>
-        <div className={styles.content}>
-          <div className={styles.brandMark}>
-            <Image
-              className={styles.brandImage}
-              src="https://res.cloudinary.com/wulfdev/image/upload/v1780602173/ChatGPT_Image_Jan_10_2026_11_32_39_AM_-_Copy_j55058.png"
-              alt="Tapestry logo"
-              width={400}
-              height={400}
-              sizes="(max-width: 720px) 40vw, 22vw"
-            />
+      <div className={styles.inner}>
+        <div className={styles.copy}>
+          <p className={styles.kicker}>A narrative tabletop roleplaying game</p>
+          <h1 id="home-title">Ordinary people.<br />Extraordinary<br /><em>stories.</em></h1>
+          <p className={styles.lede}>Begin as someone ordinary. Let your choices, your companions, and a few Threads of fate change who you become.</p>
+          <div className={styles.actions}>
+            <Link href={portalCtas.getPlayersGuide.href} className={styles.primaryAction}>
+              {portalCtas.getPlayersGuide.label}<FiArrowUpRight aria-hidden="true" />
+            </Link>
+            <a href="#how-it-plays" className={styles.secondaryAction}>See how it plays <FiArrowDown aria-hidden="true" /></a>
           </div>
-          <h1 id="home-title">Stories woven through the Threads of Fate</h1>
-        </div>
-        <p className={styles.lede}>
-          Tapestry is a digital platform for tabletop role-playing games, designed to enhance the storytelling experience and empower players and game masters alike.
-        </p>
-
-        <div className={styles.actions}>
-          <Link href={portalCtas.getPlayersGuide.href} className={styles.primaryAction}>
-            {portalCtas.getPlayersGuide.label}
-          </Link>
-
-          <a className={styles.secondaryAction} href={secondaryCallToAction.href}>
-            {secondaryCallToAction.label}
-          </a>
         </div>
       </div>
+      <p className={styles.caption}>Stories woven together. Fate and choice interlaced.</p>
     </section>
   );
 }

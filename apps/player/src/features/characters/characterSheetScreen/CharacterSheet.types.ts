@@ -10,7 +10,7 @@ export type AspectSelection = { group: AspectGroup; key: AspectKey; label: strin
 export type SheetTabsProps = {
   sheet: PlayerCharacterSheet;
   mode: SheetMode;
-  onSaveNotes: (notes: NoteCard[]) => void;
+  onSaveNotes: (notes: NoteCard[]) => Promise<void>;
   onAction: (action: SheetAction) => void;
   onNavigate: (tab: TabKey) => void;
 };

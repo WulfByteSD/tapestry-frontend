@@ -27,30 +27,28 @@ export function ContentLibraryItemCard({ item, onAdd }: Props) {
     <>
       <div className={styles.itemCard}>
         <div className={styles.cardThumb}>
-          <Image src={item.imageUrl ?? getCategoryIconUrl(item.category)} alt={item.name} fill style={{ objectFit: 'contain' }} unoptimized />
+          <Image src={item.imageUrl ?? getCategoryIconUrl(item.category)} alt="" fill style={{ objectFit: 'contain' }} unoptimized />
         </div>
 
         <div className={styles.cardMeta}>
-          {/* Title row: name + category + slot badges */}
           <div className={styles.cardTitleRow}>
             <strong className={styles.cardName}>{item.name}</strong>
+          </div>
+          <div className={styles.cardMetaLine}>
             <span className={styles.badge}>{item.category}</span>
-            {item.slot && <span className={styles.slotBadge}>{item.slot}</span>}
+            {item.slot && <span className={styles.slotBadge}>{['body', 'chest', 'torso'].includes(item.slot.toLowerCase()) ? 'Torso' : item.slot.replaceAll('_', ' ')}</span>}
             {item.equippable && !item.slot && <span className={styles.slotBadge}>equippable</span>}
           </div>
 
-          {/* Stat pills */}
           {hasStats && (
             <div className={styles.cardStats}>
-              {typeof item.protection === 'number' && item.protection > 0 && <span className={styles.statPillProtection}>DEF {item.protection}</span>}
-              {primaryHarm !== null && <span className={styles.statPillHarm}>HARM {primaryHarm}</span>}
+              {typeof item.protection === 'number' && item.protection > 0 && <span className={styles.statPillProtection}>Protection {item.protection}</span>}
+              {primaryHarm !== null && <span className={styles.statPillHarm}>Harm {primaryHarm}</span>}
             </div>
           )}
 
-          {/* Notes preview */}
           {item.notes && <p className={styles.cardNotes}>{item.notes}</p>}
 
-          {/* Tags */}
           {!!item.tags?.length && (
             <div className={styles.tags}>
               {item.tags.map((tag) => (
@@ -60,13 +58,13 @@ export function ContentLibraryItemCard({ item, onAdd }: Props) {
               ))}
             </div>
           )}
+          <Button className={styles.previewAction} size="sm" variant="ghost" onClick={() => setPreviewItem(item)}>
+            Preview
+          </Button>
         </div>
 
         <div className={styles.cardAction}>
-          <Button size="sm" variant="ghost" onClick={() => setPreviewItem(item)}>
-            Preview
-          </Button>
-          <Button size="sm" onClick={onAdd}>
+          <Button onClick={onAdd}>
             Add
           </Button>
         </div>

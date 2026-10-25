@@ -1,3 +1,4 @@
+import { noteBodyText } from "@/features/characters/noteContent";
 import type { CharacterSheet, ConditionInstance, InventoryItem, NoteCard } from '@tapestry/types';
 
 export function sheetToMarkdown(sheet: CharacterSheet): string {
@@ -176,7 +177,7 @@ function formatCondition(cond: ConditionInstance): string {
 function formatNote(note: NoteCard): string {
   const pinned = note.pinned ? ' 📌' : '';
   const lines = [`### ${note.title}${pinned}`];
-  if (note.body) lines.push(note.body);
+  if (note.body) lines.push(noteBodyText(note.body));
   return lines.join('\n');
 }
 

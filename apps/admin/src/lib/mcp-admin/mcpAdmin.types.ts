@@ -1,4 +1,4 @@
-export type ContentType = 'items' | 'skills' | 'abilities' | 'settings' | 'lore' | 'combatants';
+export type ContentType = 'items' | 'skills' | 'abilities' | 'settings' | 'lore' | 'combatants' | 'adventures';
 export type Capability = 'read' | 'propose' | 'create' | 'update' | 'bulk' | 'publish' | 'read:draft' | 'read:archived';
 export type ProposalState = 'pending' | 'applied' | 'rejected';
 export type Page<T> = { records: T[]; page: number };

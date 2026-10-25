@@ -32,7 +32,7 @@ export function DifferenceSection() {
           </div>
 
           <div className={styles.resultTrack} aria-label="Tapestry roll outcomes">
-            {resultTrack.map((result: any) => (
+            {resultTrack.map((result) => (
               <div key={result.label} className={styles.resultStep}>
                 <span>{result.label}</span>
                 <p>{result.detail}</p>

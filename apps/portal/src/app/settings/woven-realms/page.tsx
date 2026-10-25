@@ -6,6 +6,7 @@ export const metadata: Metadata = createRouteMetadata({
   title: 'Tapestry TTRPG | Woven Realms',
   description: 'Explore the official Woven Realms setting, its frontier pressures, and the canon sources that shape play inside the portal.',
   path: '/settings/woven-realms',
+  robots: { index: true, follow: true },
 });
 
 export default function WovenRealmsPage() {

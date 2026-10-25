@@ -1,8 +1,9 @@
 "use client";
 
-import { Button, Card, CardBody, CardHeader, Select } from "@tapestry/ui";
+import { Button, Card, CardBody, CardHeader, Checkbox, RichTextEditor, Select } from "@tapestry/ui";
 import type { NoteCard, NoteCardKind } from "@tapestry/types";
 import { KIND_OPTIONS, nowIso } from "../functions";
+import { noteBodyForEditor } from "@/features/characters/noteContent";
 import styles from "./NoteEditorScreen.module.scss";
 
 type PersistNotes = (nextCards: NoteCard[], immediate?: boolean) => void;
@@ -151,17 +152,28 @@ export function NoteEditorScreen({ card, cards, persist, onBack, onDeleteComplet
           </Select>
         </label>
 
-        <label className={styles.field}>
+        <div className={styles.privacy}>
+          <Checkbox
+            label="Keep this note private"
+            checked={card.isPrivate !== false}
+            onChange={(isPrivate) => replaceActiveCard({ isPrivate }, { immediate: true, touchUpdatedAt: true })}
+          />
+          <p>{card.isPrivate !== false ? "Only you can see this note. Uncheck to show it on your public character sheet." : "Public: anyone with your character share link can read this note."}</p>
+        </div>
+
+        <div className={styles.field} onBlur={(event) => {
+          if (!event.currentTarget.contains(event.relatedTarget)) commitActiveCard();
+        }}>
           <span className={styles.label}>Details</span>
-          <textarea
-            className={styles.textarea}
-            value={card.body}
-            onChange={(e) => replaceActiveCard({ body: e.target.value }, { immediate: false, touchUpdatedAt: false })}
-            onBlur={commitActiveCard}
-            rows={18}
+          <RichTextEditor
+            key={card.id}
+            className={styles.richEditor}
+            value={noteBodyForEditor(card.body)}
+            onChange={(body) => replaceActiveCard({ body }, { touchUpdatedAt: true })}
+            minHeight={280}
             placeholder="Write everything relevant to this thread here..."
           />
-        </label>
+        </div>
       </CardBody>
     </Card>
   );

@@ -60,7 +60,7 @@ export function ExploreWorldsSection() {
           <div>
             <p className={styles.ctaLabel}>Go deeper</p>
             <h3>Open the official setting page for Woven Realms.</h3>
-            <p>That page is where the portal now collects published settings from the backend, plus the canon-backed fallback material for Woven Realms and Everpine.</p>
+            <p>Meet the Woven Realms and the frontier of Everpine, then find a place for your next story to begin.</p>
           </div>
         </div>
 

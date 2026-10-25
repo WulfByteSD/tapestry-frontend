@@ -1,12 +1,12 @@
 .root {
-  display: flex;
-  flex-direction: column;
+  display: grid;
   gap: 24px;
+  min-height: 280px;
 }
 
 .label {
   display: block;
-  margin-bottom: 8px;
+  margin: 0;
   font-size: 13px;
   font-weight: 600;
   color: var(--text);
@@ -36,23 +36,21 @@
 }
 
 .filters {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  padding-bottom: 22px;
-  border-bottom: 1px solid var(--sheet-divider);
+  display: grid;
+  gap: 16px;
 }
 
 .filterRow {
   display: grid;
-  grid-template-columns: minmax(180px, 1fr) minmax(0, 1.5fr);
-  gap: 18px;
+  grid-template-columns: 1fr;
+  gap: 16px;
   align-items: end;
 }
 
 .filterGroup {
   display: flex;
   flex-direction: column;
+  gap: 8px;
   min-width: 0;
 }
 
@@ -105,8 +103,7 @@
 }
 
 .list {
-  display: flex;
-  flex-direction: column;
+  display: grid;
 }
 
 .itemCard {
@@ -115,7 +112,7 @@
   align-items: start;
   gap: 16px;
   padding: 18px 0;
-  border-bottom: 1px solid var(--sheet-divider);
+  border-top: 1px solid var(--sheet-divider);
 }
 
 .cardThumb {
@@ -123,6 +120,8 @@
   width: 44px;
   height: 44px;
   overflow: hidden;
+  border-radius: 4px;
+  background: var(--surface-2);
 }
 
 .cardMeta {
@@ -137,6 +136,17 @@
   align-items: baseline;
   gap: 6px 12px;
   flex-wrap: wrap;
+}
+
+.cardMetaLine {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+}
+
+.slotBadge::before {
+  content: '·';
+  margin-right: 10px;
 }
 
 .cardName {
@@ -166,6 +176,15 @@
   color: var(--text-muted);
   margin: 0;
   overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.previewAction {
+  align-self: flex-start;
+  min-height: 44px;
 }
 
 .cardAction {
@@ -185,6 +204,7 @@
   justify-content: space-between;
   gap: 12px;
   padding-top: 4px;
+  > button { min-height: 44px; }
 }
 
 .pageInfo {
@@ -193,21 +213,19 @@
   color: var(--text-muted);
 }
 
-@media (max-width: 680px) {
+@media (min-width: 720px) {
   .filterRow {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
   }
+}
+
+@media (max-width: 420px) {
   .itemCard {
-    grid-template-columns: 36px minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) auto;
     gap: 12px;
   }
   .cardThumb {
-    width: 36px;
-    height: 36px;
-  }
-  .cardAction {
-    grid-column: 2;
-    justify-content: flex-end;
+    display: none;
   }
   .pagination {
     justify-content: center;

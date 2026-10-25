@@ -25,6 +25,7 @@ export function createBlankNote(kind: NoteCardKind = "general"): NoteCard {
     body: "",
     kind,
     pinned: false,
+    isPrivate: true,
     tags: [],
     createdAt: stamp,
     updatedAt: stamp,

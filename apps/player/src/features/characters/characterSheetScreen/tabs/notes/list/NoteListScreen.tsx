@@ -10,6 +10,7 @@ import type { NoteCard, NoteCardKind } from "@tapestry/types";
 import { ALL_KIND, DEFAULT_PAGE_SIZE, KIND_OPTIONS } from "../functions";
 import type { NoteListState } from "./useNoteListState";
 import { filterCards } from "./noteList.helpers";
+import { noteBodyText } from "@/features/characters/noteContent";
 import styles from "./NoteListScreen.module.scss";
 
 type Props = {
@@ -56,7 +57,7 @@ export function NoteListScreen({ cards, selectedId, state, onCreate, onOpen }: P
           <div className={styles.subtitle}>Searchable note cards for NPCs, clues, quests, and campaign chaos.</div>
         </div>
 
-        <Button size="sm" onClick={() => onCreate("general")}>
+        <Button className={styles.addButton} size="sm" onClick={() => onCreate("general")}>
           Add Note
         </Button>
       </CardHeader>
@@ -69,11 +70,13 @@ export function NoteListScreen({ cards, selectedId, state, onCreate, onOpen }: P
             onChange={(e) => state.setSearchQuery(e.target.value)}
             placeholder="Search notes..."
             inputMode="search"
+            aria-label="Search notes"
           />
 
           <div className={styles.filterRow}>
             <Select
               className={styles.kindSelect}
+              aria-label="Filter note type"
               value={state.kindFilter}
               onChange={(e) => state.setKindFilter(e.target.value as NoteCardKind | typeof ALL_KIND)}
             >
@@ -137,9 +140,9 @@ export function NoteListScreen({ cards, selectedId, state, onCreate, onOpen }: P
 
                   <div className={styles.noteTitle}>{card.title?.trim() || "Untitled Note"}</div>
 
-                  <div className={styles.notePreview}>{card.body?.trim() || "No details yet."}</div>
+                  <div className={styles.notePreview}>{noteBodyText(card.body ?? "").trim() || "No details yet."}</div>
 
-                  <div className={styles.noteMeta}>Updated {formatUpdatedAt(card.updatedAt)}</div>
+                  <div className={styles.noteMeta}>{card.isPrivate === false ? "Public" : "Private"} · Updated {formatUpdatedAt(card.updatedAt)}</div>
                 </motion.button>
               ))}
             </div>

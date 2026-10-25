@@ -98,8 +98,8 @@ export const portalFooterGroups = [
 
 export const portalCtas = {
   getPlayersGuide: {
-    label: 'Get the Players Guide',
-    href: portalRoutes.getPlayersGuide,
+    label: 'Get the free guides',
+    href: portalRoutes.resources.players,
   },
   cart: {
     label: 'Cart',
