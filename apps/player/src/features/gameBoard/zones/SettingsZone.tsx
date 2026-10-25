@@ -5,6 +5,7 @@ import { Card } from '@tapestry/ui';
 import type { CampaignType } from '@tapestry/types';
 import DeleteCampaignModal from './settings/DeleteCampaignModal';
 import FullDeleteCampaignModal from './settings/FullDeleteCampaignModal';
+import DiscordIntegration from './settings/discord/DiscordIntegration.component';
 import styles from './zones.module.scss';
 
 type Props = {
@@ -35,14 +36,7 @@ export default function SettingsZone({ campaign, isSW, isArchived }: Props) {
       </div>
 
       <div className={styles.settingsGrid}>
-        {/* Discord Integration - Placeholder for later */}
-        <Card>
-          <h3 className={styles.settingTitle}>Discord Integration</h3>
-          <p className={styles.settingDescription}>Connect your campaign to a Discord server or channel to sync activity, rolls, and notifications.</p>
-          <p className={styles.comingSoon}>
-            <em>Coming soon</em>
-          </p>
-        </Card>
+        <DiscordIntegration campaignId={campaign._id} isArchived={isArchived} />
 
         {/* Danger Zone */}
         <Card>

@@ -2,14 +2,15 @@
 
 import { useState, type ComponentType } from 'react';
 import { Tooltip } from '@tapestry/ui';
-import { TbMessages, TbSwords, TbDice, TbNotebook, TbUsersGroup, TbUserCircle, TbListDetails, TbBook2, TbInbox, TbLink, TbSettings } from 'react-icons/tb';
+import { TbMessages, TbNews, TbSwords, TbDice, TbNotebook, TbUsersGroup, TbUserCircle, TbListDetails, TbBook2, TbInbox, TbLink, TbSettings } from 'react-icons/tb';
 import type { BoardZone } from '../useGameBoard';
 import styles from './BoardNav.module.scss';
 
 type NavItem = { key: BoardZone; label: string; icon: ComponentType<{ size?: number; 'aria-hidden'?: boolean }> };
 const GROUPS: { label: string; swOnly?: boolean; items: NavItem[] }[] = [
   { label: 'Play', items: [
-    { key: 'feed', label: 'Feed', icon: TbMessages },
+    { key: 'chat', label: 'Chat', icon: TbMessages },
+    { key: 'feed', label: 'Feed', icon: TbNews },
     { key: 'encounters', label: 'Encounters', icon: TbSwords },
     { key: 'notes', label: 'Notes', icon: TbNotebook },
     { key: 'rolls', label: 'Rolls', icon: TbDice },

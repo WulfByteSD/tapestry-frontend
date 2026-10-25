@@ -10,13 +10,14 @@ type Props = {
 };
 
 export function TimelineEvent({ activity, isLast }: Props) {
-  const displayName = activity.actor.characterNameSnapshot || activity.actor.playerNameSnapshot || 'Unknown';
+  const isCharacterManagement = activity.activityType === 'campaign.character_attached' || activity.activityType === 'campaign.character_detached';
+  const displayName = (isCharacterManagement ? activity.actor.playerNameSnapshot : activity.actor.characterNameSnapshot || activity.actor.playerNameSnapshot) || 'Unknown';
 
   const timestamp = formatDistanceToNow(new Date(activity.createdAt), {
     addSuffix: true,
   });
 
-  const eventText = getEventText(activity, displayName);
+  const eventText = getEventText(activity);
 
   return (
     <div className={styles.timelineEvent}>
@@ -48,12 +49,15 @@ function getEventIcon(activityType: string): string {
   }
 }
 
-function getEventText(activity: CampaignActivity, actorName: string): string {
+function getEventText(activity: CampaignActivity): string {
   switch (activity.activityType) {
     case 'roll.attack':
     case 'roll.custom':
-      const result = activity.payload.total || activity.payload.result || '?';
-      const rollType = activity.activityType === 'roll.attack' ? 'Attack' : 'Custom';
+      const result = activity.payload.total ?? activity.payload.result ?? '?';
+      const savedRollType = typeof activity.payload.rollType === 'string' ? activity.payload.rollType.trim() : '';
+      const rollType = savedRollType
+        ? savedRollType.replace(/[_-]/g, ' ').replace(/\b\w/g, (letter) => letter.toUpperCase())
+        : activity.activityType === 'roll.attack' ? 'Attack' : 'Custom';
       return `rolled ${result} (${rollType})`;
 
     case 'campaign.member_joined':
@@ -63,11 +67,11 @@ function getEventText(activity: CampaignActivity, actorName: string): string {
       return 'left the campaign';
 
     case 'campaign.character_attached':
-      const attachedChar = activity.payload.characterName || 'a character';
-      return `brought ${attachedChar} to the party`;
+      const attachedChar = activity.payload.characterNameSnapshot || activity.payload.characterName || activity.actor.characterNameSnapshot || 'a character';
+      return `added ${attachedChar} to the party`;
 
     case 'campaign.character_detached':
-      const detachedChar = activity.payload.characterName || 'a character';
+      const detachedChar = activity.payload.characterNameSnapshot || activity.payload.characterName || activity.actor.characterNameSnapshot || 'a character';
       return `removed ${detachedChar} from the party`;
 
     default:

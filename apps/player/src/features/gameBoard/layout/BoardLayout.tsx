@@ -11,9 +11,10 @@ type Props = {
   nav: (controls: NavControls) => ReactNode;
   main: ReactNode;
   sidebar: ReactNode;
+  mainFlush?: boolean;
 };
 
-export default function BoardLayout({ header, nav, main, sidebar }: Props) {
+export default function BoardLayout({ header, nav, main, sidebar, mainFlush = false }: Props) {
   const boardRef = useRef<HTMLDivElement>(null);
   const drawerRef = useRef<HTMLDialogElement>(null);
   const tableOpenerRef = useRef<HTMLElement | null>(null);
@@ -53,7 +54,7 @@ export default function BoardLayout({ header, nav, main, sidebar }: Props) {
       <nav className={styles.nav} aria-label="Game board zones">
         {nav({ expanded: navExpanded, mobile, onToggleExpanded: () => setNavChoice(!navExpanded) })}
       </nav>
-      <div className={styles.main} id="board-zone-content">{main}</div>
+      <div className={styles.main} data-flush={mainFlush} id="board-zone-content">{main}</div>
       {wide ? (
         <aside className={styles.sidebar} id="board-table-panel" aria-label="Table panel" hidden={!tableOpen}>{sidebar}</aside>
       ) : (

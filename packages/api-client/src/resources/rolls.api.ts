@@ -90,3 +90,30 @@ export async function getRolls(api: AxiosInstance, params?: ListQueryParams): Pr
   });
   return res.data;
 }
+
+/** Persisted roll, with current display names (not historical name snapshots). */
+export interface CampaignRollDto {
+  _id: string;
+  player: string;
+  character: string | null;
+  campaign: string;
+  playerDisplayName: string | null;
+  playerAvatar: string | null;
+  characterName: string | null;
+  expression: string;
+  allRolls: number[];
+  keptRolls: number[];
+  total: number;
+  breakdown?: string;
+  rollType: string;
+  context?: string;
+  aspectUsed?: string;
+  attack?: AttackResolution | null;
+  rolledAt: string;
+  createdAt: string;
+}
+
+export async function getCampaignRolls(api: AxiosInstance, campaignId: string, params?: ListQueryParams): Promise<ApiListResponse<CampaignRollDto>> {
+  const res = await api.get('/game/rolls', { params: { ...cleanParams(params || {}), campaignId } });
+  return res.data;
+}

@@ -1,0 +1,13 @@
+.accountBar { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: .35rem 1rem; padding: .35rem 1.25rem; border-bottom: 1px solid var(--border); color: var(--text-muted); font-size: .75rem; line-height: 1.5; background: var(--surface); }
+.required { justify-content: space-between; border-left: 3px solid var(--gold); color: var(--text); }
+.modal { width: min(540px, calc(100vw - 2rem)); max-height: calc(100dvh - 2rem); margin: auto; padding: 0; overflow: auto; color: var(--text); background: var(--surface); border: 1px solid var(--border-strong); border-radius: var(--radius-md); }
+.modal::backdrop { background: rgba(5, 0, 15, .8); }
+.modal header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); }
+.modal h2 { margin: 0; font-size: 1.25rem; line-height: 1.4; }
+.modalBody { padding: 1.25rem; }
+.modal p { margin: 0 0 1rem; line-height: 1.65; }
+.modal footer { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: .75rem; margin-top: 1.5rem; }
+.help { color: var(--text-muted); font-size: .875rem; }
+.error { color: var(--danger); }
+.accountBar button:focus-visible, .modal button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+@media (max-width: 600px) { .accountBar { padding: .5rem .85rem; } .required { align-items: flex-start; } }

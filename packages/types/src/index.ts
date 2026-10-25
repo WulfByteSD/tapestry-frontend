@@ -1,4 +1,5 @@
 export * from './campaigns';
+export * from './chat';
 export * from './characters';
 export * from './commerce';
 export * from './content';
@@ -12,3 +13,4 @@ export * from './plan';
 export * from './profile';
 export * from './legal';
 export * from './timezones';
+export * from './discord';

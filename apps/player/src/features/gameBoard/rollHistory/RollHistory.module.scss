@@ -1,0 +1,54 @@
+.history { display: flex; flex-direction: column; height: 100%; min-height: 0; min-width: 0; overflow: hidden; color: var(--text); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); }
+.header { display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; gap: 1rem; padding: 1.15rem 1.25rem; border-bottom: 1px solid var(--border); }
+.header h2 { display: flex; align-items: center; gap: 0.55rem; margin: 0; font-size: 1.25rem; }
+.header h2 svg { color: var(--gold); }
+.header p { margin: 0.35rem 0 0; color: var(--text-muted); font-size: 0.8rem; line-height: 1.5; }
+.header button { display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; }
+.scroll { flex: 1; min-height: 0; overflow-y: auto; scrollbar-gutter: stable; overscroll-behavior: contain; }
+.list { list-style: none; margin: 0; padding: 0; }
+.row { border-bottom: 1px solid var(--border); }
+.summary { display: grid; grid-template-columns: 3.4rem 32px minmax(0, 1fr) auto; align-items: center; gap: 0.8rem; padding: 1rem 1.15rem; cursor: pointer; list-style: none; }
+.summary::-webkit-details-marker { display: none; }
+.summary:hover { background: var(--surface-2); }
+.total { display: flex; flex-direction: column; align-items: center; color: var(--gold); font-size: 1.8rem; font-weight: 700; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.totalLabel { color: var(--text-muted); text-transform: uppercase; font-size: 0.6rem; letter-spacing: 0.08em; font-weight: 500; }
+.rowBody { display: grid; gap: 0.35rem; min-width: 0; }
+.rowMeta { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 0.6rem; overflow-wrap: anywhere; }
+.rowMeta strong { font-size: 0.9rem; }
+.rowMeta > span, .rowMeta time { color: var(--text-muted); font-size: 0.7rem; }
+.context { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.85rem; }
+.expression { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.35rem 0.65rem; color: var(--text-muted); font-size: 0.7rem; overflow-wrap: anywhere; }
+.expression code { color: var(--text); }
+.detailsCue { display: flex; align-items: center; gap: 0.35rem; color: var(--text-muted); font-size: 0.7rem; }
+.disclosure[open] .detailsCue svg { transform: rotate(180deg); }
+.detail { padding: 0.25rem 1.25rem 1.25rem 6.7rem; }
+.diceSection h3 { margin: 0 0 0.65rem; font-size: 0.8rem; font-weight: 600; }
+.dice { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0 0 1rem; }
+.dice li { display: flex; flex-direction: column; align-items: center; min-width: 2.75rem; padding: 0.4rem; border: 1px solid var(--border); border-radius: var(--radius-sm); }
+.dice strong { font-size: 1.15rem; font-variant-numeric: tabular-nums; }
+.dice span { font-size: 0.6rem; color: var(--text-muted); }
+.kept strong { color: var(--gold); }
+.dropped strong { color: var(--text-muted); text-decoration: line-through; }
+.facts { display: grid; gap: 0.55rem; margin: 0; font-size: 0.8rem; line-height: 1.6; }
+.facts > div { display: grid; grid-template-columns: 7.5rem minmax(0, 1fr); gap: 0.65rem; }
+.facts dt { color: var(--text-muted); }
+.facts dd { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.state { display: flex; flex-direction: column; align-items: flex-start; gap: 0.8rem; padding: 2rem 1.25rem; line-height: 1.6; }
+.state h3, .state p { margin: 0; }
+.state p { color: var(--text-muted); font-size: 0.9rem; }
+.footer { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; flex-shrink: 0; gap: 0.65rem; border-top: 1px solid var(--border); padding: 0.85rem 1.25rem; color: var(--text-muted); font-size: 0.75rem; }
+.footer p { margin: 0; }
+.footer nav { display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+.footer small { width: 100%; font-size: 0.65rem; line-height: 1.5; }
+.history :is(summary, button, .scroll):focus-visible { outline: 2px solid var(--gold); outline-offset: -3px; }
+@container gameBoard (max-width: 699px) {
+  .history { height: auto; min-height: 20rem; margin-bottom: 1rem; }
+  .scroll { flex: none; height: clamp(280px, 55svh, 560px); }
+  .header, .footer { padding: 0.85rem; }
+  .history button { min-height: 44px; }
+  .summary { grid-template-columns: 2.75rem minmax(0, 1fr) auto; gap: 0.6rem; padding: 0.9rem 0.75rem; }
+  .identity { display: none; }
+  .detailsCue span { display: none; }
+  .detail { padding: 0.25rem 0.85rem 1rem; }
+  .facts > div { grid-template-columns: 6rem minmax(0, 1fr); }
+}

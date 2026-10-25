@@ -1,0 +1,161 @@
+.chat { container: tableChat / inline-size; width: 100%; height: 100%; min-width: 0; min-height: 0; color: var(--text); }
+.chatGrid { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); width: 100%; height: 100%; min-height: 0; background: var(--surface); overflow: hidden; }
+.channelRail { min-width: 0; padding: 0.85rem 1rem; border-bottom: 1px solid var(--border); background: var(--surface); }
+.channelRailHeader { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
+.channelRailHeader h3 { margin: 0; color: var(--gold); font-size: 0.9rem; }
+.compactPicker { margin-top: 0.5rem; }
+.channelList { display: none; }
+.pinnedChannels { flex-shrink: 0; }
+.conversationChannels { display: flex; flex: 1; flex-direction: column; min-height: 0; border-top: 1px solid var(--border); margin-top: .5rem; }
+.conversationChannels h4 { flex-shrink: 0; margin: 0; padding: .65rem .75rem .45rem; color: var(--text-muted); font-size: .75rem; font-weight: 600; }
+.conversationChannelList { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+.conversationChannelList:focus-visible { outline: 2px solid var(--gold); outline-offset: -3px; }
+.noConversations { margin: 0; padding: .5rem .75rem; font-size: .75rem; line-height: 1.5; color: var(--text-muted); }
+.channelItem { display: flex; flex-direction: column; gap: 0.35rem; width: 100%; padding: 0.85rem 0.75rem; border: 0; border-left: 3px solid transparent; background: transparent; color: var(--text); font: inherit; text-align: left; cursor: pointer; }
+.channelItem:hover { background: var(--surface-2); }
+.selectedChannel { background: var(--surface-2); border-left-color: var(--gold); }
+.channelName { display: flex; align-items: center; gap: 0.35rem; font-size: 0.9rem; font-weight: 600; overflow-wrap: anywhere; }
+.channelName svg { flex-shrink: 0; }
+.channelDetail { color: var(--text-muted); font-size: 0.75rem; line-height: 1.4; }
+.unread { color: var(--gold); font-size: 0.7rem; font-weight: 650; }
+.conversation { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+.rollsChannel { border-top: 1px solid var(--border); margin-top: 0.5rem; }
+.rollHistory { min-width: 0; min-height: 0; height: 100%; overflow: hidden; }
+.rollHistory > section { border: 0; border-radius: 0; }
+.conversationHeader { display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; gap: 1rem; padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); }
+.conversationHeader h2 { margin: 0 0 0.3rem; font-size: 1.2rem; overflow-wrap: anywhere; }
+.conversationHeader p { margin: 0; color: var(--text-muted); font-size: 0.8rem; line-height: 1.5; }
+.connectionStatus { flex-shrink: 0; margin: 0; padding: 0.45rem 1.25rem; color: var(--text-muted); font-size: 0.75rem; border-bottom: 1px solid var(--border); }
+.transcriptFrame { position: relative; flex: 1; min-height: 0; background: var(--base); }
+.transcript { height: 100%; min-height: 0; overflow-y: auto; overflow-anchor: none; padding: 0.5rem 1rem; box-sizing: border-box; overscroll-behavior: contain; scrollbar-gutter: stable; }
+.messageRow { display: grid; grid-template-columns: 32px minmax(0, 1fr); align-items: start; gap: 0.75rem; padding: 1rem 0; border-bottom: 1px solid var(--border); }
+.characterMessage { grid-template-columns: 64px minmax(0, 1fr); gap: 1rem; padding: 1.35rem 0; }
+.characterMessage .characterPortrait { box-sizing: border-box; width: 64px; height: 64px; min-width: 64px; min-height: 64px; max-height: 64px; object-fit: cover; object-position: center top; border-radius: var(--radius-sm); border: 1px solid var(--border-strong); align-self: start; }
+.characterMessage .messageMeta strong { font-size: 1.05rem; }
+.characterMessage .messageProse { font-size: .95rem; line-height: 1.8; }
+.characterMessage .messageProse blockquote { margin: .85em 0; padding: .15em 0 .15em .9em; border-left: 2px solid var(--gold); color: var(--text); font-style: italic; }
+.narratorMessage { grid-template-columns: 24px minmax(0, 1fr); border-top: 1px solid var(--gold); border-bottom: 1px solid var(--gold); margin: .75rem 0; padding: 1.1rem .25rem; }
+.narratorIcon { width: 22px; height: 22px; color: var(--gold); margin-top: .15rem; }
+.narratorMessage .messageMeta strong { color: var(--gold); font-size: .85rem; font-weight: 650; letter-spacing: .12em; text-transform: uppercase; }
+.narratorMessage .messageProse { font-family: Georgia, 'Times New Roman', serif; font-size: 1.05rem; line-height: 1.8; }
+.collapsedMessage { max-height: 320px; overflow: hidden; }
+.expandMessage { margin-top: .5rem; }
+.previewLink { color: var(--gold); text-decoration: underline; text-underline-offset: 3px; }
+.messageBody { min-width: 0; }
+.messageMeta { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 0.6rem; margin-bottom: 0.25rem; }
+.messageMeta strong { font-size: 0.9rem; overflow-wrap: anywhere; }
+.messageMeta span,
+.messageMeta time { color: var(--text-muted); font-size: 0.7rem; }
+.messageProse { font-size: 0.9rem; line-height: 1.65; overflow-wrap: anywhere; }
+.messageProse p { margin: 0 0 0.5em; white-space: pre-wrap; }
+.messageProse > :last-child { margin-bottom: 0; }
+.messageProse :is(h1, h2, h3, h4) { margin: 0.75em 0 0.4em; font-size: 1.1em; font-weight: 650; }
+.messageProse :is(ul, ol) { margin: 0.4em 0; padding-left: 1.5em; }
+.messageProse ul { list-style: disc; }
+.messageProse ol { list-style: decimal; }
+.messageProse blockquote { margin: 0.5em 0; padding-left: 0.75em; border-left: 2px solid var(--gold); color: var(--text-muted); }
+.messageProse pre { max-width: 100%; overflow-x: auto; padding: 0.5rem; background: var(--surface-2); border-radius: var(--radius-sm); }
+.messageProse a { color: var(--gold); text-decoration: underline; text-underline-offset: 3px; }
+.messageActions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 0.3rem; }
+.messageActions button { min-height: 32px; padding: 0; border: 0; background: transparent; color: var(--text-muted); font: inherit; font-size: 0.7rem; cursor: pointer; }
+.messageActions button:hover { color: var(--gold); }
+.messageActions button:disabled { opacity: 0.5; cursor: not-allowed; }
+.replyQuote { display: flex; gap: 0.5rem; margin: 0.4rem 0; padding-left: 0.65rem; border-left: 2px solid var(--border-strong); color: var(--text-muted); font-size: 0.75rem; overflow-wrap: anywhere; }
+.replyQuote strong { flex-shrink: 0; }
+.removed { color: var(--text-muted); font-size: 0.85rem; font-style: italic; }
+.older { text-align: center; padding: 0.25rem 0 0.5rem; }
+.latestButton { position: absolute; bottom: 0.75rem; left: 50%; transform: translateX(-50%); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25); }
+.composer { flex-shrink: 0; display: grid; gap: .4rem; min-width: 0; padding: .5rem .75rem; border-top: 1px solid color-mix(in srgb, var(--gold) 30%, var(--border)); background: color-mix(in srgb, var(--gold) 22%, var(--bg)); }
+.composerMain { display: grid; grid-template-columns: 40px minmax(0, 1fr); align-items: start; gap: .65rem; }
+.composerEditor { display: grid; gap: .25rem; min-width: 0; }
+.composerIdentity { position: relative; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: var(--radius-sm); color: var(--gold); }
+.composerIdentity:focus-within { outline: 2px solid var(--gold); outline-offset: 2px; }
+.identityImage { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; pointer-events: none; }
+.identityImage > svg { width: 26px; height: 26px; }
+.identityChevron { position: absolute; right: -2px; bottom: 0; width: 14px; height: 14px; border-radius: 3px; background: var(--bg); pointer-events: none; }
+.composerIdentity .identitySelect { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.identitySelect > div, .identitySelect > div > div, .identitySelect select { width: 100%; height: 100%; min-height: 0; padding: 0; cursor: pointer; }
+.compositionFields { display: grid; gap: .25rem; min-width: 0; }
+.compositionList { list-style: none; margin: 0; padding: 0; max-height: 170px; overflow-y: auto; overscroll-behavior: contain; }
+.compositionList:empty { display: none; }
+.compositionPart { display: grid; grid-template-columns: 18px minmax(0, 1fr) auto; align-items: center; gap: .35rem; padding: .25rem 0; border-bottom: 1px solid var(--border); }
+.compositionPart:first-child { padding-top: 0; }
+.compositionKind { display: inline-flex; color: var(--gold); font-size: 15px; }
+.compositionControls { display: flex; align-items: center; gap: .1rem; }
+.compositionControls .sectionIcon { width: 28px; min-width: 28px; height: 28px; min-height: 28px; padding: 0; color: var(--text-muted); }
+.compositionControls .sectionIcon:hover { color: var(--gold); }
+.compositionAdd { display: flex; align-items: center; flex-wrap: wrap; gap: .2rem; min-height: 32px; }
+.compositionAdd .addSection { height: 30px; min-height: 30px; padding: .2rem .4rem; gap: .2rem; }
+.compositionCount { color: var(--text-muted); font-size: .7rem; white-space: nowrap; margin-left: auto; padding: 0 .4rem; }
+.sendMessage { min-height: 32px; height: 32px; }
+.srOnly { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+.chat .messageInput textarea,
+.modal .messageInput textarea { height: 6rem; min-height: 5rem; max-height: 16rem; resize: vertical; line-height: 1.6; }
+.chat .composer .messageInput textarea, .modal .compositionFields textarea { box-sizing: border-box; height: 54px; min-height: 48px; max-height: 128px; padding: 6px 10px !important; line-height: 1.45; }
+.composer .messageInput > div { background: color-mix(in srgb, var(--base) 90%, black); }
+.composerFooter { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: .25rem; }
+.composerReply { display: flex; align-items: center; gap: 0.75rem; justify-content: space-between; border-left: 2px solid var(--gold); padding-left: 0.65rem; color: var(--text-muted); font-size: 0.75rem; overflow-wrap: anywhere; }
+.help { margin: 0; color: var(--text-muted); font-size: 0.75rem; line-height: 1.6; }
+.attemptActions { display: grid; justify-items: start; gap: 0.65rem; }
+.attemptActions button { min-height: 44px; height: auto; padding: 0.65rem 0.85rem; }
+.error { margin: 0; color: var(--text); font-size: 0.85rem; line-height: 1.6; }
+.readOnly { flex-shrink: 0; padding: 1rem 1.25rem; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 0.85rem; line-height: 1.6; }
+.empty { display: flex; flex-direction: column; align-items: flex-start; gap: 1rem; padding: 1.5rem; color: var(--text-muted); line-height: 1.6; }
+.empty h2,
+.empty p { margin: 0; }
+.empty h2 { color: var(--text); font-size: 1.3rem; }
+.modal { width: min(560px, calc(100vw - 2rem)); max-height: calc(100dvh - 2rem); box-sizing: border-box; margin: auto; padding: 0; overflow: hidden; background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: var(--radius-md); }
+.modal[open] { display: grid; grid-template-rows: auto minmax(0, 1fr); }
+.modal::backdrop { background: rgba(5, 0, 15, 0.8); }
+.modalHeader { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); }
+.modalHeader h2 { margin: 0; font-size: 1.2rem; }
+.modalBody { display: grid; gap: 1.25rem; padding: 1.25rem; min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+.modalActions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 0.75rem; }
+.twoFields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+.participantList { display: grid; gap: 0.75rem; margin: 0; padding: 1rem; border: 1px solid var(--border); border-radius: var(--radius-sm); }
+.participantList legend { padding: 0 0.3rem; font-weight: 600; font-size: 0.9rem; }
+.participantList label { display: flex; align-items: center; gap: 0.65rem; min-height: 32px; font-size: 0.875rem; }
+.participantList input { accent-color: var(--gold); }
+.chat button:focus-visible,
+.chat a:focus-visible,
+.transcript:focus-visible,
+.modal button:focus-visible { outline: 2px solid var(--gold); outline-offset: -3px; }
+
+@container tableChat (min-width: 700px) {
+  .characterMessage { grid-template-columns: 104px minmax(0, 1fr); gap: 1.25rem; }
+  .characterMessage .characterPortrait { width: 104px; min-width: 104px; height: 120px; min-height: 120px; max-height: 120px; }
+  .chatGrid { grid-template-columns: 176px minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); }
+  .channelRail { display: flex; flex-direction: column; overflow: hidden; min-height: 0; padding: 0.65rem 0 0; border-bottom: 0; border-right: 1px solid var(--border); }
+  .channelRailHeader { flex-shrink: 0; padding: 0 0.65rem 0.5rem; }
+  .channelList { display: flex; flex: 1; flex-direction: column; min-height: 0; }
+  .compactPicker { display: none; }
+}
+@media (max-height: 600px) {
+  .pinnedChannels .channelItem { padding-top: .4rem; padding-bottom: .4rem; gap: .2rem; }
+}
+@media (max-height: 440px) {
+  // Use the same accessible, ordered picker when the pinned rows cannot fit.
+  .channelRail { overflow: visible; }
+  .channelList { display: none; }
+  .compactPicker { display: block; margin: 0 .65rem .65rem; }
+}
+@container gameBoard (max-width: 699px) {
+  .chat .compositionList { max-height: none; overflow: visible; }
+  .chat { height: auto; padding-bottom: 1rem; }
+  .chatGrid { height: auto; grid-template-rows: auto auto; }
+  .transcriptFrame { flex: none; height: clamp(300px, 55svh, 560px); }
+  .conversationHeader { padding: 0.85rem; }
+  .composer { padding: .5rem; }
+  .transcript { padding: 0.5rem 0.75rem; }
+  .messageActions button { min-height: 40px; }
+  .composerFooter { align-items: flex-end; }
+}
+@media (pointer: coarse) {
+  .compositionControls { display: grid; grid-template-columns: repeat(2, 36px); }
+  .compositionControls > :last-child { grid-column: 1 / -1; justify-self: center; }
+  .compositionControls .sectionIcon { width: 36px; min-width: 36px; height: 36px; min-height: 36px; }
+  .compositionAdd .addSection, .sendMessage { min-height: 36px; height: 36px; }
+}
+@media (max-width: 480px) {
+  .twoFields { grid-template-columns: minmax(0, 1fr); }
+}

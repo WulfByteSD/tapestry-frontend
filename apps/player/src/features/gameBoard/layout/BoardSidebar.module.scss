@@ -13,3 +13,7 @@
 .unavailable { margin: -0.35rem 0 0.75rem; }
 .actionStubs { display: flex; flex-direction: column; gap: 0.5rem; }
 .actionStub { display: flex; align-items: center; gap: 0.65rem; min-height: 40px; padding: 0.5rem 0.65rem; border: 1px solid var(--border); border-radius: var(--radius-sm); background: transparent; color: var(--text-muted); font: inherit; font-size: 0.8rem; text-align: left; cursor: not-allowed; }
+.actionStub:not(:disabled) { color: var(--text); cursor: pointer; border-color: var(--gold); }
+.actionStub:not(:disabled):hover { background: var(--surface-2); }
+.actionStub:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+.upcoming { margin-left: auto; font-size: 0.7rem; }

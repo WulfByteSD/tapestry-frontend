@@ -1,13 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import type { CampaignType } from '@tapestry/types';
+import type { CampaignRole, CampaignType } from '@tapestry/types';
 import { Avatar } from '@tapestry/ui';
 import { TbDice, TbNotebook, TbSwords } from 'react-icons/tb';
-import { useMe } from '@/lib/auth-hooks';
-import { useProfile } from '@tapestry/hooks/src/useProfile';
-import { api } from '@/lib/api';
-import { useActiveCharacter } from '../useActiveCharacter';
+import type { ActiveCharacterState } from '../chat/Chat.types';
 import { useGameBoardPresence } from '../useGameBoardPresence';
 import CharacterSnapshot from '../components/CharacterSnapshot';
 import CharacterSelector from '../components/CharacterSelector';
@@ -16,15 +13,15 @@ import styles from './BoardSidebar.module.scss';
 type Props = {
   campaign: CampaignType;
   isSW: boolean;
+  characterState: ActiveCharacterState;
+  playerName: string;
+  userRole: CampaignRole | undefined;
+  onQuickRoll: () => void;
 };
 
-export default function BoardSidebar({ campaign, isSW }: Props) {
+export default function BoardSidebar({ campaign, isSW, characterState, playerName, userRole, onQuickRoll }: Props) {
   const [selectorOpen, setSelectorOpen] = useState(false);
-  const { data: currentUser } = useMe();
-  const { data: playerProfile } = useProfile(api, currentUser, 'player');
-
-  const currentUserId = playerProfile?.payload?._id;
-  const { activeCharacterId, activeCharacter, setActiveCharacter, isLoading, characters } = useActiveCharacter(campaign._id, currentUserId, isSW);
+  const { activeCharacterId, activeCharacter, setActiveCharacter, isLoading, characters } = characterState;
   const { isUserOnline } = useGameBoardPresence(campaign._id);
 
   // Sort members: online first
@@ -40,8 +37,9 @@ export default function BoardSidebar({ campaign, isSW }: Props) {
   });
 
   const members = sortedMembers.slice(0, 8);
-  const playerName = playerProfile?.payload?.displayName ?? 'Player';
   const roleNames = { sw: 'Storyweaver', 'co-sw': 'Co-Storyweaver', player: 'Player', observer: 'Observer' };
+  const rollDisabledReason = campaign.status === 'archived' ? 'Archived campaign — rolls are read-only'
+    : userRole === 'observer' ? 'Observers cannot roll' : !userRole ? 'Campaign membership required to roll' : '';
 
   return (
     <div className={styles.sidebar}>
@@ -77,11 +75,11 @@ export default function BoardSidebar({ campaign, isSW }: Props) {
 
       <section className={styles.panel}>
         <h3 className={styles.panelTitle}>Quick Actions</h3>
-        <p className={styles.unavailable}>Not yet available</p>
+        {rollDisabledReason && <p className={styles.unavailable}>{rollDisabledReason}</p>}
         <div className={styles.actionStubs}>
-          <button type="button" disabled className={styles.actionStub} aria-label="Roll Dice — Not yet available"><TbDice size={18} aria-hidden />Roll Dice</button>
-          {isSW && <button type="button" disabled className={styles.actionStub} aria-label="Start Encounter — Not yet available"><TbSwords size={18} aria-hidden />Start Encounter</button>}
-          <button type="button" disabled className={styles.actionStub} aria-label="Quick Note — Not yet available"><TbNotebook size={18} aria-hidden />Quick Note</button>
+          <button type="button" disabled={!!rollDisabledReason} className={styles.actionStub} onClick={onQuickRoll} aria-haspopup="dialog"><TbDice size={18} aria-hidden />Roll Dice</button>
+          {isSW && <button type="button" disabled className={styles.actionStub} aria-label="Start Encounter — Upcoming"><TbSwords size={18} aria-hidden />Start Encounter <span className={styles.upcoming}>Upcoming</span></button>}
+          <button type="button" disabled className={styles.actionStub} aria-label="Quick Note — Upcoming"><TbNotebook size={18} aria-hidden />Quick Note <span className={styles.upcoming}>Upcoming</span></button>
         </div>
       </section>
       <CharacterSelector

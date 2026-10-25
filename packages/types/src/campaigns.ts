@@ -92,6 +92,7 @@ export type CampaignType = {
 
   // Discord roll routing config
   discord: DiscordConfig;
+  discordRequirement?: 'optional' | 'required';
 
   // Optional invites
   invites: CampaignInvite[];

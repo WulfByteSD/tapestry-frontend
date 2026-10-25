@@ -1,9 +1,12 @@
 'use client';
 
 import Link from 'next/link';
+import { useState } from 'react';
 import { Loader } from '@tapestry/ui';
 import { useGameBoard } from '@/features/gameBoard/useGameBoard';
-import type { BoardZone } from '@/features/gameBoard/useGameBoard';
+import { useActiveCharacter } from '@/features/gameBoard/useActiveCharacter';
+import Chat from '@/features/gameBoard/chat/Chat.component';
+import { useChatBoard } from '@/features/gameBoard/chat/Chat.hooks';
 import BoardLayout from '@/features/gameBoard/layout/BoardLayout';
 import BoardHeader from '@/features/gameBoard/layout/BoardHeader';
 import BoardNav from '@/features/gameBoard/layout/BoardNav';
@@ -19,16 +22,17 @@ import RosterZone from '@/features/gameBoard/zones/campaign/RosterZone';
 import RequestsZone from '@/features/gameBoard/zones/campaign/RequestsZone';
 import InvitesZone from '@/features/gameBoard/zones/campaign/InvitesZone';
 import SettingsZone from '@/features/gameBoard/zones/SettingsZone';
+import DiscordAccountNotice from '@/features/gameBoard/zones/settings/discord/DiscordAccountNotice.component';
+import { QuickRollModal } from '@/features/gameBoard/quickRoll/QuickRoll.modal';
 import styles from './GameBoard.module.scss';
+import type { GameBoardProps, GameBoardSessionProps, MainZoneProps } from './GameBoard.types';
 
-type Props = {
-  campaignId: string;
-};
-
-function MainZone({ zone, isSW, campaign, currentUserId }: { zone: BoardZone; isSW: boolean; campaign: import('@tapestry/types').CampaignType; currentUserId: string }) {
+function MainZone({ zone, isSW, campaign, currentUserId, chat }: MainZoneProps) {
   const isArchived = campaign.status === 'archived';
 
   switch (zone) {
+    case 'chat':
+      return chat;
     case 'feed':
       return <ActivityFeedZone campaignId={campaign._id} isSW={isSW} />;
     case 'encounters':
@@ -36,7 +40,7 @@ function MainZone({ zone, isSW, campaign, currentUserId }: { zone: BoardZone; is
     case 'notes':
       return <NotesZone />;
     case 'rolls':
-      return <RollsZone />;
+      return <RollsZone campaignId={campaign._id} currentUserId={currentUserId} />;
     case 'party':
       return <PartyZone campaign={campaign} />;
     case 'character':
@@ -54,8 +58,9 @@ function MainZone({ zone, isSW, campaign, currentUserId }: { zone: BoardZone; is
   }
 }
 
-export default function GameBoardView({ campaignId }: Props) {
-  const { activeZone, setActiveZone, campaign, isSW, currentUserId, isLoading, isError } = useGameBoard(campaignId);
+export default function GameBoardView({ campaignId }: GameBoardProps) {
+  const board = useGameBoard(campaignId);
+  const { campaign, currentUserId, isLoading, isError } = board;
 
   if (isLoading) {
     return (
@@ -75,14 +80,28 @@ export default function GameBoardView({ campaignId }: Props) {
     );
   }
 
+  // A new account/campaign gets a fresh draft session; zone changes keep this owner mounted.
+  return <GameBoardSession key={`${campaignId}:${currentUserId ?? ''}`} {...board} campaign={campaign} campaignId={campaignId} />;
+}
+
+function GameBoardSession({ campaignId, campaign, activeZone, setActiveZone, isSW, currentUserId, userRole }: GameBoardSessionProps) {
+  const characterState = useActiveCharacter(campaignId, currentUserId, isSW);
+  const [quickRollOpen, setQuickRollOpen] = useState(false);
+  const chat = useChatBoard(campaignId, currentUserId);
+  const member = campaign.members.find((entry) => typeof entry.player === 'object' && entry.player._id === currentUserId);
+  const playerName = member?.player.displayName ?? 'Player';
+  const rollRole = campaign.owner === currentUserId ? 'sw' : userRole;
+
   return (
     <div className={styles.container}>
       <BoardLayout
-        header={(controls) => <BoardHeader campaign={campaign} campaignId={campaignId} isSW={isSW} {...controls} />}
+        mainFlush={activeZone === 'chat'}
+        header={(controls) => <><BoardHeader campaign={campaign} campaignId={campaignId} isSW={isSW} {...controls} />{currentUserId && <DiscordAccountNotice key={`${campaignId}:${currentUserId}`} campaignId={campaignId} playerId={currentUserId} />}</>}
         nav={(controls) => <BoardNav activeZone={activeZone} onZoneChange={setActiveZone} isSW={isSW} {...controls} />}
-        main={<MainZone zone={activeZone} isSW={isSW} campaign={campaign} currentUserId={currentUserId ?? ''} />}
-        sidebar={<BoardSidebar campaign={campaign} isSW={isSW} />}
+        main={<MainZone zone={activeZone} isSW={isSW} campaign={campaign} currentUserId={currentUserId ?? ''} chat={<Chat campaign={campaign} currentUserId={currentUserId ?? ''} playerName={playerName} userRole={userRole} isSW={isSW} characterState={characterState} chat={chat} />} />}
+        sidebar={<BoardSidebar campaign={campaign} isSW={isSW} characterState={characterState} playerName={playerName} userRole={rollRole} onQuickRoll={() => setQuickRollOpen(true)} />}
       />
+      <QuickRollModal open={quickRollOpen} onClose={() => setQuickRollOpen(false)} campaign={campaign} currentUserId={currentUserId ?? ''} playerName={playerName} userRole={rollRole} characterState={characterState} />
     </div>
   );
 }

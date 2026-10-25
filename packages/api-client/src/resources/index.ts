@@ -5,3 +5,5 @@ export * from './content.api';
 export * from './library.api';
 export * from './players.api';
 export * from './campaigns.api';
+export * from './chat.api';
+export * from './discord.api';

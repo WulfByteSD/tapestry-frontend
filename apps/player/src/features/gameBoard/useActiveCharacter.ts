@@ -53,7 +53,7 @@ function writeToStorage(campaignId: string, characterId: string | null): void {
  * @returns Active character state and setters
  */
 export function useActiveCharacter(campaignId: string, currentUserId: string | undefined, isSW: boolean) {
-  const { data: allCharacters = [], isLoading } = useCampaignCharacters(campaignId);
+  const { data: allCharacters = [], isLoading, isError, refetch } = useCampaignCharacters(campaignId);
 
   // Filter characters based on ownership
   // SW/co-SW see all characters, regular players see only their own
@@ -68,7 +68,7 @@ export function useActiveCharacter(campaignId: string, currentUserId: string | u
 
   // Validate that active character is still in the campaign and accessible to user
   useEffect(() => {
-    if (isLoading || !activeCharacterId || !currentUserId) return;
+    if (isLoading || isError || !activeCharacterId || !currentUserId) return;
 
     const isStillAttached = characters.some((char) => char._id === activeCharacterId);
 
@@ -77,7 +77,7 @@ export function useActiveCharacter(campaignId: string, currentUserId: string | u
       setActiveCharacterIdState(null);
       writeToStorage(campaignId, null);
     }
-  }, [activeCharacterId, characters, isLoading, campaignId, currentUserId]);
+  }, [activeCharacterId, characters, isLoading, isError, campaignId, currentUserId]);
 
   // Find the active character data
   const activeCharacter = useMemo(() => {
@@ -107,6 +107,8 @@ export function useActiveCharacter(campaignId: string, currentUserId: string | u
     clearActiveCharacter,
     /** Whether character data is still loading */
     isLoading,
+    isError,
+    refetch,
     /** Characters accessible to this user (filtered by ownership) */
     characters,
   };
