@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Avatar, Button, SelectField, TextAreaField, Tooltip } from '@tapestry/ui';
 import { FiChevronDown, FiFeather } from 'react-icons/fi';
 import type { ChatSendInput } from '@tapestry/types';
@@ -10,6 +10,8 @@ import styles from './Chat.module.scss';
 
 export function ChatComposer({ channel, draft, currentUserId, playerName, isSW, readOnlyReason, characterState, onContent, onComposition, onClearReply, onDiscardAttempt, onSend }: ChatComposerProps) {
   const [identityFocused, setIdentityFocused] = useState(false);
+  const [identityHovered, setIdentityHovered] = useState(false);
+  const identityPointerFocus = useRef(false);
   const ownCharacters = characterState.characters.filter((character) => character.player === currentUserId);
   const selected = ownCharacters.find((character) => character._id === characterState.activeCharacterId);
   const narrator = isSW && characterState.activeCharacterId === null;
@@ -31,12 +33,12 @@ export function ChatComposer({ channel, draft, currentUserId, playerName, isSW, 
       {!validIdentity ? <p className={styles.help}>Choose your character{isSW ? ' or Narrator' : ''} using the portrait menu.</p> : null}
       {draft.replyTo ? <div className={styles.composerReply}><span>Replying to <strong>{speakerName(draft.replyTo)}</strong>: {messagePreview(draft.replyTo).slice(0, 120)}</span><Button type="button" size="sm" variant="ghost" onClick={onClearReply} disabled={sending || unresolved}>Cancel reply</Button></div> : null}
       <div className={styles.composerMain}>
-        <Tooltip title={channel.mode === 'ic' ? `Speaking as ${validIdentity ? speakerLabel : '…'} · Change speaker` : `${playerName} · Out of character`} visible={identityFocused ? true : undefined}>
-          <div className={styles.composerIdentity}>
+        <Tooltip title={channel.mode === 'ic' ? `Speaking as ${validIdentity ? speakerLabel : '…'} · Change speaker` : `${playerName} · Out of character`} visible={identityFocused || identityHovered}>
+          <div className={styles.composerIdentity} onPointerEnter={() => setIdentityHovered(true)} onPointerLeave={() => { identityPointerFocus.current = false; setIdentityHovered(false); }} onPointerDown={() => { identityPointerFocus.current = true; setIdentityFocused(false); setIdentityHovered(false); }} onPointerUp={() => { identityPointerFocus.current = false; }} onKeyDown={(event) => { if (event.key === 'Escape') { setIdentityFocused(false); setIdentityHovered(false); } }}>
             {channel.mode === 'ic' ? <>
               <span className={styles.identityImage} aria-hidden="true">{narrator ? <FiFeather /> : <Avatar key={selected?.avatarUrl ?? selected?._id ?? 'none'} name={selected?.name ?? '?'} src={selected?.avatarUrl} size="sm" />}</span>
               <FiChevronDown className={styles.identityChevron} aria-hidden="true" />
-              <SelectField id="chat-speaker" className={styles.identitySelect} aria-label={`Speaking as ${validIdentity ? speakerLabel : 'no character selected'}. Change speaker`} value={selected?._id ?? (narrator ? 'narrator' : '')} disabled={sending || unresolved} onFocus={() => setIdentityFocused(true)} onBlur={() => setIdentityFocused(false)} onChange={(event) => characterState.setActiveCharacter(event.target.value === 'narrator' ? null : event.target.value)}>
+              <SelectField id="chat-speaker" className={styles.identitySelect} aria-label={`Speaking as ${validIdentity ? speakerLabel : 'no character selected'}. Change speaker`} value={selected?._id ?? (narrator ? 'narrator' : '')} disabled={sending || unresolved} onFocus={(event) => setIdentityFocused(!identityPointerFocus.current && event.currentTarget.matches(':focus-visible'))} onBlur={() => { identityPointerFocus.current = false; setIdentityFocused(false); }} onChange={(event) => characterState.setActiveCharacter(event.target.value === 'narrator' ? null : event.target.value)}>
                 {!selected && !narrator ? <option value="" disabled>Choose your character{isSW ? ' or Narrator' : ''}</option> : null}
                 {isSW ? <option value="narrator">Narrator · Storyweaver</option> : null}
                 {ownCharacters.map((character) => <option value={character._id} key={character._id}>{character.name}</option>)}

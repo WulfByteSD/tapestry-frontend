@@ -9,3 +9,11 @@ export function CatalogueArt({ title, src, alt, variant = 'cover' }: { title: st
       : <div className={styles.fallback}><span>TAPESTRY</span><strong>{title}</strong><span>{variant === 'cover' ? 'Cover image unavailable' : 'Image unavailable'}</span></div>}
   </div>;
 }
+
+// Decorative artwork has no placeholder copy: a failed banner leaves the dark backdrop.
+export function CatalogueBackdrop({ src }: { src: string }) {
+  const [failed, setFailed] = useState(false);
+  return <div className={styles.backdrop} aria-hidden="true">
+    {!failed ? <Image unoptimized src={src} alt="" fill sizes="100vw" onError={() => setFailed(true)} /> : null}
+  </div>;
+}

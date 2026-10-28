@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { CatalogueArt } from './CatalogueArt.component';
+import { CatalogueArt, CatalogueBackdrop } from './CatalogueArt.component';
 import { CatalogueGallery } from './CatalogueGallery.component';
 import { catalogueHref, catalogueKinds, kindLabel, productClassification, productPrice, type CataloguePage, type CatalogueProduct } from './Catalogue.api';
 import styles from './Catalogue.module.scss';
@@ -18,9 +18,9 @@ export function Catalogue({ products, page, pages, total, query }: CataloguePage
     <div className={styles.results}><p id="catalogue-list" role="status">{total} {total === 1 ? 'product' : 'products'}{query.kind ? ' · ' + kindLabel(query.kind) : ''}{query.q ? ' matching “' + query.q + '”' : ''}</p>{filtered ? <Link href="/shop">Clear search and filters</Link> : null}</div>
     {products.length ? <ol className={styles.list} aria-labelledby="catalogue-list">{products.map(product => <li key={product.id} className={styles.row}>
       <CatalogueArt title={product.title} src={product.primaryImage} variant={product.productType === 'book' ? 'cover' : 'product'} /><div className={styles.copy}><p className={styles.kicker}>{productClassification(product)}</p>
-        <h2><Link href={'/product/' + product.slug}>{product.title}</Link></h2>{product.subtitle ? <p className={styles.subtitle}>{product.subtitle}</p> : null}
+        <h2><Link href={'/product/' + product.slug} title={product.title}>{product.title}</Link></h2>{product.subtitle ? <p className={styles.subtitle}>{product.subtitle}</p> : null}
         {product.summary ? <p>{product.summary}</p> : null}<p className={styles.price}>{productPrice(product)} <span className={styles.account}>· Account required for acquisition</span></p>
-        <Link className={styles.textLink} href={'/product/' + product.slug}>Explore {product.title} <span aria-hidden="true">↗</span></Link></div>
+        <Link className={styles.textLink} href={'/product/' + product.slug} aria-label={'Explore ' + product.title}>Explore product <span aria-hidden="true">↗</span></Link></div>
     </li>)}</ol> : <section className={styles.empty} aria-labelledby="catalogue-empty"><span className={styles.shelfMark} aria-hidden="true">T</span><div><h2 id="catalogue-empty">{filtered ? 'No matching products.' : 'The catalogue is waiting for its first titles.'}</h2>
       <p>{filtered ? 'Try another search or category. The public download shelf is also open to explore.' : 'No products are listed here yet. Explore the current public downloads for your next Tapestry session.'}</p>
       <Link className={styles.textLink} href="/resources#collection">Explore the free downloads <span aria-hidden="true">↗</span></Link></div></section>}
@@ -29,8 +29,11 @@ export function Catalogue({ products, page, pages, total, query }: CataloguePage
   </div></main>;
 }
 export function ProductShowcase({ product }: { product: CatalogueProduct }) {
-  return <main className={styles.page}><div className={styles.inner}><Link className={styles.back} href="/shop">← Back to the catalogue</Link>
-    <article>{product.banner ? <div className={styles.marketing}><CatalogueArt variant="marketing" title={product.title} src={product.banner} alt={product.title + ' promotional artwork'} /></div> : null}
+  const immersive = product.productType === 'book' && Boolean(product.banner?.trim());
+  return <main className={immersive ? `${styles.page} ${styles.immersive}` : styles.page}>
+    {immersive ? <CatalogueBackdrop key={product.banner} src={product.banner!} /> : null}
+    <div className={immersive ? `${styles.inner} ${styles.readingSurface}` : styles.inner}><Link className={styles.back} href="/shop">← Back to the catalogue</Link>
+    <article>{product.banner && !immersive ? <div className={styles.marketing}><CatalogueArt variant="marketing" title={product.title} src={product.banner} alt={product.title + ' promotional artwork'} /></div> : null}
       <div className={product.productType === 'book' ? styles.detail : `${styles.detail} ${styles.productDetail}`}><CatalogueArt title={product.title} src={product.primaryImage} variant={product.productType === 'book' ? 'cover' : 'product'} /><div className={styles.copy}>
       <p className={styles.kicker}>{productClassification(product)}</p><h1>{product.title}</h1>
       {product.subtitle ? <p className={styles.subtitle}>{product.subtitle}</p> : null}{product.summary ? <p>{product.summary}</p> : null}<p className={styles.price}>{productPrice(product)}</p>

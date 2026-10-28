@@ -45,8 +45,11 @@ export function useChatScroll(channelId: string, messages: ChatMessageDto[], onR
       const rows = [...element.querySelectorAll<HTMLElement>('[data-message-id]')];
       const anchor = anchorsRef.current.find((entry) => rows.some((row) => row.dataset.messageId === entry.id));
       const row = anchor && rows.find((entry) => entry.dataset.messageId === anchor.id);
-      if (row && anchor) element.scrollTop += row.getBoundingClientRect().top - element.getBoundingClientRect().top - anchor.offset;
-      else if (firstId !== previous.firstId && nextLast === previous.lastId) element.scrollTop += element.scrollHeight - previous.height;
+      const offset = row && anchor
+        ? row.getBoundingClientRect().top - element.getBoundingClientRect().top - anchor.offset
+        : firstId !== previous.firstId && nextLast === previous.lastId ? element.scrollHeight - previous.height : 0;
+      // A no-op assignment would cancel an in-progress smooth scroll.
+      if (Math.abs(offset) >= 1) element.scrollTop += offset;
     }
     previousRef.current = { channelId, firstId, lastId: nextLast, height: element.scrollHeight, nearBottom: element.scrollHeight - element.scrollTop - element.clientHeight < 80 };
     captureAnchors();
@@ -84,12 +87,18 @@ export function useChatScroll(channelId: string, messages: ChatMessageDto[], onR
       const rows = [...element.querySelectorAll<HTMLElement>('[data-message-id]')];
       const anchor = anchorsRef.current.find((entry) => rows.some((row) => row.dataset.messageId === entry.id));
       const row = anchor && rows.find((entry) => entry.dataset.messageId === anchor.id);
-      if (row && anchor) element.scrollTop += row.getBoundingClientRect().top - element.getBoundingClientRect().top - anchor.offset;
+      if (row && anchor) {
+        const offset = row.getBoundingClientRect().top - element.getBoundingClientRect().top - anchor.offset;
+        if (Math.abs(offset) >= 1) element.scrollTop += offset;
+      }
       onScroll();
     });
     element.querySelectorAll<HTMLElement>('[data-message-id]').forEach((row) => observer.observe(row));
     return () => observer.disconnect();
   }, [channelId, messages, onScroll]);
-  const toLatest = () => { const element = scrollRef.current; if (element) { element.scrollTop = element.scrollHeight; onScroll(); } };
+  const toLatest = () => {
+    const element = scrollRef.current;
+    if (element) element.scrollTo({ top: element.scrollHeight, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
+  };
   return { scrollRef, onScroll, toLatest, showLatest: !nearBottom, hasNewMessages: Boolean(lastId && lastId !== lastSeenId) };
 }

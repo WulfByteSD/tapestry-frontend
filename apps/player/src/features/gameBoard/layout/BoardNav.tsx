@@ -39,6 +39,7 @@ type Props = {
 
 export default function BoardNav({ activeZone, onZoneChange, isSW, expanded, mobile, onToggleExpanded }: Props) {
   const [focusedZone, setFocusedZone] = useState<BoardZone | null>(null);
+  const [hoveredZone, setHoveredZone] = useState<BoardZone | null>(null);
   const showLabels = expanded || mobile;
 
   return (
@@ -53,12 +54,16 @@ export default function BoardNav({ activeZone, onZoneChange, isSW, expanded, mob
         <div className={styles.group} key={group.label} role="group" aria-label={group.label}>
           {!mobile && expanded ? <p className={styles.groupTitle}>{group.label}</p> : null}
           {group.items.map(({ key, label, icon: Icon }) => (
-            <Tooltip key={key} title={!showLabels ? label : undefined} placement="right" visible={focusedZone === key && !showLabels ? true : undefined}>
+            <Tooltip key={key} title={!showLabels ? label : undefined} placement="right" visible={!showLabels && (focusedZone === key || hoveredZone === key)}>
               <button
                 type="button"
                 className={`${styles.item} ${activeZone === key ? styles.active : ''}`}
                 onClick={() => onZoneChange(key)}
-                onFocus={() => setFocusedZone(key)}
+                onFocus={(event) => setFocusedZone(event.currentTarget.matches(':focus-visible') ? key : null)}
+                onPointerEnter={() => setHoveredZone(key)}
+                onPointerLeave={() => setHoveredZone(null)}
+                onPointerDown={() => { setFocusedZone(null); setHoveredZone(null); }}
+                onKeyDown={(event) => { if (event.key === 'Escape') { setFocusedZone(null); setHoveredZone(null); } }}
                 onBlur={() => setFocusedZone(null)}
                 aria-label={label}
                 aria-current={activeZone === key ? 'page' : undefined}
