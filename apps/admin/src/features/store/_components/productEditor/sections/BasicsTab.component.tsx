@@ -11,7 +11,7 @@ import {
   TextField,
   type SelectOption,
 } from '@tapestry/ui';
-import { slugifyValue, STORE_STATUS_OPTIONS, STORE_VISIBILITY_OPTIONS } from '../../../store.helpers';
+import { slugifyValue, STORE_PRODUCT_TYPE_OPTIONS, STORE_STATUS_OPTIONS, STORE_VISIBILITY_OPTIONS } from '../../../store.helpers';
 import type { ProductEditorTabProps } from '../productEditor.types';
 import styles from '../ProductEditor.module.scss';
 
@@ -38,6 +38,12 @@ export default function BasicsTab({ form, disabled }: ProductEditorTabProps) {
         </Button>
       </CardHeader>
       <CardBody className={styles.formBody}>
+        <FormField name="productType">
+          {(field) => <SelectField floatingLabel id={field.id} label="Product type" value={field.value as string}
+            onChange={field.onChange} onBlur={field.onBlur} disabled={disabled}
+            options={form.values.productType ? STORE_PRODUCT_TYPE_OPTIONS : [{ label: 'Legacy — not designated', value: '' }, ...STORE_PRODUCT_TYPE_OPTIONS]}
+            helpText="Book uses a cover. Merchandise uses a product photo. Other suits maps, printables and other formats. This does not change resource categories, delivery or access." />}
+        </FormField>
         <FormGroup>
           <FormField name="title">
             {(field) => (

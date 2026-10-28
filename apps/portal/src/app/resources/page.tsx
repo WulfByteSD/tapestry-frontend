@@ -4,7 +4,7 @@ import { Metadata } from 'next';
 
 export const metadata: Metadata = createRouteMetadata({
   title: 'Tapestry TTRPG | Resources',
-  description: 'A collection of resources for Tapestry players, including guides, character sheets, and more.',
+  description: 'Browse published Tapestry books, explore the free guides, and download PDFs for your next tabletop roleplaying session.',
   path: '/resources',
   robots: { index: true, follow: true },
 });

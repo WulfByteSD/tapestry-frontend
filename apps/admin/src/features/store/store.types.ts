@@ -4,6 +4,7 @@ import type {
   FulfillmentKind,
   PricingType,
   ProductStatus,
+  ProductType,
   ProductVisibility,
 } from '@tapestry/types';
 
@@ -17,6 +18,7 @@ export type ProductEditorFormValues = {
   key: string;
   slug: string;
   title: string;
+  productType: ProductType | "";
   subtitle: string;
   summary: string;
   description: string;
@@ -26,6 +28,8 @@ export type ProductEditorFormValues = {
   amountCents: number | undefined;
   compareAtAmountCents: number | undefined;
   imageUrl: string;
+  bannerImageUrl: string;
+  productImageUrl: string;
   coverImageUrl: string;
   gallery: ProductGalleryDraft[];
   fulfillmentKind: FulfillmentKind;

@@ -3,7 +3,7 @@ import type { LibraryResource } from '@tapestry/types';
 export function getPublicPdfHref(resource: LibraryResource | undefined, apiOrigin: string | undefined): string | undefined {
   if (!resource || resource.status !== 'published' || resource.accessPolicy !== 'public' || resource.format !== 'pdf') return undefined;
   if (!/^[a-f0-9]{24}$/i.test(resource._id) || !apiOrigin) return undefined;
-  if (!['cloudinary', 'external'].includes(resource.currentRelease?.provider)) return undefined;
+  // Public payloads omit the storage provider; delivery policy belongs to the API.
 
   try {
     const url = new URL(apiOrigin);

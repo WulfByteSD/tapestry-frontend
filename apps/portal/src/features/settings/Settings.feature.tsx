@@ -1,187 +1,44 @@
-'use client';
-
-import { FiBookOpen, FiCompass, FiFlag, FiLayers, FiMapPin, FiStar } from 'react-icons/fi';
-
-import { getSettingModuleLabels, wovenRealmsEntryPoints, wovenRealmsHighlights, wovenRealmsSourcebooks } from './settings.data';
+import Link from 'next/link';
+import { wovenRealmsEntryPoints, wovenRealmsHighlights, wovenRealmsSourcebooks } from './settings.data';
 import styles from './Settings.module.scss';
-import { usePortalSettings } from './usePortalSettings';
-
-const entryPointIcons = [FiMapPin, FiFlag, FiCompass] as const;
 
 export function SettingsFeature() {
-  const { settings } = usePortalSettings();
-
   return (
     <main className={styles.page}>
-      <div className={styles.stack}>
-        <section className={styles.hero} aria-labelledby="woven-realms-title">
-          <div className={styles.heroCopy}>
-            <p className={styles.kicker}>Official settings</p>
-            <h1 id="woven-realms-title">Step into the Woven Realms.</h1>
-            <p className={styles.description}>
-              Tapestry settings are where system pressure becomes local: the kingdoms that are slipping, the villages that keep standing anyway, and the memories the world refuses to let go.
-            </p>
-          </div>
-
-          <aside className={styles.heroNote} aria-label="Explore the setting">
-            <span>Begin close to home</span>
-            <strong>A village. A vow. A choice that matters.</strong>
-            <p>Meet the Woven Realms through its frontier communities, rival banners, and the memories that shape its future.</p>
-          </aside>
-        </section>
-
-        <section className={styles.archiveSection} aria-labelledby="official-settings-title">
-          <div className={styles.sectionHeading}>
-            <p className={styles.sectionLabel}>Published settings</p>
-            <h2 id="official-settings-title">Official settings in the archive.</h2>
-            <p>Explore the places, pressures, and possibilities that give your next story a home.</p>
-          </div>
-
-          <div className={styles.settingsGrid}>
-            {settings.map((setting) => {
-              const moduleLabels = getSettingModuleLabels(setting);
-
-              return (
-                <article key={setting._id || setting.key} className={styles.settingCard}>
-                  <div className={styles.settingHeader}>
-                    <div>
-                      <p>{setting.status}</p>
-                      <h3>{setting.name}</h3>
-                    </div>
-
-                    <span>{setting.key}</span>
-                  </div>
-
-                  <p className={styles.settingBody}>{setting.description || 'Official setting metadata is present, but a longer description has not been published yet.'}</p>
-
-                  {setting.tags?.length ? (
-                    <ul className={styles.tagList} aria-label={`${setting.name} tags`}>
-                      {setting.tags.map((tag) => (
-                        <li key={tag}>{tag}</li>
-                      ))}
-                    </ul>
-                  ) : null}
-
-                  {moduleLabels.length ? (
-                    <div className={styles.moduleRow} aria-label={`${setting.name} enabled modules`}>
-                      {moduleLabels.map((module) => (
-                        <span key={module}>
-                          <FiLayers aria-hidden="true" />
-                          {module}
-                        </span>
-                      ))}
-                    </div>
-                  ) : null}
-                </article>
-              );
-            })}
+      <a className={styles.skipLink} href="#everpine">Skip to Everpine</a>
+      <div className={styles.inner}>
+        <header className={styles.hero}>
+          <p className={styles.kicker}>The Woven Realms</p>
+          <h1>A village. A vow.<br /><em>A choice that matters.</em></h1>
+          <p className={styles.lede}>Begin among frontier communities, rival banners and promises that leave their mark. In the Woven Realms, ordinary lives become part of a much larger story.</p>
+          <Link className={styles.action} href="/resources#collection">Explore the published books <span aria-hidden="true">&rarr;</span></Link>
+        </header>
+        <section className={styles.world} aria-labelledby="world-title">
+          <div><p className={styles.kicker}>A world that remembers</p><h2 id="world-title">Every choice<br />leaves a Thread.</h2></div>
+          <div>
+            <p>Fate is woven into the landscape. Oaths, kindnesses and failures leave traces that outlast the people who made them. A village can carry the memory of a broken promise as surely as a kingdom.</p>
+            <ul>{wovenRealmsHighlights.map((highlight) => <li key={highlight}>{highlight}</li>)}</ul>
           </div>
         </section>
-
-        <section className={styles.dossierSection} aria-labelledby="woven-realms-dossier-title">
-          <div className={styles.sectionHeading}>
-            <p className={styles.sectionLabel}>Featured setting</p>
-            <h2 id="woven-realms-dossier-title">A world shaped by memory and fate.</h2>
-            <p>
-              The canon describes a realm where memory and fate are active forces. It can hold frontier survival, political fracture, mythic stakes, and intimate stories without changing the underlying engine.
-            </p>
-          </div>
-
-          <div className={styles.dossierCard}>
-            <div className={styles.dossierIntro}>
-              <p className={styles.badge}>Woven Realms</p>
-              <h3>A world in motion, not a museum piece.</h3>
-              <p>
-                The Woven Realms are built for play that starts small and becomes consequential. Villages, vows, rival banners, and failed promises all stay visible long enough to matter.
-              </p>
-            </div>
-
-            <ul className={styles.highlightList} aria-label="Woven Realms highlights">
-              {wovenRealmsHighlights.map((highlight) => (
-                <li key={highlight}>
-                  <FiStar aria-hidden="true" />
-                  {highlight}
-                </li>
-              ))}
-            </ul>
-          </div>
+        <section id="everpine" tabIndex={-1} className={styles.everpine} aria-labelledby="everpine-title">
+          <p className={styles.kicker}>Your first foothold</p>
+          <h2 id="everpine-title">Begin in Everpine.</h2>
+          <p className={styles.lede}>{wovenRealmsEntryPoints[0].description}</p>
+          <p>The Clearstream powers its mills and feeds its fields. The mountain road brings trade, but also refugees, mercenaries and pressure from distant powers. Neutrality is a promise the village has to keep making.</p>
+          <p className={styles.prompt}>Start with people who call this place home. What will they risk to keep it standing?</p>
         </section>
-
-        <section className={styles.entrySection} aria-labelledby="entry-points-title">
-          <div className={styles.sectionHeading}>
-            <p className={styles.sectionLabel}>Where to begin</p>
-            <h2 id="entry-points-title">Three strong entry points into the setting.</h2>
-            <p>Start with a community, a conflict, or a promise. Follow the people and places that make it matter.</p>
-          </div>
-
-          <div className={styles.entryGrid}>
-            {wovenRealmsEntryPoints.map((entryPoint, index) => {
-              const Icon = entryPointIcons[index] ?? FiMapPin;
-
-              return (
-                <article key={entryPoint.title} className={styles.entryCard}>
-                  <div className={styles.entryIcon} aria-hidden="true">
-                    <Icon />
-                  </div>
-
-                  <p>{entryPoint.eyebrow}</p>
-                  <h3>{entryPoint.title}</h3>
-                  <p>{entryPoint.description}</p>
-
-                  <ul className={styles.tagList} aria-label={`${entryPoint.title} highlights`}>
-                    {entryPoint.tags.map((tag) => (
-                      <li key={tag}>{tag}</li>
-                    ))}
-                  </ul>
-                </article>
-              );
-            })}
-          </div>
+        <section className={styles.pressures} aria-labelledby="pressures-title">
+          <div className={styles.sectionHeading}><p className={styles.kicker}>Beyond the village</p><h2 id="pressures-title">The wider world pulls at every promise.</h2></div>
+          {wovenRealmsEntryPoints.slice(1).map((entry) => <article key={entry.title}>
+            <h3>{entry.title}</h3><p>{entry.description}</p>
+          </article>)}
         </section>
-
-        <section className={styles.sourcebookSection} aria-labelledby="sourcebooks-title">
-          <div className={styles.sectionHeading}>
-            <p className={styles.sectionLabel}>Canon sources</p>
-            <h2 id="sourcebooks-title">The setting books behind this page.</h2>
-            <p>
-              Discover the setting through its world guide and frontier stories.
-            </p>
+        <section className={styles.sources} aria-labelledby="sources-title">
+          <div><p className={styles.kicker}>Read further</p><h2 id="sources-title">The stories behind the setting.</h2>
+            <p>This introduction draws on <cite>The Woven Realms — World Lore</cite> and <cite>The Woven Realms — Everpine</cite>. Find available editions in the published book library.</p>
+            <Link className={styles.action} href="/resources#collection">Browse the bookshelf <span aria-hidden="true">&rarr;</span></Link>
           </div>
-
-          <div className={styles.sourcebookGrid}>
-            {wovenRealmsSourcebooks.map((resource) => (
-              <article key={resource.slug} className={styles.sourcebookCard}>
-                <div className={styles.sourcebookHeader}>
-                  <div className={styles.sourcebookIcon} aria-hidden="true">
-                    <FiBookOpen />
-                  </div>
-
-                  <div>
-                    <p>{resource.eyebrow}</p>
-                    <h3>{resource.title}</h3>
-                  </div>
-                </div>
-
-                <p className={styles.settingBody}>{resource.description || resource.summary}</p>
-
-                <ul className={styles.sourcebookBullets} aria-label={`${resource.title} details`}>
-                  {resource.bullets.map((bullet) => (
-                    <li key={bullet}>{bullet}</li>
-                  ))}
-                </ul>
-
-                <div className={styles.sourcebookFooter}>
-                  <span>{resource.note}</span>
-
-                  <div className={styles.tagList} aria-label={`${resource.title} tags`}>
-                    {resource.tags.map((tag) => (
-                      <span key={tag}>{tag}</span>
-                    ))}
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
+          <ol>{wovenRealmsSourcebooks.map((book) => <li key={book.slug}><h3>{book.title}</h3><p>{book.summary}</p></li>)}</ol>
         </section>
       </div>
     </main>

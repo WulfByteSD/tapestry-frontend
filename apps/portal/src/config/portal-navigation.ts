@@ -1,3 +1,4 @@
+import { playerAppLinks } from './player-app';
 import { portalRoutes } from './portal-routes';
 
 export type PortalNavigationLink = {
@@ -22,25 +23,14 @@ export const portalNavigation = [
     label: 'Home',
     href: portalRoutes.home,
   },
+  { label: 'Catalogue', href: portalRoutes.shop },
   {
     label: 'Resources',
     items: [
-      {
-        label: 'Players',
-        href: portalRoutes.resources.players,
-      },
-      {
-        label: 'Storyweavers',
-        href: portalRoutes.resources.storyweavers,
-      },
-      {
-        label: 'Adversaries',
-        href: portalRoutes.resources.adversaries,
-      },
-      {
-        label: 'Unwoven Compendium',
-        href: portalRoutes.resources.unwoven,
-      },
+      { label: 'Free downloads', href: '/resources#collection' },
+      { label: "Player's Guide", href: '/product/tapestry-players-guide' },
+      { label: 'Quickstart Guide', href: '/resources/books/tapestry-quickstart-guide' },
+      { label: 'Character Sheet', href: '/resources/books/tapestry-character-sheet' },
     ],
   },
   {
@@ -54,35 +44,22 @@ export const portalNavigation = [
   },
 ] as const satisfies readonly PortalNavigationItem[];
 
+export const portalUtilityLinks: readonly PortalNavigationLink[] = [{ label: 'Player app', href: playerAppLinks.home }];
+
 export const portalFooterGroups = [
-  // {
-  //   title: 'Shop',
-  //   links: [
-  //     {
-  //       label: 'Shop',
-  //       href: portalRoutes.shop,
-  //     },
-  //   ],
-  // },
+  { title: 'Account', links: [
+    { label: 'Open the player app', href: playerAppLinks.home },
+    { label: 'Sign in', href: playerAppLinks.login },
+    { label: 'Create an account', href: playerAppLinks.register },
+  ] },
+  { title: 'Catalogue', links: [{ label: 'Explore the books', href: portalRoutes.shop }] },
   {
     title: 'Resources',
     links: [
-      {
-        label: 'Players',
-        href: portalRoutes.resources.players,
-      },
-      {
-        label: 'Storyweavers',
-        href: portalRoutes.resources.storyweavers,
-      },
-      {
-        label: 'Adversaries',
-        href: portalRoutes.resources.adversaries,
-      },
-      {
-        label: 'Unwoven Compendium',
-        href: portalRoutes.resources.unwoven,
-      },
+      { label: 'Free downloads', href: '/resources#collection' },
+      { label: "Player's Guide", href: '/product/tapestry-players-guide' },
+      { label: 'Quickstart Guide', href: '/resources/books/tapestry-quickstart-guide' },
+      { label: 'Character Sheet', href: '/resources/books/tapestry-character-sheet' },
     ],
   },
   {
@@ -99,7 +76,7 @@ export const portalFooterGroups = [
 export const portalCtas = {
   getPlayersGuide: {
     label: 'Get the free guides',
-    href: portalRoutes.resources.players,
+    href: '/resources#collection',
   },
   cart: {
     label: 'Cart',

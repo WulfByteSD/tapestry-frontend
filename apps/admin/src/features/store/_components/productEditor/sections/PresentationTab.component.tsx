@@ -9,22 +9,28 @@ export default function PresentationTab({ form, disabled }: ProductEditorTabProp
       <CardHeader className={styles.sectionHeader}>
         <div>
           <h2 className={styles.sectionTitle}>Storefront Presentation</h2>
-          <p className={styles.sectionSubtitle}>Configure the main imagery and any gallery entries used for richer product storytelling.</p>
+          <p className={styles.sectionSubtitle}>Choose each image for its intended role. Images are never automatically reused as banners or covers.</p>
         </div>
       </CardHeader>
       <CardBody className={styles.formBody}>
         <FormGroup>
-          <FormField name="imageUrl">
-            {(field) => (
-              <TextField floatingLabel id={field.id} label="Image URL" value={field.value as string} onChange={field.onChange} onBlur={field.onBlur} disabled={disabled} />
-            )}
-          </FormField>
           <FormField name="coverImageUrl">
-            {(field) => (
-              <TextField floatingLabel id={field.id} label="Cover Image URL" value={field.value as string} onChange={field.onChange} onBlur={field.onBlur} disabled={disabled} />
-            )}
+            {(field) => <TextField floatingLabel id={field.id} label="Book cover URL" value={field.value as string} onChange={field.onChange} onBlur={field.onBlur} disabled={disabled}
+              helpText="Primary art for Book products, whether digital or physical. Preserved but unused for other product types." />}
+          </FormField>
+          <FormField name="productImageUrl">
+            {(field) => <TextField floatingLabel id={field.id} label="Product image URL" value={field.value as string} onChange={field.onChange} onBlur={field.onBlur} disabled={disabled}
+              helpText="Primary photo or artwork for Merchandise and Other. Shown without a book frame or cropping." />}
           </FormField>
         </FormGroup>
+        <FormField name="bannerImageUrl">
+          {(field) => <TextField floatingLabel id={field.id} label="Optional banner URL" value={field.value as string} onChange={field.onChange} onBlur={field.onBlur} disabled={disabled}
+            helpText="A separate promotional asset above the details. Leave empty for no banner; never used as the product thumbnail." />}
+        </FormField>
+        {form.values.imageUrl ? <FormField name="imageUrl">
+          {(field) => <TextField floatingLabel id={field.id} label="Legacy image URL (unassigned)" value={field.value as string} onChange={field.onChange} onBlur={field.onBlur} disabled={disabled}
+            helpText="Retained for compatibility. Only untyped products use it as a neutral preview. Assign the correct role above when choosing a product type; it is never a banner." />}
+        </FormField> : null}
 
         <FormField name="gallery">
           {(field) => (

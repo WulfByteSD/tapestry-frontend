@@ -1,0 +1,30 @@
+.shelf { min-width: 0; }
+.viewport { overflow-x: auto; overscroll-behavior-x: contain; padding: 0 0 1.5rem; scrollbar-width: thin; scrollbar-color: #b29a65 #20152b; scroll-padding-inline: 100px; }
+.contents { width: max-content; min-width: 100%; }
+.row { display: flex; align-items: flex-end; justify-content: center; gap: 88px; padding: 105px 120px 0; min-height: 360px; margin: 0; list-style: none; }
+.row li { position: relative; flex: 0 0 auto; }
+.row li:has(:hover), .row li:focus-within, .row li:has([data-selected='true']), .row li:has([data-preview='true']) { z-index: 3; }
+.book { position: relative; width: 64px; height: 260px; border: 0; padding: 0; background: transparent; color: #f9edd0; cursor: pointer; perspective: 1000px; touch-action: pan-x pan-y; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+.book:focus-visible { outline: 3px solid #f2d06b; outline-offset: 7px; }
+.volume { position: absolute; inset: 0; transform-style: preserve-3d; transform: translateZ(-83px) rotateY(-3deg); transform-origin: 50% 90%; transition: transform 420ms cubic-bezier(.2,.75,.2,1); pointer-events: none; }
+.spine, .cover { position: absolute; top: 0; height: 100%; background: var(--book-color); border-radius: 2px; backface-visibility: hidden; overflow: hidden; }
+.spine { left: 0; width: 100%; display: flex; align-items: center; flex-direction: column; padding: 14px 6px; transform: translateZ(83px); box-shadow: inset 3px 0 4px #ffffff30,inset -5px 0 7px #0008; }
+.spine::after { content: ''; position: absolute; inset: 8px 5px; border-block: 2px solid #bd9b58; pointer-events: none; }
+.spine img, .cover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.spine:has(img) > span, .spine:has(img) > strong { opacity: 0; }
+.spineBrand { font: 20px Georgia,serif; color: #e0bc6e; }
+.spine strong { writing-mode: vertical-rl; font: 600 17px/1.25 Georgia,serif; max-height: 180px; overflow: hidden; margin-top: 12px; }
+.spineFoot { margin-top: auto; font-size: 7px; letter-spacing: 1.3px; color: #e0bc6e; }
+.cover { left: 100%; width: 166px; transform-origin: left center; transform: translateZ(83px) rotateY(90deg); display: flex; flex-direction: column; justify-content: space-between; padding: 22px 15px; text-align: center; border: 1px solid #a88b4d; box-shadow: inset 7px 0 7px #0006; }
+.cover strong { font: 24px/1.15 Georgia,serif; }
+.cover > span { font-size: 10px; line-height: 1.5; }
+.coverType { letter-spacing: 2px; color: #e0bc6e; }
+.pages { position: absolute; top: 2px; left: 3px; width: 58px; height: 161px; transform-origin: top center; transform: translateZ(80px) rotateX(-90deg); background: repeating-linear-gradient(90deg,#c6bda4 0 1px,#eee7d7 1px 3px); }
+.label { position: absolute; bottom: calc(100% + 62px); left: 50%; transform: translateX(-50%); width: max-content; max-width: 210px; color: #27192d; background: #f5ecd6; padding: 9px 12px; font: 16px/1.3 Georgia,serif; opacity: 0; pointer-events: none; }
+.book[data-preview='true'] .volume, .book[data-selected='true'] .volume, .book:focus-visible .volume { transform: translate3d(4px,-28px,80px) rotateY(-48deg) rotateX(3deg); }
+.book[data-preview='true'] .label, .book[data-selected='true'] .label, .book:focus-visible .label { opacity: 1; }
+@media (hover:hover) and (pointer:fine) { .book:hover .volume { transform: translate3d(4px,-28px,80px) rotateY(-48deg) rotateX(3deg); } .book:hover .label { opacity: 1; } }
+.plank { height: 25px; border-top: 4px solid #b89455; border-bottom: 4px solid #4e351f; background: repeating-linear-gradient(2deg,transparent 0 5px,#351e1730 6px,transparent 7px 13px),linear-gradient(#8d673c,#5b3c28); box-shadow: 0 18px 22px -12px #000b; }
+.hint { margin: .5rem 0 0; max-width: 46rem; color: #d0c2da; font-size: .875rem; line-height: 1.6; }
+@media(max-width:720px) { .row { justify-content: flex-start; padding-inline: 110px; gap: 88px; } }
+@media(prefers-reduced-motion:reduce) { .volume { transition: none; } .book:is(:hover,:focus-visible,[data-selected='true'],[data-preview='true']) .volume { transform: translateZ(-83px) rotateY(-3deg); } .book:is(:hover,:focus-visible,[data-selected='true'],[data-preview='true']) .spine { outline: 2px solid #f2d06b; outline-offset: 2px; } }

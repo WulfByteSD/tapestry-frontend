@@ -1,16 +1,4 @@
-type UnwovenEntryPageProps = {
-  params: Promise<{
-    slug: string;
-  }>;
-};
+import { notFound } from 'next/navigation';
 
-export default async function UnwovenEntryPage({ params }: UnwovenEntryPageProps) {
-  const { slug } = await params;
-
-  return (
-    <main aria-labelledby="unwoven-entry-title">
-      <h1 id="unwoven-entry-title">Unwoven: {slug}</h1>
-      <p>This unwoven detail route has been scaffolded. Full page content will be implemented later.</p>
-    </main>
-  );
-}
+// Individual compendium entries have not been published in this portal.
+export default function UnwovenEntryPage() { notFound(); }

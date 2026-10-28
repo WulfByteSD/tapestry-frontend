@@ -1,3 +1,5 @@
+import { playerAppLinks } from '@/config/player-app';
+
 export type SiteNavigationLink = {
   label: string;
   href: string;
@@ -28,7 +30,7 @@ export const primaryNavigationLinks: SiteNavigationLink[] = [
 export const platformLinks: SiteNavigationLink[] = [
   {
     label: 'Player Portal',
-    href: 'https://player.tapestry-ttrpg.com',
+    href: playerAppLinks.home,
     description: 'Step into campaigns, character play, and session-ready tools.',
     external: true,
   }
@@ -36,7 +38,7 @@ export const platformLinks: SiteNavigationLink[] = [
 
 export const primaryCallToAction: SiteNavigationLink = {
   label: 'Enter the Portal',
-  href: 'https://player.tapestry-ttrpg.com',
+  href: playerAppLinks.home,
   external: true,
 };
 

@@ -4,6 +4,12 @@ import type { ProductEditorFormValues, ProductGalleryDraft, StoreStatusFilter, S
 
 export const STORE_PAGE_SIZE = 10;
 
+export const STORE_PRODUCT_TYPE_OPTIONS = [
+  { label: 'Book', value: 'book' },
+  { label: 'Merchandise', value: 'merchandise' },
+  { label: 'Other (maps, printables and more)', value: 'other' },
+];
+
 export const STORE_STATUS_OPTIONS = [
   { label: 'Draft', value: 'draft' },
   { label: 'Published', value: 'published' },
@@ -56,6 +62,7 @@ export function createDefaultProductFormValues(): ProductEditorFormValues {
     key: '',
     slug: '',
     title: '',
+    productType: 'other',
     subtitle: '',
     summary: '',
     description: '',
@@ -65,6 +72,8 @@ export function createDefaultProductFormValues(): ProductEditorFormValues {
     amountCents: 0,
     compareAtAmountCents: undefined,
     imageUrl: '',
+    bannerImageUrl: '',
+    productImageUrl: '',
     coverImageUrl: '',
     gallery: [],
     fulfillmentKind: 'digital',
@@ -79,6 +88,7 @@ export function toProductFormValues(product: CommerceProduct): ProductEditorForm
     key: product.key ?? '',
     slug: product.slug ?? '',
     title: product.title ?? '',
+    productType: product.productType ?? '',
     subtitle: product.subtitle ?? '',
     summary: product.summary ?? '',
     description: product.description ?? '',
@@ -88,6 +98,8 @@ export function toProductFormValues(product: CommerceProduct): ProductEditorForm
     amountCents: product.pricing?.amountCents ?? 0,
     compareAtAmountCents: product.pricing?.compareAtAmountCents,
     imageUrl: product.presentation?.imageUrl ?? '',
+    bannerImageUrl: product.presentation?.bannerImageUrl ?? '',
+    productImageUrl: product.presentation?.productImageUrl ?? '',
     coverImageUrl: product.presentation?.coverImageUrl ?? '',
     gallery: (product.presentation?.gallery ?? []).map((entry) => ({
       url: entry.url ?? '',
@@ -133,14 +145,14 @@ export function toProductPayload(values: ProductEditorFormValues): CreateProduct
     }))
     .filter((entry) => entry.url);
 
-  const presentation =
-    values.imageUrl.trim() || values.coverImageUrl.trim() || gallery.length > 0
-      ? {
-          ...(values.imageUrl.trim() ? { imageUrl: values.imageUrl.trim() } : {}),
-          ...(values.coverImageUrl.trim() ? { coverImageUrl: values.coverImageUrl.trim() } : {}),
-          ...(gallery.length > 0 ? { gallery } : {}),
-        }
-      : undefined;
+  // Include empty values so removing the last image actually clears it on save.
+  const presentation = {
+    imageUrl: values.imageUrl.trim(),
+    bannerImageUrl: values.bannerImageUrl.trim(),
+    productImageUrl: values.productImageUrl.trim(),
+    coverImageUrl: values.coverImageUrl.trim(),
+    gallery,
+  };
 
   const fulfillmentKind = values.fulfillmentKind;
   const requiresShipping = fulfillmentKind === 'digital' ? false : values.requiresShipping;
@@ -158,6 +170,7 @@ export function toProductPayload(values: ProductEditorFormValues): CreateProduct
     key: slugifyValue(values.key),
     slug: slugifyValue(values.slug),
     title: values.title.trim(),
+    ...(values.productType ? { productType: values.productType } : {}),
     ...(values.subtitle.trim() ? { subtitle: values.subtitle.trim() } : {}),
     ...(values.summary.trim() ? { summary: values.summary.trim() } : {}),
     ...(values.description.trim() ? { description: values.description.trim() } : {}),
@@ -169,7 +182,7 @@ export function toProductPayload(values: ProductEditorFormValues): CreateProduct
       amountCents,
       ...(compareAtAmountCents !== undefined ? { compareAtAmountCents } : {}),
     },
-    ...(presentation ? { presentation } : {}),
+    presentation,
     fulfillment: {
       kind: fulfillmentKind,
       grants,

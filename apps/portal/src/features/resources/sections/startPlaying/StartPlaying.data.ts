@@ -1,3 +1,5 @@
+import { playerAppLinks } from '@/config/player-app';
+
 export const startPlayingResourceSlugs = {
   quickstart: 'quickstart-guide',
   characterBuilder: 'character-builder',
@@ -17,7 +19,7 @@ export const characterBuilderResource = {
   eyebrow: 'Build online',
   title: 'Create a digital character',
   description: 'Build and manage your character in the Tapestry player app, then keep their sheet available as the campaign grows.',
-  href: 'https://app.tapestry-ttrpg.com',
+  href: playerAppLinks.createCharacter,
   actionLabel: 'Open the character builder',
   accessNote: 'Free account required.',
 } as const;

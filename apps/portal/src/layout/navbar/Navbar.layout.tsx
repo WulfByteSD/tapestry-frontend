@@ -2,10 +2,10 @@
 
 import Link from 'next/link';
 import { BrandMark } from '@/components/brandMark/BrandMark.component';
-import { portalCtas, portalNavigation } from '@/config/portal-navigation';
-import type { PortalNavigationGroup, PortalNavigationItem, PortalNavigationLink } from '@/config/portal-navigation';
+import { portalCtas, portalNavigation, portalUtilityLinks } from '@/config/portal-navigation';
+import type { PortalNavigationGroup, PortalNavigationItem } from '@/config/portal-navigation';
 import styles from './Navbar.module.scss';
-import { useMobileNavigation } from './Navbar.hooks';
+import { useDesktopNavigation, useMobileNavigation } from './Navbar.hooks';
 
 type NavbarProps = {
   isMobileMenuOpen: boolean;
@@ -13,14 +13,14 @@ type NavbarProps = {
   onCloseMobileMenu: () => void;
 };
 
-const portalUtilityLinks: readonly PortalNavigationLink[] = [];
-
 function isPortalNavigationGroup(item: PortalNavigationItem): item is PortalNavigationGroup {
   return 'items' in item;
 }
 
 export function Navbar({ isMobileMenuOpen, onOpenMobileMenu, onCloseMobileMenu }: NavbarProps) {
   const { drawerRef, triggerRef, headerRef } = useMobileNavigation(isMobileMenuOpen, onCloseMobileMenu);
+
+  useDesktopNavigation(headerRef);
 
   return (
     <>
@@ -31,7 +31,7 @@ export function Navbar({ isMobileMenuOpen, onOpenMobileMenu, onCloseMobileMenu }
           <nav className={styles.desktopNav} aria-label="Primary navigation">
             {portalNavigation.map((item) =>
               isPortalNavigationGroup(item) ? (
-                <details key={item.label} className={styles.navDropdown}>
+                <details name="portal-primary-navigation" key={item.label} className={styles.navDropdown}>
                   <summary className={styles.navSummary}>{item.label}</summary>
                   <div className={styles.dropdownMenu}>
                     {item.items.map((link) => (

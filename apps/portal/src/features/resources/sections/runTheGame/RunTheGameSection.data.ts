@@ -1,3 +1,5 @@
+import { playerAppLinks } from '@/config/player-app';
+
 export const rulesGuideResource = {
   eyebrow: '01 — Make the call',
   title: 'Rules & Rulings Guide',
@@ -12,7 +14,7 @@ export const storyweaverWorkspace = {
   title: 'Your campaign, gathered in one place.',
   description:
     'The Tapestry player app gives Storyweavers a shared digital space for organizing campaigns, connecting players, viewing characters, and bringing campaign activity together.',
-  href: 'https://app.tapestry-ttrpg.com/storyweaver/campaigns',
+  href: playerAppLinks.storyweaverCampaigns,
   actionLabel: 'Explore the Storyweaver workspace',
   accessNote: 'Free account required · Features actively changing',
   features: ['Create and manage campaigns', 'Invite players and manage the roster', 'View connected player characters', 'Open shared campaign boards'],

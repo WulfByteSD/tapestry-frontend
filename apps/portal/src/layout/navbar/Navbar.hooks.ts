@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import type { RefObject } from 'react';
 
 const focusableSelector = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
@@ -47,6 +48,10 @@ export function useMobileNavigation(open: boolean, onClose: () => void) {
     const handleFocus = (event: FocusEvent) => {
       if (event.target instanceof Node && !drawer.contains(event.target)) focusInside();
     };
+    const handleLink = (event: MouseEvent) => {
+      if (event.target instanceof Element && event.target.closest('a[href]')) onClose();
+    };
+    drawer.addEventListener('click', handleLink);
     const desktop = window.matchMedia('(min-width: 920px)');
     const handleBreakpoint = () => { if (desktop.matches) onClose(); };
 
@@ -56,6 +61,7 @@ export function useMobileNavigation(open: boolean, onClose: () => void) {
     handleBreakpoint();
 
     return () => {
+      drawer.removeEventListener('click', handleLink);
       document.removeEventListener('keydown', handleKeyDown);
       document.removeEventListener('focusin', handleFocus);
       desktop.removeEventListener('change', handleBreakpoint);
@@ -66,4 +72,40 @@ export function useMobileNavigation(open: boolean, onClose: () => void) {
   }, [open, onClose]);
 
   return { drawerRef, triggerRef, headerRef };
+}
+
+// Native disclosure navigation stays keyboard accessible and closes after selection.
+export function useDesktopNavigation(headerRef: RefObject<HTMLElement | null>) {
+  useEffect(() => {
+    const header = headerRef.current;
+    if (!header) return;
+    const close = () => header.querySelectorAll<HTMLDetailsElement>('details[open]').forEach((item) => { item.open = false; });
+    const handlePointer = (event: PointerEvent) => {
+      if (event.target instanceof Node && !header.contains(event.target)) close();
+    };
+    const handleClick = (event: MouseEvent) => {
+      if (event.target instanceof Element && event.target.closest('a[href]')) close();
+    };
+    const handleFocus = (event: FocusEvent) => {
+      if (event.relatedTarget instanceof Node && !header.contains(event.relatedTarget)) close();
+    };
+    const handleKey = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape' || !(event.target instanceof Element)) return;
+      const disclosure = event.target.closest('details[open]');
+      if (!disclosure) return;
+      event.preventDefault();
+      close();
+      disclosure.querySelector('summary')?.focus();
+    };
+    document.addEventListener('pointerdown', handlePointer);
+    header.addEventListener('click', handleClick);
+    header.addEventListener('focusout', handleFocus);
+    header.addEventListener('keydown', handleKey);
+    return () => {
+      document.removeEventListener('pointerdown', handlePointer);
+      header.removeEventListener('click', handleClick);
+      header.removeEventListener('focusout', handleFocus);
+      header.removeEventListener('keydown', handleKey);
+    };
+  }, [headerRef]);
 }
