@@ -6,6 +6,7 @@ import type { CampaignType } from '@tapestry/types';
 import DeleteCampaignModal from './settings/DeleteCampaignModal';
 import FullDeleteCampaignModal from './settings/FullDeleteCampaignModal';
 import DiscordIntegration from './settings/discord/DiscordIntegration.component';
+import PlaySurface from './settings/playSurface/PlaySurface.component';
 import styles from './zones.module.scss';
 
 type Props = {
@@ -36,6 +37,7 @@ export default function SettingsZone({ campaign, isSW, isArchived }: Props) {
       </div>
 
       <div className={styles.settingsGrid}>
+        <PlaySurface campaign={campaign} isArchived={isArchived} />
         <DiscordIntegration campaignId={campaign._id} isArchived={isArchived} />
 
         {/* Danger Zone */}

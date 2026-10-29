@@ -1,5 +1,4 @@
 import type { InventoryItem } from '@tapestry/types';
-import { Tabs } from '@tapestry/ui';
 import { EquippedSection } from '../characterSheetScreen/tabs/inventory/EquippedSection';
 import { InventoryItemCard } from '../characterSheetScreen/tabs/inventory/InventoryItemCard';
 import { PublicSheetSection } from './PublicSheetSection';
@@ -18,27 +17,17 @@ export function PublicInventory({ inventory, characterSex }: { inventory: Invent
   const backpack = inventory.filter((item) => item.equipped !== true);
   return (
     <PublicSheetSection id="inventory" title="Inventory">
-      <Tabs
-        items={[
-          {
-            key: 'public-equipped', label: `Equipped (${equipped.length})`, children: (
-              <div className={styles.scrollRegion} role="region" aria-label="Equipped items" tabIndex={0}>
-                <EquippedSection equippedItems={equipped} characterSex={characterSex} readOnly />
-              </div>
-            ),
-          },
-          { key: 'public-backpack', label: `Backpack (${backpack.length})`, children: <Backpack items={backpack} /> },
-        ]}
-        defaultActiveKey={equipped.length || !backpack.length ? 'public-equipped' : 'public-backpack'}
-        variant="underline"
-        fit="content"
-        keepMounted={false}
-        ariaLabel="Inventory groups"
-        tabListClassName={styles.tabList}
-        tabClassName={styles.tab}
-        activeTabClassName={styles.activeTab}
-        contentClassName={styles.tabContent}
-      />
+      {/* Both groups start visible and can be collapsed without JavaScript. */}
+      <details open className={styles.tabContent}>
+        <summary>Equipped ({equipped.length})</summary>
+        <div className={styles.scrollRegion} role="region" aria-label="Equipped items" tabIndex={0}>
+          <EquippedSection equippedItems={equipped} characterSex={characterSex} readOnly />
+        </div>
+      </details>
+      <details open className={styles.tabContent}>
+        <summary>Backpack ({backpack.length})</summary>
+        <Backpack items={backpack} />
+      </details>
     </PublicSheetSection>
   );
 }

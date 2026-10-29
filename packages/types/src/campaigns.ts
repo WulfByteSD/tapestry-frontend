@@ -2,6 +2,14 @@ import { CharacterSheet } from './characters';
 import { PlayerType } from './players';
 
 export type CampaignStatus = 'active' | 'archived';
+export type CampaignPlaySurface = 'tapestry' | 'discord';
+export interface CampaignPlaySurfaceStatus {
+  playSurface: CampaignPlaySurface;
+  discordUrl: string | null;
+  canManage: boolean;
+  readOnly: boolean;
+}
+export interface CampaignPlaySurfaceInput { playSurface: CampaignPlaySurface }
 export type CampaignRole = 'sw' | 'co-sw' | 'player' | 'observer';
 
 export type DiscordMode = 'none' | 'webhook' | 'bot';
@@ -74,6 +82,7 @@ export type CampaignType = {
   _id: string;
   name: string;
   status: CampaignStatus;
+  playSurface?: CampaignPlaySurface;
 
   owner: string; // ref Player (Storyweaver)
   members: CampaignMember[];

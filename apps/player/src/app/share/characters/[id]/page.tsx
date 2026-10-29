@@ -3,12 +3,8 @@ import { notFound } from 'next/navigation';
 import { PublicCharacterSheet } from '@/features/characters/publicCharacterSheet/PublicCharacterSheet';
 import { CharacterLoadError, fetchPublicCharacter } from '@/features/characters/publicCharacterSheet/public-character';
 
-export const revalidate = 30;
-
-// Generate unknown character IDs on their first visit, then serve cached HTML.
-export function generateStaticParams() {
-  return [];
-}
+// Render fresh character data into the initial HTML, including for readers without JavaScript.
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'Character Sheet | Tapestry',
@@ -27,7 +23,6 @@ export default async function SharedCharacterPage({ params }: { params: Promise<
     if (error instanceof CharacterLoadError && [400, 401, 403, 404].includes(error.status)) {
       notFound();
     }
-    // Throw transient failures so ISR retains a previously generated sheet.
     throw error;
   }
   return <PublicCharacterSheet character={character} identifier={id} />;

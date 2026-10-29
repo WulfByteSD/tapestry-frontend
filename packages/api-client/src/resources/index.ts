@@ -7,3 +7,4 @@ export * from './players.api';
 export * from './campaigns.api';
 export * from './chat.api';
 export * from './discord.api';
+export * from './encounters.api';

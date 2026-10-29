@@ -23,7 +23,7 @@ export default function DiscordIntegration(props: DiscordIntegrationProps) {
       {connection && <span className={styles.savedLabel}>Connection saved</span>}
     </header>
     <DiscordRequirementSetting {...props} />
-    <p className={styles.notice}>IC and OOC messages stay in Tapestry. Only new campaign rolls are delivered to a mapped Discord Rolls channel.</p>
+    <p className={styles.notice}>IC and OOC messages are not synced between Tapestry and Discord. Your play surface controls where the table gathers. Only new campaign rolls are delivered to a mapped Discord Rolls channel.</p>
     {status.isPending ? <p role="status">Loading Discord connection…</p> : status.isError ? <div role="alert" className={styles.error}><p>{discordError(status.error)}</p><Button tone="neutral" variant="outline" onClick={() => void status.refetch()}>Retry connection</Button></div> : <>
       <p className={styles.notice}>{props.isArchived ? 'Roll delivery is paused for this archived campaign.' : !connection?.mappings.rolls ? 'Rolls are web only. Save a Rolls channel mapping to deliver future rolls to Discord.' : !config?.rollsReady ? 'Roll delivery is unavailable. Ask the server administrator to check the bot connection.' : config.rollsSyncActive ? 'Roll delivery is enabled for new saved rolls. It continues without renewing Discord account verification.' : 'Roll delivery is not active.'}</p>
       {delivery && <div className={styles.help} role="status"><p>Latest roll delivery: {deliveryLabels[delivery.state]} · <time dateTime={delivery.at}>{new Date(delivery.at).toLocaleString()}</time></p>{delivery.error && <p>{delivery.error}</p>}</div>}

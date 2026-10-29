@@ -14,7 +14,7 @@ export default function DiscordRequirementSetting({ campaignId, isArchived }: Di
     <SelectField id="discord-account-requirement" label="Discord account requirement" value={account.requirement} disabled={!account.canManage || account.readOnly || isArchived || requirement.isPending} onChange={(event) => requirement.mutate(event.target.value as DiscordRequirement)}>
       <option value="optional">Optional</option><option value="required">Required</option>
     </SelectField>
-    <p className={styles.help}>Required shows unlinked members a dismissible reminder and a persistent notice. Everyone can still play in Tapestry. Linking verifies identity, not Discord server membership.</p>
+    <p className={styles.help}>Required shows unlinked members a dismissible reminder and a persistent notice. This does not change your play surface or block board access. Linking verifies identity, not Discord server membership.</p>
     {requirement.isSuccess && <p role="status" className={styles.success}>Discord requirement saved.</p>}
     {error && <p role="alert" className={styles.error}>{error}</p>}
   </div>;

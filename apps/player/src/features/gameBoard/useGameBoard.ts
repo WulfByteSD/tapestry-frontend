@@ -4,9 +4,10 @@ import { useState, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useCampaign } from '@/lib/campaign-hooks';
 import { useMe } from '@/lib/auth-hooks';
-import type { CampaignType, CampaignRole } from '@tapestry/types';
+import type { CampaignType, CampaignRole, CampaignPlaySurface } from '@tapestry/types';
 import { api } from '@/lib/api';
 import { useProfile } from '@tapestry/hooks/src/useProfile';
+import { useCampaignPlaySurface } from './zones/settings/playSurface/PlaySurface.hooks';
 
 export type BoardZone = 'chat' | 'feed' | 'encounters' | 'notes' | 'rolls' | 'party' | 'character' | 'settings' | 'overview' | 'roster' | 'requests' | 'invites';
 
@@ -19,6 +20,8 @@ export interface UseGameBoardReturn {
   currentUserId: string | undefined;
   isLoading: boolean;
   isError: boolean;
+  playSurface: CampaignPlaySurface;
+  discordUrl: string | null;
 }
 
 export function useGameBoard(campaignId: string): UseGameBoardReturn {
@@ -28,8 +31,10 @@ export function useGameBoard(campaignId: string): UseGameBoardReturn {
   const { data: campaignResponse, isLoading: campaignLoading, isError } = useCampaign(campaignId);
   const { data: currentUser } = useMe();
   const { data: playerProfile } = useProfile(api, currentUser, 'player');
+  const surface = useCampaignPlaySurface(campaignId);
 
   const campaign = campaignResponse?.payload as CampaignType | undefined;
+  const playSurface = surface.data?.payload.playSurface ?? campaign?.playSurface ?? 'tapestry';
 
   const userRole = useMemo<CampaignRole | undefined>(() => {
     if (!campaign || !playerProfile?.payload._id) return undefined;
@@ -40,16 +45,18 @@ export function useGameBoard(campaignId: string): UseGameBoardReturn {
     return member?.role;
   }, [campaign, playerProfile]);
 
-  const isSW = userRole === 'sw' || userRole === 'co-sw' || Boolean(playerProfile?.payload._id && campaign?.owner === playerProfile.payload._id);
+  const isSW = surface.data?.payload.canManage ?? (userRole === 'sw' || userRole === 'co-sw' || Boolean(playerProfile?.payload._id && campaign?.owner === playerProfile.payload._id));
 
   return {
-    activeZone,
+    activeZone: playSurface === 'discord' && activeZone === 'chat' ? 'feed' : activeZone,
     setActiveZone,
-    campaign,
+    campaign: campaign ? { ...campaign, playSurface } : campaign,
+    playSurface,
+    discordUrl: surface.data?.payload.discordUrl ?? null,
     userRole,
     isSW,
     currentUserId: playerProfile?.payload._id,
-    isLoading: campaignLoading,
+    isLoading: campaignLoading || surface.isLoading,
     isError,
   };
 }

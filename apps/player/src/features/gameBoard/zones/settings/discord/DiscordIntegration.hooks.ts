@@ -41,11 +41,11 @@ export function useDiscordIntegration({ campaignId, isArchived }: DiscordIntegra
   });
   const save = useMutation({
     mutationFn: () => saveDiscordConnection(api, campaignId, draftInput(draft)),
-    onSuccess: (response) => { queryClient.setQueryData(key, response); setDraft(null); setMessage(response.payload.rollsSyncActive ? 'Connection saved. New campaign rolls will be sent to the Rolls channel.' : 'Connection saved. Check the roll delivery status below.'); setLocalError(null); },
+    onSuccess: (response) => { queryClient.setQueryData(key, response); void queryClient.invalidateQueries({ queryKey: ['campaign-play-surface', campaignId] }); setDraft(null); setMessage(response.payload.rollsSyncActive ? 'Connection saved. New campaign rolls will be sent to the Rolls channel.' : 'Connection saved. Check the roll delivery status below.'); setLocalError(null); },
   });
   const disconnect = useMutation({
     mutationFn: () => disconnectDiscordConnection(api, campaignId),
-    onSuccess: (response) => { queryClient.setQueryData(key, response); setDraft(null); setMessage('Discord disconnected. Your campaign chat is unchanged.'); setLocalError(null); },
+    onSuccess: (response) => { queryClient.setQueryData(key, response); void queryClient.invalidateQueries({ queryKey: ['campaign-play-surface', campaignId] }); setDraft(null); setMessage('Discord disconnected. Your play surface and saved conversations are unchanged.'); setLocalError(null); },
   });
   const changeDraft = (next: DiscordDraft) => { setDraft(next); setMessage(''); setLocalError(null); save.reset(); };
   const submit = () => {

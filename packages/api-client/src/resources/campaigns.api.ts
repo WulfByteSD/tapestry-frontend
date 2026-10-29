@@ -2,6 +2,15 @@ import { AxiosInstance } from 'axios';
 import { ApiListResponse, cleanParams, ListQueryParams } from '../list';
 import { ApiResponse } from '../fetch';
 import { PostNoteInput } from '@tapestry/types';
+import type { CampaignPlaySurfaceInput, CampaignPlaySurfaceStatus } from '@tapestry/types';
+
+export async function getCampaignPlaySurface(api: AxiosInstance, campaignId: string) {
+  return (await api.get<ApiResponse<CampaignPlaySurfaceStatus>>(`/game/campaigns/${campaignId}/play-surface`)).data;
+}
+
+export async function setCampaignPlaySurface(api: AxiosInstance, campaignId: string, input: CampaignPlaySurfaceInput) {
+  return (await api.put<ApiResponse<CampaignPlaySurfaceStatus>>(`/game/campaigns/${campaignId}/play-surface`, input)).data;
+}
 
 export async function getCampaigns<CampaignType>(api: AxiosInstance, params: ListQueryParams = {}): Promise<ApiListResponse<CampaignType>> {
   const res = await api.get('/game/campaigns', {

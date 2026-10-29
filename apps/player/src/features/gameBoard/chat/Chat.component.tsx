@@ -26,7 +26,8 @@ export default function Chat({ campaign, currentUserId, playerName, userRole, is
   const rollsSelected = chat.view === 'rolls';
   const channelsAvailable = !chat.channelsQuery.isError && !chat.accessRefreshing;
   const campaignArchived = campaign.status === 'archived';
-  const canManage = isSW && !campaignArchived;
+  const discordPlay = campaign.playSurface === 'discord';
+  const canManage = isSW && !campaignArchived && !discordPlay;
   const closeChannelEditor = () => {
     returnChannelFocusRef.current = true;
     setChannelEditor(undefined);
@@ -36,7 +37,7 @@ export default function Chat({ campaign, currentUserId, playerName, userRole, is
     const opener = sectionRef.current?.querySelector<HTMLElement>(`[data-chat-control="${channelOpenerRef.current}"]`);
     if (opener) { opener.focus(); returnChannelFocusRef.current = false; }
   }, [channelEditor, chat.accessRefreshing, chat.channelsQuery.dataUpdatedAt]);
-  const readOnlyReason = campaignArchived ? 'This campaign is archived. You can read its conversations.' : channel?.archived ? 'This channel is archived. You can read its conversation.' : userRole === 'observer' ? 'You’re observing this table. Chat is read-only.' : !userRole ? 'Your table membership is loading.' : null;
+  const readOnlyReason = discordPlay ? 'This table plays in Discord. Your Tapestry conversations are preserved until the Storyweaver switches back.' : campaignArchived ? 'This campaign is archived. You can read its conversations.' : channel?.archived ? 'This channel is archived. You can read its conversation.' : userRole === 'observer' ? 'You’re observing this table. Chat is read-only.' : !userRole ? 'Your table membership is loading.' : null;
   const setup = async () => {
     if (settingUp) return;
     setSettingUp(true);

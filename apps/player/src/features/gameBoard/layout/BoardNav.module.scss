@@ -24,7 +24,8 @@
   &:focus-visible { outline: 2px solid var(--gold); outline-offset: -3px; }
 }
 .toggle { font-size: 0.75rem; }
-.item { position: relative; }
+.item { position: relative; text-decoration: none; }
+.item[aria-disabled='true'] { cursor: not-allowed; }
 .active {
   color: var(--gold);
   background: var(--surface-2);

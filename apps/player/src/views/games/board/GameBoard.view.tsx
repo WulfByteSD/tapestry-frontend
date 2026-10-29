@@ -36,7 +36,7 @@ function MainZone({ zone, isSW, campaign, currentUserId, chat }: MainZoneProps) 
     case 'feed':
       return <ActivityFeedZone campaignId={campaign._id} isSW={isSW} />;
     case 'encounters':
-      return <EncounterZone isSW={isSW} />;
+      return null;
     case 'notes':
       return <NotesZone />;
     case 'rolls':
@@ -84,9 +84,14 @@ export default function GameBoardView({ campaignId }: GameBoardProps) {
   return <GameBoardSession key={`${campaignId}:${currentUserId ?? ''}`} {...board} campaign={campaign} campaignId={campaignId} />;
 }
 
-function GameBoardSession({ campaignId, campaign, activeZone, setActiveZone, isSW, currentUserId, userRole }: GameBoardSessionProps) {
+function GameBoardSession({ campaignId, campaign, activeZone, setActiveZone, isSW, currentUserId, userRole, playSurface, discordUrl }: GameBoardSessionProps) {
   const characterState = useActiveCharacter(campaignId, currentUserId, isSW);
   const [quickRollOpen, setQuickRollOpen] = useState(false);
+  const [encountersVisited, setEncountersVisited] = useState(activeZone === 'encounters');
+  const changeZone: typeof setActiveZone = (zone) => {
+    if (zone === 'encounters') setEncountersVisited(true);
+    setActiveZone(zone);
+  };
   const chat = useChatBoard(campaignId, currentUserId);
   const member = campaign.members.find((entry) => typeof entry.player === 'object' && entry.player._id === currentUserId);
   const playerName = member?.player.displayName ?? 'Player';
@@ -97,8 +102,8 @@ function GameBoardSession({ campaignId, campaign, activeZone, setActiveZone, isS
       <BoardLayout
         mainFlush={activeZone === 'chat'}
         header={(controls) => <><BoardHeader campaign={campaign} campaignId={campaignId} isSW={isSW} {...controls} />{currentUserId && <DiscordAccountNotice key={`${campaignId}:${currentUserId}`} campaignId={campaignId} playerId={currentUserId} />}</>}
-        nav={(controls) => <BoardNav activeZone={activeZone} onZoneChange={setActiveZone} isSW={isSW} {...controls} />}
-        main={<MainZone zone={activeZone} isSW={isSW} campaign={campaign} currentUserId={currentUserId ?? ''} chat={<Chat campaign={campaign} currentUserId={currentUserId ?? ''} playerName={playerName} userRole={userRole} isSW={isSW} characterState={characterState} chat={chat} />} />}
+        nav={(controls) => <BoardNav activeZone={activeZone} onZoneChange={changeZone} isSW={isSW} playSurface={playSurface} discordUrl={discordUrl} {...controls} />}
+        main={<><MainZone zone={activeZone} isSW={isSW} campaign={campaign} currentUserId={currentUserId ?? ''} chat={<Chat campaign={campaign} currentUserId={currentUserId ?? ''} playerName={playerName} userRole={userRole} isSW={isSW} characterState={characterState} chat={chat} />} />{(encountersVisited || activeZone === 'encounters') && <div hidden={activeZone !== 'encounters'}><EncounterZone campaignId={campaignId} viewerId={currentUserId ?? ''} isSW={isSW} isArchived={campaign.status === 'archived'} active={activeZone === 'encounters'} /></div>}</>}
         sidebar={<BoardSidebar campaign={campaign} isSW={isSW} characterState={characterState} playerName={playerName} userRole={rollRole} onQuickRoll={() => setQuickRollOpen(true)} />}
       />
       <QuickRollModal open={quickRollOpen} onClose={() => setQuickRollOpen(false)} campaign={campaign} currentUserId={currentUserId ?? ''} playerName={playerName} userRole={rollRole} characterState={characterState} />
