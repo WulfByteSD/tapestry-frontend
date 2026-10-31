@@ -24,7 +24,7 @@ export function chatMessages(pages: ChatHistoryResponse[] | undefined): ChatMess
   return [...messages.values()].sort((a, b) => a.id.localeCompare(b.id));
 }
 export function speakerName(message: Pick<ChatMessageDto | ChatReplySummary, 'author' | 'speaker'>): string {
-  return message.speaker.type === 'narrator' ? 'Narrator' : message.speaker.type === 'character' ? message.speaker.characterName || 'Character' : message.author.displayName;
+  return message.speaker.type === 'narrator' ? 'Narrator' : (message.speaker.type === 'character' || message.speaker.type === 'combatant') ? message.speaker.characterName || 'Character' : message.author.displayName;
 }
 export function messageTime(value: string): string {
   return new Date(value).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });

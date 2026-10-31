@@ -1,20 +1,26 @@
 "use client";
 
+import { useRef } from "react";
+import { isAxiosError } from "axios";
+import type { CharacterSheet } from "@tapestry/types";
+import { characterHealthBaseline, changesCharacterHealth, type CharacterHealthBaseline } from "./CharacterHealth.helpers";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import { useAlert } from "@tapestry/ui";
 import { ApiResponse, UpdatePayload } from "@tapestry/api-client";
 import applyDotUpdates from "@/utils/applyDotUpdates";
 
-export function useUpdateCharacterSheetMutation<T = any>(characterId: string, opts?: { invalidateAfter?: boolean }) {
+export function useUpdateCharacterSheetMutation<T = any>(characterId: string, opts?: { invalidateAfter?: boolean; expectedHealthState?: CharacterHealthBaseline }) {
   const qc = useQueryClient();
+  const { addAlert } = useAlert();
+  const healthBaselines = useRef(new WeakMap<UpdatePayload, CharacterHealthBaseline>());
 
   return useMutation({
     mutationKey: ["character:update", characterId],
     mutationFn: async (updates: UpdatePayload) => {
       // Send dot notation keys directly - server will wrap in $set
-      console.log("Updating character", characterId, "with", updates);
-      const res = await api.put(`/game/characters/${characterId}`, updates);
+      const expectedHealthState = healthBaselines.current.get(updates);
+      const res = await api.put(`/game/characters/${characterId}`, expectedHealthState ? { ...updates, expectedHealthState } : updates);
       return res.data as ApiResponse<T>;
     },
     onMutate: async (updates) => {
@@ -22,14 +28,23 @@ export function useUpdateCharacterSheetMutation<T = any>(characterId: string, op
 
       const prev = qc.getQueryData<ApiResponse<T>>(["character", characterId]);
 
+      if (changesCharacterHealth(updates)) {
+        const baseline = opts?.expectedHealthState ?? (prev?.payload ? characterHealthBaseline(prev.payload as unknown as CharacterSheet) : undefined);
+        if (!baseline) throw new Error("Reload the character before changing health.");
+        healthBaselines.current.set(updates, structuredClone(baseline));
+      }
       if (prev?.payload) {
         const nextPayload = applyDotUpdates(prev.payload as any, updates);
         qc.setQueryData<ApiResponse<T>>(["character", characterId], { ...prev, payload: nextPayload });
       }
       return { prev };
     },
-    onError: (_err, _updates, ctx) => {
+    onError: (error, _updates, ctx) => {
       if (ctx?.prev) qc.setQueryData(["character", characterId], ctx.prev);
+      if (isAxiosError(error) && error.response?.status === 409) {
+        addAlert({ type: "error", message: "Health changed while you were editing. The latest sheet is loading; review it before applying again." });
+        void qc.invalidateQueries({ queryKey: ["character", characterId] });
+      }
     },
     onSuccess: (data) => {
       // Trust server response (this corrects any optimistic drift)

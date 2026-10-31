@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Loader } from '@tapestry/ui';
 import { useGameBoard } from '@/features/gameBoard/useGameBoard';
 import { useActiveCharacter } from '@/features/gameBoard/useActiveCharacter';
@@ -24,6 +24,12 @@ import InvitesZone from '@/features/gameBoard/zones/campaign/InvitesZone';
 import SettingsZone from '@/features/gameBoard/zones/SettingsZone';
 import DiscordAccountNotice from '@/features/gameBoard/zones/settings/discord/DiscordAccountNotice.component';
 import { QuickRollModal } from '@/features/gameBoard/quickRoll/QuickRoll.modal';
+import { useEncounterScenes } from '@/features/gameBoard/scenes/Scene.hooks';
+import { SceneTools } from '@/features/gameBoard/scenes/SceneTools.component';
+import type { EncounterScreenRequest } from '@/features/gameBoard/scenes/Scene.types';
+import type { EncounterSceneSummary } from '@tapestry/types';
+import sceneStyles from '@/features/gameBoard/scenes/Scene.module.scss';
+import { Button } from '@tapestry/ui';
 import styles from './GameBoard.module.scss';
 import type { GameBoardProps, GameBoardSessionProps, MainZoneProps } from './GameBoard.types';
 
@@ -86,6 +92,7 @@ export default function GameBoardView({ campaignId }: GameBoardProps) {
 
 function GameBoardSession({ campaignId, campaign, activeZone, setActiveZone, isSW, currentUserId, userRole, playSurface, discordUrl }: GameBoardSessionProps) {
   const characterState = useActiveCharacter(campaignId, currentUserId, isSW);
+  const [encounterScreenRequest, setEncounterScreenRequest] = useState<EncounterScreenRequest>();
   const [quickRollOpen, setQuickRollOpen] = useState(false);
   const [encountersVisited, setEncountersVisited] = useState(activeZone === 'encounters');
   const changeZone: typeof setActiveZone = (zone) => {
@@ -93,6 +100,22 @@ function GameBoardSession({ campaignId, campaign, activeZone, setActiveZone, isS
     setActiveZone(zone);
   };
   const chat = useChatBoard(campaignId, currentUserId);
+  const scenes = useEncounterScenes(campaignId, currentUserId ?? '');
+  const channelScene = chat.channel?.scene;
+  const synchronizedChannel = useRef('');
+  const selectScene = scenes.select;
+  useEffect(() => {
+    const key = `${activeZone}:${chat.view}:${channelScene?.id ?? ''}:${chat.accessRefreshing}`;
+    if (synchronizedChannel.current === key) return;
+    synchronizedChannel.current = key;
+    if (activeZone === 'chat' && channelScene && chat.view === 'conversation' && !chat.accessRefreshing) selectScene(channelScene);
+  }, [activeZone, channelScene, chat.view, chat.accessRefreshing, selectScene]);
+  const enterScene = (scene: EncounterSceneSummary) => {
+    scenes.select(scene);
+    scenes.dismissInvitation();
+    if (scene.channelId && playSurface !== 'discord') { chat.selectChannel(scene.channelId); changeZone('chat'); }
+    else changeZone('encounters');
+  };
   const member = campaign.members.find((entry) => typeof entry.player === 'object' && entry.player._id === currentUserId);
   const playerName = member?.player.displayName ?? 'Player';
   const rollRole = campaign.owner === currentUserId ? 'sw' : userRole;
@@ -103,8 +126,8 @@ function GameBoardSession({ campaignId, campaign, activeZone, setActiveZone, isS
         mainFlush={activeZone === 'chat'}
         header={(controls) => <><BoardHeader campaign={campaign} campaignId={campaignId} isSW={isSW} {...controls} />{currentUserId && <DiscordAccountNotice key={`${campaignId}:${currentUserId}`} campaignId={campaignId} playerId={currentUserId} />}</>}
         nav={(controls) => <BoardNav activeZone={activeZone} onZoneChange={changeZone} isSW={isSW} playSurface={playSurface} discordUrl={discordUrl} {...controls} />}
-        main={<><MainZone zone={activeZone} isSW={isSW} campaign={campaign} currentUserId={currentUserId ?? ''} chat={<Chat campaign={campaign} currentUserId={currentUserId ?? ''} playerName={playerName} userRole={userRole} isSW={isSW} characterState={characterState} chat={chat} />} />{(encountersVisited || activeZone === 'encounters') && <div hidden={activeZone !== 'encounters'}><EncounterZone campaignId={campaignId} viewerId={currentUserId ?? ''} isSW={isSW} isArchived={campaign.status === 'archived'} active={activeZone === 'encounters'} /></div>}</>}
-        sidebar={<BoardSidebar campaign={campaign} isSW={isSW} characterState={characterState} playerName={playerName} userRole={rollRole} onQuickRoll={() => setQuickRollOpen(true)} />}
+        main={(controls) => <>{scenes.invitation && <div className={sceneStyles.invitation} role="status"><span>{scenes.invitation.title} is open.</span><div className={sceneStyles.actions}><Button size="sm" onClick={() => enterScene(scenes.invitation!)}>Enter scene</Button><Button size="sm" variant="ghost" onClick={scenes.dismissInvitation}>Dismiss</Button></div></div>}<MainZone zone={activeZone} isSW={isSW} campaign={campaign} currentUserId={currentUserId ?? ''} chat={<Chat campaign={campaign} currentUserId={currentUserId ?? ''} playerName={playerName} userRole={userRole} isSW={isSW} characterState={characterState} chat={chat} scenes={scenes} {...controls} />} />{(encountersVisited || activeZone === 'encounters') && <div hidden={activeZone !== 'encounters'}><EncounterZone campaignId={campaignId} viewerId={currentUserId ?? ''} campaign={campaign} scenes={scenes} onEnterScene={enterScene} screenRequest={encounterScreenRequest} isSW={isSW} isArchived={campaign.status === 'archived'} active={activeZone === 'encounters'} /></div>}</>}
+        sidebar={<BoardSidebar campaign={campaign} isSW={isSW} characterState={characterState} playerName={playerName} userRole={rollRole} onQuickRoll={() => setQuickRollOpen(true)} selectedSceneId={scenes.selected?.id} encounterTools={<SceneTools state={scenes} characterState={characterState} viewerId={currentUserId ?? ''} archived={campaign.status === 'archived'} onManageScene={(scene, screen) => { setEncounterScreenRequest({ id: crypto.randomUUID(), encounterId: scene.encounterId, screen }); changeZone('encounters'); }} />} />}
       />
       <QuickRollModal open={quickRollOpen} onClose={() => setQuickRollOpen(false)} campaign={campaign} currentUserId={currentUserId ?? ''} playerName={playerName} userRole={rollRole} characterState={characterState} />
     </div>

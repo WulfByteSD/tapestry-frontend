@@ -6,16 +6,17 @@ import styles from './RollHistory.module.scss';
 
 export function RollHistoryRow({ roll, currentUserId }: RollHistoryRowProps) {
   const author = roll.playerDisplayName || 'Player unavailable';
-  const actor = roll.character ? roll.characterName || 'Character unavailable' : author;
+  const participant = Boolean(roll.character || roll.characterName);
+  const actor = participant ? roll.characterName || 'Character unavailable' : author;
   const time = roll.rolledAt || roll.createdAt;
   return (
     <li className={styles.row}>
       <details className={styles.disclosure}>
         <summary className={styles.summary}>
           <span className={styles.total}><span className={styles.totalLabel}>Total</span>{roll.total}</span>
-          <span className={styles.identity}><Avatar name={actor} src={roll.character ? undefined : roll.playerAvatar ?? undefined} size="sm" /></span>
+          <span className={styles.identity}><Avatar name={actor} src={participant ? undefined : roll.playerAvatar ?? undefined} size="sm" /></span>
           <span className={styles.rowBody}>
-            <span className={styles.rowMeta}><strong>{actor}</strong>{roll.character ? <span>by {author}{roll.player === currentUserId ? ' (you)' : ''}</span> : roll.player === currentUserId ? <span>You</span> : null}<time dateTime={time}>{rollTime(time)}</time></span>
+            <span className={styles.rowMeta}><strong>{actor}</strong>{participant ? <span>by {author}{roll.player === currentUserId ? ' (you)' : ''}</span> : roll.player === currentUserId ? <span>You</span> : null}<time dateTime={time}>{rollTime(time)}</time></span>
             <span className={styles.context}>{roll.context || rollLabel(roll.rollType || 'custom')}</span>
             <span className={styles.expression}><span>{rollLabel(roll.rollType || 'custom')}</span><code>{roll.expression}</code>{roll.attack ? <span>{rollLabel(roll.attack.outcome)}</span> : null}</span>
           </span>

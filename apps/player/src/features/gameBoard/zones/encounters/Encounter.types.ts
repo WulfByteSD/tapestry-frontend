@@ -1,6 +1,7 @@
-import type { EncounterCombatantSnapshot, EncounterDraft, EncounterParticipant } from '@tapestry/types';
+import type { SceneBoardState, EncounterScreenRequest } from '../../scenes/Scene.types';
+import type { CampaignType, EncounterSceneSummary, EncounterCombatantSnapshot, EncounterDraft, EncounterParticipant } from '@tapestry/types';
 
-export type EncounterZoneProps = { campaignId: string; viewerId: string; isSW: boolean; isArchived: boolean; active: boolean };
+export type EncounterZoneProps = { campaignId: string; viewerId: string; isSW: boolean; isArchived: boolean; active: boolean; campaign: CampaignType; scenes: SceneBoardState; onEnterScene: (scene: EncounterSceneSummary) => void; screenRequest?: EncounterScreenRequest };
 export type CombatantFormValue = Omit<EncounterCombatantSnapshot, 'statline'> & {
   statline: Omit<EncounterCombatantSnapshot['statline'], 'hp' | 'defenseTN' | 'armor' | 'actions'> & { hp: number | ''; defenseTN: number | ''; armor: number | ''; actions: number | '' };
 };

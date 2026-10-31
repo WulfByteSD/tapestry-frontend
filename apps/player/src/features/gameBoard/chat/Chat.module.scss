@@ -159,3 +159,6 @@
 @media (max-width: 480px) {
   .twoFields { grid-template-columns: minmax(0, 1fr); }
 }
+
+.sceneChannels { flex: 1 1 0; overflow: hidden; }
+.completedSceneChannels { flex: 0 1 auto; min-height: 0; max-height: 35%; overflow-y: auto; overscroll-behavior: contain; border-top: 1px solid var(--border); margin-top: .5rem; summary { padding: .65rem .75rem; font-size: .75rem; color: var(--text-muted); cursor: pointer; } }

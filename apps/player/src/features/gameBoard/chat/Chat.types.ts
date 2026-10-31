@@ -1,5 +1,6 @@
 import type { CampaignType, CampaignRole, ChatComposition, ChatMessageDto, ChatSendInput } from '@tapestry/types';
 import type { useActiveCharacter } from '../useActiveCharacter';
+import type { SceneBoardState } from '../scenes/Scene.types';
 import type { useChatBoard } from './Chat.hooks';
 
 export type ActiveCharacterState = ReturnType<typeof useActiveCharacter>;
@@ -20,4 +21,7 @@ export type ChatProps = {
   isSW: boolean;
   characterState: ActiveCharacterState;
   chat: ChatBoardState;
+  scenes: SceneBoardState;
+  tableOpen: boolean;
+  onToggleTable: () => void;
 };

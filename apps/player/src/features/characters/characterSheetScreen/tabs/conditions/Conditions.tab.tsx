@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { Button, Card, CardBody, CardHeader, Input } from "@tapestry/ui";
 import type { CharacterSheet, ConditionInstance } from "@tapestry/types";
 import { useUpdateCharacterSheetMutation } from "../../characterSheet.mutations";
+import { characterHealthBaseline } from "../../CharacterHealth.helpers";
 import { CONDITION_DEFINITIONS } from "./conditionCatalog";
 import { buildConditionInstance, enrichCondition } from "./condition.helpers";
 import styles from "./ConditionsTab.module.scss";
@@ -14,7 +15,7 @@ type Props = {
 };
 
 export function ConditionsTab({ sheet }: Props) {
-  const update = useUpdateCharacterSheetMutation(sheet._id);
+  const update = useUpdateCharacterSheetMutation(sheet._id, { expectedHealthState: characterHealthBaseline(sheet) });
   const conditions = sheet.sheet.conditions ?? [];
 
   const activeConditionByKey = useMemo(() => {

@@ -44,7 +44,7 @@ export function useChatDrafts(campaignId: string, playerId: string) {
   }), [playerId]);
   const send = async (channelId: string, speaker: ChatSendInput['speaker'], labels: { speakerLabel: string; channelName: string }) => {
     const draft = drafts[channelId] ?? emptyChatDraft;
-    const composition = speaker?.type === 'character' ? draft.composition ?? emptyComposition : undefined;
+    const composition = (speaker?.type === 'character' || speaker?.type === 'combatant') ? draft.composition ?? emptyComposition : undefined;
     const content = composition ? compositionContent(composition) : draft.content;
     if (inFlightRef.current.has(channelId) || draft.status === 'sending' || (!draft.attempt && (!content.trim() || content.length > 8000))) return;
     const attempt = draft.attempt ?? {

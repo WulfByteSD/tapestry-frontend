@@ -94,6 +94,8 @@ export function useChatBoard(campaignId: string, currentUserId: string | undefin
     socket.on('chat:message:deleted', messageChanged);
     socket.on('chat:channel:updated', channelChanged);
     socket.on('chat:unread:updated', channelChanged);
+    socket.on('encounter:sceneUpdated', channelChanged);
+    socket.on('encounter:exchangeUpdated', refreshAll);
     socket.on('chat:access:changed', accessChanged);
     return () => {
       socket.off('connect', refreshAll);
@@ -102,6 +104,8 @@ export function useChatBoard(campaignId: string, currentUserId: string | undefin
       socket.off('chat:message:deleted', messageChanged);
       socket.off('chat:channel:updated', channelChanged);
       socket.off('chat:unread:updated', channelChanged);
+      socket.off('encounter:sceneUpdated', channelChanged);
+      socket.off('encounter:exchangeUpdated', refreshAll);
       socket.off('chat:access:changed', accessChanged);
     };
   }, [socket, playerId, campaignId, queryClient, refreshChannels, refreshMessages]);

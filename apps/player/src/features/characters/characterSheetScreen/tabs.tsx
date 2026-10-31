@@ -1,4 +1,5 @@
 import type { TabsItem } from '@tapestry/ui';
+import { CharacterHealthHistory } from './CharacterHealthHistory.component';
 import { OverviewTab } from './tabs/overview/OverviewTab';
 import { NotesTab } from './tabs/notes/NotesTab';
 import { RollsTab } from './tabs/rolls/RollsTab';
@@ -21,6 +22,7 @@ export function createTabs(props: SheetTabsProps): TabsItem[] {
       icon: undefined,
       children: <OverviewTab sheet={sheet} mode={mode} onAction={onAction} onNavigate={onNavigate} />,
     },
+    { key: 'health-history', label: 'Health history', children: <CharacterHealthHistory sheet={sheet} /> },
     {
       key: 'rolls',
       label: 'Rolls',

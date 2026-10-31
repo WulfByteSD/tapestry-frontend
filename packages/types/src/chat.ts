@@ -3,6 +3,8 @@ export type ChatMessagePart = { type: 'action' | 'dialogue'; text: string };
 export type ChatComposition = { action: string; dialogue: string; parts?: never } | { parts: ChatMessagePart[]; action?: never; dialogue?: never };
 export type ChatVisibility = 'campaign' | 'private';
 export type ChatChannelDto = {
+  canPost?: boolean;
+  scene?: import('./encounterScenes').EncounterSceneSummary;
   id: string;
   campaignId: string;
   name: string;
@@ -17,9 +19,10 @@ export type ChatChannelDto = {
   updatedAt: string;
 };
 export type ChatAuthor = { playerId: string; displayName: string; avatar: string | null };
-export type ChatSpeaker = { type: 'profile' | 'character' | 'narrator'; characterId?: string | null; characterName?: string | null; avatar?: string | null };
+export type ChatSpeaker = { type: 'profile' | 'character' | 'narrator' | 'combatant'; participantId?: string | null; characterId?: string | null; characterName?: string | null; avatar?: string | null };
 export type ChatReplySummary = { id: string; author: ChatAuthor; speaker: ChatSpeaker; content: string; deletedAt: string | null };
 export type ChatMessageDto = {
+  systemEntry?: { type: 'encounter_exchange'; exchangeId: string; exchange: import('./encounterScenes').EncounterExchange | null };
   id: string;
   campaignId: string;
   channelId: string;
@@ -43,7 +46,7 @@ export type ChatSendInput = {
   content: string;
   composition?: ChatComposition;
   replyToMessageId?: string;
-  speaker?: { type: 'character'; characterId: string } | { type: 'narrator' };
+  speaker?: { type: 'character'; characterId: string } | { type: 'narrator' } | { type: 'combatant'; participantId: string };
 };
 export type ChatReadState = { campaignId: string; channelId: string; lastReadMessageId: string | null; unreadCount: number };
 export type ChatHistoryResponse = { success: boolean; payload: ChatMessageDto[]; metadata: { nextCursor: string | null; hasMore: boolean } };

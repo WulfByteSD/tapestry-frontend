@@ -1,6 +1,8 @@
 'use client';
 
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { useSocket } from '@tapestry/socket';
 import type { NoteCard } from '@tapestry/types';
 import { useCharacterSheetQuery } from './characterSheet.queries';
 import { useUpdateCharacterSheetMutation } from './characterSheet.mutations';
@@ -14,6 +16,19 @@ type NotesSaveJob = {
 export function useCharacterSheet({ characterId, mode }: CharacterSheetScreenProps) {
   const query = useCharacterSheetQuery<PlayerCharacterSheet>(characterId);
   const update = useUpdateCharacterSheetMutation<PlayerCharacterSheet>(characterId);
+  const qc = useQueryClient();
+  const { socket } = useSocket();
+  const campaignId = query.data?.payload.campaign;
+  useEffect(() => {
+    if (!socket || !campaignId) return;
+    const refresh = () => { void qc.invalidateQueries({ queryKey: ['character', characterId] }); void qc.invalidateQueries({ queryKey: ['character-health-audit', characterId] }); };
+    const changed = (event: { campaignId: string }) => { if (event.campaignId === campaignId) refresh(); };
+    const access = (event: { campaignId: string }) => { if (event.campaignId === campaignId) { void qc.resetQueries({ queryKey: ['character-health-audit', characterId] }); refresh(); } };
+    socket.on('connect', refresh);
+    socket.on('encounter:sceneUpdated', changed);
+    socket.on('chat:access:changed', access);
+    return () => { socket.off('connect', refresh); socket.off('encounter:sceneUpdated', changed); socket.off('chat:access:changed', access); };
+  }, [socket, campaignId, characterId, qc]);
   const { mutateAsync } = update;
   const [activeTab, setActiveTab] = useState<TabKey>('overview');
   const [currentMode, setCurrentMode] = useState(mode);

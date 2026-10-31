@@ -41,6 +41,7 @@ export type EncounterTurnOrderAction =
   | { action: 'next-round' };
 export type UpdateEncounterTurnOrderInput = { revision: number } & EncounterTurnOrderAction;
 export interface EncounterDraft {
+  status?: 'draft' | 'active' | 'ended';
   id: string;
   campaignId: string;
   title: string;

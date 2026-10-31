@@ -10,6 +10,9 @@ export type PresenceUser = {
 
 // Server → Client events
 export type ServerToClientEvents = {
+  'encounter:sceneUpdated': (data: { campaignId: string; encounterId: string; sceneId: string; channelId: string | null }) => void;
+  'encounter:sceneOpened': (data: { campaignId: string; encounterId: string; sceneId: string; channelId: string | null }) => void;
+  'encounter:exchangeUpdated': (data: { campaignId: string; encounterId: string; sceneId: string; channelId: string | null }) => void;
   // Chat payloads are transport notifications; consumers reconcile through authorized HTTP reads.
   'chat:message:created': (data: { campaignId: string; channelId: string; message: unknown }) => void;
   'chat:message:updated': (data: { campaignId: string; channelId: string; message: unknown }) => void;

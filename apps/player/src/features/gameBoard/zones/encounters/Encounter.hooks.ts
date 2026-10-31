@@ -22,14 +22,27 @@ export function useEncounterPreparation(campaignId: string, viewerId: string, ac
   const [notice, setNotice] = useState('');
   const dirty = editing && (draft ? title !== draft.title || notes !== draft.notes : Boolean(title || notes));
   const list = useQuery({ queryKey: ['encounter-drafts', campaignId, viewerId, page], queryFn: () => getEncounterDrafts(api, campaignId, { pageNumber: page, pageLimit: 20 }), enabled: active });
+  useQuery({ queryKey: ['encounter-live-draft', campaignId, viewerId, draft?.id ?? ''], queryFn: () => getEncounterDraft(api, campaignId, draft!.id), enabled: !!draft, staleTime: Infinity, retry: false });
+  useEffect(() => client.getQueryCache().subscribe(event => {
+    const key = event.query.queryKey;
+    if (event.type !== 'updated' || event.action.type !== 'success' || key[0] !== 'encounter-live-draft' || key[1] !== campaignId || key[2] !== viewerId) return;
+    const next = (event.query.state.data as { payload: EncounterDraft } | undefined)?.payload;
+    const previous = currentDraft.current;
+    if (!next || !previous || next.id !== previous.id || next.revision <= previous.revision) return;
+    currentDraft.current = next;
+    setDraft(next);
+    setTitle(value => value === previous.title ? next.title : value);
+    setNotes(value => value === previous.notes ? next.notes : value);
+    setConflict(false);
+  }), [client, campaignId, viewerId]);
   useEncounterLeaveGuard(dirty);
   const canLeave = () => !dirty || window.confirm('Discard the unsaved encounter title and notes?');
   const select = async (id: string) => {
-    if (pending.current || !canLeave()) return;
+    if (pending.current || !canLeave()) return false;
     pending.current = true;
     setBusy(true); setError(''); setNotice('');
-    try { const next = (await getEncounterDraft(api, campaignId, id)).payload; currentDraft.current = next; setDraft(next); setTitle(next.title); setNotes(next.notes); setEditing(true); setConflict(false); }
-    catch (reason) { setError(encounterError(reason)); }
+    try { const next = (await getEncounterDraft(api, campaignId, id)).payload; currentDraft.current = next; setDraft(next); setTitle(next.title); setNotes(next.notes); setEditing(true); setConflict(false); return true; }
+    catch (reason) { setError(encounterError(reason)); return false; }
     finally { pending.current = false; setBusy(false); }
   };
   const create = () => {

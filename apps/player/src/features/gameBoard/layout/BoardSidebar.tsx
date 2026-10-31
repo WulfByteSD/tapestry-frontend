@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import type { CampaignRole, CampaignType } from '@tapestry/types';
-import { Avatar } from '@tapestry/ui';
+import { Avatar, Tabs } from '@tapestry/ui';
 import { TbDice, TbNotebook, TbSwords } from 'react-icons/tb';
 import type { ActiveCharacterState } from '../chat/Chat.types';
 import { useGameBoardPresence } from '../useGameBoardPresence';
@@ -17,9 +17,14 @@ type Props = {
   playerName: string;
   userRole: CampaignRole | undefined;
   onQuickRoll: () => void;
+  encounterTools?: ReactNode;
+  selectedSceneId?: string;
 };
 
-export default function BoardSidebar({ campaign, isSW, characterState, playerName, userRole, onQuickRoll }: Props) {
+export default function BoardSidebar({ campaign, isSW, characterState, playerName, userRole, onQuickRoll, encounterTools, selectedSceneId }: Props) {
+  const [tabChoice, setTabChoice] = useState({ sceneId: selectedSceneId, tab: selectedSceneId ? 'encounter' : 'table' });
+  const tab = tabChoice.sceneId === selectedSceneId ? tabChoice.tab : selectedSceneId ? 'encounter' : 'table';
+  const setTab = (value: string) => setTabChoice({ sceneId: selectedSceneId, tab: value });
   const [selectorOpen, setSelectorOpen] = useState(false);
   const { activeCharacterId, activeCharacter, setActiveCharacter, isLoading, characters } = characterState;
   const { isUserOnline } = useGameBoardPresence(campaign._id);
@@ -43,6 +48,7 @@ export default function BoardSidebar({ campaign, isSW, characterState, playerNam
 
   return (
     <div className={styles.sidebar}>
+      <Tabs activeKey={tab} onChange={setTab} variant="underline" ariaLabel="Table panel" keepMounted items={[{ key: 'table', label: 'Table', children: <>
       <section className={styles.panel}>
         <h3 className={styles.panelTitle}>Acting as</h3>
         <CharacterSnapshot activeCharacter={activeCharacter} playerName={playerName} isLoading={isLoading} onClick={() => setSelectorOpen(true)} />
@@ -82,6 +88,7 @@ export default function BoardSidebar({ campaign, isSW, characterState, playerNam
           <button type="button" disabled className={styles.actionStub} aria-label="Quick Note — Upcoming"><TbNotebook size={18} aria-hidden />Quick Note <span className={styles.upcoming}>Upcoming</span></button>
         </div>
       </section>
+      </> }, { key: 'encounter', label: 'Encounter', children: encounterTools }]} />
       <CharacterSelector
         open={selectorOpen}
         onClose={() => setSelectorOpen(false)}

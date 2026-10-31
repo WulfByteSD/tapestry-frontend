@@ -15,3 +15,4 @@ export * from './legal';
 export * from './timezones';
 export * from './discord';
 export * from './encounters';
+export * from './encounterScenes';

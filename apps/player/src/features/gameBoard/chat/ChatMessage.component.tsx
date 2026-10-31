@@ -5,11 +5,12 @@ import { Avatar, Button } from '@tapestry/ui';
 import type { ChatMessageProps } from './ChatMessage.types';
 import { messageTime, speakerName } from './Chat.helpers';
 import styles from './Chat.module.scss';
+import { SceneExchange } from '../scenes/SceneExchange.component';
 import { compositionParts } from './ChatComposition.helpers';
 
 export function ChatMessage({ message, currentUserId, isSW, readOnly, replyDisabled, onReply, onEdit, onRemove }: ChatMessageProps) {
   const own = message.author.playerId === currentUserId;
-  const character = message.speaker.type === 'character';
+  const character = message.speaker.type === 'character' || message.speaker.type === 'combatant';
   const narrator = message.speaker.type === 'narrator';
   const name = speakerName(message);
   const proseRef = useRef<HTMLDivElement>(null);
@@ -25,6 +26,7 @@ export function ChatMessage({ message, currentUserId, isSW, readOnly, replyDisab
   }, [message.content, message.deletedAt]);
   const collapsed = long && !expanded;
   const prose = (content: string) => <ReactMarkdown skipHtml allowedElements={['p', 'br', 'strong', 'em', 'del', 'a', 'ul', 'ol', 'li', 'blockquote', 'h1', 'h2', 'h3', 'h4', 'code', 'pre', 'hr']} components={{ a: ({ href, children }) => collapsed ? <span className={styles.previewLink}>{children}</span> : <a href={href}>{children}</a> }}>{content}</ReactMarkdown>;
+  if (message.systemEntry) return <div data-message-id={message.id}>{message.systemEntry.exchange ? <SceneExchange exchange={message.systemEntry.exchange} /> : <p className={styles.removed}>Exchange no longer available.</p>}</div>;
   return (
     <article className={`${styles.messageRow} ${character ? styles.characterMessage : ''} ${narrator ? styles.narratorMessage : ''}`} data-message-id={message.id}>
       {narrator ? <FiFeather className={styles.narratorIcon} aria-hidden="true" /> : <Avatar key={character ? message.speaker.avatar ?? name : message.author.avatar ?? name} className={character ? styles.characterPortrait : undefined} name={name} alt={character ? `${name} portrait` : message.author.displayName} src={character ? message.speaker.avatar : message.author.avatar} size={character ? 'lg' : 'sm'} />}

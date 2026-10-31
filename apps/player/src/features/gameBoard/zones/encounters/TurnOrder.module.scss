@@ -1,15 +1,21 @@
-.turnOrder { min-width: 0; padding-top: .6rem; }
+.turnOrder { min-width: 0; padding-top: .6rem; container: turnOrder / inline-size; }
 .heading { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: .5rem 1.5rem; margin-bottom: 1.5rem; h3 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.75rem); line-height: 1.25; overflow-wrap: anywhere; } }
 .round { color: var(--gold); margin: 0; font-size: .9rem; white-space: nowrap; strong { font-size: 1.5rem; font-variant-numeric: tabular-nums; margin-left: .25rem; } }
-.currentLine { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1.2rem; border-left: 3px solid var(--gold); padding: .7rem 0 .7rem 1rem; }
+.currentLine { display: grid; grid-template-columns: minmax(0, 1fr) 7.5rem; align-items: center; gap: 1.2rem; border-left: 3px solid var(--gold); padding: .7rem 0 .7rem 1rem; > button { width: 7.5rem; min-height: 44px; white-space: nowrap; } }
+.readOnlyCurrent { grid-template-columns: minmax(0, 1fr); }
 .currentIdentity { display: flex; align-items: center; gap: .9rem; min-width: 0; > div { min-width: 0; } }
 .label { color: var(--gold); text-transform: uppercase; letter-spacing: .1em; font-size: .7rem; font-weight: 700; margin: 0 0 .4rem; }
-.currentName { display: block; font-size: clamp(1.6rem, 4vw, 2.4rem); line-height: 1.12; letter-spacing: -.025em; overflow-wrap: anywhere; }
+.currentName { display: block; font-size: clamp(1.6rem, 4vw, 2.4rem); line-height: 1.12; letter-spacing: -.025em; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .detail { color: var(--text-muted); font-size: .8rem; margin: .45rem 0 0; }
-.upNext { display: flex; align-items: baseline; flex-wrap: wrap; gap: .4rem .8rem; padding: 1rem 0; margin: 0; color: var(--text-muted); font-size: .8rem; strong { color: var(--text); font-size: 1rem; overflow-wrap: anywhere; } }
+.upNext { display: flex; align-items: baseline; gap: .4rem .8rem; padding: 1rem 0; margin: 0; color: var(--text-muted); font-size: .8rem; span { flex-shrink: 0; } strong { min-width: 0; color: var(--text); font-size: 1rem; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; } }
 .orderHeading { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; margin: 1.7rem 0 .6rem; h4 { margin: 0; font-size: 1rem; } span { font-size: .8rem; color: var(--text-muted); } }
+.savingStatus { display: flex; align-items: center; gap: .5rem; min-height: 1.25rem; margin: 0 0 .5rem; color: var(--gold); font-size: .8rem; line-height: 1.25rem; }
+.savingSpinner { width: 14px; height: 14px; flex: 0 0 14px; border: 2px solid color-mix(in srgb, currentColor 25%, transparent); border-top-color: currentColor; border-radius: 50%; animation: savingSpin .7s linear infinite; }
+@keyframes savingSpin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .savingSpinner, .advanceButton > span[aria-hidden='true'] { animation: none; } }
 .order { list-style: none; padding: 0; margin: 0; border-top: 1px solid var(--border); }
-.row { position: relative; display: flex; align-items: center; flex-wrap: wrap; gap: .6rem; padding: .85rem .35rem; border-bottom: 1px solid var(--border); &:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; } }
+.row { position: relative; display: grid; grid-template-columns: 36px 1.5rem 32px minmax(0, 1fr) max-content; align-items: center; gap: .6rem; padding: .85rem .35rem; border-bottom: 1px solid var(--border); &:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; } }
+.readOnlyRow { grid-template-columns: 1.5rem 32px minmax(0, 1fr); }
 .activeRow { background: color-mix(in srgb, var(--gold) 8%, transparent); .position { color: var(--gold); font-weight: 800; } }
 .dragged { opacity: .5; }
 .dropBefore::before, .dropAfter::after { content: ''; position: absolute; left: 0; right: 0; height: 3px; background: var(--gold); pointer-events: none; }
@@ -17,10 +23,15 @@
 .dropAfter::after { bottom: -2px; }
 .handle { cursor: grab !important; padding: .5rem !important; min-width: 36px; min-height: 44px; font-size: 1.3rem !important; &:active { cursor: grabbing !important; } }
 .position { font-size: .85rem; color: var(--text-muted); min-width: 1.4rem; text-align: center; font-variant-numeric: tabular-nums; }
-.identity { flex: 1; min-width: 90px; overflow-wrap: anywhere; strong { font-size: .95rem; display: block; } span { display: block; font-size: .72rem; line-height: 1.5; color: var(--text-muted); margin-top: .2rem; } }
-.actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: .2rem; width: 100%; button { min-height: 44px; } }
+.portrait { display: flex; align-items: center; }
+.identity { min-width: 0; strong { font-size: .95rem; display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; } span { display: block; font-size: .72rem; line-height: 1.5; color: var(--text-muted); margin-top: .2rem; overflow-wrap: anywhere; } }
+.actions { display: flex; align-items: center; justify-content: flex-end; gap: .2rem; button { flex: 0 0 auto; width: 44px; min-height: 44px; padding: 0; white-space: nowrap; } svg { display: block; width: 18px; height: 18px; } }
+.actionContent { display: inline-flex; align-items: center; gap: .4rem; }
+.actionLabel { display: none; }
 .addTurn { display: flex; flex-wrap: wrap; gap: .8rem; align-items: flex-end; margin-top: 1.5rem; > div { flex: 1; min-width: min(100%, 200px); } > button { min-height: 44px; } }
 .empty { padding: 1rem 0; line-height: 1.6; color: var(--text-muted); font-size: .9rem; }
 .limit { width: 100%; color: var(--text-muted); font-size: .8rem; margin: 0; }
 .srOnly { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
-@container gameBoard (min-width: 1250px) { .actions { width: auto; } }
+@container turnOrder (min-width: 800px) { .actionLabel { display: inline; } .actions button:nth-child(n + 3) { width: auto; padding: 0 12px; } }
+@container turnOrder (max-width: 559px) { .row { grid-template-columns: 36px 1.5rem minmax(0, 1fr) max-content; gap: .35rem; } .readOnlyRow { grid-template-columns: 1.5rem minmax(0, 1fr); } .portrait { display: none; } .actions button { width: 36px; } }
+@container turnOrder (max-width: 399px) { .currentLine { grid-template-columns: minmax(0, 1fr); gap: .8rem; > button { justify-self: end; } } .row { grid-template-columns: 32px 1.5rem minmax(0, 1fr) max-content; gap: .25rem; padding-inline: 0; } .readOnlyRow { grid-template-columns: 1.5rem minmax(0, 1fr); } .handle { min-width: 32px; } .actions { gap: 0; button { width: 32px; } } .upNext { display: grid; grid-template-columns: auto minmax(0, 1fr); > span:last-child:not(:first-child) { grid-column: 2; } } }

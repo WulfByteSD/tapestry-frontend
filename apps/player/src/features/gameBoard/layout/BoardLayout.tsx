@@ -9,7 +9,7 @@ type NavControls = { expanded: boolean; mobile: boolean; onToggleExpanded: () =>
 type Props = {
   header: (controls: HeaderControls) => ReactNode;
   nav: (controls: NavControls) => ReactNode;
-  main: ReactNode;
+  main: ReactNode | ((controls: HeaderControls) => ReactNode);
   sidebar: ReactNode;
   mainFlush?: boolean;
 };
@@ -54,7 +54,7 @@ export default function BoardLayout({ header, nav, main, sidebar, mainFlush = fa
       <nav className={styles.nav} aria-label="Game board zones">
         {nav({ expanded: navExpanded, mobile, onToggleExpanded: () => setNavChoice(!navExpanded) })}
       </nav>
-      <div className={styles.main} data-flush={mainFlush} id="board-zone-content">{main}</div>
+      <div className={styles.main} data-flush={mainFlush} id="board-zone-content">{typeof main === 'function' ? main({ tableOpen, onToggleTable: toggleTable }) : main}</div>
       {wide ? (
         <aside className={styles.sidebar} id="board-table-panel" aria-label="Table panel" hidden={!tableOpen}>{sidebar}</aside>
       ) : (

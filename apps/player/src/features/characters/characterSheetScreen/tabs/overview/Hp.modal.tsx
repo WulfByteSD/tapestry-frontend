@@ -2,13 +2,15 @@ import { useState } from 'react';
 import { Button, Input, SelectField } from '@tapestry/ui';
 import { SheetModal } from '../../SheetModal.component';
 import { useUpdateCharacterSheetMutation } from '../../characterSheet.mutations';
+import { characterHealthBaseline } from '../../CharacterHealth.helpers';
 import { getHpPreview, nonnegative } from './ResourceModal.helpers';
 import type { ResourceModalProps, HpMode } from './ResourceModal.types';
 import styles from './Resource.modal.module.scss';
 
 export function HpModal({ sheet, onClose }: ResourceModalProps) {
-  const update = useUpdateCharacterSheetMutation(sheet._id);
-  const hp = sheet.sheet.resources?.hp ?? { current: 0, max: 0, temp: 0 };
+  const [baseline] = useState(() => characterHealthBaseline(sheet));
+  const update = useUpdateCharacterSheetMutation(sheet._id, { expectedHealthState: baseline });
+  const hp = baseline.hp ?? { current: 0, max: 0, temp: 0 };
   const current = Number(hp.current ?? 0);
   const max = Number(hp.max ?? 0);
   const temp = Number(hp.temp ?? 0);
@@ -40,7 +42,7 @@ export function HpModal({ sheet, onClose }: ResourceModalProps) {
         </div>
         <div className={styles.quickRow} aria-label="Quick amounts">{[1, 2, 5, 10].map((value) => <button key={value} className={styles.quickBtn} type="button" onClick={() => setAmount(value)} aria-label={`Set amount to ${value}`}>{value}</button>)}</div>
         <Input label="Temporary HP" type="number" min={0} value={tempDraft} onChange={(event) => setTempDraft(Number(event.target.value))} />
-        {update.isError && <p role="alert" className={styles.errorText}>HP could not be updated. Try again.</p>}
+        {update.isError && <p role="alert" className={styles.errorText}>HP could not be updated. If health changed, close this window and review the latest sheet before trying again.</p>}
       </div>
     </SheetModal>
   );

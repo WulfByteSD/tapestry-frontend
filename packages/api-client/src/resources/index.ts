@@ -8,3 +8,4 @@ export * from './campaigns.api';
 export * from './chat.api';
 export * from './discord.api';
 export * from './encounters.api';
+export * from './encounterScenes.api';

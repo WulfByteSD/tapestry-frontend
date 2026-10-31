@@ -8,40 +8,49 @@ import { ChatCompositionFields } from './ChatComposition.form';
 import { compositionContent, emptyComposition } from './ChatComposition.helpers';
 import styles from './Chat.module.scss';
 
-export function ChatComposer({ channel, draft, currentUserId, playerName, isSW, readOnlyReason, characterState, onContent, onComposition, onClearReply, onDiscardAttempt, onSend }: ChatComposerProps) {
+export function ChatComposer({ channel, scene, scenes, draft, currentUserId, playerName, isSW, readOnlyReason, characterState, onContent, onComposition, onClearReply, onDiscardAttempt, onSend }: ChatComposerProps) {
   const [identityFocused, setIdentityFocused] = useState(false);
   const [identityHovered, setIdentityHovered] = useState(false);
   const identityPointerFocus = useRef(false);
-  const ownCharacters = characterState.characters.filter((character) => character.player === currentUserId);
-  const selected = ownCharacters.find((character) => character._id === characterState.activeCharacterId);
-  const narrator = isSW && characterState.activeCharacterId === null;
-  const validIdentity = channel.mode === 'ooc' || Boolean(selected) || narrator;
-  const speaker: ChatSendInput['speaker'] = channel.mode === 'ooc' ? undefined : selected ? { type: 'character', characterId: selected._id } : narrator ? { type: 'narrator' } : undefined;
-  const speakerLabel = channel.mode === 'ooc' ? playerName : selected?.name ?? 'Narrator';
+  const ownCharacters = characterState.characters.filter((character) => character.player === currentUserId && (!channel.scene || channel.scene.playableCharacterIds.includes(character._id)));
+  const sceneReady = !channel.scene || !!scene && scene.id === channel.scene.id && !scenes.refreshingAccess && !scenes.detail.isError && !scenes.list.isError;
+  const combatants = channel.mode === 'ic' && channel.scene && sceneReady && scene?.canManage ? scene.participants.filter(entry => entry.kind === 'combatant' && entry.revealed) : [];
+  const combatant = combatants.find(entry => entry.id === scenes.actingParticipantId);
+  const selected = ownCharacters.find(character => character._id === characterState.activeCharacterId);
+  const narrator = isSW && !combatant && characterState.activeCharacterId === null;
+  const validIdentity = channel.mode === 'ooc' || sceneReady && (Boolean(combatant) || Boolean(selected) || narrator);
+  const speaker: ChatSendInput['speaker'] = channel.mode === 'ooc' ? undefined : combatant ? { type: 'combatant', participantId: combatant.id } : selected ? { type: 'character', characterId: selected._id } : narrator ? { type: 'narrator' } : undefined;
+  const speakerLabel = channel.mode === 'ooc' ? playerName : combatant?.name ?? selected?.name ?? 'Narrator';
+  const chooseSpeaker = (value: string) => {
+    if (value.startsWith('combatant:')) { scenes.selectActor(value.slice('combatant:'.length)); return; }
+    scenes.selectActor(null);
+    characterState.setActiveCharacter(value === 'narrator' ? null : value);
+  };
   const retryIdentityDiffers = draft.attempt && JSON.stringify(draft.attempt.input.speaker) !== JSON.stringify(speaker);
   const sending = draft.status === 'sending';
   const unresolved = draft.status === 'failed';
-  const characterFields = draft.attempt ? Boolean(draft.attempt.input.composition) : channel.mode === 'ic' && Boolean(selected);
+  const characterFields = draft.attempt ? Boolean(draft.attempt.input.composition) : channel.mode === 'ic' && (Boolean(combatant) || Boolean(selected));
   const composition = draft.composition ?? emptyComposition;
   const content = draft.attempt?.input.content ?? (characterFields ? compositionContent(composition) : draft.content);
-  const canSend = !readOnlyReason && !sending && Boolean(content.trim()) && content.length <= 8000 && (validIdentity || Boolean(draft.attempt));
+  const canSend = sceneReady && !readOnlyReason && !sending && Boolean(content.trim()) && content.length <= 8000 && (validIdentity || Boolean(draft.attempt));
   const sendControl = <Tooltip title="Send · Ctrl/⌘ + Enter"><Button className={styles.sendMessage} size="sm" type="submit" disabled={!canSend} isLoading={sending}>{unresolved ? 'Retry original' : 'Send'}</Button></Tooltip>;
 
   if (readOnlyReason) return <div className={styles.readOnly}>{readOnlyReason}</div>;
   return (
     <form className={styles.composer} onSubmit={(event) => { event.preventDefault(); if (canSend) void onSend(speaker, speakerLabel); }}>
-      {!validIdentity ? <p className={styles.help}>Choose your character{isSW ? ' or Narrator' : ''} using the portrait menu.</p> : null}
+      {!sceneReady ? <p className={styles.help}>Updating scene identities…</p> : !validIdentity ? <p className={styles.help}>Choose your character{isSW ? ' or Narrator' : ''} using the portrait menu.</p> : null}
       {draft.replyTo ? <div className={styles.composerReply}><span>Replying to <strong>{speakerName(draft.replyTo)}</strong>: {messagePreview(draft.replyTo).slice(0, 120)}</span><Button type="button" size="sm" variant="ghost" onClick={onClearReply} disabled={sending || unresolved}>Cancel reply</Button></div> : null}
       <div className={styles.composerMain}>
         <Tooltip title={channel.mode === 'ic' ? `Speaking as ${validIdentity ? speakerLabel : '…'} · Change speaker` : `${playerName} · Out of character`} visible={identityFocused || identityHovered}>
           <div className={styles.composerIdentity} onPointerEnter={() => setIdentityHovered(true)} onPointerLeave={() => { identityPointerFocus.current = false; setIdentityHovered(false); }} onPointerDown={() => { identityPointerFocus.current = true; setIdentityFocused(false); setIdentityHovered(false); }} onPointerUp={() => { identityPointerFocus.current = false; }} onKeyDown={(event) => { if (event.key === 'Escape') { setIdentityFocused(false); setIdentityHovered(false); } }}>
             {channel.mode === 'ic' ? <>
-              <span className={styles.identityImage} aria-hidden="true">{narrator ? <FiFeather /> : <Avatar key={selected?.avatarUrl ?? selected?._id ?? 'none'} name={selected?.name ?? '?'} src={selected?.avatarUrl} size="sm" />}</span>
+              <span className={styles.identityImage} aria-hidden="true">{narrator ? <FiFeather /> : <Avatar key={combatant?.id ?? selected?.avatarUrl ?? selected?._id ?? 'none'} name={combatant?.name ?? selected?.name ?? '?'} src={combatant?.portraitUrl ?? selected?.avatarUrl} size="sm" />}</span>
               <FiChevronDown className={styles.identityChevron} aria-hidden="true" />
-              <SelectField id="chat-speaker" className={styles.identitySelect} aria-label={`Speaking as ${validIdentity ? speakerLabel : 'no character selected'}. Change speaker`} value={selected?._id ?? (narrator ? 'narrator' : '')} disabled={sending || unresolved} onFocus={(event) => setIdentityFocused(!identityPointerFocus.current && event.currentTarget.matches(':focus-visible'))} onBlur={() => { identityPointerFocus.current = false; setIdentityFocused(false); }} onChange={(event) => characterState.setActiveCharacter(event.target.value === 'narrator' ? null : event.target.value)}>
-                {!selected && !narrator ? <option value="" disabled>Choose your character{isSW ? ' or Narrator' : ''}</option> : null}
+              <SelectField id="chat-speaker" className={styles.identitySelect} aria-label={`Speaking as ${validIdentity ? speakerLabel : 'no character selected'}. Change speaker`} value={combatant ? `combatant:${combatant.id}` : selected?._id ?? (narrator ? 'narrator' : '')} disabled={sending || unresolved || !sceneReady} onFocus={(event) => setIdentityFocused(!identityPointerFocus.current && event.currentTarget.matches(':focus-visible'))} onBlur={() => { identityPointerFocus.current = false; setIdentityFocused(false); }} onChange={(event) => chooseSpeaker(event.target.value)}>
+                {!selected && !combatant && !narrator ? <option value="" disabled>Choose your character{isSW ? ' or Narrator' : ''}</option> : null}
                 {isSW ? <option value="narrator">Narrator · Storyweaver</option> : null}
                 {ownCharacters.map((character) => <option value={character._id} key={character._id}>{character.name}</option>)}
+                {combatants.map(entry => <option value={`combatant:${entry.id}`} key={entry.id}>{entry.name} · NPC</option>)}
               </SelectField>
             </> : <Avatar name={playerName} alt={`${playerName} · Out of character`} size="sm" />}
           </div>
